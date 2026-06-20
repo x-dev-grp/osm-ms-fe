@@ -1,7 +1,6 @@
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Component, DestroyRef, inject } from '@angular/core';
-import { CardComponent } from '../../theme/components/card/card.component';
-import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
+import { MatOption } from '@angular/material/autocomplete';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -14,22 +13,17 @@ import { SharedModule } from '../../shared/shared.module';
 import { UserService } from '../../settings/user-management/services/user.service';
 import { AdvancedSearchService } from '../../shared/services/advanced-serach.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SearchData } from '../../shared/models/advanced-search/searchData';
 import { User } from '../../theme/types/user';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, EMPTY, filter, Observable, of, switchMap, tap } from 'rxjs';
-import { SearchResponse } from '../../shared/models/advanced-search/searchResponse';
+import { catchError, of, tap } from 'rxjs';
 import { AddCompanyUserService } from '../../shared/services/add-company-user.service';
 import { CompanyUserDto } from '../../shared/models/company-user-dto';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-company-user',
   standalone: true,
-  imports: [TranslateModule, 
-    CardComponent,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
+  imports: [
+    TranslateModule,
     MatButton,
     MatError,
     MatFormField,
@@ -63,9 +57,7 @@ export class AddCompanyUserComponent {
 
   constructor() {}
 
-  ngAfterViewInit(): void {
 
-  }
 
   ngOnInit() {
     this.userForm = this._fb.group(
@@ -102,8 +94,6 @@ export class AddCompanyUserComponent {
     });
   }
 
-
-
   onSubmit(): void {
     if (!this.userForm.valid) {
       this.userForm.markAllAsTouched();
@@ -112,7 +102,7 @@ export class AddCompanyUserComponent {
     this.loading = true;
     const dto: CompanyUserDto = {
       legalName: this.userForm.value.companyName,
-      companyUser: {...this.userForm.value}
+      companyUser: { ...this.userForm.value }
     };
     this._addCompanyUserService
       .addCompanyWithUser(dto)
@@ -137,12 +127,9 @@ export class AddCompanyUserComponent {
       .subscribe();
   }
 
-
-
   resetForm(): void {
     this.userForm.reset();
   }
-
 
   cancel() {
     this._router.navigate(['/administration/dashboard/']);

@@ -117,6 +117,11 @@ const routes: Routes = [
         loadChildren: () => import('./administration/administration-routing.module').then((m) => m.AdministrationRoutingModule)
       },
       {
+        path: 'maintenance',
+        loadChildren: () => import('./maintenance/maintenance-routing.module').then((m) => m.MaintenanceRoutingModule),
+        canActivate: [moduleGuard([OSMModule.PRODUCTION])]
+      },
+      {
         path: 'analytics',
         loadChildren: () =>
           import('./analytics/analytics.module').then(m => m.AnalyticsModule),

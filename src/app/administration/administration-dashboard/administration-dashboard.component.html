@@ -1,7 +1,7 @@
-<div class="admin-dashboard">
-  <div class="page-header sticky-actions admin-dashboard__header">
+<div class="dashboard-shell admin-dashboard">
+  <div class="page-header sticky-actions page-header--admin">
     <div class="page-header__left">
-      <div class="header-icon-wrap">
+      <div class="header-icon-wrap header-icon-wrap--admin">
         <mat-icon>admin_panel_settings</mat-icon>
       </div>
       <div>
@@ -35,7 +35,7 @@
       <button mat-flat-button color="primary" (click)="refresh()">{{ 'COMMON.REFRESH' | translate }}</button>
     </div>
   } @else if (stats) {
-    <section class="hero-summary">
+    <section class="hero-summary admin-hero-summary">
       <div class="hero-card hero-card--tenants">
         <div class="hero-card__icon"><mat-icon>business</mat-icon></div>
         <div class="hero-card__content">
@@ -73,7 +73,7 @@
         <mat-icon>bolt</mat-icon>
         <h3>{{ 'ADMIN_DASHBOARD.SECTIONS.QUICK_ACTIONS' | translate }}</h3>
       </div>
-      <div class="quick-links">
+      <div class="quick-links admin-quick-links">
         <a class="quick-link-card quick-link-card--users" routerLink="/administration/users">
           <span class="quick-link-card__badge"><mat-icon>manage_accounts</mat-icon></span>
           <div class="quick-link-card__text">
@@ -114,33 +114,27 @@
         <mat-icon>apartment</mat-icon>
         <h3>{{ 'ADMIN_DASHBOARD.SECTIONS.TENANTS' | translate }}</h3>
       </div>
-      <div class="row g-3 kpi-grid">
-        <div class="col-6 col-md-4 col-xl">
-          <div class="metric-card metric-card--primary">
-            <div class="metric-card__top">
-              <mat-icon>business</mat-icon>
-              <span>{{ 'ADMIN_DASHBOARD.KPIS.TOTAL_TENANTS' | translate }}</span>
-            </div>
-            <div class="metric-card__value">{{ stats.totalTenants }}</div>
+      <div class="admin-kpi-grid admin-kpi-grid--3">
+        <div class="metric-card metric-card--primary">
+          <div class="metric-card__top">
+            <mat-icon>business</mat-icon>
+            <span>{{ 'ADMIN_DASHBOARD.KPIS.TOTAL_TENANTS' | translate }}</span>
           </div>
+          <div class="metric-card__value">{{ stats.totalTenants }}</div>
         </div>
-        <div class="col-6 col-md-4 col-xl">
-          <div class="metric-card metric-card--success">
-            <div class="metric-card__top">
-              <mat-icon>check_circle</mat-icon>
-              <span>{{ 'ADMIN_DASHBOARD.KPIS.ACTIVE_TENANTS' | translate }}</span>
-            </div>
-            <div class="metric-card__value">{{ stats.activeTenants }}</div>
+        <div class="metric-card metric-card--success">
+          <div class="metric-card__top">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ 'ADMIN_DASHBOARD.KPIS.ACTIVE_TENANTS' | translate }}</span>
           </div>
+          <div class="metric-card__value">{{ stats.activeTenants }}</div>
         </div>
-        <div class="col-6 col-md-4 col-xl">
-          <div class="metric-card metric-card--muted">
-            <div class="metric-card__top">
-              <mat-icon>pause_circle</mat-icon>
-              <span>{{ 'ADMIN_DASHBOARD.KPIS.INACTIVE_TENANTS' | translate }}</span>
-            </div>
-            <div class="metric-card__value">{{ stats.inactiveTenants }}</div>
+        <div class="metric-card metric-card--muted">
+          <div class="metric-card__top">
+            <mat-icon>pause_circle</mat-icon>
+            <span>{{ 'ADMIN_DASHBOARD.KPIS.INACTIVE_TENANTS' | translate }}</span>
           </div>
+          <div class="metric-card__value">{{ stats.inactiveTenants }}</div>
         </div>
       </div>
     </section>
@@ -150,191 +144,185 @@
         <mat-icon>group</mat-icon>
         <h3>{{ 'ADMIN_DASHBOARD.SECTIONS.USERS' | translate }}</h3>
       </div>
-      <div class="row g-3 kpi-grid">
-        <div class="col-6 col-md-4 col-xl">
-          <div class="metric-card metric-card--primary">
-            <div class="metric-card__top">
-              <mat-icon>group</mat-icon>
-              <span>{{ 'ADMIN_DASHBOARD.KPIS.TOTAL_USERS' | translate }}</span>
-            </div>
-            <div class="metric-card__value">{{ stats.totalUsers }}</div>
+      <div class="admin-kpi-grid admin-kpi-grid--5">
+        <div class="metric-card metric-card--primary">
+          <div class="metric-card__top">
+            <mat-icon>group</mat-icon>
+            <span>{{ 'ADMIN_DASHBOARD.KPIS.TOTAL_USERS' | translate }}</span>
           </div>
+          <div class="metric-card__value">{{ stats.totalUsers }}</div>
         </div>
-        <div class="col-6 col-md-4 col-xl">
-          <div class="metric-card metric-card--success">
-            <div class="metric-card__top">
-              <mat-icon>person</mat-icon>
-              <span>{{ 'ADMIN_DASHBOARD.KPIS.ACTIVE_USERS' | translate }}</span>
-            </div>
-            <div class="metric-card__value">{{ stats.activeUsers }}</div>
+        <div class="metric-card metric-card--success">
+          <div class="metric-card__top">
+            <mat-icon>person</mat-icon>
+            <span>{{ 'ADMIN_DASHBOARD.KPIS.ACTIVE_USERS' | translate }}</span>
           </div>
+          <div class="metric-card__value">{{ stats.activeUsers }}</div>
         </div>
-        <div class="col-6 col-md-4 col-xl">
-          <div class="metric-card metric-card--warn">
-            <div class="metric-card__top">
-              <mat-icon>lock</mat-icon>
-              <span>{{ 'ADMIN_DASHBOARD.KPIS.LOCKED_USERS' | translate }}</span>
-            </div>
-            <div class="metric-card__value">{{ stats.lockedUsers }}</div>
+        <div class="metric-card metric-card--warn">
+          <div class="metric-card__top">
+            <mat-icon>lock</mat-icon>
+            <span>{{ 'ADMIN_DASHBOARD.KPIS.LOCKED_USERS' | translate }}</span>
           </div>
+          <div class="metric-card__value">{{ stats.lockedUsers }}</div>
         </div>
-        <div class="col-6 col-md-4 col-xl">
-          <div class="metric-card metric-card--info">
-            <div class="metric-card__top">
-              <mat-icon>person_add</mat-icon>
-              <span>{{ 'ADMIN_DASHBOARD.KPIS.NEW_USERS_30D' | translate }}</span>
-            </div>
-            <div class="metric-card__value">{{ stats.newUsersLast30Days }}</div>
+        <div class="metric-card metric-card--info">
+          <div class="metric-card__top">
+            <mat-icon>person_add</mat-icon>
+            <span>{{ 'ADMIN_DASHBOARD.KPIS.NEW_USERS_30D' | translate }}</span>
           </div>
+          <div class="metric-card__value">{{ stats.newUsersLast30Days }}</div>
         </div>
-        <div class="col-6 col-md-4 col-xl">
-          <div class="metric-card metric-card--muted">
-            <div class="metric-card__top">
-              <mat-icon>person_off</mat-icon>
-              <span>{{ 'ADMIN_DASHBOARD.KPIS.USERS_WITHOUT_TENANT' | translate }}</span>
-            </div>
-            <div class="metric-card__value">{{ stats.usersWithoutTenant }}</div>
+        <div class="metric-card metric-card--muted">
+          <div class="metric-card__top">
+            <mat-icon>person_off</mat-icon>
+            <span>{{ 'ADMIN_DASHBOARD.KPIS.USERS_WITHOUT_TENANT' | translate }}</span>
           </div>
+          <div class="metric-card__value">{{ stats.usersWithoutTenant }}</div>
         </div>
       </div>
     </section>
 
-    <section class="dashboard-section row g-3">
-      <div class="col-lg-5">
-        <app-card [cardTitle]="'ADMIN_DASHBOARD.SECTIONS.USERS_BY_ROLE' | translate" [icon]="'badge'" [showContent]="true" class="panel-card">
-          @if (stats.usersByRole?.length) {
-            <div class="role-list">
-              @for (role of stats.usersByRole; track role.roleName; let i = $index) {
-                <div class="role-row">
-                  <div class="role-meta">
-                    <span class="role-name">
-                      <span class="role-rank">{{ i + 1 }}</span>
-                      {{ role.roleName }}
-                    </span>
-                    <span class="role-count">
-                      {{ role.count }}
-                      <small>({{ rolePercent(role.count) }}%)</small>
-                    </span>
+    <section class="dashboard-section">
+      <div class="row g-3">
+        <div class="col-lg-5">
+          <app-card [cardTitle]="'ADMIN_DASHBOARD.SECTIONS.USERS_BY_ROLE' | translate" [icon]="'badge'" [showContent]="true" class="panel-card">
+            @if (stats.usersByRole?.length) {
+              <div class="role-list">
+                @for (role of stats.usersByRole; track role.roleName; let i = $index) {
+                  <div class="role-row">
+                    <div class="role-meta">
+                      <span class="role-name">
+                        <span class="role-rank">{{ i + 1 }}</span>
+                        {{ role.roleName }}
+                      </span>
+                      <span class="role-count">
+                        {{ role.count }}
+                        <small>({{ rolePercent(role.count) }}%)</small>
+                      </span>
+                    </div>
+                    <div class="role-bar-track">
+                      <div class="role-bar-fill" [style.width.%]="roleBarWidth(role.count)"></div>
+                    </div>
                   </div>
-                  <div class="role-bar-track">
-                    <div class="role-bar-fill" [style.width.%]="roleBarWidth(role.count)"></div>
-                  </div>
-                </div>
-              }
-            </div>
-          } @else {
-            <div class="empty-state">
-              <mat-icon>insights</mat-icon>
-              <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
-            </div>
-          }
-        </app-card>
-      </div>
+                }
+              </div>
+            } @else {
+              <div class="empty-state empty-state--inline">
+                <mat-icon>insights</mat-icon>
+                <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
+              </div>
+            }
+          </app-card>
+        </div>
 
-      <div class="col-lg-7">
-        <app-card [cardTitle]="'ADMIN_DASHBOARD.SECTIONS.TOP_TENANTS' | translate" [icon]="'leaderboard'" [showContent]="true" class="panel-card">
-          @if (stats.topTenantsByUsers?.length) {
-            <div class="table-responsive">
-              <table class="admin-table">
-                <thead>
-                  <tr>
-                    <th class="col-rank">#</th>
-                    <th>{{ 'ADMIN_USERS.FIELDS.TENANT' | translate }}</th>
-                    <th>{{ 'ADMIN_DASHBOARD.TABLE.USERS' | translate }}</th>
-                    <th>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (tenant of stats.topTenantsByUsers; track tenant.tenantId; let i = $index) {
+        <div class="col-lg-7">
+          <app-card [cardTitle]="'ADMIN_DASHBOARD.SECTIONS.TOP_TENANTS' | translate" [icon]="'leaderboard'" [showContent]="true" class="panel-card">
+            @if (stats.topTenantsByUsers?.length) {
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
                     <tr>
-                      <td class="col-rank"><span class="rank-badge">{{ i + 1 }}</span></td>
-                      <td class="cell-strong">{{ tenant.tenantName || '-' }}</td>
-                      <td><span class="count-chip">{{ tenant.userCount }}</span></td>
-                      <td>
-                        <span class="status-pill" [class.active]="tenant.active">
-                          {{ (tenant.active ? 'ADMIN_DASHBOARD.STATUS.ACTIVE' : 'ADMIN_DASHBOARD.STATUS.INACTIVE') | translate }}
-                        </span>
-                      </td>
+                      <th class="col-rank">#</th>
+                      <th>{{ 'ADMIN_USERS.FIELDS.TENANT' | translate }}</th>
+                      <th>{{ 'ADMIN_DASHBOARD.TABLE.USERS' | translate }}</th>
+                      <th>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</th>
                     </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          } @else {
-            <div class="empty-state">
-              <mat-icon>leaderboard</mat-icon>
-              <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
-            </div>
-          }
-        </app-card>
+                  </thead>
+                  <tbody>
+                    @for (tenant of stats.topTenantsByUsers; track tenant.tenantId; let i = $index) {
+                      <tr>
+                        <td class="col-rank"><span class="rank-badge">{{ i + 1 }}</span></td>
+                        <td class="cell-strong">{{ tenant.tenantName || '-' }}</td>
+                        <td><span class="count-chip">{{ tenant.userCount }}</span></td>
+                        <td>
+                          <span class="status-pill" [class.active]="tenant.active">
+                            {{ (tenant.active ? 'ADMIN_DASHBOARD.STATUS.ACTIVE' : 'ADMIN_DASHBOARD.STATUS.INACTIVE') | translate }}
+                          </span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="empty-state empty-state--inline">
+                <mat-icon>leaderboard</mat-icon>
+                <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
+              </div>
+            }
+          </app-card>
+        </div>
       </div>
     </section>
 
-    <section class="dashboard-section row g-3">
-      <div class="col-lg-6">
-        <app-card [cardTitle]="'ADMIN_DASHBOARD.SECTIONS.RECENT_TENANTS' | translate" [icon]="'apartment'" [showContent]="true" class="panel-card">
-          @if (stats.recentTenants?.length) {
-            <div class="table-responsive">
-              <table class="admin-table admin-table--compact">
-                <thead>
-                  <tr>
-                    <th>{{ 'ADMIN_USERS.FIELDS.TENANT' | translate }}</th>
-                    <th>{{ 'ADMIN_DASHBOARD.TABLE.USERS' | translate }}</th>
-                    <th>{{ 'ADMIN_DASHBOARD.TABLE.CREATED' | translate }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (tenant of stats.recentTenants; track tenant.tenantId) {
+    <section class="dashboard-section">
+      <div class="row g-3">
+        <div class="col-lg-6">
+          <app-card [cardTitle]="'ADMIN_DASHBOARD.SECTIONS.RECENT_TENANTS' | translate" [icon]="'apartment'" [showContent]="true" class="panel-card">
+            @if (stats.recentTenants?.length) {
+              <div class="table-responsive">
+                <table class="admin-table admin-table--compact">
+                  <thead>
                     <tr>
-                      <td class="cell-strong">{{ tenant.tenantName || '-' }}</td>
-                      <td><span class="count-chip">{{ tenant.userCount }}</span></td>
-                      <td class="cell-muted">{{ tenant.createdDate ? (tenant.createdDate | date:'dd/MM/yyyy') : '-' }}</td>
+                      <th>{{ 'ADMIN_USERS.FIELDS.TENANT' | translate }}</th>
+                      <th>{{ 'ADMIN_DASHBOARD.TABLE.USERS' | translate }}</th>
+                      <th>{{ 'ADMIN_DASHBOARD.TABLE.CREATED' | translate }}</th>
                     </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          } @else {
-            <div class="empty-state">
-              <mat-icon>apartment</mat-icon>
-              <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
-            </div>
-          }
-        </app-card>
-      </div>
+                  </thead>
+                  <tbody>
+                    @for (tenant of stats.recentTenants; track tenant.tenantId) {
+                      <tr>
+                        <td class="cell-strong">{{ tenant.tenantName || '-' }}</td>
+                        <td><span class="count-chip">{{ tenant.userCount }}</span></td>
+                        <td class="cell-muted">{{ tenant.createdDate ? (tenant.createdDate | date:'dd/MM/yyyy') : '-' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="empty-state empty-state--inline">
+                <mat-icon>apartment</mat-icon>
+                <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
+              </div>
+            }
+          </app-card>
+        </div>
 
-      <div class="col-lg-6">
-        <app-card [cardTitle]="'ADMIN_DASHBOARD.SECTIONS.RECENT_USERS' | translate" [icon]="'history'" [showContent]="true" class="panel-card">
-          @if (stats.recentUsers?.length) {
-            <div class="table-responsive">
-              <table class="admin-table admin-table--compact">
-                <thead>
-                  <tr>
-                    <th>{{ 'ADMIN_USERS.FIELDS.USERNAME' | translate }}</th>
-                    <th>{{ 'ADMIN_USERS.FIELDS.ROLE' | translate }}</th>
-                    <th>{{ 'ADMIN_USERS.FIELDS.TENANT' | translate }}</th>
-                    <th>{{ 'ADMIN_DASHBOARD.TABLE.CREATED' | translate }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (user of stats.recentUsers; track user.id) {
+        <div class="col-lg-6">
+          <app-card [cardTitle]="'ADMIN_DASHBOARD.SECTIONS.RECENT_USERS' | translate" [icon]="'history'" [showContent]="true" class="panel-card">
+            @if (stats.recentUsers?.length) {
+              <div class="table-responsive">
+                <table class="admin-table admin-table--compact">
+                  <thead>
                     <tr>
-                      <td class="cell-strong">{{ user.username }}</td>
-                      <td><span class="role-chip">{{ user.roleName || '-' }}</span></td>
-                      <td>{{ user.tenantName || '-' }}</td>
-                      <td class="cell-muted">{{ user.createdDate ? (user.createdDate | date:'dd/MM/yyyy') : '-' }}</td>
+                      <th>{{ 'ADMIN_USERS.FIELDS.USERNAME' | translate }}</th>
+                      <th>{{ 'ADMIN_USERS.FIELDS.ROLE' | translate }}</th>
+                      <th>{{ 'ADMIN_USERS.FIELDS.TENANT' | translate }}</th>
+                      <th>{{ 'ADMIN_DASHBOARD.TABLE.CREATED' | translate }}</th>
                     </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          } @else {
-            <div class="empty-state">
-              <mat-icon>history</mat-icon>
-              <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
-            </div>
-          }
-        </app-card>
+                  </thead>
+                  <tbody>
+                    @for (user of stats.recentUsers; track user.id) {
+                      <tr>
+                        <td class="cell-strong">{{ user.username }}</td>
+                        <td><span class="role-chip">{{ user.roleName || '-' }}</span></td>
+                        <td>{{ user.tenantName || '-' }}</td>
+                        <td class="cell-muted">{{ user.createdDate ? (user.createdDate | date:'dd/MM/yyyy') : '-' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="empty-state empty-state--inline">
+                <mat-icon>history</mat-icon>
+                <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
+              </div>
+            }
+          </app-card>
+        </div>
       </div>
     </section>
   }

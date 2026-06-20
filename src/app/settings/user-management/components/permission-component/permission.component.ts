@@ -59,18 +59,23 @@ export class PermissionComponent implements OnInit,OnChanges {
   const categoryMap = new Map<string, PermissionNode>();
 
   for (const perm of permissions) {
+    const moduleKey = this.resolveModuleKey(perm.module);
+    if (!moduleKey) {
+      continue;
+    }
+
     // Group by category
-    if (!categoryMap.has(perm.module)) {
-      categoryMap.set(perm.module, {
-        id: perm.module,
-        permissionName: this.formatName(perm?.module),
+    if (!categoryMap.has(moduleKey)) {
+      categoryMap.set(moduleKey, {
+        id: moduleKey,
+        permissionName: this.formatName(moduleKey),
         type: 'module',
         children: [],
-        module:perm?.module
+        module: moduleKey
       });
     }
 
-    const categoryNode = categoryMap.get(perm.module)!;
+    const categoryNode = categoryMap.get(moduleKey)!;
 
     // Group by module inside category
     let moduleNode = categoryNode.children!.find(m => m.id === perm.entity);
@@ -89,13 +94,29 @@ export class PermissionComponent implements OnInit,OnChanges {
     moduleNode.children!.push({
       id:perm?.id,
       permissionName: perm?.permissionName,
-      category:perm?.module,
-      module:perm?.module,
+      category: moduleKey,
+      module: moduleKey,
       type: 'permission'
     });
   }
 
   return Array.from(categoryMap.values());
+}
+
+private resolveModuleKey(module: Permission['module'] | unknown): string | null {
+  if (module == null) {
+    return null;
+  }
+  if (typeof module === 'string') {
+    return module;
+  }
+  if (typeof module === 'number') {
+    return String(module);
+  }
+  if (typeof module === 'object' && module !== null && 'name' in module) {
+    return String((module as { name?: string }).name ?? '');
+  }
+  return String(module);
 }
 
 private formatName(name: string): string {
@@ -106,12 +127,19 @@ private formatName(name: string): string {
     this._service.fetchAll().pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((response:any)=>{
-          const data=this.groupPermissionsToTree(response?.data);
+          if (!response?.success || !Array.isArray(response?.data)) {
+            console.error('Permission fetchAll returned no data', response);
+            this.dataSource.data = [];
+            return;
+          }
+          const data=this.groupPermissionsToTree(response.data);
           this.dataSource.data = data;
           this.treeControl.dataNodes = this.dataSource.data;
           this.applyInitialPermissions();
       })
-    ).subscribe();
+    ).subscribe({
+      error: (err) => console.error('Permission fetchAll failed', err)
+    });
   }
  ngOnInit() {
    // Initialize the tree

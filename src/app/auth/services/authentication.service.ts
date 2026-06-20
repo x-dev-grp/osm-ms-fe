@@ -2,42 +2,75 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable, Subject, EMPTY } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 
 // project import
-import { AppConfig } from 'src/environments/environment';
+import { AppConfig, environment } from 'src/environments/environment';
 import { User } from '../../theme/types/user';
 import { TokenService } from 'src/app/auth/services/tokenService.service';
 import { Role } from 'src/app/theme/types/role';
+import { UserService } from '../../settings/user-management/services/user.service';
+import { buildUserPhotoDataUrl } from '../../shared/utils/user-initials.util';
 
-// Import the 'map' operator from 'rxjs/operators'
+export interface SessionRefreshResponse {
+  access_token: string;
+  token_type?: string;
+  authorities?: string[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
   private router = inject(Router);
   private http = inject(HttpClient);
   private _tokenService = inject(TokenService);
+  private userService = inject(UserService);
   private readonly STORAGE_KEY = 'company_profile';
-  private currentUserSignal = signal<User | null>(null);
+  readonly currentUserSignal = signal<User | null>(null);
+  readonly userPhotoPreviewSignal = signal<string | null>(null);
+  private permissionsChangedSubject = new Subject<void>();
+  readonly permissionsChanged$ = this.permissionsChangedSubject.asObservable();
+  private sessionSyncStarted = false;
+  private sessionRefreshInProgress = false;
+  private bootstrapCompleted = false;
 
   constructor() {
-    const decodedToken = this._tokenService.decodeToken() as unknown;
-    if (decodedToken != null) {
-      console.log(decodedToken);
-      const role: string = (decodedToken as Record<string, unknown>)['role'] as string;
-      const permissions = (decodedToken as Record<string, unknown>)['authorities'];
-      const osmUser = (decodedToken as Record<string, unknown>)['osmUser'];
-      if (osmUser && typeof osmUser === 'object') {
-        const user: User = structuredClone(osmUser as User);
-        user.role = role;
-        user.permissions = permissions;
-        console.log(user);
-        this.setCurrentUserValue = user;
-      }
+    // Session restore runs via APP_INITIALIZER (bootstrapSession).
+  }
+
+  bootstrapSession(): Promise<void> {
+    if (this.bootstrapCompleted) {
+      return Promise.resolve();
     }
-    // Check for remembered login
-    this.checkRememberedLogin();
+
+    return new Promise((resolve) => {
+      this._tokenService.purgeExpiredRememberMe();
+      const token = this._tokenService.getToken();
+
+      if (!token) {
+        this.bootstrapCompleted = true;
+        resolve();
+        return;
+      }
+
+      const finishBootstrap = () => {
+        this.bootstrapCompleted = true;
+        resolve();
+      };
+
+      if (this._tokenService.isAccessTokenExpired()) {
+        this.restoreSessionWithRefresh(finishBootstrap);
+        return;
+      }
+
+      if (!this.applyAccessToken(token, false)) {
+        this.restoreSessionWithRefresh(finishBootstrap);
+        return;
+      }
+
+      this.startSessionSync();
+      finishBootstrap();
+    });
   }
 
   public set setCurrentUserValue(user: User | null) {
@@ -53,24 +86,161 @@ export class AuthenticationService {
     return this.currentUserValue?.username || null;
   }
 
+  public get userPhotoPreview(): string | null {
+    return this.userPhotoPreviewSignal();
+  }
+
+  setUserPhotoPreview(preview: string | null): void {
+    this.userPhotoPreviewSignal.set(preview);
+  }
+
+  loadUserPhoto(): void {
+    if (!this._tokenService.getToken()) {
+      this.setUserPhotoPreview(null);
+      return;
+    }
+
+    this.userService
+      .getMyPhoto()
+      .pipe(catchError(() => EMPTY))
+      .subscribe((photo) => {
+        this.setUserPhotoPreview(buildUserPhotoDataUrl(photo?.photoData, photo?.photoContentType));
+      });
+  }
+
+  private restoreSessionWithRefresh(finishBootstrap: () => void): void {
+    const refreshToken = this._tokenService.getRefreshToken();
+    if (!refreshToken) {
+      this.logout();
+      finishBootstrap();
+      return;
+    }
+
+    this.refreshToken(refreshToken)
+      .pipe(
+        tap((response) => {
+          if (!response?.['access_token']) {
+            this.logout();
+          }
+        }),
+        catchError(() => {
+          console.warn('[AuthService] Session bootstrap refresh failed');
+          this.logout();
+          return EMPTY;
+        }),
+        finalize(() => finishBootstrap())
+      )
+      .subscribe();
+  }
+
+  applyAccessToken(accessToken: string, notifyOnChange = true): boolean {
+    if (!accessToken) {
+      return false;
+    }
+
+    const previousPermissions = this.normalizedPermissions().join('|');
+    this._tokenService.setToken(accessToken);
+
+    const decodedToken = this._tokenService.decodeToken() as Record<string, unknown> | null;
+    if (!decodedToken?.['osmUser']) {
+      return false;
+    }
+
+    const role = decodedToken['role'] as string;
+    const permissions = decodedToken['authorities'];
+    const user: User = structuredClone(decodedToken['osmUser'] as User);
+    user.role = role;
+    user.permissions = permissions;
+    this.setCurrentUserValue = user;
+    this.loadUserPhoto();
+    this.startSessionSync();
+
+    if (notifyOnChange) {
+      const currentPermissions = this.normalizedPermissions().join('|');
+      if (previousPermissions !== currentPermissions) {
+        this.permissionsChangedSubject.next();
+      }
+    }
+
+    return true;
+  }
+
+  refreshSession(): Observable<SessionRefreshResponse> {
+    if (this.sessionRefreshInProgress || !this._tokenService.getToken()) {
+      return EMPTY;
+    }
+
+    this.sessionRefreshInProgress = true;
+    return this.http
+      .post<SessionRefreshResponse>(`${environment.apiUrl}/api/security/user/me/refresh-session`, {})
+      .pipe(
+        tap((response) => {
+          if (response?.access_token) {
+            this.applyAccessToken(response.access_token);
+            this.permissionsChangedSubject.next();
+          }
+        }),
+        catchError((error) => {
+          console.warn('[AuthService] Session refresh failed:', error);
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.sessionRefreshInProgress = false;
+        })
+      );
+  }
+
+  refreshSessionSilently(): void {
+    this.refreshSession().subscribe();
+  }
+
+  private startSessionSync(): void {
+    if (this.sessionSyncStarted || typeof document === 'undefined') {
+      return;
+    }
+    this.sessionSyncStarted = true;
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && this._tokenService.getToken()) {
+        this.refreshSessionSilently();
+      }
+    });
+
+    window.setInterval(() => {
+      if (this._tokenService.getToken()) {
+        this.refreshSessionSilently();
+      }
+    }, 5 * 60 * 1000);
+  }
+
   hasPermission(permission: string): boolean {
     const user = this.currentUserValue;
     if (!user) return false;
 
-    // Admin has all permissions
     if (user.role === Role.Admin) return true;
 
-    return user.permissions.includes(permission);
+    const permissions = this.normalizedPermissions();
+    return permissions.includes(permission.toUpperCase());
   }
-hasModule(module:string){
-  const user = this.currentUserValue;
-  if (!user) return false;
 
-  // Admin has all permissions
-  if (user.role === Role.Admin) return true;
+  hasModule(module: string): boolean {
+    const user = this.currentUserValue;
+    if (!user) return false;
 
-  return user.permissions.map((p:string)=>p.toString().substring(0,p.indexOf(":"))).includes(module);
-}
+    if (user.role === Role.Admin) return true;
+
+    const modulePrefix = `${module.toUpperCase()}:`;
+    return this.normalizedPermissions().some((p) => p.startsWith(modulePrefix));
+  }
+
+  private normalizedPermissions(): string[] {
+    const raw = this.currentUserValue?.permissions;
+    if (!raw) {
+      return [];
+    }
+    const list = Array.isArray(raw) ? raw : [raw];
+    return list.map((p) => String(p).toUpperCase());
+  }
   hasRole(role: string): boolean {
     const user = this.currentUserValue;
     return user?.role === role || false;
@@ -132,14 +302,26 @@ hasModule(module:string){
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'
     });
-    return this.http.post<Record<string, unknown>>(`${AppConfig.authentication.authorization}`, body.toString(), { headers });
+    return this.http.post<Record<string, unknown>>(`${AppConfig.authentication.authorization}`, body.toString(), { headers }).pipe(
+      tap((response) => {
+        const accessToken = response?.['access_token'] as string | undefined;
+        const refreshTokenValue = response?.['refresh_token'] as string | undefined;
+        if (refreshTokenValue) {
+          this._tokenService.setRefreshToken(refreshTokenValue);
+        }
+        if (accessToken) {
+          this.applyAccessToken(accessToken);
+        }
+      })
+    );
   }
 
   logout(queryParams?: string) {
     this._tokenService.clearTokens();
-    // this._companyProfileService.clearCache();
     localStorage.removeItem(this.STORAGE_KEY);
     this.setCurrentUserValue = null;
+    this.setUserPhotoPreview(null);
+    this.sessionSyncStarted = false;
     if (!queryParams) {
       this.router.navigate(['/auth/login']);
       return;
@@ -147,30 +329,5 @@ hasModule(module:string){
     this.router.navigate(['/auth/login'], {
       queryParams: { error: queryParams }
     });
-  }
-
-  // Check for remembered login
-  private checkRememberedLogin(): void {
-    const rememberMe = localStorage.getItem('rememberMe');
-    const expiry = localStorage.getItem('rememberMeExpiry');
-
-    if (rememberMe === 'true' && expiry) {
-      const expiryDate = new Date(expiry);
-      const now = new Date();
-
-      // Check if the remember me token is still valid
-      if (expiryDate > now) {
-        const rememberedUsername = localStorage.getItem('rememberedUsername');
-        if (rememberedUsername) {
-          // We have a remembered username, but we still need the user to enter password
-          // The username field can be pre-filled in the login form
-        }
-      } else {
-        // Clear expired remember me data
-        localStorage.removeItem('rememberMe');
-        localStorage.removeItem('rememberMeExpiry');
-        localStorage.removeItem('rememberedUsername');
-      }
-    }
   }
 }

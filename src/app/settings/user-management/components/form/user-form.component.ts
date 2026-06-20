@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { catchError, EMPTY, filter, Observable, of, switchMap, tap } from 'rxjs';
 import { UserService } from '../../services/user.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -31,6 +32,7 @@ export class UserFormComponent implements OnInit, AfterViewInit {
   userForm: FormGroup;
   _fb = inject(FormBuilder);
   _userService = inject(UserService);
+  _authService = inject(AuthenticationService);
   _searchService = inject(AdvancedSearchService);
   _router = inject(Router);
   _activatedRoute = inject(ActivatedRoute);
@@ -185,6 +187,9 @@ export class UserFormComponent implements OnInit, AfterViewInit {
         tap((response: any) => {
           this.errorMessage = '';
           this.loading = false;
+          if (this.updateMode && this.user?.id === this._authService.currentUserValue?.id) {
+            this._authService.refreshSessionSilently();
+          }
           this._router.navigate(['/settings/users/dashboard']);
         }),
         catchError((err: any) => {

@@ -13,4 +13,7 @@ export interface User {
     permissions:any;
     isNewUser?:boolean;
     tenantId:string;
+    tenantName?: string;
+    photoData?: string | null;
+    photoContentType?: string | null;
 }

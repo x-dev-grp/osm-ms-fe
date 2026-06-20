@@ -1,7 +1,7 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { User } from "src/app/theme/types/user";
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { User } from 'src/app/theme/types/user';
 import { environment } from '../../../../environments/environment';
 
 export interface AssignableUser {
@@ -11,6 +11,25 @@ export interface AssignableUser {
   lastName?: string;
   displayName?: string;
   roleName?: string;
+}
+
+export interface UserProfileUpdate {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  confirmationMethod: string;
+}
+
+export interface ChangePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
+}
+
+export interface UserPhoto {
+  photoData?: string | null;
+  photoContentType?: string | null;
 }
 
 @Injectable({
@@ -31,6 +50,30 @@ export class UserService {
 
     fetchById(id:string):Observable<any>{
       return this._http.get(`${this.baseUrl}/fetch/${id}`);
+    }
+
+    getMyProfile(): Observable<User> {
+      return this._http.get<User>(`${this.baseUrl}/me`);
+    }
+
+    updateMyProfile(payload: UserProfileUpdate): Observable<User> {
+      return this._http.put<User>(`${this.baseUrl}/me`, payload);
+    }
+
+    changeMyPassword(payload: ChangePasswordPayload): Observable<void> {
+      return this._http.post<void>(`${this.baseUrl}/me/change-password`, payload);
+    }
+
+    getMyPhoto(): Observable<UserPhoto> {
+      return this._http.get<UserPhoto>(`${this.baseUrl}/me/photo`);
+    }
+
+    uploadMyPhoto(payload: UserPhoto): Observable<UserPhoto> {
+      return this._http.post<UserPhoto>(`${this.baseUrl}/me/photo`, payload);
+    }
+
+    removeMyPhoto(): Observable<void> {
+      return this._http.delete<void>(`${this.baseUrl}/me/photo`);
     }
 
     getUsersByPermission(moduleName: string, entity: string, permission: string): Observable<AssignableUser[]> {

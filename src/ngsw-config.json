@@ -36,23 +36,13 @@
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
-        "maxAge": "3d",
+        "maxAge": "1h",
         "timeout": "10s"
-      }
-    },
-    {
-      "name": "api-performance",
-      "urls": [
-        "/api/static/*"
-      ],
-      "cacheConfig": {
-        "strategy": "performance",
-        "maxSize": 100,
-        "maxAge": "7d"
       }
     }
   ],
   "navigationUrls": [
-    { "positive": true, "regex": "^\\/((?!oauth2\\/token).)*$" }
+    "/**",
+    "!/**/oauth2/token**"
   ]
 }

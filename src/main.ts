@@ -1,4 +1,4 @@
-import { enableProdMode, importProvidersFrom, isDevMode, APP_INITIALIZER } from '@angular/core';
+import { enableProdMode, importProvidersFrom, APP_INITIALIZER } from '@angular/core';
 
 import { environment } from './environments/environment';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -17,10 +17,21 @@ import { CookieService } from 'ngx-cookie-service';
 import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { CustomTranslateLoader } from './app/shared/custom-translate-loader';
 import { ThemeConfigService } from './app/shared/services/theme-config.service';
+import { PwaUpdateService } from './app/shared/services/pwa-update.service';
 
 function initTheme(themeConfig: ThemeConfigService) {
   return () => {
     themeConfig.init();
+  };
+}
+
+function initAuth(authService: AuthenticationService) {
+  return () => authService.bootstrapSession();
+}
+
+function initPwa(pwaUpdateService: PwaUpdateService) {
+  return () => {
+    pwaUpdateService.init();
   };
 }
 
@@ -55,7 +66,13 @@ bootstrapApplication(AppComponent, {
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'fr' },
     { provide: APP_INITIALIZER, useFactory: initTheme, deps: [ThemeConfigService], multi: true },
+    { provide: APP_INITIALIZER, useFactory: initAuth, deps: [AuthenticationService], multi: true },
+    { provide: APP_INITIALIZER, useFactory: initPwa, deps: [PwaUpdateService], multi: true },
     [provideHttpClient(withInterceptorsFromDi())],
-    provideAnimations()
+    provideAnimations(),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ]
 }).catch((err) => console.error(err));

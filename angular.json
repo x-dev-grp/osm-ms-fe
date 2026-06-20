@@ -55,7 +55,8 @@
             "scripts": [
               "node_modules/apexcharts/dist/apexcharts.min.js"
             ],
-            "serviceWorker": true
+            "serviceWorker": true,
+            "ngswConfigPath": "src/ngsw-config.json"
           },
           "configurations": {
             "production": {
@@ -92,6 +93,7 @@
               "buildOptimizer": true,
               "outputHashing": "all",
               "serviceWorker": true,
+            "ngswConfigPath": "src/ngsw-config.json",
               "baseHref": "/",
               "deployUrl": "/"
             },
@@ -102,7 +104,8 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
-              "serviceWorker": true
+              "serviceWorker": true,
+            "ngswConfigPath": "src/ngsw-config.json"
             }
           },
           "defaultConfiguration": "production"

@@ -54,6 +54,21 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
   }
 
+  location = /ngsw.json {
+    add_header Cache-Control "no-cache, no-store, must-revalidate";
+    try_files $uri =404;
+  }
+
+  location = /ngsw-worker.js {
+    add_header Cache-Control "no-cache, no-store, must-revalidate";
+    try_files $uri =404;
+  }
+
+  location = /manifest.webmanifest {
+    add_header Cache-Control "no-cache";
+    try_files $uri =404;
+  }
+
   location / {
     try_files $uri $uri/ /index.html;
   }

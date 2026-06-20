@@ -360,7 +360,8 @@ body {
     }
   }
 
-  .mat-mdc-tab-header.account-profile {
+  .mat-mdc-tab-header.account-profile,
+  .account-profile-tab-group .mat-mdc-tab-header {
     .mat-mdc-tab-link-container {
       flex-grow: inherit !important;
     }

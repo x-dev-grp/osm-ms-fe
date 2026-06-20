@@ -190,25 +190,13 @@ export class UpdatePasswordComponent implements OnInit {
 
   private handleSuccessfulLogin(response: unknown): void {
     const resp = response as Record<string, unknown>;
-    this.tokenService.setToken(resp['access_token'] as string);
-    this.tokenService.setRefreshToken(resp['refresh_token'] as string);
-    const decodedToken = this.tokenService.decodeToken() as Record<string, unknown>;
-    if (decodedToken && decodedToken['osmUser']) {
-      const user: User = {
-        ...(decodedToken['osmUser'] as User),
-        role: decodedToken['role'] as string,
-        permissions: decodedToken['authorities']
-      };
-      this.authService.setCurrentUserValue = user;
-      console.log('[UpdatePassword] User set for navigation:', user);
-      console.log('[UpdatePassword] Token:', this.tokenService.getToken());
-      this.router.navigate(['welcome'])
-        .then(success => {
-          console.log('[UpdatePassword] Navigation to /welcome success:', success);
-        })
-        .catch(err => {
-          console.error('[UpdatePassword] Navigation error:', err);
-        });
+    this.tokenService.persistLogin(
+      resp['access_token'] as string,
+      resp['refresh_token'] as string,
+      false
+    );
+    if (this.authService.applyAccessToken(this.tokenService.getToken()!)) {
+      this.router.navigate(['welcome']);
     }
   }
 

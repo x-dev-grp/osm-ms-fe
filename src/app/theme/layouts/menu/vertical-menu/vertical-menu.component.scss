@@ -15,19 +15,63 @@
 .user-card {
   margin-bottom: 1rem;
 
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+  .user-card-inner {
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .user-card-link {
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+    border-radius: 8px;
+    padding: 4px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: color-mix(in srgb, var(--accent-300) 45%, transparent);
+    }
   }
 
   .user-details {
-    margin-left: 1rem;
+    margin-left: 12px;
+    min-width: 0;
+    overflow: hidden;
   }
 
-  .user-setting {
-    margin-left: auto;
+  .user-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+  }
+
+  .user-role {
+    color: var(--accent-600);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+
+  .user-menu-trigger {
+    flex-shrink: 0;
+    color: var(--accent-700);
+
+    i {
+      font-size: 18px;
+    }
+  }
+}
+
+::ng-deep .sidebar-user-menu {
+  .menu-item-icon {
+    font-size: 18px;
+    margin-right: 12px;
+    width: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

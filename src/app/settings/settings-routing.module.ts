@@ -16,6 +16,11 @@ import { GenericTypeFormComponent } from './generic-type/generic-type-form/gener
 const routes: Routes = [
   { path: 'general-config', component: GeneralConfigComponent, canActivate: [AuthGuardChild] },
   {
+    path: 'profile',
+    canActivate: [AuthGuardChild],
+    loadComponent: () => import('./user-profile/user-profile.component').then((c) => c.UserProfileComponent)
+  },
+  {
     path: 'quality-control',
     canActivateChild: [AuthGuardChild], // 👈 meilleure pratique
     children: qualityControlRoutes

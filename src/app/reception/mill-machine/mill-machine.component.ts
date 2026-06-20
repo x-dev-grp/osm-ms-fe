@@ -83,7 +83,9 @@ export class MillMachineComponent implements OnInit, OnDestroy {
 
   maintenanceMachine(machine: MillMachine): void {
     if (machine.id) {
-      this.router.navigate(['/reception/mill-machines/maintenance', machine.id]);
+      this.router.navigate(['/maintenance/new'], {
+        queryParams: { assetType: 'MILL_MACHINE', assetId: machine.id }
+      });
     }
   }
 

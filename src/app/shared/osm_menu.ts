@@ -711,6 +711,16 @@ export const osm_menus: Navigation[] = [
             breadcrumbs: false,
             permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.READ)],
             ressourcePermission: ProductionEntity.MILLMACHINE
+          },
+          {
+            id: 'item-maintenance-work-orders',
+            title: 'MENU.MAINTENANCE.WORK_ORDERS',
+            type: 'item',
+            url: '/maintenance',
+            icon: 'handyman',
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)],
+            ressourcePermission: ProductionEntity.MAINTENANCEWORKORDER
           }
         ]
       },

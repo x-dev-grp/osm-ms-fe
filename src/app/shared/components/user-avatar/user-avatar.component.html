@@ -1,0 +1,11 @@
+<div class="user-avatar-wrapper" [ngClass]="'size-' + size">
+  <img
+    *ngIf="displayPhoto(); else initialsAvatar"
+    [src]="displayPhoto()"
+    alt="User photo"
+    class="user-avatar-image"
+  />
+  <ng-template #initialsAvatar>
+    <span class="user-avatar-initials" aria-hidden="true">{{ initials() }}</span>
+  </ng-template>
+</div>

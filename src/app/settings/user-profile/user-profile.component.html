@@ -1,0 +1,276 @@
+<div class="account-profile-page">
+  <div *ngIf="profileLoading && !profile" class="text-center p-5">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="profile || !profileLoading">
+    <div class="row">
+      <div class="col-12">
+        <app-card cardClass="pro-card account-profile-cover" [showHeader]="false" [padding]="0">
+          <div class="profile-wave-left">
+            <img src="assets/images/profile/user-profile-back-left.svg" alt="" />
+          </div>
+          <div class="profile-wave-right">
+            <img src="assets/images/profile/user-profile-back-right.svg" alt="" />
+          </div>
+
+          <div class="account-profile-user">
+            <div class="profile-avatar-wrap">
+              <app-user-avatar size="lg" [photoUrl]="photoPreview ?? undefined"></app-user-avatar>
+
+              <label
+                class="profile-upload-btn"
+                [attr.aria-label]="'USER_PROFILE.UPLOAD_PHOTO' | translate"
+                [class.disabled]="photoLoading"
+              >
+                <i class="ti ti-camera"></i>
+                <input
+                  #photoInput
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  hidden
+                  (change)="onPhotoPicked($event)"
+                  [disabled]="photoLoading"
+                />
+              </label>
+
+              <button
+                *ngIf="photoPreview"
+                mat-icon-button
+                type="button"
+                class="profile-remove-btn"
+                (click)="removePhoto()"
+                [disabled]="photoLoading"
+                [attr.aria-label]="'USER_PROFILE.REMOVE_PHOTO' | translate"
+              >
+                <i class="ti ti-trash"></i>
+              </button>
+            </div>
+
+            <h3>{{ displayName }}</h3>
+            <p class="profile-subtitle">{{ roleLabel }}</p>
+            <p class="profile-subtitle" *ngIf="profile?.email">{{ profile.email }}</p>
+          </div>
+        </app-card>
+      </div>
+    </div>
+
+    <div class="row account-profile-tabs-card">
+      <div class="col-12">
+        <app-card [showHeader]="false" [padding]="0">
+          <mat-tab-group class="account-profile-tab-group" mat-stretch-tabs="false" mat-align-tabs="start">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="ti ti-user m-r-10"></i>
+                {{ 'USER_PROFILE.TABS.PROFILE' | translate }}
+              </ng-template>
+
+              <div class="profile-tab-panel">
+                <div *ngIf="profileError" class="mat-alert mat-error" role="alert">{{ profileError }}</div>
+                <div *ngIf="profileSuccess" class="mat-alert mat-success" role="status">{{ profileSuccess }}</div>
+                <div *ngIf="photoError" class="mat-alert mat-error" role="alert">{{ photoError }}</div>
+                <div *ngIf="photoSuccess" class="mat-alert mat-success" role="status">{{ photoSuccess }}</div>
+
+                <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                    <div class="profile-info-card">
+                      <div class="profile-info-header">{{ 'USER_PROFILE.ABOUT' | translate }}</div>
+                      <ul class="profile-info-list" *ngIf="profile">
+                        <li>
+                          <i class="ti ti-user"></i>
+                          <div>
+                            <span class="info-label">{{ 'ADMIN_USERS.FIELDS.USERNAME' | translate }}</span>
+                            <span class="info-value">{{ profile.username }}</span>
+                          </div>
+                        </li>
+                        <li>
+                          <i class="ti ti-shield"></i>
+                          <div>
+                            <span class="info-label">{{ 'ADMIN_USERS.FIELDS.ROLE' | translate }}</span>
+                            <span class="info-value">{{ roleLabel }}</span>
+                          </div>
+                        </li>
+                        <li *ngIf="profile.tenantName">
+                          <i class="ti ti-building"></i>
+                          <div>
+                            <span class="info-label">{{ 'ADMIN_USERS.FIELDS.TENANT' | translate }}</span>
+                            <span class="info-value">{{ profile.tenantName }}</span>
+                          </div>
+                        </li>
+                        <li>
+                          <i class="ti ti-mail"></i>
+                          <div>
+                            <span class="info-label">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</span>
+                            <span class="info-value">{{ profile.email || '—' }}</span>
+                          </div>
+                        </li>
+                        <li>
+                          <i class="ti ti-phone"></i>
+                          <div>
+                            <span class="info-label">{{ 'AUTO.NUMERO_DE_TELEPHONE' | translate }}</span>
+                            <span class="info-value">{{ profile.phoneNumber || '—' }}</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-8 col-md-7">
+                    <div class="profile-form-card">
+                      <div class="profile-form-header">{{ 'USER_PROFILE.PERSONAL_INFO' | translate }}</div>
+                      <div class="profile-form-body">
+                        <p class="text-muted small m-b-20">{{ 'USER_PROFILE.PHOTO_HINT' | translate }}</p>
+
+                        <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+                          <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                              <label for="firstName" class="f-w-500">{{ 'ADMIN_USERS.FIELDS.FIRST_NAME' | translate }}</label>
+                              <mat-form-field appearance="outline" class="w-100">
+                                <input id="firstName" matInput formControlName="firstName" />
+                              </mat-form-field>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12">
+                              <label for="lastName" class="f-w-500">{{ 'ADMIN_USERS.FIELDS.LAST_NAME' | translate }}</label>
+                              <mat-form-field appearance="outline" class="w-100">
+                                <input id="lastName" matInput formControlName="lastName" />
+                              </mat-form-field>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12">
+                              <label for="email" class="f-w-500">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</label>
+                              <mat-form-field appearance="outline" class="w-100">
+                                <input id="email" matInput formControlName="email" />
+                                <mat-error *ngIf="profileForm.get('email')?.hasError('emailRequired')">
+                                  {{ 'AUTO.L_EMAIL_EST_REQUIS' | translate }}
+                                </mat-error>
+                                <mat-error *ngIf="profileForm.get('email')?.hasError('email')">
+                                  {{ 'AUTO.FORMAT_D_EMAIL_INVALIDE' | translate }}
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12">
+                              <label for="phone" class="f-w-500">{{ 'AUTO.NUMERO_DE_TELEPHONE' | translate }}</label>
+                              <mat-form-field appearance="outline" class="w-100">
+                                <input id="phone" matInput formControlName="phoneNumber" />
+                                <mat-error *ngIf="profileForm.get('phoneNumber')?.hasError('phoneRequired')">
+                                  {{ 'AUTO.LE_NUMERO_DE_TELEPHONE_EST_REQUIS' | translate }}
+                                </mat-error>
+                                <mat-error *ngIf="profileForm.get('phoneNumber')?.hasError('pattern')">
+                                  {{ 'AUTO.FORMAT_DE_NUMERO_INVALIDE' | translate }}
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12">
+                              <label for="method" class="f-w-500">{{ 'ADMIN_USERS.FIELDS.CONFIRMATION_METHOD' | translate }}</label>
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-select formControlName="confirmationMethod" id="method">
+                                  <mat-option value="EMAIL">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</mat-option>
+                                  <mat-option value="PHONE">{{ 'ADMIN_COMPANY_PROFILE.PHONE' | translate }}</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+                          </div>
+
+                          <div class="profile-actions">
+                            <button mat-flat-button color="primary" type="submit" [disabled]="profileLoading || profileForm.invalid">
+                              <mat-spinner *ngIf="profileLoading" diameter="20" class="m-r-10"></mat-spinner>
+                              {{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="ti ti-lock m-r-10"></i>
+                {{ 'USER_PROFILE.TABS.PASSWORD' | translate }}
+              </ng-template>
+
+              <div class="profile-tab-panel">
+                <div class="password-form-card profile-form-card">
+                  <div class="profile-form-header">{{ 'USER_PROFILE.TABS.PASSWORD' | translate }}</div>
+                  <div class="profile-form-body">
+                    <div *ngIf="passwordError" class="mat-alert mat-error" role="alert">{{ passwordError }}</div>
+                    <div *ngIf="passwordSuccess" class="mat-alert mat-success" role="status">{{ passwordSuccess }}</div>
+
+                    <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+                      <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                          <label for="oldPassword" class="f-w-500">{{ 'USER_PROFILE.CURRENT_PASSWORD' | translate }}</label>
+                          <mat-form-field appearance="outline" class="w-100">
+                            <input id="oldPassword" matInput [type]="hideOldPassword ? 'password' : 'text'" formControlName="oldPassword" />
+                            <button mat-icon-button matSuffix type="button" (click)="hideOldPassword = !hideOldPassword">
+                              <mat-icon>{{ hideOldPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                            </button>
+                            <mat-error *ngIf="passwordForm.get('oldPassword')?.hasError('required')">
+                              {{ 'COMMON.VALIDATION.REQUIRED' | translate }}
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12">
+                          <label for="newPassword" class="f-w-500">{{ 'LOGIN.PASSWORDNEW' | translate }}</label>
+                          <mat-form-field appearance="outline" class="w-100">
+                            <input id="newPassword" matInput [type]="hideNewPassword ? 'password' : 'text'" formControlName="newPassword" />
+                            <button mat-icon-button matSuffix type="button" (click)="hideNewPassword = !hideNewPassword">
+                              <mat-icon>{{ hideNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                            </button>
+                            <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('required')">
+                              {{ 'COMMON.VALIDATION.REQUIRED' | translate }}
+                            </mat-error>
+                            <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('minlength')">
+                              {{ 'LOGIN.PASSWORD_MIN_LENGTH_ERROR' | translate }}
+                            </mat-error>
+                            <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('passwordStrength')">
+                              {{ 'LOGIN.PASSWORD_STRENGTH_ERROR' | translate }}
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12">
+                          <label for="confirmPassword" class="f-w-500">{{ 'LOGIN.PASSWORDCONFIRM' | translate }}</label>
+                          <mat-form-field appearance="outline" class="w-100">
+                            <input
+                              id="confirmPassword"
+                              matInput
+                              [type]="hideConfirmPassword ? 'password' : 'text'"
+                              formControlName="newPasswordConfirmation"
+                            />
+                            <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword">
+                              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                            </button>
+                            <mat-error *ngIf="passwordForm.get('newPasswordConfirmation')?.hasError('required')">
+                              {{ 'COMMON.VALIDATION.REQUIRED' | translate }}
+                            </mat-error>
+                            <mat-error *ngIf="passwordForm.get('newPasswordConfirmation')?.hasError('mismatch')">
+                              {{ 'LOGIN.PASSWORD_MISMATCH_ERROR' | translate }}
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                      </div>
+
+                      <div class="profile-actions">
+                        <button mat-flat-button color="primary" type="submit" [disabled]="passwordLoading || passwordForm.invalid">
+                          <mat-spinner *ngIf="passwordLoading" diameter="20" class="m-r-10"></mat-spinner>
+                          {{ 'USER_PROFILE.CHANGE_PASSWORD' | translate }}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </app-card>
+      </div>
+    </div>
+  </ng-container>
+</div>

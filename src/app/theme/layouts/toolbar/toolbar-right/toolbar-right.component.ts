@@ -1,17 +1,16 @@
-// angular import
+import { Component, DestroyRef, effect, inject, OnInit, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-// third party
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
-
-// project import
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service';
 import { AbleProConfig } from 'src/app/app-config';
@@ -20,10 +19,15 @@ import { RTL } from '../../../const';
 import { ThemeConfigService } from '../../../../shared/services/theme-config.service';
 import { GlobalSearchService } from '../../../../shared/services/global-search.service';
 import { QrResolveResponse } from '../../../../shared/models/qr-models';
+import { UserAvatarComponent } from '../../../../shared/components/user-avatar/user-avatar.component';
+import { NotificationService } from '../../../../shared/services/notification.service';
+import { PushNotificationService } from '../../../../shared/services/push-notification.service';
+import { UserNotification } from '../../../../shared/models/notification.model';
 
 @Component({
   selector: 'app-nav-right',
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     SharedModule,
     CommonModule,
     RouterModule,
@@ -31,121 +35,92 @@ import { QrResolveResponse } from '../../../../shared/models/qr-models';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatMenuModule,
+    MatBadgeModule,
+    UserAvatarComponent
   ],
   templateUrl: './toolbar-right.component.html',
   standalone: true,
   styleUrls: ['./toolbar-right.component.scss']
 })
-export class NavRightComponent {
+export class NavRightComponent implements OnInit {
   authenticationService = inject(AuthenticationService);
-  // public props
+  private readonly notificationService = inject(NotificationService);
+  private readonly pushNotificationService = inject(PushNotificationService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  readonly unreadCount = this.notificationService.unreadCount;
+  readonly notifications = this.notificationService.notifications;
+
   readonly HeaderBlur = output();
   direction: string = 'ltr';
-  cards = [
-    {
-      icon: 'custom-layer',
-      time: '2 min ago',
-      position: 'UI/UX Design',
-      description:
-        "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley oftype and scrambled it to make a type"
-    },
-    {
-      icon: 'custom-sms',
-      time: '1 hour ago',
-      position: 'Message',
-      description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500."
-    }
-  ];
-  cards2 = [
-    {
-      icon: 'custom-document-text',
-      time: '12 hour ago',
-      position: 'Forms',
-      description:
-        "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley oftype and scrambled it to make a type"
-    },
-    {
-      icon: 'custom-security-safe',
-      time: '18 hour ago',
-      position: 'Security',
-      description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500."
-    }
-  ];
-  notification = [
-    {
-      sub_title: 'Improvement',
-      time: '12 hour ago',
-      title: 'Widgets update',
-      img: 'assets/images/layout/img-announcement-3.png'
-    },
-    {
-      sub_title: 'New Feature',
-      time: '18 hour ago',
-      title: 'Coming soon dark mode',
-      img: 'assets/images/layout/img-announcement-4.png'
-    }
-  ];
+  searchCode = '';
+  searching = false;
+
   private translate = inject(TranslateService);
   private themeService = inject(ThemeLayoutService);
   private router = inject(Router);
   private globalSearchService = inject(GlobalSearchService);
-  searchCode = '';
-  searching = false;
-
-  // public method
   private themeDirection = inject(ThemeConfigService);
 
-  // constructor
   constructor() {
-    const translate = this.translate;
-
-    // Load language from localStorage if available
     const savedLang = localStorage.getItem('app_language');
     if (savedLang) {
-      translate.use(savedLang);
-
+      this.translate.use(savedLang);
       if (savedLang === 'ar') {
         this.themeService.directionChange.set(RTL);
-        this.themeDirection.applyrtl(
-          true
-        );
-      }else {
-        this.themeDirection.applyrtl(
-          false
-        );
+        this.themeDirection.applyrtl(true);
+      } else {
+        this.themeDirection.applyrtl(false);
       }
     } else {
-      translate.setDefaultLang(AbleProConfig.i18n);
+      this.translate.setDefaultLang(AbleProConfig.i18n);
     }
+
     effect(() => {
       this.isRtlTheme(this.themeService.directionChange());
     });
   }
 
-  // user according language change of sidebar menu item
+  ngOnInit(): void {
+    if (this.authenticationService.currentUserValue) {
+      this.notificationService.startPolling();
+      void this.pushNotificationService.initAfterLogin();
+    }
+  }
+
+  openNotificationsMenu(): void {
+    this.notificationService.loadNotifications(false).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
+
+  openNotification(notification: UserNotification): void {
+    this.notificationService.openNotification(notification);
+  }
+
+  markAllNotificationsRead(): void {
+    this.notificationService.markAllRead();
+  }
+
   useLanguage(language: string) {
     this.translate.use(language);
     localStorage.setItem('app_language', language);
-    window.location.reload()
+    window.location.reload();
   }
 
   headerBlur() {
     this.HeaderBlur.emit();
   }
 
-  // user Logout
   logout() {
+    this.notificationService.stopPolling();
     this.authenticationService.logout();
   }
-  // private methods
+
   private isRtlTheme(direction: string) {
     this.direction = direction;
   }
 
-
-//----------- chercher pa code ------//
-  //déclenche la recherche.
   Search() {
     const code = this.searchCode.trim();
     if (!code || this.searching) {
@@ -153,7 +128,7 @@ export class NavRightComponent {
     }
 
     this.searching = true;
-    this.globalSearchService.searchByCode(code ).subscribe({
+    this.globalSearchService.searchByCode(code).subscribe({
       next: (response) => {
         this.searching = false;
         const hit = response.result || response.results?.[0];
@@ -193,6 +168,4 @@ export class NavRightComponent {
 
     alert(`Entite trouvee (${entity.entityType}) mais route indisponible`);
   }
-  //----------- chercher pa code ------//
-
 }

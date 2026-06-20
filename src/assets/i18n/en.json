@@ -107,6 +107,82 @@
     "TITLE": "All Users",
     "VIEW_TITLE": "User details"
   },
+  "USER_PROFILE": {
+    "TITLE": "My Account",
+    "TABS": {
+      "PROFILE": "Profile",
+      "PASSWORD": "Change password"
+    },
+    "CURRENT_PASSWORD": "Current password",
+    "CHANGE_PASSWORD": "Update password",
+    "SAVE_SUCCESS": "Your profile has been updated.",
+    "PASSWORD_SUCCESS": "Your password has been changed.",
+    "LOAD_ERROR": "Unable to load your profile.",
+    "SAVE_ERROR": "Unable to update your profile.",
+    "PASSWORD_ERROR": "Unable to change your password.",
+    "PHOTO_TITLE": "Profile photo",
+    "PHOTO_HINT": "Click or drag a PNG/JPEG image (max 200KB). Remove the photo to show your initials.",
+    "PHOTO_FORMAT": "Only PNG and JPEG images are allowed.",
+    "PHOTO_TOO_LARGE": "Photo must be 200KB or smaller.",
+    "PHOTO_SUCCESS": "Profile photo updated.",
+    "PHOTO_REMOVE_SUCCESS": "Profile photo removed.",
+    "PHOTO_ERROR": "Unable to update profile photo.",
+    "REMOVE_PHOTO": "Remove photo",
+    "UPLOAD_PHOTO": "Upload photo",
+    "ABOUT": "About me",
+    "PERSONAL_INFO": "Personal information"
+  },
+  "PWA": {
+    "UPDATE_AVAILABLE": "A new version is available. Reload the app to update.",
+    "UNRECOVERABLE_ERROR": "The app could not load correctly. Reloading..."
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "Notifications",
+    "EMPTY": "No notifications yet.",
+    "MARK_ALL_READ": "Mark all read"
+  },
+  "MAINTENANCE": {
+    "SUBTITLE": "Track equipment maintenance, parts used, and linked expenses.",
+    "NEW_TITLE": "New maintenance",
+    "EDIT_TITLE": "Edit maintenance",
+    "VIEW_TITLE": "Maintenance details",
+    "FORM_TITLE": "Work order",
+    "FORM_SUBTITLE": "Schedule maintenance and record parts costs for finance.",
+    "LOAD_ERROR": "Unable to load maintenance work order.",
+    "SAVE_ERROR": "Unable to save maintenance work order.",
+    "EXPENSE_CANCELLED_ERROR": "Costs cannot be recorded on a cancelled work order.",
+    "EXPENSE_HINT": "An expense of {{amount}} TND will be created in Finance when saved (Planned status moves to In progress automatically).",
+    "SECTIONS": {
+      "ASSET": "Asset",
+      "DETAILS": "Maintenance details",
+      "PARTS": "Parts & costs"
+    },
+    "FIELDS": {
+      "ASSET": "Asset",
+      "ASSET_TYPE": "Asset type",
+      "TYPE": "Type",
+      "TOTAL_COST": "Total cost",
+      "PARTS_COST": "Parts cost",
+      "LABOR_COST": "Labor / service cost",
+      "VENDOR": "Vendor / supplier"
+    },
+    "ASSET_TYPE": {
+      "MILL_MACHINE": "Mill machine",
+      "STORAGE_UNIT": "Storage unit",
+      "LIGNE_CONDITIONNEMENT": "Packaging line"
+    },
+    "TYPE": {
+      "PREVENTIVE": "Preventive",
+      "CORRECTIVE": "Corrective",
+      "PREDICTIVE": "Predictive"
+    },
+    "STATUS": {
+      "PLANNED": "Planned",
+      "IN_PROGRESS": "In progress",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    }
+  },
   "APPLICATION_CONFIG": {
     "CUSTOM_THEME": {
       "BLUE": "Blue Theme",
@@ -1314,8 +1390,8 @@
     "PASSWORD_MISMATCH_ERROR": "Passwords do not match",
     "PASSWORD_REQUIRED": "You must enter a password",
     "PASSWORD_STRENGTH_ERROR": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-    "REMEMBERME": "Remember me",
-    "REMEMBERME_EXPIRY_ERROR": "Remember me token has expired",
+    "REMEMBERME": "Remember me for 24 hours",
+    "REMEMBERME_EXPIRY_ERROR": "Your remembered session has expired. Please sign in again.",
     "SERVICE_UNAVAILABLE": "Service unavailable please try again later",
     "TITLE": "Login with your username",
     "UNEXPECTED_ERROR": "An unexpected error occurred",
@@ -1565,6 +1641,9 @@
       "SECURITY": "Security & access",
       "TITLE": "System Settings",
       "USERS": "User Management"
+    },
+    "MAINTENANCE": {
+      "WORK_ORDERS": "Maintenance"
     },
     "STOCKS_INV": {
       "DASHBOARD": "Stock dashboard",

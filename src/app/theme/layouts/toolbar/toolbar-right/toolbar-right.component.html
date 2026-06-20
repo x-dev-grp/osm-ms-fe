@@ -22,6 +22,48 @@
     </mat-form-field>
   </div>
 
+  <button
+    [matMenuTriggerFor]="notificationsMenu"
+    class="header-item"
+    mat-button
+    (click)="openNotificationsMenu()"
+    [attr.aria-label]="'NOTIFICATIONS.TITLE' | translate"
+  >
+    <a class="pc-head-link">
+      @if (unreadCount() > 0) {
+        <span class="notification-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+      }
+      <mat-icon>notifications</mat-icon>
+    </a>
+  </button>
+
+  <mat-menu #notificationsMenu="matMenu" class="dropdown-notification" xPosition="before">
+    <div class="notification-menu-header">
+      <span class="mat-body f-w-600">{{ 'NOTIFICATIONS.TITLE' | translate }}</span>
+      @if (unreadCount() > 0) {
+        <button mat-button type="button" (click)="markAllNotificationsRead()">
+          {{ 'NOTIFICATIONS.MARK_ALL_READ' | translate }}
+        </button>
+      }
+    </div>
+    <mat-divider></mat-divider>
+    @if (notifications().length === 0) {
+      <div class="notification-empty">{{ 'NOTIFICATIONS.EMPTY' | translate }}</div>
+    } @else {
+      @for (item of notifications(); track item.id) {
+        <button mat-menu-item class="notification-card" (click)="openNotification(item)">
+          <div class="notification-card__content">
+            <div class="notification-card__title">{{ item.title }}</div>
+            <div class="notification-card__recap">{{ item.recap }}</div>
+            @if (item.createdDate) {
+              <div class="notification-card__time">{{ item.createdDate | date: 'dd/MM/yyyy HH:mm' }}</div>
+            }
+          </div>
+        </button>
+      }
+    }
+  </mat-menu>
+
   <button [matMenuTriggerFor]="languages" [attr.aria-label]="'AUTO.MODE' | translate" class="header-item" mat-button>
     <a class="pc-head-link">
       <svg class="pc-icon">
@@ -32,7 +74,7 @@
 
   <button [matMenuTriggerFor]="user" [attr.aria-label]="'AUTO.MODE' | translate" class="header-item" mat-button>
     <a class="pc-head-link">
-      <img alt="user-image" class="user-avatar" src="assets/images/user/avatar-2.png" />
+      <app-user-avatar size="sm"></app-user-avatar>
     </a>
   </button>
 
@@ -50,11 +92,11 @@
       <div class="dropdown-body">
         <div class="flex m-b-5">
           <div class="topic-icon">
-            <img alt="user-images" class="user-avatar" src="assets/images/user/avatar-2.png" />
+            <app-user-avatar size="md"></app-user-avatar>
           </div>
           <div class="topic-description m-l-15">
             <div class="user-name mat-body f-w-600">
-              {{ authenticationService?.currentUserName || "testUser" }}🖖
+              {{ authenticationService?.currentUserName || "testUser" }}
             </div>
             <p class="mat-caption">{{ authenticationService?.currentUserValue?.email || "test@gmail.com" }}</p>
           </div>
@@ -62,7 +104,7 @@
         <mat-divider class="m-y-15"></mat-divider>
         <app-card [showHeader]="false" [padding]="16">  <!-- ✅ [padding]="16" au lieu de padding="16" -->
           <div class="m-b-15 mat-body f-w-500">{{ 'AUTO.MANAGE' | translate }}</div>
-          <a [routerLink]="['/application/profile/account/account']" class="dropdown-item text-muted" href="javascript:">
+          <a [routerLink]="['/settings/profile']" class="dropdown-item text-muted" href="javascript:">
             <i class="ti ti-user"></i>
             <div class="m-b-0 mat-body">{{ 'AUTO.MY_ACCOUNT' | translate }}</div>
           </a>

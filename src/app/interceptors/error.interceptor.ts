@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, EMPTY, Observable, throwError } from 'rxjs';
-import { catchError, filter, switchMap, take } from 'rxjs/operators';
+import { catchError, filter, finalize, switchMap, take } from 'rxjs/operators';
 
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { TokenService } from '../auth/services/tokenService.service';
@@ -20,6 +20,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     private readonly excludedUrls: string[] = [
       AppConfig.authentication.authorization,
       'assets/',
+      '/api/security/user/me/refresh-session',
     ];
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -60,31 +61,41 @@ export class ErrorInterceptor implements HttpInterceptor {
   handle401Error(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     if (this.refreshTokenInProgress) {
       return this.refreshTokenSubject.pipe(
-        filter((result) => result !== null),
+        filter((token): token is string => !!token),
         take(1),
-        switchMap((token) => {
-          return next.handle(this.addToken(req,token));
-        })
-      );
-    } else {
-      this.refreshTokenInProgress = true;
-      this.refreshTokenSubject.next(null);
-      return this._authService.refreshToken(this._tokenService.getRefreshToken()).pipe(
-        switchMap((response:any) => {
-          this.refreshTokenInProgress = false;
-          this.refreshTokenSubject.next(response?.access_token);
-          this._tokenService.setToken(response?.access_token);
-          return next.handle(this.addToken(req,response?.access_token));
-        }),
-        catchError((e:HttpErrorResponse) => {
-          if(![500,501,502,503,504].includes(e.status))
-            this._authService.logout();
-          else
-          this._snackBar.error("Server error" );
-          return EMPTY;
-        })
+        switchMap((token) => next.handle(this.addToken(req, token)))
       );
     }
+
+    this.refreshTokenInProgress = true;
+    this.refreshTokenSubject.next(null);
+
+    return this._authService.refreshToken(this._tokenService.getRefreshToken()).pipe(
+      switchMap((response: Record<string, unknown>) => {
+        const accessToken = response?.['access_token'] as string | undefined;
+        const refreshToken = response?.['refresh_token'] as string | undefined;
+        if (refreshToken) {
+          this._tokenService.setRefreshToken(refreshToken);
+        }
+        if (accessToken) {
+          this._tokenService.setToken(accessToken);
+          this._authService.applyAccessToken(accessToken);
+        }
+        this.refreshTokenSubject.next(accessToken ?? '');
+        return next.handle(this.addToken(req, accessToken ?? ''));
+      }),
+      catchError((e: HttpErrorResponse) => {
+        if (![500, 501, 502, 503, 504].includes(e.status)) {
+          this._authService.logout();
+        } else {
+          this._snackBar.error('Server error');
+        }
+        return EMPTY;
+      }),
+      finalize(() => {
+        this.refreshTokenInProgress = false;
+      })
+    );
   }
   addToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
     const currentUser=this._authService.currentUserValue;

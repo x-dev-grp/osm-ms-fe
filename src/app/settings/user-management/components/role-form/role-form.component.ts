@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Role } from 'src/app/shared/models/security/role.model';
 import { RoleService } from '../../services/role.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -28,6 +29,7 @@ export class RoleFormComponent implements OnInit {
   _router=inject( Router);
   _fb=inject(FormBuilder);
     _service=inject(RoleService);
+  _authService=inject(AuthenticationService);
   _activatedRoute=inject(ActivatedRoute)
   readonly destroyRef = inject(DestroyRef);
   roleForm:FormGroup;
@@ -90,6 +92,9 @@ export class RoleFormComponent implements OnInit {
       updateMode?  this._service.updateRole(roleData).pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((response:any)=>{
+          if (updateMode) {
+            this._authService.refreshSessionSilently();
+          }
           this._router.navigate(['/settings/roles']);
           this.loading = false;
 

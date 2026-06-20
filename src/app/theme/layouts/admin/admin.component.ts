@@ -1,5 +1,5 @@
 // Angular import
-import { AfterViewInit, ChangeDetectorRef, Component, effect, inject, OnInit, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, DestroyRef, effect, inject, OnInit, viewChild } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDrawer, MatDrawerMode } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
@@ -28,9 +28,11 @@ import { Navigation } from 'src/app/theme/types/navigation';
 import { Role } from 'src/app/theme/types/role';
 import { osm_menus } from '../../../shared/osm_menu';
 import { admin_menus } from '../../../shared/admin_menu';
+import { filterMenuByPermissions } from '../../../shared/utils/menu-permission.filter';
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-config.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-admin',
@@ -68,6 +70,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private themeService = inject(ThemeLayoutService);
   private profile: CompanyProfile;
   private cdr: ChangeDetectorRef;
+  private destroyRef = inject(DestroyRef);
 
   // Constructor
   private error: string;
@@ -112,74 +115,30 @@ export class AdminComponent implements OnInit, AfterViewInit {
     // Load company profile and logo
     this.loadCompanyLogoFromCache();
 
+    this.buildMenus();
+    this.authenticationService.refreshSessionSilently();
+    this.authenticationService.permissionsChanged$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.buildMenus();
+        this.cdr.detectChanges();
+      });
+  }
 
-    /**
-     * current login user role
-     */
+  private buildMenus(): void {
     const currentUser = this.authenticationService.currentUserValue;
-    const userRole = currentUser?.role? currentUser.role : Role.Admin;
-    const userPermissions = currentUser?.permissions || [];
-    // Use admin_menus if in administration section, else osm_menus
-   //todo enable it after back end imple
-    const isAdminSection = currentUser?.role===Role.OsmAdmin;
-   //  const isAdminSection = this.router.url.startsWith('/administration');
+    const isAdminSection = currentUser?.role === Role.OsmAdmin;
     this.menus = structuredClone(isAdminSection ? admin_menus : osm_menus);
 
-    // const permissionModules:string[] = Array.from(new Set(userPermissions?.map((p:string) => p.split(':')[0])));
-    // const permissionRessources:string[] = Array.from(new Set(userPermissions?.map((p:string)=> p.split(':')[1])));
-
-    /**
-     * Role base menu filtering
-     */
-    if(userRole !== Role.Admin)
-       this.menus = this.filterMenuByPermissions(this.menus, userPermissions);
-  }
-filterMenuByPermissions(
-  menuItems: Navigation[],
-  userPermissions: string[]
-): Navigation[] {
-  const permissionSet = new Set(userPermissions);
-
-  const hasAccess = (item: Navigation): boolean => {
-    if (item.modulePermission || item.ressourcePermission) {
-      return Array.from(permissionSet)?.some((p:string) => {
-        const [module, resource] = p.split(':');
-        return (
-          (!item.modulePermission || item.modulePermission?.toUpperCase() === module) &&
-          (!item.ressourcePermission || item.ressourcePermission?.toUpperCase() === resource)
-        );
-      });
-    }
-
-    if (item.permissions) {
-      return item.permissions?.some((p:string) => permissionSet.has(p.toUpperCase()));
-    }
-
-    return true;
-  };
-
- const processItem = (
-    item: Navigation,
-    parentDisabled=false
-  ): Navigation => {
-    const copy: Navigation = { ...item };
-
-    const itemHasAccess = hasAccess(copy);
-    const isDisabled = parentDisabled || !itemHasAccess;
-    copy.disabled = isDisabled;
-
-    if (copy.children && copy.children.length > 0) {
-      copy.children = copy.children.map(child =>
-        processItem(child, isDisabled)
+    if (!this.authenticationService.isAdmin()) {
+      this.menus = filterMenuByPermissions(
+        this.menus,
+        currentUser?.permissions,
+        false
       );
     }
+  }
 
-    return copy;
-  };
-
- return menuItems.map(item => processItem(item, false));
-
-}
   RoleBaseFilterMenu(menus: Navigation[], userRoles: string[], parentRoles: string[] = [Role.Admin]): Navigation[] {
     return menus.map((item) => {
       // If item doesn't have a specific role, inherit roles from parent

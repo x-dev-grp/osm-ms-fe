@@ -17,10 +17,20 @@ import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
 import { Role } from '../../../../theme/types/role';
 import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
 import { NavigationActiveService } from '../../../services/navigation-active.service';
+import { UserAvatarComponent } from '../../../../shared/components/user-avatar/user-avatar.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vertical-menu',
-  imports: [SharedModule, MenuGroupVerticalComponent, MenuItemVerticalComponent, MenuCollapseComponent, RouterModule],
+  imports: [
+    SharedModule,
+    TranslateModule,
+    MenuGroupVerticalComponent,
+    MenuItemVerticalComponent,
+    MenuCollapseComponent,
+    RouterModule,
+    UserAvatarComponent
+  ],
   templateUrl: './vertical-menu.component.html',
   standalone: true,
   styleUrls: ['./vertical-menu.component.scss']
@@ -38,6 +48,23 @@ export class VerticalMenuComponent implements OnInit {
   showContent = true;
   direction: string = 'ltr';
   logoPreview: any;
+
+  get displayName(): string {
+    const user = this.authenticationService.currentUserValue;
+    if (!user) {
+      return '';
+    }
+    const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim();
+    return fullName || user.username || '';
+  }
+
+  get roleLabel(): string {
+    const role = this.authenticationService.currentUserValue?.role;
+    if (!role) {
+      return '';
+    }
+    return typeof role === 'string' ? role : role.roleName || '';
+  }
 
   // Constructor
   constructor() {

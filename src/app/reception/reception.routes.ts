@@ -12,7 +12,7 @@ import { OilReceptionFormComponent } from './oil-reception/oil-reception-add/oil
 import { OilReceptionComponent } from './oil-reception/oil-reception.component';
 import { MillMachineAddComponent } from './mill-machine/mill-machine-add/mill-machine-add.component';
 import { MillMachineViewComponent } from './mill-machine/mill-machine-view/mill-machine-view.component';
-import { MillMachineMaintenanceComponent } from './mill-machine/mill-machine-maintenance/mill-machine-maintenance.component';
+import { MillMachineMaintenanceRedirectComponent } from './mill-machine/mill-machine-maintenance-redirect.component';
 import { OilQCComponent } from './oil-qc/oilQC.component';
 import { ReceptionListComponent } from './reception-list/reception-list.component';
 import { ReceptionDashboardComponent } from './reception-dashboard/reception-dashboard.component';
@@ -217,7 +217,7 @@ export const receptionRoutes: Routes = [
   },
   {
     path: 'mill-machines/maintenance/:id',
-    component: MillMachineMaintenanceComponent,
+    component: MillMachineMaintenanceRedirectComponent,
     canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.MAINTENANCE)])]
   },
 

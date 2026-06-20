@@ -1,46 +1,38 @@
 <ng-scrollbar style="height: calc(100vh - 88px)" visibility="hover" orientation="vertical" [dir]="direction">
   @if (showContent) {
-    <app-card [showHeader]="false" cardClass="user-card" padding="20">
-      <div class="flex align-item-center">
-        <div class="flex-shrink-0">
-          <img src="assets/images/user/avatar-1.png" alt="user-image" class="user-avatar" />
-        </div>
-        <div class="flex-grow-1 user-details">
-          <div class="f-w-600">{{ this.authenticationService.currentUserName }}</div>
-        </div>
-        <div class="user-setting">
-          <a href="javascript:" [matMenuTriggerFor]="menu" class="text-muted">
-            <svg class="pc-icon">
-              <use xlink:href="assets/fonts/custom-icon.svg#custom-sort-outline"></use>
-            </svg>
-          </a>
-          <mat-menu #menu="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after">
-<!--            <button mat-menu-item>-->
-<!--              <a [routerLink]="['/application/profile/account']" class="text-muted">-->
-<!--                <i class="ti ti-user f-18 m-r-10"></i>-->
-<!--                <span>My Account</span>-->
-<!--              </a>-->
-<!--            </button>-->
-            <button mat-menu-item>
-              <a href="javascript:" class="text-muted" [routerLink]="['/settings/general-config']">
-                <i class="ti ti-settings f-18 m-r-10"></i>
-                <span>{{ 'MENU.SETTINGS.GENERAL_CONFIG'|translate }}</span>
-              </a>
-            </button>
-<!--            <button mat-menu-item>-->
-<!--              <a href="javascript:" class="text-muted" [routerLink]="['/settings/general-config']">-->
-<!--                <i class="ti ti-lock f-18 m-r-10"></i>-->
-<!--                <span>Lock Screen</span>-->
-<!--              </a>-->
-<!--            </button>-->
-            <button mat-menu-item>
-              <a href="javascript:" class="text-muted" (click)="logout()">
-                <i class="ti ti-power f-18 m-r-10"></i>
-                <span>{{ 'ACCESS_DENIED.LOGOUT'|translate }}</span>
-              </a>
-            </button>
-          </mat-menu>
-        </div>
+    <app-card [showHeader]="false" cardClass="user-card" [padding]="16">
+      <div class="user-card-inner flex align-item-center">
+        <a [routerLink]="['/settings/profile']" class="user-card-link flex align-item-center flex-grow-1">
+          <app-user-avatar size="md"></app-user-avatar>
+          <div class="user-details">
+            <div class="user-name f-w-600">{{ displayName || authenticationService.currentUserName }}</div>
+            <div class="user-role mat-caption" *ngIf="roleLabel">{{ roleLabel }}</div>
+          </div>
+        </a>
+        <button
+          mat-icon-button
+          type="button"
+          class="user-menu-trigger"
+          [matMenuTriggerFor]="userMenu"
+          [attr.aria-label]="'AUTO.MY_ACCOUNT' | translate"
+        >
+          <i class="ti ti-dots-vertical"></i>
+        </button>
+        <mat-menu #userMenu="matMenu" class="sidebar-user-menu" [overlapTrigger]="false" yPosition="below" xPosition="after">
+          <button mat-menu-item [routerLink]="['/settings/profile']">
+            <i class="ti ti-user menu-item-icon"></i>
+            <span>{{ 'AUTO.MY_ACCOUNT' | translate }}</span>
+          </button>
+          <button mat-menu-item [routerLink]="['/settings/general-config']">
+            <i class="ti ti-settings menu-item-icon"></i>
+            <span>{{ 'MENU.SETTINGS.GENERAL_CONFIG' | translate }}</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <i class="ti ti-power menu-item-icon"></i>
+            <span>{{ 'ACCESS_DENIED.LOGOUT' | translate }}</span>
+          </button>
+        </mat-menu>
       </div>
     </app-card>
   }

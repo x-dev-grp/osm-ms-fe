@@ -107,6 +107,82 @@
     "TITLE": "Tous les utilisateurs",
     "VIEW_TITLE": "Détails de l'utilisateur"
   },
+  "USER_PROFILE": {
+    "TITLE": "Mon compte",
+    "TABS": {
+      "PROFILE": "Profil",
+      "PASSWORD": "Changer le mot de passe"
+    },
+    "CURRENT_PASSWORD": "Mot de passe actuel",
+    "CHANGE_PASSWORD": "Mettre à jour le mot de passe",
+    "SAVE_SUCCESS": "Votre profil a été mis à jour.",
+    "PASSWORD_SUCCESS": "Votre mot de passe a été modifié.",
+    "LOAD_ERROR": "Impossible de charger votre profil.",
+    "SAVE_ERROR": "Impossible de mettre à jour votre profil.",
+    "PASSWORD_ERROR": "Impossible de modifier votre mot de passe.",
+    "PHOTO_TITLE": "Photo de profil",
+    "PHOTO_HINT": "Cliquez ou glissez une image PNG/JPEG (max 200 Ko). Supprimez la photo pour afficher vos initiales.",
+    "PHOTO_FORMAT": "Seules les images PNG et JPEG sont autorisées.",
+    "PHOTO_TOO_LARGE": "La photo doit faire 200 Ko maximum.",
+    "PHOTO_SUCCESS": "Photo de profil mise à jour.",
+    "PHOTO_REMOVE_SUCCESS": "Photo de profil supprimée.",
+    "PHOTO_ERROR": "Impossible de mettre à jour la photo de profil.",
+    "REMOVE_PHOTO": "Supprimer la photo",
+    "UPLOAD_PHOTO": "Téléverser une photo",
+    "ABOUT": "À propos",
+    "PERSONAL_INFO": "Informations personnelles"
+  },
+  "PWA": {
+    "UPDATE_AVAILABLE": "Une nouvelle version est disponible. Rechargez l'application pour mettre à jour.",
+    "UNRECOVERABLE_ERROR": "L'application n'a pas pu se charger correctement. Rechargement..."
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "Notifications",
+    "EMPTY": "Aucune notification pour le moment.",
+    "MARK_ALL_READ": "Tout marquer comme lu"
+  },
+  "MAINTENANCE": {
+    "SUBTITLE": "Suivez la maintenance, les pièces utilisées et les dépenses associées.",
+    "NEW_TITLE": "Nouvelle maintenance",
+    "EDIT_TITLE": "Modifier la maintenance",
+    "VIEW_TITLE": "Détail maintenance",
+    "FORM_TITLE": "Ordre de travail",
+    "FORM_SUBTITLE": "Planifiez la maintenance et enregistrez les coûts de pièces pour la finance.",
+    "LOAD_ERROR": "Impossible de charger l'ordre de maintenance.",
+    "SAVE_ERROR": "Impossible d'enregistrer l'ordre de maintenance.",
+    "EXPENSE_CANCELLED_ERROR": "Les coûts ne peuvent pas être enregistrés sur un ordre annulé.",
+    "EXPENSE_HINT": "Une dépense de {{amount}} TND sera créée en Finance lors de l'enregistrement (le statut Planifié passera automatiquement à En cours).",
+    "SECTIONS": {
+      "ASSET": "Équipement",
+      "DETAILS": "Détails maintenance",
+      "PARTS": "Pièces & coûts"
+    },
+    "FIELDS": {
+      "ASSET": "Équipement",
+      "ASSET_TYPE": "Type d'équipement",
+      "TYPE": "Type",
+      "TOTAL_COST": "Coût total",
+      "PARTS_COST": "Coût des pièces",
+      "LABOR_COST": "Coût main d'œuvre / service",
+      "VENDOR": "Fournisseur"
+    },
+    "ASSET_TYPE": {
+      "MILL_MACHINE": "Machine de trituration",
+      "STORAGE_UNIT": "Cuve de stockage",
+      "LIGNE_CONDITIONNEMENT": "Ligne de conditionnement"
+    },
+    "TYPE": {
+      "PREVENTIVE": "Préventive",
+      "CORRECTIVE": "Corrective",
+      "PREDICTIVE": "Prédictive"
+    },
+    "STATUS": {
+      "PLANNED": "Planifiée",
+      "IN_PROGRESS": "En cours",
+      "COMPLETED": "Terminée",
+      "CANCELLED": "Annulée"
+    }
+  },
   "APPLICATION_CONFIG": {
     "CUSTOM_THEME": {
       "BLUE": "Thème Bleu",
@@ -1306,8 +1382,8 @@
     "PASSWORD_MISMATCH_ERROR": "Les mots de passe ne correspondent pas",
     "PASSWORD_REQUIRED": "Vous devez entrer un mot de passe",
     "PASSWORD_STRENGTH_ERROR": "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial",
-    "REMEMBERME": "Se souvenir de moi",
-    "REMEMBERME_EXPIRY_ERROR": "Le jeton de mémorisation a expiré",
+    "REMEMBERME": "Se souvenir de moi pendant 24 h",
+    "REMEMBERME_EXPIRY_ERROR": "Votre session mémorisée a expiré. Veuillez vous reconnecter.",
     "SERVICE_UNAVAILABLE": "Service indisponible, veuillez réessayer plus tard",
     "TITLE": "Connexion avec votre nom d'utilisateur",
     "UNEXPECTED_ERROR": "Une erreur inattendue s'est produite",
@@ -1560,6 +1636,9 @@
       "SECURITY": "Sécurité & accès",
       "TITLE": "Paramètres système",
       "USERS": "Gestion des utilisateurs"
+    },
+    "MAINTENANCE": {
+      "WORK_ORDERS": "Maintenance"
     },
     "STOCKS_INV": {
       "DASHBOARD": "Tableau de bord stock",

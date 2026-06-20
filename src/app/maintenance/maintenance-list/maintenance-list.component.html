@@ -1,0 +1,18 @@
+<div class="dashboard-shell maintenance-list-page">
+  <div class="page-header sticky-actions page-header--admin">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--admin">
+        <mat-icon>handyman</mat-icon>
+      </div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'MENU.MAINTENANCE.WORK_ORDERS' | translate }}</h2>
+        <p class="header-subtitle">{{ 'MAINTENANCE.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+  </div>
+
+  <osm-dashboard
+    [config]="dashboardConfig"
+    (applyAction)="onRowAction($event)"
+  ></osm-dashboard>
+</div>
