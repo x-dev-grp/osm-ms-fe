@@ -47,8 +47,8 @@ ENV BACKEND_URL=https://oosm-api.onrender.com
 ENV BACKEND_HOSTPORT=
 COPY nginx.conf.template /etc/nginx/default.conf.template
 
-# Healthcheck (hits the app path)
-HEALTHCHECK CMD wget -qO- "http://localhost:${PORT}/" >/dev/null 2>&1 || exit 1
+# Healthcheck (lightweight nginx endpoint; full stack via /actuator/health on backend)
+HEALTHCHECK CMD sh -c 'wget -qO- "http://127.0.0.1:${PORT:-8080}/health" >/dev/null 2>&1 || exit 1'
 
 EXPOSE 8080
 CMD ["sh", "-c", "if [ -n \"$BACKEND_URL\" ]; then export BACKEND_PROXY_URL=\"$BACKEND_URL\"; elif [ -n \"$BACKEND_HOSTPORT\" ]; then export BACKEND_PROXY_URL=\"http://${BACKEND_HOSTPORT}\"; else echo 'BACKEND_URL or BACKEND_HOSTPORT is required' >&2; exit 1; fi; envsubst '${PORT} ${BACKEND_PROXY_URL}' < /etc/nginx/default.conf.template > /etc/nginx/conf.d/default.conf; nginx -t && exec nginx -g 'daemon off;'"]
