@@ -1,8 +1,3 @@
-# syntax=docker/dockerfile:1.7
-
-##############################
-# 1) BUILD STAGE (Node)
-##############################
 FROM node:20-alpine AS build
 WORKDIR /app
 
@@ -25,7 +20,7 @@ COPY package.json package-lock.json* ./
 RUN test -z "$NPM_TOKEN" || echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 
 # Install deps (same behavior as CI)
-RUN --mount=type=cache,target=/root/.npm npm ci $NPM_CI_FLAGS
+RUN npm ci $NPM_CI_FLAGS
 
 # 2. Copy source and build
 COPY . .
