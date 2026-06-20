@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,11 +10,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
-import { TranslateModule } from '@ngx-translate/core';
 import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { OilTransaction, TransactionType } from '../../shared/models/OilTransaction';
+import { OilTransaction } from '../../shared/models/OilTransaction';
 import { ToastService } from '../../shared/services/toast.service';
 import { MatDialog } from '@angular/material/dialog';
 import { QrDialogComponent } from '../../shared/components/qr-dialog/qr-dialog.component';
@@ -239,18 +237,20 @@ export class ViewStorageComponent implements OnInit {
       return;
     }
 
-    this.confirmationDialog.confirm({
-      title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
-      message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
-      type: ConfirmationType.WARNING,
-      confirmText: this.i18n.instant('AUTO.REGENERATE'),
-      cancelText: this.i18n.instant('ADMIN.CANCEL'),
-      showIcon: true,
-      destructive: true,
-      requiredText: this.i18n.instant('AUTO.OKAY'),
-      requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
-      requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
-    }).pipe(take(1))
+    this.confirmationDialog
+      .confirm({
+        title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
+        message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
+        type: ConfirmationType.WARNING,
+        confirmText: this.i18n.instant('AUTO.REGENERATE'),
+        cancelText: this.i18n.instant('ADMIN.CANCEL'),
+        showIcon: true,
+        destructive: true,
+        requiredText: this.i18n.instant('AUTO.OKAY'),
+        requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+        requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
+      })
+      .pipe(take(1))
       .subscribe((result) => {
         onResolved(!!result?.confirmed);
       });
@@ -312,9 +312,9 @@ export class ViewStorageComponent implements OnInit {
           filterable: true,
           options: [
             { value: 'RECEPTION_IN', label: 'Réception Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN' },
-            { value: 'TRANSFER_IN',  label: 'Transfert Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
-            { value: 'LOAN',         label: 'Prêt',             labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
-            { value: 'SALE',         label: 'Vente',            labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
+            { value: 'TRANSFER_IN', label: 'Transfert Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
+            { value: 'LOAN', label: 'Prêt', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
+            { value: 'SALE', label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
           ]
         },
         {

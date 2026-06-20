@@ -4,11 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 
- import { MillMachine } from '../../../shared/models/millMachine';
+import { MillMachine } from '../../../shared/models/millMachine';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { MILL_MACHINE_DASHBOARD } from '../MILL_MACHINE_DASHBOARD';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { AdvancedSearchService } from '../../../shared/services/advanced-serach.service';
@@ -38,7 +37,6 @@ export class MillMachineViewComponent implements OnInit {
 
   /** Raw list coming from the search endpoint (used by mat-table in the HTML) */
   receptionslist: UnifiedDelivery[] = [];
-
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Optional: generic table config (so you can also render with your shared table)
@@ -84,12 +82,11 @@ export class MillMachineViewComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.receptionslist = res?.data ?? [];
-           console.log('[deliveries] count:', this.receptionslist.length);
+          console.log('[deliveries] count:', this.receptionslist.length);
         })
       )
       .subscribe();
   }
-
 
   editMachine(): void {
     if (this.machine?.id) {
@@ -114,6 +111,4 @@ export class MillMachineViewComponent implements OnInit {
       }
     });
   }
-
-
 }

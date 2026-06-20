@@ -6,14 +6,13 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedModule } from '../../../shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { OilContainer } from '../../../shared/models/oil-container';
 import { OilContainerService } from '../../../shared/services/oil-Container.service';
 import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-add-oil-container',
-  imports: [CommonModule, MatTableModule, MatIconModule, SharedModule, TranslateModule, OsmDashboard],
+  imports: [CommonModule, MatTableModule, MatIconModule, SharedModule, TranslateModule],
   templateUrl: './add-oil-container.component.html',
   standalone: true,
   styleUrl: './add-oil-container.component.scss'

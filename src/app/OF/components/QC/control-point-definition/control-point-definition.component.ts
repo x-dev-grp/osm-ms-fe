@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -14,18 +13,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { OFService } from '../../../services/OFService';
-import { QCControlPoint, ControlType } from '../../../models/QCControlPoint.model';
+import { ControlType, QCControlPoint } from '../../../models/QCControlPoint.model';
 import { QCPlan } from '../../../models/QCPlan.model';
 import { OrdreFabrication } from '../../../models/of.model';
-import {ActivatedRoute, Router} from '@angular/router';
-import { SharedModule } from "../../../../shared/shared.module";
-import { QualityService } from "../../../services/QualityService";
-import { TranslateModule } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SharedModule } from '../../../../shared/shared.module';
+import { QualityService } from '../../../services/QualityService';
 
 @Component({
   selector: 'app-control-point-definition',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
@@ -64,7 +63,7 @@ export class ControlPointDefinitionComponent implements OnInit {
     private toast: ToastService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) {
     this.pointForm = this.fb.group({
       nom: ['', Validators.required],
@@ -77,7 +76,7 @@ export class ControlPointDefinitionComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOFs();
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       const ofId = params['ofId'];
       if (ofId) {
         this.selectedOfId = ofId;
@@ -139,7 +138,7 @@ export class ControlPointDefinitionComponent implements OnInit {
     this.qualityService.getPointsForOF(this.selectedOfId!).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.points = res.data as QCControlPoint[] || [];
+          this.points = (res.data as QCControlPoint[]) || [];
         }
       },
       error: () => (this.points = [])
@@ -252,5 +251,4 @@ export class ControlPointDefinitionComponent implements OnInit {
     }
     this.router.navigate(['/of/', this.selectedOfId]);
   }
-
 }

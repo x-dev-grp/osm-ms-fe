@@ -1,5 +1,5 @@
-import {jsPDF} from 'jspdf';
-import {BonModel} from '../models/BonModel';
+import { jsPDF } from 'jspdf';
+import { BonModel } from '../models/BonModel';
 
 export function genererBonPDF(model: BonModel): void {
   const doc = new jsPDF();
@@ -17,13 +17,13 @@ export function genererBonPDF(model: BonModel): void {
   // Titre principal
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
-  doc.text(model.entete.titre, titleX, titleY, {align: 'center'});
+  doc.text(model.entete.titre, titleX, titleY, { align: 'center' });
 
   // Sous-titre
   if (model.entete.sousTitre) {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'italic');
-    doc.text(model.entete.sousTitre, titleX, titleY + 8, {align: 'center'});
+    doc.text(model.entete.sousTitre, titleX, titleY + 8, { align: 'center' });
   }
 
   // Bloc d'informations à droite
@@ -99,7 +99,7 @@ export function genererBonPDF(model: BonModel): void {
 
     // Lignes
     let currentRowY = tableStartY + rowHeight;
-    model.body.table.lignes?.forEach(row => {
+    model.body.table.lignes?.forEach((row) => {
       row.forEach((cell, i) => {
         doc.rect(tableStartX + i * colWidth, currentRowY, colWidth, rowHeight);
         doc.text(String(cell), tableStartX + i * colWidth + 5, currentRowY + 3);

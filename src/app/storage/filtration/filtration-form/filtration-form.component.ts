@@ -42,7 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
   templateUrl: './filtration-form.component.html',
   styleUrls: ['./filtration-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FiltrationFormComponent implements OnInit {
   loading = signal(false);
@@ -66,11 +66,11 @@ export class FiltrationFormComponent implements OnInit {
     source: ['', Validators.required],
     target: ['', Validators.required],
     volumeToFilter: [0, [Validators.required, Validators.min(0.001)]],
-    note: [''],
+    note: ['']
   });
 
   noteForm = this.fb.group({
-    note: ['', [Validators.required, Validators.minLength(1)]],
+    note: ['', [Validators.required, Validators.minLength(1)]]
   });
 
   ngOnInit(): void {
@@ -81,38 +81,41 @@ export class FiltrationFormComponent implements OnInit {
 
     if (this.isEdit && id) {
       this.loading.set(true);
-      this.api.getById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (op) => {
-          this.op = op;
-          this.loading.set(false);
+      this.api
+        .getById(id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (op) => {
+            this.op = op;
+            this.loading.set(false);
 
-          if (op.status === 'IN_PROGRESS' || op.status === 'CANCELLED') {
-            this.toastService.error('Modification impossible pour cette opération.');
+            if (op.status === 'IN_PROGRESS' || op.status === 'CANCELLED') {
+              this.toastService.error('Modification impossible pour cette opération.');
+              this.router.navigate(['storage', 'oil-filtering']);
+              return;
+            }
+
+            if (op.status === 'CREATED') {
+              this.createForm.patchValue({
+                source: op.source?.id ?? '',
+                target: op.target?.id ?? '',
+                volumeToFilter: op.volumeFiltered ?? 0,
+                note: op.note ?? ''
+              });
+            }
+
+            if (op.status === 'COMPLETED') {
+              this.noteForm.patchValue({
+                note: op.note ?? ''
+              });
+            }
+          },
+          error: () => {
+            this.loading.set(false);
+            this.toastService.error('Impossible de charger l’opération.');
             this.router.navigate(['storage', 'oil-filtering']);
-            return;
           }
-
-          if (op.status === 'CREATED') {
-            this.createForm.patchValue({
-              source: op.source?.id ?? '',
-              target: op.target?.id ?? '',
-              volumeToFilter: op.volumeFiltered ?? 0,
-              note: op.note ?? '',
-            });
-          }
-
-          if (op.status === 'COMPLETED') {
-            this.noteForm.patchValue({
-              note: op.note ?? '',
-            });
-          }
-        },
-        error: () => {
-          this.loading.set(false);
-          this.toastService.error('Impossible de charger l’opération.');
-          this.router.navigate(['storage', 'oil-filtering']);
-        },
-      });
+        });
     }
   }
 
@@ -140,40 +143,32 @@ export class FiltrationFormComponent implements OnInit {
       source: this.createForm.value.source as string,
       target: this.createForm.value.target as string,
       volumeToFilter: this.createForm.value.volumeToFilter as number,
-      note: (this.createForm.value.note ?? '') as string,
+      note: (this.createForm.value.note ?? '') as string
     };
 
-    const req$ = this.isCreatedEdit() && this.op
-      ? this.api.update(this.op.operationId, payload as any)
-      : this.api.create(payload as any);
+    const req$ = this.isCreatedEdit() && this.op ? this.api.update(this.op.operationId, payload as any) : this.api.create(payload as any);
 
-    req$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.loading.set(false);
-          this.toastService.success(
-            this.isCreatedEdit()
-              ? 'Opération modifiée avec succès.'
-              : 'Opération créée avec succès.'
-          );
-          this.router.navigate(['storage', 'oil-filtering']);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.loading.set(false);
+    req$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.toastService.success(this.isCreatedEdit() ? 'Opération modifiée avec succès.' : 'Opération créée avec succès.');
+        this.router.navigate(['storage', 'oil-filtering']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading.set(false);
 
-          let message = 'Une erreur est survenue.';
-          if (err?.error?.message) {
-            message = err.error.message;
-          } else if (typeof err?.error === 'string') {
-            message = err.error;
-          } else if (err.message) {
-            message = err.message;
-          }
+        let message = 'Une erreur est survenue.';
+        if (err?.error?.message) {
+          message = err.error.message;
+        } else if (typeof err?.error === 'string') {
+          message = err.error;
+        } else if (err.message) {
+          message = err.message;
+        }
 
-          this.toastService.error(message);
-        },
-      });
+        this.toastService.error(message);
+      }
+    });
   }
 
   submitAddNote(): void {
@@ -184,12 +179,13 @@ export class FiltrationFormComponent implements OnInit {
       source: this.op.source?.id,
       target: this.op.target?.id,
       volumeToFilter: this.op.volumeFiltered,
-      note: (this.noteForm.value.note ?? '').trim(),
+      note: (this.noteForm.value.note ?? '').trim()
     };
 
     this.loading.set(true);
 
-    this.api.update(this.op.operationId, payload as any)
+    this.api
+      .update(this.op.operationId, payload as any)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -210,7 +206,7 @@ export class FiltrationFormComponent implements OnInit {
           }
 
           this.toastService.error(message);
-        },
+        }
       });
   }
 
@@ -248,7 +244,7 @@ export class FiltrationFormComponent implements OnInit {
           this.sourceUnits.set([]);
           this.targetUnits.set([]);
           this.loadingUnits.set(false);
-        },
+        }
       });
   }
 }

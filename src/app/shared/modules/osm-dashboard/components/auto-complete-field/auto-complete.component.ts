@@ -6,13 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { Field, FieldType } from '../../models/dashboard-config';
+import { Field } from '../../models/dashboard-config';
 import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, debounceTime, EMPTY, filter, Observable, switchMap, tap } from 'rxjs';
@@ -31,7 +30,8 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./auto-complete.component.scss'],
   standalone: true,
   providers: [provideNativeDateAdapter(), DatePipe],
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,
@@ -63,13 +63,13 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
         switchMap((value: string) => {
           console.log(value);
           const searchs: Record<string, any> = {};
-          if(this.field().autoCompleteFilterAttributes && this.field()?.autoCompleteFilterAttributes?.length){
-          this.field().autoCompleteFilterAttributes?.forEach((attr) => {
-            searchs[attr] = { likeValue: value };
-          });
-        }else{
-          searchs[this.field()?.valuePath!] = { likeValue: value };
-        }
+          if (this.field().autoCompleteFilterAttributes && this.field()?.autoCompleteFilterAttributes?.length) {
+            this.field().autoCompleteFilterAttributes?.forEach((attr) => {
+              searchs[attr] = { likeValue: value };
+            });
+          } else {
+            searchs[this.field()?.valuePath!] = { likeValue: value };
+          }
           this.autoCompleteDefaultCriteria = {
             ...this.autoCompleteDefaultCriteria,
             searchData: {
@@ -88,21 +88,21 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
       .subscribe();
   }
   ngAfterViewInit(): void {
-      this.setupAutocompleteListener();
+    this.setupAutocompleteListener();
 
-    this._store.resetFields$()
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(() => {
-      this.formControl.reset(null, { emitEvent: false });
-    });
+    this._store
+      .resetFields$()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.formControl.reset(null, { emitEvent: false });
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {}
   ngOnInit(): void {
-
-      console.log('auto-complete field');
-      if (this.field().autoCompleteDefaultCriteria) this.autoCompleteDefaultCriteria = this.field().autoCompleteDefaultCriteria!;
-      this.fetchAutocompleteOptions(false).subscribe();
+    console.log('auto-complete field');
+    if (this.field().autoCompleteDefaultCriteria) this.autoCompleteDefaultCriteria = this.field().autoCompleteDefaultCriteria!;
+    this.fetchAutocompleteOptions(false).subscribe();
 
     this.formControl = new FormControl(null);
   }
@@ -111,9 +111,9 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
     const search: { [key: string]: SearchDetails } = {
       [`${this.field()?.name}.id`]: {
         equalValue: event?.id.toString()
-        }
-      };
-      this._store.setSearchDataAttribute(search);
+      }
+    };
+    this._store.setSearchDataAttribute(search);
   }
 
   getValue(path: string, object: any): any {

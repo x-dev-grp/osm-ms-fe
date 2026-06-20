@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +13,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardComponent } from '../../../theme/components/card/card.component';
-import { FinancialTransaction, TransactionType, TransactionDirection, Currency, PaymentMethod } from '../../models/financial-transaction.model';
+import {
+  Currency,
+  FinancialTransaction,
+  PaymentMethod,
+  TransactionDirection,
+  TransactionType
+} from '../../models/financial-transaction.model';
 import { FinancialTransactionService } from '../../service/financial-transaction.service';
 import { ToastService } from '../../../shared/services/toast.service';
 
@@ -141,32 +147,32 @@ export class TransactionAddComponent implements OnInit {
 
       if (this.isEditMode && this.transactionId) {
         // Update existing transaction
-        this.transactionService.updateTransaction({
-          id: this.transactionId,
-          ...formValue
-        }).subscribe({
-          next: (response) => {
-            if (response.success) {
-              this.showSuccess('TRANSACTIONS.MESSAGES.UPDATE_SUCCESS');
-              this.router.navigate(['/finance/transactions']);
-            } else {
-              this.showError(response.message || 'TRANSACTIONS.ERRORS.UPDATE_ERROR');
+        this.transactionService
+          .updateTransaction({
+            id: this.transactionId,
+            ...formValue
+          })
+          .subscribe({
+            next: (response) => {
+              if (response.success) {
+                this.showSuccess('TRANSACTIONS.MESSAGES.UPDATE_SUCCESS');
+                this.router.navigate(['/finance/transactions']);
+              } else {
+                this.showError(response.message || 'TRANSACTIONS.ERRORS.UPDATE_ERROR');
+              }
+              this.loading = false;
+            },
+            error: () => {
+              this.showError('TRANSACTIONS.ERRORS.UPDATE_ERROR');
+              this.loading = false;
             }
-            this.loading = false;
-          },
-          error: () => {
-            this.showError('TRANSACTIONS.ERRORS.UPDATE_ERROR');
-            this.loading = false;
-          }
-        });
+          });
       } else {
         // Create new transaction
         this.transactionService.createTransaction(formValue).subscribe({
           next: (response) => {
             if (response.success) {
-              const message = this.isDuplicateMode ?
-                'TRANSACTIONS.MESSAGES.DUPLICATE_SUCCESS' :
-                'TRANSACTIONS.MESSAGES.CREATE_SUCCESS';
+              const message = this.isDuplicateMode ? 'TRANSACTIONS.MESSAGES.DUPLICATE_SUCCESS' : 'TRANSACTIONS.MESSAGES.CREATE_SUCCESS';
               this.showSuccess(message);
               this.router.navigate(['/finance/transactions']);
             } else {
@@ -190,18 +196,18 @@ export class TransactionAddComponent implements OnInit {
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.transactionForm.controls).forEach(key => {
+    Object.keys(this.transactionForm.controls).forEach((key) => {
       const control = this.transactionForm.get(key);
       control?.markAsTouched();
     });
   }
 
   private showSuccess(message: string): void {
-    this.toast.success(message );
+    this.toast.success(message);
   }
 
   private showError(message: string): void {
-    this.toast.error(message );
+    this.toast.error(message);
   }
 
   private toPayload(formValue: any): FinancialTransaction {

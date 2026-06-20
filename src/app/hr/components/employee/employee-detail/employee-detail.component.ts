@@ -1,27 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EmployeeService } from '../../../services/employee-service';
 import { ContractService } from '../../../services/contract-service';
 import { Employee, Gender, MaritalStatus } from '../../../model/employee-model';
 import { Contract } from '../../../model/contract.model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslatePipe, TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../../shared/component/confirm-dialog/confirm-dialog.component';
-import { CardComponent } from "../../../../theme/components/card/card.component";
-
+import { CardComponent } from '../../../../theme/components/card/card.component';
 
 @Component({
   selector: 'app-employee-detail',
   standalone: true,
   templateUrl: './employee-detail.component.html',
   styleUrls: ['./employee-detail.component.scss'],
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatCardModule,
     MatButtonModule,
@@ -34,7 +33,7 @@ import { CardComponent } from "../../../../theme/components/card/card.component"
 })
 export class EmployeeDetailComponent implements OnInit {
   employee: Employee | null = null;
-  contracts: Contract[]=[];
+  contracts: Contract[] = [];
   loading = false;
   contractsLoading = false;
 
@@ -92,7 +91,7 @@ export class EmployeeDetailComponent implements OnInit {
         next: (response) => {
           if (response.success) {
             this.toast.success(this.translate.instant('CONTRACT.MESSAGES.DELETE_SUCCESS'));
-            this.contracts = this.contracts.filter(c => c.id !== contractId); // ✅ Supprimer de la liste sans recharger toute la page
+            this.contracts = this.contracts.filter((c) => c.id !== contractId); // ✅ Supprimer de la liste sans recharger toute la page
           } else {
             this.toast.error(response.message || this.translate.instant('CONTRACT.MESSAGES.ERROR_DELETING'));
           }
@@ -105,11 +104,6 @@ export class EmployeeDetailComponent implements OnInit {
       });
     }
   }
-
-
-
-
-
 
   getGenderText(gender: Gender): string {
     return this.translate.instant(`EMPLOYEE.GENDER.${gender}`);

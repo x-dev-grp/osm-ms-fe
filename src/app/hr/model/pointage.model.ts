@@ -1,5 +1,3 @@
-import { Employee } from './employee-model';
-
 export enum PointageStatus {
   PRESENT = 'PRESENT',
   ABSENT = 'ABSENT',

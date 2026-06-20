@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -9,14 +9,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FinalProductService } from '../../../services/final-product.service';
-import { FinalProduct, FinalProductType, FinalProductUnitOfMeasure, finalProductTypeLabel } from '../../../models/final-product.model';
+import { FinalProduct, FinalProductType, finalProductTypeLabel, FinalProductUnitOfMeasure } from '../../../models/final-product.model';
 import { QualityGrades } from '../../../../shared/models/quality-grades.enum';
 import { ArticleService } from '../../../services/article.service';
 import { Article, CategorieArticle } from '../../../models/article.model';
 import { BomService } from '../../../services/BomService';
 import { Bom } from '../../../models/Bom';
 import { BomLine } from '../../../models/BomLine';
-import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CampaignService } from '../../../../shared/services/campaign.service';
 import { StorageUnitDtoService } from '../../../../shared/services/storage.service';
@@ -25,14 +24,15 @@ import { ProductLabelPreviewRailComponent } from '../product-label-preview-rail/
 import { EanBarcodeComponent } from '../../../../labels/components/ean-barcode/ean-barcode.component';
 import {
   APPROVED_PRODUCT_CATEGORIES,
-  buildProductMandatoryChecklist,
   buildDefaultIngredientDeclaration,
   buildDefaultNutritionJson,
+  buildProductMandatoryChecklist,
   DEFAULT_STORAGE_CONDITIONS,
   formatNutritionSummary,
   HARVEST_REGIONS,
   OLIVE_SOURCE_TYPES,
   OLIVE_VARIETIES,
+  oliveVarietiesToString,
   ORIGIN_COUNTRIES,
   PACKAGING_TYPES,
   parseOliveVarieties,
@@ -40,10 +40,8 @@ import {
   requiresAcidity,
   requiresHarvestYear,
   validateProductCompliance,
-  VOLUME_OPTIONS_ML,
-  oliveVarietiesToString
+  VOLUME_OPTIONS_ML
 } from '../../../utils/product-compliance.util';
-
 
 export interface BomLineUi {
   article: Article;
@@ -96,11 +94,11 @@ export class SkuFormComponent implements OnInit {
   // - NON_VRAC (conditionné): full packaging chain
   // - VRAC: no packaging BOM needed
   readonly bomCategoriesConditionne: { key: CategorieArticle; label: string; icon: string }[] = [
-    { key: CategorieArticle.UNITE,       label: 'Unité (Bouteille / Contenant)', icon: 'fa-wine-bottle' },
-    { key: CategorieArticle.EMBALLAGE,   label: 'Emballage (Bouchon, Étiquette…)', icon: 'fa-tag' },
-    { key: CategorieArticle.COLIS,       label: 'Colis (Carton)', icon: 'fa-boxes' },
-    { key: CategorieArticle.PALETTE,     label: 'Palette', icon: 'fa-pallet' },
-    { key: CategorieArticle.CONSOMMABLE, label: 'Consommable (Colle, Encre…)', icon: 'fa-flask' },
+    { key: CategorieArticle.UNITE, label: 'Unité (Bouteille / Contenant)', icon: 'fa-wine-bottle' },
+    { key: CategorieArticle.EMBALLAGE, label: 'Emballage (Bouchon, Étiquette…)', icon: 'fa-tag' },
+    { key: CategorieArticle.COLIS, label: 'Colis (Carton)', icon: 'fa-boxes' },
+    { key: CategorieArticle.PALETTE, label: 'Palette', icon: 'fa-pallet' },
+    { key: CategorieArticle.CONSOMMABLE, label: 'Consommable (Colle, Encre…)', icon: 'fa-flask' }
   ];
 
   get activeBomCategories() {
@@ -202,7 +200,7 @@ export class SkuFormComponent implements OnInit {
     });
 
     // Pre-load all BOM categories
-    this.bomCategoriesConditionne.forEach(cat => this.loadArticlesForCategory(cat.key));
+    this.bomCategoriesConditionne.forEach((cat) => this.loadArticlesForCategory(cat.key));
 
     this.loadAllBoms();
 
@@ -215,10 +213,12 @@ export class SkuFormComponent implements OnInit {
     this.loadingArticles[cat] = true;
     this.articleService.getArticlesByCategorie(cat).subscribe({
       next: (articles) => {
-        this.articlesByCategory[cat] = articles.filter(a => a.actif !== false);
+        this.articlesByCategory[cat] = articles.filter((a) => a.actif !== false);
         this.loadingArticles[cat] = false;
       },
-      error: () => { this.loadingArticles[cat] = false; }
+      error: () => {
+        this.loadingArticles[cat] = false;
+      }
     });
   }
 
@@ -227,11 +227,11 @@ export class SkuFormComponent implements OnInit {
     const quantity = this.selectedQuantity[cat] ?? 1;
     if (!articleId || quantity <= 0) return;
 
-    const article = (this.articlesByCategory[cat] || []).find(a => a.id === articleId);
+    const article = (this.articlesByCategory[cat] || []).find((a) => a.id === articleId);
     if (!article) return;
 
     // Avoid duplicates – update quantity if already added
-    const existing = this.bomLines.find(l => l.article.id === articleId);
+    const existing = this.bomLines.find((l) => l.article.id === articleId);
     if (existing) {
       existing.quantity = quantity;
     } else {
@@ -248,7 +248,7 @@ export class SkuFormComponent implements OnInit {
   }
 
   getCatIcon(cat: CategorieArticle): string {
-    return this.bomCategoriesConditionne.find(c => c.key === cat)?.icon ?? 'fa-box';
+    return this.bomCategoriesConditionne.find((c) => c.key === cat)?.icon ?? 'fa-box';
   }
 
   loadAllBoms(): void {
@@ -271,7 +271,7 @@ export class SkuFormComponent implements OnInit {
       return;
     }
 
-    const selectedBom = this.existingBoms.find(b => b.id === bomId);
+    const selectedBom = this.existingBoms.find((b) => b.id === bomId);
     if (!selectedBom || !selectedBom.lines) {
       this.bomLines = [];
       return;
@@ -279,7 +279,7 @@ export class SkuFormComponent implements OnInit {
 
     // We copy the lines from the existing BOM
     this.bomLines = [];
-    selectedBom.lines.forEach(line => {
+    selectedBom.lines.forEach((line) => {
       if (line.articleId) {
         this.articleService.getArticleById(line.articleId).subscribe({
           next: (article) => {
@@ -403,7 +403,7 @@ export class SkuFormComponent implements OnInit {
       ...this.skuForm.getRawValue(),
       bom: this.isNonVrac()
         ? {
-            lines: this.bomLines.map(l => ({
+            lines: this.bomLines.map((l) => ({
               articleId: l.article.id!,
               quantity: l.quantity,
               unitOfMeasure: l.article.um
@@ -444,13 +444,27 @@ export class SkuFormComponent implements OnInit {
     }
   }
 
-  get f() { return this.skuForm.controls; }
-  isVrac(): boolean { return this.skuForm.get('type')?.value === 'VRAC'; }
-  isNonVrac(): boolean { return !this.isVrac(); }
-  formatFinalProductType(type?: FinalProductType): string { return finalProductTypeLabel(type); }
-  showHarvestRequired(): boolean { return requiresHarvestYear(this.skuForm.get('grade')?.value); }
-  showAcidityRequired(): boolean { return requiresAcidity(this.skuForm.get('grade')?.value); }
-  isOrganic(): boolean { return !!this.skuForm.get('organic')?.value; }
+  get f() {
+    return this.skuForm.controls;
+  }
+  isVrac(): boolean {
+    return this.skuForm.get('type')?.value === 'VRAC';
+  }
+  isNonVrac(): boolean {
+    return !this.isVrac();
+  }
+  formatFinalProductType(type?: FinalProductType): string {
+    return finalProductTypeLabel(type);
+  }
+  showHarvestRequired(): boolean {
+    return requiresHarvestYear(this.skuForm.get('grade')?.value);
+  }
+  showAcidityRequired(): boolean {
+    return requiresAcidity(this.skuForm.get('grade')?.value);
+  }
+  isOrganic(): boolean {
+    return !!this.skuForm.get('organic')?.value;
+  }
 
   pageTitle(): string {
     return this.isEditMode ? 'Modifier le produit' : 'Nouveau produit';
@@ -459,12 +473,18 @@ export class SkuFormComponent implements OnInit {
   statusLabel(): string {
     const status = this.skuForm.get('productStatus')?.value || 'DRAFT';
     switch (status) {
-      case 'APPROVED': return 'Approuvé';
-      case 'ACTIVE': return 'Actif';
-      case 'PENDING_REVIEW': return 'En revue';
-      case 'INACTIVE': return 'Inactif';
-      case 'ARCHIVED': return 'Archivé';
-      default: return 'Brouillon';
+      case 'APPROVED':
+        return 'Approuvé';
+      case 'ACTIVE':
+        return 'Actif';
+      case 'PENDING_REVIEW':
+        return 'En revue';
+      case 'INACTIVE':
+        return 'Inactif';
+      case 'ARCHIVED':
+        return 'Archivé';
+      default:
+        return 'Brouillon';
     }
   }
 
@@ -557,16 +577,18 @@ export class SkuFormComponent implements OnInit {
     acidityControl?.updateValueAndValidity({ emitEvent: false });
   }
 
-  get vracUnitOptions(): FinalProductUnitOfMeasure[] { return ['L', 'KG']; }
-  get conditionneUnitOptions(): FinalProductUnitOfMeasure[] { return ['BOTTLE', 'CARTON']; }
+  get vracUnitOptions(): FinalProductUnitOfMeasure[] {
+    return ['L', 'KG'];
+  }
+  get conditionneUnitOptions(): FinalProductUnitOfMeasure[] {
+    return ['BOTTLE', 'CARTON'];
+  }
   get currentUnitOptions(): FinalProductUnitOfMeasure[] {
     return this.isVrac() ? this.vracUnitOptions : this.conditionneUnitOptions;
   }
 
   openNewArticle(categorie?: CategorieArticle): void {
-    const url = categorie
-      ? `/stock/articles/nouveau?categorie=${categorie}`
-      : '/stock/articles/nouveau';
+    const url = categorie ? `/stock/articles/nouveau?categorie=${categorie}` : '/stock/articles/nouveau';
     window.open(url, '_blank');
   }
 
@@ -616,16 +638,40 @@ export class SkuFormComponent implements OnInit {
     const unitControl = this.skuForm.get('unitOfMeasure');
     const categoryControl = this.skuForm.get('category');
     const nonVracFields = [
-      'volume', 'packagingType', 'barcode', 'netWeight', 'grossWeight', 'brand',
-      'shelfLifeMonths', 'supplierName', 'supplierCode', 'oliveSourceType',
-      'oliveSourceReference', 'productionBatchRef', 'extractionBatchRef'
+      'volume',
+      'packagingType',
+      'barcode',
+      'netWeight',
+      'grossWeight',
+      'brand',
+      'shelfLifeMonths',
+      'supplierName',
+      'supplierCode',
+      'oliveSourceType',
+      'oliveSourceReference',
+      'productionBatchRef',
+      'extractionBatchRef'
     ];
 
     if (type === 'VRAC') {
-      unitControl?.setValue(!unitControl?.value || unitControl.value === 'BOTTLE' || unitControl.value === 'CARTON' ? 'L' : unitControl.value, { emitEvent: false });
+      unitControl?.setValue(
+        !unitControl?.value || unitControl.value === 'BOTTLE' || unitControl.value === 'CARTON' ? 'L' : unitControl.value,
+        { emitEvent: false }
+      );
       volumeControl?.clearValidators();
       if (clearMismatch) {
-        nonVracFields.forEach(c => this.skuForm.get(c)?.reset(c === 'volume' || c === 'netWeight' || c === 'grossWeight' || c === 'shelfLifeMonths' ? (c === 'shelfLifeMonths' ? 24 : null) : '', { emitEvent: false }));
+        nonVracFields.forEach((c) =>
+          this.skuForm
+            .get(c)
+            ?.reset(
+              c === 'volume' || c === 'netWeight' || c === 'grossWeight' || c === 'shelfLifeMonths'
+                ? c === 'shelfLifeMonths'
+                  ? 24
+                  : null
+                : '',
+              { emitEvent: false }
+            )
+        );
       }
     } else {
       unitControl?.setValue(unitControl.value === 'L' || !unitControl.value ? 'BOTTLE' : unitControl.value, { emitEvent: false });
@@ -641,8 +687,7 @@ export class SkuFormComponent implements OnInit {
       this.skuForm.get('productionBatchRef')?.setValidators([Validators.required]);
       this.skuForm.get('extractionBatchRef')?.setValidators([Validators.required]);
       if (clearMismatch) {
-        ['density', 'storageUnit']
-          .forEach(c => this.skuForm.get(c)?.reset(c === 'density' ? null : '', { emitEvent: false }));
+        ['density', 'storageUnit'].forEach((c) => this.skuForm.get(c)?.reset(c === 'density' ? null : '', { emitEvent: false }));
       }
     }
 

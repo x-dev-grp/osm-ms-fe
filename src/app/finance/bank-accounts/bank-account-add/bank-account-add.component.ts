@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
- import { BankAccountService } from '../../service/bankAccount.service';
+import { BankAccountService } from '../../service/bankAccount.service';
 import { BankAccount } from '../../models/BankAccount';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';

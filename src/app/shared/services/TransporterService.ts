@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
- import {ApiResponse} from "../models/api-response";
+import { ApiResponse } from '../models/api-response';
 import { Transporter } from '../models/Transporter';
 import { environment } from '../../../environments/environment';
 

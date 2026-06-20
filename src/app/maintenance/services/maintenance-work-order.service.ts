@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
+import { ApiSingleResponse } from '../../shared/models/api-response';
 import { MaintenanceWorkOrder } from '../models/maintenance-work-order.model';
 
 @Injectable({ providedIn: 'root' })

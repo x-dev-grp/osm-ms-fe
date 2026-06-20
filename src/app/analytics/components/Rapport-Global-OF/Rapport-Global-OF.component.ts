@@ -1,10 +1,8 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-analytics-dashboard',
@@ -113,12 +111,7 @@ export class RapportGlobalOFComponent implements OnInit {
     }
 
     this.statusChartOptions = {
-      series: [
-        this.data.completedOf,
-        this.data.inProgressOf,
-        this.data.plannedOf,
-        this.data.canceledOf
-      ],
+      series: [this.data.completedOf, this.data.inProgressOf, this.data.plannedOf, this.data.canceledOf],
       chart: { type: 'pie', height: 350 },
       labels: ['Termines', 'En cours', 'Planifies', 'Clotures'],
       colors: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'],

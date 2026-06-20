@@ -1,4 +1,4 @@
-import {QCControlPoint} from "./QCControlPoint.model";
+import { QCControlPoint } from './QCControlPoint.model';
 
 export interface QCPlan {
   id?: string;

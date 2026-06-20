@@ -19,9 +19,10 @@ import { OilSaleActionsService } from '../../../finance/service/oil-sale-actions
 import { OliveReceptionActionsService } from '../../olive-reception/olive-reception-actions.service';
 import { OilReceptionActionsService } from '../../oil-reception/oil-reception-actions.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { SupplierPaymentHistoryMobileComponent } from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
+import {
+  SupplierPaymentHistoryMobileComponent
+} from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { CardComponent } from '../../../theme/components/card/card.component';
 import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { BASE_DASHBOARD } from './osmDashConf/base_dashboard.config';
 import { OLIVE_PURCHASE_DASHBOARD } from './osmDashConf/olive-purchase-dashboard.config';
@@ -32,7 +33,10 @@ import { OIL_SALES_DASHBOARD_CONFIG } from './osmDashConf/oil-sales-dashboard.co
 import { WASTE_DASHBOARD } from './osmDashConf/waste-sale-dashboard.config';
 import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { SupplierType } from '../../../shared/models/supplier-type';
-import { FinancialTransactionService, SupplierFinancialSummary } from '../../../finance/service/financial-transaction.service';
+import {
+  FinancialTransactionService,
+  SupplierFinancialSummary
+} from '../../../finance/service/financial-transaction.service';
 import { buildSupplierTransactionsDashboard } from './supplier-transactions-dashboard.config';
 import { catchError, tap } from 'rxjs/operators';
 
@@ -73,16 +77,7 @@ type OperationStats = Record<OperationType, { count: number; total: number } | u
   templateUrl: './supplier-details.component.html',
   styleUrls: ['./supplier-details.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    OsmDashboard,
-    TranslateModule,
-    CardComponent
-  ]
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard, TranslateModule]
 })
 export class SupplierDetailsComponent implements OnInit {
   destroyRef = inject(DestroyRef);
@@ -277,17 +272,20 @@ export class SupplierDetailsComponent implements OnInit {
   loadFinanceSummary(): void {
     if (!this.supplierId || this.financeSummaryLoading) return;
     this.financeSummaryLoading = true;
-    this.financialTransactionService.getSupplierFinancialSummary(this.supplierId).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap((summary) => {
-        this.financeSummary = summary;
-        this.financeSummaryLoading = false;
-      }),
-      catchError(() => {
-        this.financeSummaryLoading = false;
-        return of(null);
-      })
-    ).subscribe();
+    this.financialTransactionService
+      .getSupplierFinancialSummary(this.supplierId)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((summary) => {
+          this.financeSummary = summary;
+          this.financeSummaryLoading = false;
+        }),
+        catchError(() => {
+          this.financeSummaryLoading = false;
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 
   handleFinanceAction(event: { row: { id?: string }; action: string }): void {
@@ -438,7 +436,7 @@ export class SupplierDetailsComponent implements OnInit {
         if (item) {
           this.supplier = item as SupplierType;
           this.supplierDisplayName = `${this.supplier.name ?? ''} ${this.supplier.lastname ?? ''}`.trim();
-         }
+        }
       }),
       catchError(() => of(null))
     );

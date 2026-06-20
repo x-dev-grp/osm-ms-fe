@@ -9,7 +9,7 @@ export enum PaymentMethod {
   TRANSFER = 'TRANSFER',
   OIL = 'OIL',
   MIXED = 'MIXED',
-  BOTH = 'MIXED',
+  BOTH = 'MIXED'
 }
 
 export enum TransactionType {

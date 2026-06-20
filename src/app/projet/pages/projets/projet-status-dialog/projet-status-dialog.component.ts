@@ -25,7 +25,8 @@ type NormalizedStatus = 'CREATED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 
 @Component({
   selector: 'app-projet-status-dialog',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,

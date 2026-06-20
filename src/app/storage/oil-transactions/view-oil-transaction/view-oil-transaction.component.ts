@@ -1,27 +1,26 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MatCardModule} from '@angular/material/card';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import {catchError, of, Subject, takeUntil} from 'rxjs';
-import {OilTransaction, TransactionState, TransactionType} from '../../../shared/models/OilTransaction';
-import {FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {ApiResponse} from '../../../shared/models/api-response';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { catchError, of, Subject, takeUntil } from 'rxjs';
+import { OilTransaction, TransactionState, TransactionType } from '../../../shared/models/OilTransaction';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { ApiResponse } from '../../../shared/models/api-response';
 import {
   ExchangeCalculation,
   OilTransactionViewService,
   StorageUnitInfo,
   TransactionViewData
 } from '../../../shared/services/oil-transaction-view.service';
-import {OilTransactionFormService} from '../../../shared/services/oil-transaction-form.service';
+import { OilTransactionFormService } from '../../../shared/services/oil-transaction-form.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { MatTooltip } from '@angular/material/tooltip';
 

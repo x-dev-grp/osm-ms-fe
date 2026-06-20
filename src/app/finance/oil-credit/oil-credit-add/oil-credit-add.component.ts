@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,13 +7,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApiResponse } from '../../../shared/models/api-response';
-import { OilCredit, CreditState, UnitType } from '../../models/OilCredit';
+import { CreditState, OilCredit, UnitType } from '../../models/OilCredit';
 import { OilCreditService } from '../../service/oil-credit.service';
 import { BaseType } from '../../../shared/models/base-type';
 import { GenericTypeService } from '../../../shared/services/generic-type.service';
@@ -94,33 +94,31 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.genericTypeService.getAllTypes(TypeCategory.OIL_TYPE).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (res) => {
-        this.oilTypes = res.data || [];
-        this.setupAutocompleteFilters();
-      },
-      error: () => {
-        this.toast.error(
-          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR')
-        );
-      }
-    });
+    this.genericTypeService
+      .getAllTypes(TypeCategory.OIL_TYPE)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.oilTypes = res.data || [];
+          this.setupAutocompleteFilters();
+        },
+        error: () => {
+          this.toast.error(this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'));
+        }
+      });
 
-    this.supplierService.getAllSuppliers().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (res) => {
-        this.suppliers = res.data || [];
-        this.setupAutocompleteFilters();
-      },
-      error: () => {
-        this.toast.error(
-          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR')
-        );
-      }
-    });
+    this.supplierService
+      .getAllSuppliers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.suppliers = res.data || [];
+          this.setupAutocompleteFilters();
+        },
+        error: () => {
+          this.toast.error(this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'));
+        }
+      });
 
     const id = this.route.snapshot.params['id'];
     if (id) {
@@ -137,13 +135,13 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
     // Oil type filter
     this.filteredOilTypes = this.form.get('oil_type')!.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(this.oilTypes, value, 'name'))
+      map((value) => this._filter(this.oilTypes, value, 'name'))
     );
 
     // Supplier filter
     this.filteredSuppliers = this.form.get('destinataire')!.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(this.suppliers, value, 'name'))
+      map((value) => this._filter(this.suppliers, value, 'name'))
     );
 
     // Storage unit filter [DISABLED: will be set in oil transaction]
@@ -153,16 +151,12 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
     // );
   }
 
-  private _filter<T extends { name?: string; supplierInfo?: { name: string } }>(
-    items: T[],
-    value: string | T,
-    displayField: string
-  ): T[] {
+  private _filter<T extends { name?: string; supplierInfo?: { name: string } }>(items: T[], value: string | T, displayField: string): T[] {
     if (!value || typeof value === 'object') {
       return items;
     }
     const filterValue = value.toLowerCase();
-    return items.filter(item => {
+    return items.filter((item) => {
       const fieldValue = this._getNestedValue(item, displayField);
       return fieldValue.toLowerCase().includes(filterValue);
     });
@@ -177,10 +171,9 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
     }, obj as unknown) as string;
   }
 
-  displayFn<T extends {  name: string } >(item: T): string {
+  displayFn<T extends { name: string }>(item: T): string {
     if (!item) return '';
-      return item.name;
-
+    return item.name;
   }
 
   // onStorageUnitSelected and validateQuantity methods [DISABLED: will be set in oil transaction]
@@ -232,9 +225,7 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
     this.submitted = true;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.toast.error(
-        this.translate.instant('OIL_CREDIT.FORM.MESSAGES.FORM_INVALID')
-      );
+      this.toast.error(this.translate.instant('OIL_CREDIT.FORM.MESSAGES.FORM_INVALID'));
       return;
     }
 
@@ -242,7 +233,7 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
     const formValue = this.form.value;
     const dto = {
       ...formValue,
-      oil_type: formValue.oil_type||null,
+      oil_type: formValue.oil_type || null,
       destinataire: formValue.destinataire?.id || formValue.destinataire
       // citerne_pile: formValue.citerne_pile?.id || formValue.citerne_pile // [DISABLED: will be set in oil transaction]
     };
@@ -252,19 +243,16 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
     }
 
     const creditObs = this.editing ? this.oilCreditService.updateOilCredit(dto) : this.oilCreditService.createOilCredit(dto);
-    creditObs.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
+    creditObs.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.toast.success(
           this.translate.instant(this.editing ? 'OIL_CREDIT.FORM.MESSAGES.UPDATE_SUCCESS' : 'OIL_CREDIT.FORM.MESSAGES.SAVE_SUCCESS')
         );
         this.router.navigate(['/finance/oil-credit']);
-      }, error: (error: unknown) => {
+      },
+      error: (error: unknown) => {
         console.error('Error saving oil credit:', error);
-        this.toast.error(
-          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.SAVE_ERROR')
-        );
+        this.toast.error(this.translate.instant('OIL_CREDIT.FORM.MESSAGES.SAVE_ERROR'));
         this.loading = false;
       }
     });
@@ -276,32 +264,32 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
 
   private loadOilCredit(id: string): void {
     this.loading = true;
-    this.oilCreditService.getOilCredit(id).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (response: ApiResponse<OilCredit>) => {
-        if (response.data && response.data.length > 0) {
-          const credit = response.data[0];
-          const oilType = this.oilTypes.find(type => type.id === credit.oil_type);
-          const supplier = this.suppliers.find(sup => sup.id === credit.destinataire.id);
-          // const storageUnit = this.storageUnits.find(unit => unit.id === credit.transaction_id_in); // [DISABLED]
-          this.form.patchValue({
-            ...credit,
-            oil_type: oilType || credit.oil_type,
-            destinataire: supplier || credit.destinataire
-            // citerne_pile: storageUnit || credit.transaction_id_in // [DISABLED]
-          });
-          this.editing = true;
+    this.oilCreditService
+      .getOilCredit(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: ApiResponse<OilCredit>) => {
+          if (response.data && response.data.length > 0) {
+            const credit = response.data[0];
+            const oilType = this.oilTypes.find((type) => type.id === credit.oil_type);
+            const supplier = this.suppliers.find((sup) => sup.id === credit.destinataire.id);
+            // const storageUnit = this.storageUnits.find(unit => unit.id === credit.transaction_id_in); // [DISABLED]
+            this.form.patchValue({
+              ...credit,
+              oil_type: oilType || credit.oil_type,
+              destinataire: supplier || credit.destinataire
+              // citerne_pile: storageUnit || credit.transaction_id_in // [DISABLED]
+            });
+            this.editing = true;
+          }
+          this.loading = false;
+        },
+        error: (error: unknown) => {
+          console.error('Error loading oil credit:', error);
+          this.toast.error(this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'));
+          this.loading = false;
         }
-        this.loading = false;
-      },
-      error: (error: unknown) => {
-        console.error('Error loading oil credit:', error);
-        this.toast.error(
-          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR') );
-        this.loading = false;
-      }
-    });
+      });
   }
 
   getCreditStateLabel(state: CreditState): string {

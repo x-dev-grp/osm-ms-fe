@@ -82,17 +82,13 @@ export class GenericTypeFormComponent implements OnInit {
 
     const request$ = this.isEditing ? this.service.updateType(payload) : this.service.createType(payload);
 
-    request$
-      .pipe(finalize(() => (this.submitting = false)))
-      .subscribe({
-        next: () => {
-          this.toast.success(
-            this.isEditing ? 'BASE_TYPE.MESSAGES.UPDATE_SUCCESS' : 'BASE_TYPE.MESSAGES.CREATE_SUCCESS'
-          );
-          this.backToList();
-        },
-        error: () => this.toast.error('BASE_TYPE.MESSAGES.SAVE_FAILED')
-      });
+    request$.pipe(finalize(() => (this.submitting = false))).subscribe({
+      next: () => {
+        this.toast.success(this.isEditing ? 'BASE_TYPE.MESSAGES.UPDATE_SUCCESS' : 'BASE_TYPE.MESSAGES.CREATE_SUCCESS');
+        this.backToList();
+      },
+      error: () => this.toast.error('BASE_TYPE.MESSAGES.SAVE_FAILED')
+    });
   }
 
   backToList(): void {

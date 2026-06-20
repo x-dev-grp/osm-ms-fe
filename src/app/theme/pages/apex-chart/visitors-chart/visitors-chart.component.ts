@@ -9,7 +9,7 @@ import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service'
 import { DARK, LIGHT } from 'src/app/theme/const';
 
 // third party
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

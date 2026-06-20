@@ -1,5 +1,4 @@
-import { inject } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -172,9 +171,7 @@ export class MaterielSupplierFormComponent implements OnInit {
       return 'MATERIEL_SUPPLIER.ERRORS.MAX_LENGTH';
     }
     if (control.errors['pattern']) {
-      return fieldName === 'siteWeb'
-        ? 'MATERIEL_SUPPLIER.ERRORS.URL_INVALID'
-        : 'MATERIEL_SUPPLIER.ERRORS.INVALID_VALUE';
+      return fieldName === 'siteWeb' ? 'MATERIEL_SUPPLIER.ERRORS.URL_INVALID' : 'MATERIEL_SUPPLIER.ERRORS.INVALID_VALUE';
     }
 
     return 'MATERIEL_SUPPLIER.ERRORS.INVALID_VALUE';
@@ -239,7 +236,7 @@ export class MaterielSupplierFormComponent implements OnInit {
       conditionsPaiement: trim(raw.conditionsPaiement),
       currency: raw.currency,
       actif: raw.actif ?? true,
-      code: this.isEditMode ? trim(raw.code) ?? '' : ''
+      code: this.isEditMode ? (trim(raw.code) ?? '') : ''
     };
   }
 

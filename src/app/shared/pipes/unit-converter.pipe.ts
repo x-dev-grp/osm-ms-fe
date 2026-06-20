@@ -13,35 +13,34 @@ export interface OilType {
   standalone: true
 })
 export class UnitConverterPipe implements PipeTransform {
-
   // Predefined oil types with their densities
   private readonly OIL_TYPES: { [key: string]: OilType } = {
-    'OLIVE_OIL': {
+    OLIVE_OIL: {
       name: 'Olive Oil',
       density: 0.92,
       description: 'Extra virgin olive oil'
     },
-    'REFINED_OLIVE_OIL': {
+    REFINED_OLIVE_OIL: {
       name: 'Refined Olive Oil',
       density: 0.91,
       description: 'Refined olive oil'
     },
-    'POMACE_OLIVE_OIL': {
+    POMACE_OLIVE_OIL: {
       name: 'Pomace Olive Oil',
-      density: 0.90,
+      density: 0.9,
       description: 'Olive pomace oil'
     },
-    'VEGETABLE_OIL': {
+    VEGETABLE_OIL: {
       name: 'Vegetable Oil',
       density: 0.92,
       description: 'Generic vegetable oil'
     },
-    'SUNFLOWER_OIL': {
+    SUNFLOWER_OIL: {
       name: 'Sunflower Oil',
       density: 0.92,
       description: 'Sunflower oil'
     },
-    'CORN_OIL': {
+    CORN_OIL: {
       name: 'Corn Oil',
       density: 0.92,
       description: 'Corn oil'
@@ -99,7 +98,13 @@ export class UnitConverterPipe implements PipeTransform {
    * @param precision Number of decimal places (default: 2)
    * @returns Formatted string with converted quantity and unit
    */
-  transformWithUnit(value: number | null | undefined, fromUnit: UnitType, toUnit: UnitType, oilType?: string, precision: number = 2): string {
+  transformWithUnit(
+    value: number | null | undefined,
+    fromUnit: UnitType,
+    toUnit: UnitType,
+    oilType?: string,
+    precision: number = 2
+  ): string {
     const convertedValue = this.transform(value, fromUnit, toUnit, oilType, precision);
     return `${convertedValue.toFixed(precision)} ${toUnit}`;
   }
@@ -113,7 +118,13 @@ export class UnitConverterPipe implements PipeTransform {
    * @param precision Number of decimal places (default: 2)
    * @returns Formatted string with converted quantity, unit, and oil type
    */
-  transformWithUnitAndOilType(value: number | null | undefined, fromUnit: UnitType, toUnit: UnitType, oilType: string, precision: number = 2): string {
+  transformWithUnitAndOilType(
+    value: number | null | undefined,
+    fromUnit: UnitType,
+    toUnit: UnitType,
+    oilType: string,
+    precision: number = 2
+  ): string {
     const convertedValue = this.transform(value, fromUnit, toUnit, oilType, precision);
     const oilTypeInfo = this.getOilTypeInfo(oilType);
     return `${convertedValue.toFixed(precision)} ${toUnit} (${oilTypeInfo.name})`;

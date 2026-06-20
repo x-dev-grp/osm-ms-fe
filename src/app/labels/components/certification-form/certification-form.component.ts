@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +13,8 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-certification-form',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
@@ -45,15 +46,15 @@ export class CertificationFormComponent implements OnInit {
     this.isEdit = !!data?.id;
     this.certForm = this.fb.group({
       id: [data?.id],
-      name:         [data?.name        || '', [Validators.required, Validators.minLength(2)]],
-      code:         [data?.code        || '', [Validators.required]],
-      description:  [data?.description || ''],
-      issuingBody:  [data?.issuingBody || '', [Validators.required]],
-      logoData:         [data?.logoData         || '', [Validators.required]],
-      logoContentType:  [data?.logoContentType  || ''],
-      websiteUrl:   [data?.websiteUrl  || ''],
-      category:     [data?.category    || '', [Validators.required]],
-      isActive:     [data?.isActive ?? true]
+      name: [data?.name || '', [Validators.required, Validators.minLength(2)]],
+      code: [data?.code || '', [Validators.required]],
+      description: [data?.description || ''],
+      issuingBody: [data?.issuingBody || '', [Validators.required]],
+      logoData: [data?.logoData || '', [Validators.required]],
+      logoContentType: [data?.logoContentType || ''],
+      websiteUrl: [data?.websiteUrl || ''],
+      category: [data?.category || '', [Validators.required]],
+      isActive: [data?.isActive ?? true]
     });
 
     if (data?.logoData && data?.logoContentType) {

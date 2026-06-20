@@ -9,7 +9,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { AuthService, OSMUserOUTDTO } from 'src/app/shared/services/auth.service';
 import { catchError, first, of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-forgot-password',

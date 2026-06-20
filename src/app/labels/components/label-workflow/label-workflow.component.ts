@@ -1,7 +1,6 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -46,8 +45,9 @@ import { CompanyProfileService } from '../../../shared/services/company-profile.
 import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
 import { ProductionGenealogy } from '../../../shared/models/production-genealogy.model';
-import { TraceabilityPreviewComponent } from '../../../shared/components/traceability-preview/traceability-preview.component';
-import { LabelPreviewCardComponent } from '../label-preview-card/label-preview-card.component';
+import {
+  TraceabilityPreviewComponent
+} from '../../../shared/components/traceability-preview/traceability-preview.component';
 import {
   LabelPreviewCarouselComponent,
   LabelPreviewCarouselSlide
@@ -57,7 +57,6 @@ import {
   LabelPreviewDialogData
 } from '../label-preview-dialog/label-preview-dialog.component';
 import { LabelPreviewViewModel } from '../../models/label-preview.model';
-import { TranslateModule } from '@ngx-translate/core';
 import {
   buildLabelEtiquettePayload,
   buildLabelPreviewViewModel,
@@ -80,16 +79,14 @@ import {
   resolvePostFiltrationQualityControls as resolveQcControls
 } from '../../utils/label-qc-composition.util';
 import { LabelCompositionEntry } from '../../models/label-qc-composition.model';
-import {
-  PREVIEW_CAROUSEL_LANGUAGES,
-  previewLanguageLabel
-} from '../../utils/label-preview-localization.util';
+import { PREVIEW_CAROUSEL_LANGUAGES, previewLanguageLabel } from '../../utils/label-preview-localization.util';
 import { EanBarcodeComponent } from '../ean-barcode/ean-barcode.component';
 
 @Component({
   selector: 'app-label-workflow',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -104,7 +101,6 @@ import { EanBarcodeComponent } from '../ean-barcode/ean-barcode.component';
     MatExpansionModule,
     MatDialogModule,
     TraceabilityPreviewComponent,
-    LabelPreviewCardComponent,
     LabelPreviewCarouselComponent,
     EanBarcodeComponent
   ],
@@ -123,12 +119,7 @@ export class LabelWorkflowComponent implements OnInit {
     { value: 'OTHER', label: 'Autre' }
   ];
 
-  readonly grades = [
-    QualityGrades.EXTRA_VIRGIN,
-    QualityGrades.VIRGIN,
-    QualityGrades.REFINED,
-    QualityGrades.POMACE
-  ];
+  readonly grades = [QualityGrades.EXTRA_VIRGIN, QualityGrades.VIRGIN, QualityGrades.REFINED, QualityGrades.POMACE];
 
   readonly evooLegalStatement = TUNISIA_LABEL_DEFAULTS.evooStatement;
 
@@ -202,7 +193,7 @@ export class LabelWorkflowComponent implements OnInit {
     private readonly companyProfileService: CompanyProfileService,
     private readonly productionTraceabilityService: ProductionTraceabilityService,
     private readonly dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadCompanyProfileDefaults();
@@ -304,25 +295,11 @@ export class LabelWorkflowComponent implements OnInit {
   private buildCompositionBundle() {
     const form = this.labelForm.getRawValue();
     const packaging = this.packagingOptions.find((product) => product.id === form.packagingId);
-    const controls = resolveQcControls(
-      this.currentGenealogy,
-      this.currentLabel,
-      this.postFiltrationQualityControls
-    );
+    const controls = resolveQcControls(this.currentGenealogy, this.currentLabel, this.postFiltrationQualityControls);
     const language = form.language || this.currentLabel?.language || 'FR';
-    const baseBundle = buildLabelQcCompositionBundle(
-      controls,
-      form.netQuantity,
-      packaging?.density ?? null,
-      language
-    );
+    const baseBundle = buildLabelQcCompositionBundle(controls, form.netQuantity, packaging?.density ?? null, language);
 
-    return applyCompositionOverrides(
-      baseBundle,
-      this.compositionOverrides,
-      form.netQuantity,
-      language
-    );
+    return applyCompositionOverrides(baseBundle, this.compositionOverrides, form.netQuantity, language);
   }
 
   private buildNutritionDeclarationPayload(): string {
@@ -363,7 +340,7 @@ export class LabelWorkflowComponent implements OnInit {
   }
 
   pageTitle(): string {
-    return this.currentLabel ? 'Modifier l\'étiquette' : 'Nouvelle étiquette';
+    return this.currentLabel ? "Modifier l'étiquette" : 'Nouvelle étiquette';
   }
 
   previewPayload(): string {
@@ -425,14 +402,9 @@ export class LabelWorkflowComponent implements OnInit {
       availableCertifications: this.certificationService.getAll(),
       oilVarieties: this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY) //type d'olive) exp
     }).subscribe({
-      next: ({
-        filtrationResponse,
-        packagingOptions,
-        availableCertifications,
-        oilVarieties
-      }) => {
+      next: ({ filtrationResponse, packagingOptions, availableCertifications, oilVarieties }) => {
         this.filtrationOperations = (filtrationResponse || [])
-          .filter(op => op.status === 'COMPLETED')
+          .filter((op) => op.status === 'COMPLETED')
           .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
 
         this.packagingOptions = [...(packagingOptions ?? [])]
@@ -497,10 +469,7 @@ export class LabelWorkflowComponent implements OnInit {
       },
       error: (error) => {
         this.generating = false;
-        this.errorMessage = this.resolveErrorMessage(
-          error,
-          this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_GENERATION_DE_L_ETIQUETTE')
-        );
+        this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_GENERATION_DE_L_ETIQUETTE'));
       }
     });
   }
@@ -540,7 +509,7 @@ export class LabelWorkflowComponent implements OnInit {
   // Client-side auto-fill when packaging is selected
   onPackagingChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
-    const selectedProduct = this.packagingOptions.find(p => p.id === select.value);
+    const selectedProduct = this.packagingOptions.find((p) => p.id === select.value);
     if (!selectedProduct) return;
 
     // Pre-fill net quantity from the packaging volume
@@ -575,10 +544,7 @@ export class LabelWorkflowComponent implements OnInit {
       error: (error) => {
         this.saving = false;
         this.resetDraftSavedIndicator();
-        this.errorMessage = this.resolveErrorMessage(
-          error,
-          this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_MISE_A_JOUR_DU_BROUILLON')
-        );
+        this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_MISE_A_JOUR_DU_BROUILLON'));
       }
     });
   }
@@ -605,10 +571,7 @@ export class LabelWorkflowComponent implements OnInit {
       },
       error: (error) => {
         this.drafting = false;
-        this.errorMessage = this.resolveErrorMessage(
-          error,
-          this.i18n.instant('AUTO.ERREUR_LORS_DU_RETOUR_AU_STATUT_BROUILLON')
-        );
+        this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.ERREUR_LORS_DU_RETOUR_AU_STATUT_BROUILLON'));
       }
     });
   }
@@ -635,10 +598,7 @@ export class LabelWorkflowComponent implements OnInit {
         error: (error) => {
           this.finalizing = false;
           this.resetFinalizedIndicator();
-          this.errorMessage = this.resolveErrorMessage(
-            error,
-            this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_FINALISATION_DE_L_ETIQUETTE')
-          );
+          this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_FINALISATION_DE_L_ETIQUETTE'));
         }
       });
   }
@@ -660,10 +620,7 @@ export class LabelWorkflowComponent implements OnInit {
       },
       error: (error) => {
         this.exporting = false;
-        this.errorMessage = this.resolveErrorMessage(
-          error,
-          this.i18n.instant('AUTO.ERREUR_LORS_DE_L_EXPORT_DE_L_ETIQUETTE')
-        );
+        this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.ERREUR_LORS_DE_L_EXPORT_DE_L_ETIQUETTE'));
       }
     });
   }
@@ -732,9 +689,7 @@ export class LabelWorkflowComponent implements OnInit {
   }
 
   selectedPackagingLabel(): string {
-    const selectedPackaging = this.packagingOptions.find(
-      (sku) => sku.id === this.labelForm.value.packagingId
-    );
+    const selectedPackaging = this.packagingOptions.find((sku) => sku.id === this.labelForm.value.packagingId);
 
     return selectedPackaging ? this.productLabel(selectedPackaging) : '-';
   }
@@ -767,15 +722,7 @@ export class LabelWorkflowComponent implements OnInit {
       designation?: string;
     };
 
-    return (
-      item.name ||
-      item.label ||
-      item.libelle ||
-      item.designation ||
-      item.value ||
-      item.code ||
-      String(item.id || '')
-    );
+    return item.name || item.label || item.libelle || item.designation || item.value || item.code || String(item.id || '');
   }
 
   baseTypeValue(type: BaseType): string {
@@ -846,7 +793,8 @@ export class LabelWorkflowComponent implements OnInit {
       responsibleAddress: this.labelForm.value.responsibleAddress?.trim() || undefined,
       extractionMethod: this.labelForm.value.extractionMethod?.trim() || undefined,
       bestBeforeDate: this.labelForm.value.bestBeforeDate?.trim() || undefined,
-      ingredientDeclaration: this.labelForm.value.ingredientDeclaration?.trim() || buildIngredientDeclaration(this.labelForm.value.qualityGrade),
+      ingredientDeclaration:
+        this.labelForm.value.ingredientDeclaration?.trim() || buildIngredientDeclaration(this.labelForm.value.qualityGrade),
       nutritionDeclarationJson: this.buildNutritionDeclarationPayload(),
       ean13: this.labelForm.value.ean13?.trim() || undefined,
       harvestYear: this.labelForm.value.harvestYear?.trim() || undefined,
@@ -869,9 +817,7 @@ export class LabelWorkflowComponent implements OnInit {
   private fromUrl(): void {
     const queryParams = this.route.snapshot.queryParamMap;
     const requestedLotOrOperationId = queryParams.get('filtrationOperationId') ?? queryParams.get('lotId');
-    const selectedOp =
-      this.resolveFiltrationOperation(requestedLotOrOperationId) ||
-      this.filtrationOperations[0];
+    const selectedOp = this.resolveFiltrationOperation(requestedLotOrOperationId) || this.filtrationOperations[0];
 
     if (selectedOp) {
       this.labelForm.get('lotId')?.setValue(selectedOp.operationId);
@@ -881,13 +827,8 @@ export class LabelWorkflowComponent implements OnInit {
 
     this.labelForm.patchValue({
       packagingId: queryParams.get('packagingId') ?? this.labelForm.value.packagingId ?? '',
-      packagingDate:
-        queryParams.get('packagingDate') ??
-        this.labelForm.value.packagingDate ??
-        this.formatDateInput(new Date()),
-      language: ((queryParams.get('language') as LabelLanguage | null) ??
-        this.labelForm.value.language ??
-        'FR') as LabelLanguage
+      packagingDate: queryParams.get('packagingDate') ?? this.labelForm.value.packagingDate ?? this.formatDateInput(new Date()),
+      language: ((queryParams.get('language') as LabelLanguage | null) ?? this.labelForm.value.language ?? 'FR') as LabelLanguage
     });
   }
 
@@ -903,10 +844,7 @@ export class LabelWorkflowComponent implements OnInit {
       },
       error: (error) => {
         this.loadingLabel = false;
-        this.errorMessage = this.resolveErrorMessage(
-          error,
-          this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_CETTE_ETIQUETTE')
-        );
+        this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_CETTE_ETIQUETTE'));
       }
     });
   }
@@ -965,12 +903,9 @@ export class LabelWorkflowComponent implements OnInit {
       return undefined;
     }
 
-    return this.filtrationOperations.find((op) =>
-      op.operationId === id ||
-      op.target?.id === id ||
-      op.source?.id === id ||
-      op.targetLotNumber === id ||
-      op.target?.lotNumber === id
+    return this.filtrationOperations.find(
+      (op) =>
+        op.operationId === id || op.target?.id === id || op.source?.id === id || op.targetLotNumber === id || op.target?.lotNumber === id
     );
   }
 
@@ -1094,12 +1029,7 @@ export class LabelWorkflowComponent implements OnInit {
   }
 
   private buildCompanyAddress(profile: CompanyProfile): string {
-    return [
-      profile.addressLine1?.trim(),
-      profile.postalCode?.trim(),
-      profile.city?.trim(),
-      profile.governorate?.trim()
-    ]
+    return [profile.addressLine1?.trim(), profile.postalCode?.trim(), profile.city?.trim(), profile.governorate?.trim()]
       .filter((part) => !!part)
       .join(', ');
   }
@@ -1226,9 +1156,7 @@ export class LabelWorkflowComponent implements OnInit {
   }
 
   private buildPreviewPayloadOptions() {
-    const packaging = this.packagingOptions.find(
-      (product) => product.id === this.labelForm.getRawValue().packagingId
-    );
+    const packaging = this.packagingOptions.find((product) => product.id === this.labelForm.getRawValue().packagingId);
 
     return {
       form: this.labelForm.getRawValue(),

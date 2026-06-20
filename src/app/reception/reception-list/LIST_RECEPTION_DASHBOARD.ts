@@ -130,7 +130,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true,
-      calculateTotal:true
+      calculateTotal: true
     },
     {
       name: 'oilType',

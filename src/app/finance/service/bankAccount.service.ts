@@ -38,7 +38,6 @@ export class BankAccountService {
     return this.http.put<ApiResponse<BankAccount>>(`${this.baseUrl}`, bankAccount);
   }
 
-
   // ==================== BALANCE & TRANSACTION METHODS ====================
 
   // Get bank account with balance information
@@ -47,8 +46,8 @@ export class BankAccountService {
   }
 
   // Get bank account balance
-  getBankAccountBalance(id: string): Observable<ApiResponse<{balance: number, currency: string}>> {
-    return this.http.get<ApiResponse<{balance: number, currency: string}>>(`${this.baseUrl}/${id}/balance`);
+  getBankAccountBalance(id: string): Observable<ApiResponse<{ balance: number; currency: string }>> {
+    return this.http.get<ApiResponse<{ balance: number; currency: string }>>(`${this.baseUrl}/${id}/balance`);
   }
 
   // Get transactions for a specific bank account
@@ -59,9 +58,7 @@ export class BankAccountService {
     startDate?: string,
     endDate?: string
   ): Observable<ApiResponse<FinancialTransaction>> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+    let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
 
     if (startDate) {
       params = params.set('startDate', startDate);
@@ -70,27 +67,28 @@ export class BankAccountService {
       params = params.set('endDate', endDate);
     }
 
-    return this.http.get<ApiResponse<FinancialTransaction>>(
-      `${this.baseUrl}/${bankAccountId}/transactions`,
-      { params }
-    );
+    return this.http.get<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/${bankAccountId}/transactions`, { params });
   }
 
   // Get transaction summary for a bank account
-  getBankAccountTransactionSummary(bankAccountId: string): Observable<ApiResponse<{
-    totalInbound: number;
-    totalOutbound: number;
-    transactionCount: number;
-    pendingCount: number;
-    lastTransactionDate: string;
-  }>> {
-    return this.http.get<ApiResponse<{
+  getBankAccountTransactionSummary(bankAccountId: string): Observable<
+    ApiResponse<{
       totalInbound: number;
       totalOutbound: number;
       transactionCount: number;
       pendingCount: number;
       lastTransactionDate: string;
-    }>>(`${this.baseUrl}/${bankAccountId}/summary`);
+    }>
+  > {
+    return this.http.get<
+      ApiResponse<{
+        totalInbound: number;
+        totalOutbound: number;
+        transactionCount: number;
+        pendingCount: number;
+        lastTransactionDate: string;
+      }>
+    >(`${this.baseUrl}/${bankAccountId}/summary`);
   }
 
   // Get all bank accounts with balances

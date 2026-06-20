@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BankAccountService } from '../../service/bankAccount.service';
 import { FinancialTransactionService } from '../../service/financial-transaction.service';
-import { BankAccount, BankAccountWithTransactions } from '../../models/BankAccount';
+import { BankAccount } from '../../models/BankAccount';
 import { FinancialTransaction } from '../../models/financial-transaction.model';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { CommonModule } from '@angular/common';
@@ -54,13 +54,13 @@ import { ToastService } from '../../../shared/services/toast.service';
   styleUrls: ['./view-bank-account.component.scss']
 })
 export class ViewBankAccountComponent implements OnInit {
-  bankAccount: BankAccount|null ;
+  bankAccount: BankAccount | null;
   transactions: FinancialTransaction[];
   loading = false;
 
   constructor(
     private bankAccountService: BankAccountService,
-    private bankhiostory  : FinancialTransactionService,
+    private bankhiostory: FinancialTransactionService,
     private route: ActivatedRoute,
     private router: Router,
     private toast: ToastService
@@ -81,9 +81,8 @@ export class ViewBankAccountComponent implements OnInit {
     this.loading = true;
     this.bankAccountService.getBankAccount(id).subscribe({
       next: (response: ApiResponse<BankAccount>) => {
-        if (response.success  ) {
-            this.bankAccount = Array.isArray(response.data) ? response.data[0] : response.data;
-
+        if (response.success) {
+          this.bankAccount = Array.isArray(response.data) ? response.data[0] : response.data;
         } else {
           this.toast.error('AUTO.BANK_ACCOUNT_NOT_FOUND');
           this.router.navigate(['/finance/banks']);
@@ -97,14 +96,14 @@ export class ViewBankAccountComponent implements OnInit {
         this.loading = false;
       }
     });
-// Make sure you have: import { FinancialTransaction } from '...';
-// and this.transactions: FinancialTransaction[] = [];
+    // Make sure you have: import { FinancialTransaction } from '...';
+    // and this.transactions: FinancialTransaction[] = [];
 
     this.bankhiostory.getTransactionsByBankId(id).subscribe({
       next: (response: ApiResponse<FinancialTransaction>) => {
         if (response.success && Array.isArray(response.data)) {
           this.transactions = response.data;
-          console.log(this.transactions)
+          console.log(this.transactions);
         } else {
           this.transactions = [];
           this.toast.info('AUTO.NO_TRANSACTIONS_FOUND_FOR_THIS_BANK');

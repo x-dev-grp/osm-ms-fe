@@ -50,7 +50,7 @@ export const EXCHANGE_DASHBOARD: DashboardConfig = {
               inValues: ['PROD_READY', 'COMPLETED']
             }
           }
-        },
+        }
       ],
       search: {
         isDeleted: {
@@ -135,7 +135,7 @@ export const EXCHANGE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'price',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,
@@ -147,7 +147,7 @@ export const EXCHANGE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'unpaidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
@@ -159,7 +159,7 @@ export const EXCHANGE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'paidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant partiallment',
       labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
       attributeType: AttributeType.number,
@@ -198,7 +198,7 @@ export const EXCHANGE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'poidsNet',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Poids net (kg)',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
@@ -212,7 +212,7 @@ export const EXCHANGE_DASHBOARD: DashboardConfig = {
     {
       name: 'oilQuantity',
       label: 'Qté huile (KG)',
-      calculateTotal:true,
+      calculateTotal: true,
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -240,7 +240,7 @@ export const EXCHANGE_DASHBOARD: DashboardConfig = {
     {
       name: 'paid',
       label: 'Payé',
-      calculateTotal:true,
+      calculateTotal: true,
       labelTranslatePath: 'Payé',
       attributeType: AttributeType.boolean,
       exportable: true,
@@ -426,7 +426,7 @@ export const EXCHANGE_DASHBOARD: DashboardConfig = {
     {
       name: 'oliveQuantity',
       calculateTotal: true,
-      label: "Qté olives (KG)",
+      label: 'Qté olives (KG)',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_QUANTITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,

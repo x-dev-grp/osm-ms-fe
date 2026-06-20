@@ -16,22 +16,16 @@ export class MaterielSupplierService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<MaterielSupplier[]> {
-    return this.http.get<ApiResponse<MaterielSupplier>>(`${this.apiUrl}/fetchAll`).pipe(
-      map((response) => response?.data ?? [])
-    );
+    return this.http.get<ApiResponse<MaterielSupplier>>(`${this.apiUrl}/fetchAll`).pipe(map((response) => response?.data ?? []));
   }
 
   getById(id: string): Observable<MaterielSupplier> {
-    return this.http.get<ApiSingleResponse<MaterielSupplier>>(`${this.apiUrl}/fetch/${id}`).pipe(
-      map((response) => response.data)
-    );
+    return this.http.get<ApiSingleResponse<MaterielSupplier>>(`${this.apiUrl}/fetch/${id}`).pipe(map((response) => response.data));
   }
 
   update(id: string, supplier: MaterielSupplier): Observable<MaterielSupplier> {
     const payload = { ...supplier, id };
-    return this.http.put<ApiSingleResponse<MaterielSupplier>>(this.apiUrl, payload).pipe(
-      map((response) => response.data)
-    );
+    return this.http.put<ApiSingleResponse<MaterielSupplier>>(this.apiUrl, payload).pipe(map((response) => response.data));
   }
 
   activate(id: string): Observable<MaterielSupplier> {
@@ -43,9 +37,7 @@ export class MaterielSupplierService {
   }
 
   create(supplier: MaterielSupplier): Observable<MaterielSupplier> {
-    return this.http.post<ApiSingleResponse<MaterielSupplier>>(this.apiUrl, supplier).pipe(
-      map((response) => response.data)
-    );
+    return this.http.post<ApiSingleResponse<MaterielSupplier>>(this.apiUrl, supplier).pipe(map((response) => response.data));
   }
 
   delete(id: string): Observable<void> {

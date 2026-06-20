@@ -25,10 +25,7 @@ import {
   formatLabelPayloadJson,
   labelDtoToFormValues
 } from '../../../../labels/utils/label-preview-payload.util';
-import {
-  PREVIEW_CAROUSEL_LANGUAGES,
-  previewLanguageLabel
-} from '../../../../labels/utils/label-preview-localization.util';
+import { PREVIEW_CAROUSEL_LANGUAGES, previewLanguageLabel } from '../../../../labels/utils/label-preview-localization.util';
 import { resolvePostFiltrationQualityControls } from '../../../../labels/utils/label-qc-composition.util';
 import { extractCompositionOverrides } from '../../../../labels/utils/label-compliance.util';
 import { resolveQualityGradeLabel } from '../../../../shared/models/quality-grades.enum';
@@ -111,9 +108,7 @@ export class ProductLabelPreviewRailComponent implements OnChanges {
 
     const data: LabelPreviewDialogData = {
       slides: this.carouselSlides,
-      payloadJson: this.primaryLabel?.finalPayloadJson
-        ? formatLabelPayloadJson(this.primaryLabel.finalPayloadJson)
-        : '{}',
+      payloadJson: this.primaryLabel?.finalPayloadJson ? formatLabelPayloadJson(this.primaryLabel.finalPayloadJson) : '{}',
       initialLanguage: slide?.language
     };
 

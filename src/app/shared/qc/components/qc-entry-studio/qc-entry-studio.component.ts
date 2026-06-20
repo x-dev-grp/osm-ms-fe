@@ -1,21 +1,12 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  SimpleChanges
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
-import { Observable, Subscription, firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import { ApiResponse } from '../../../models/api-response';
@@ -28,11 +19,7 @@ import { ToastService } from '../../../services/toast.service';
 import { QcComplianceRailComponent } from '../qc-compliance-rail/qc-compliance-rail.component';
 import { QcRuleFieldComponent } from '../qc-rule-field/qc-rule-field.component';
 import { QcChecklistSummary, QcEntryContext } from '../../models/qc-context.model';
-import {
-  buildQcChecklist,
-  buildQcFormControls,
-  buildResultPayload
-} from '../../utils/qc-validation.util';
+import { buildQcChecklist, buildQcFormControls, buildResultPayload } from '../../utils/qc-validation.util';
 
 @Component({
   selector: 'app-qc-entry-studio',
@@ -117,8 +104,7 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.preSave) {
       const result = this.preSave();
-      const allowed =
-        result instanceof Observable ? await firstValueFrom(result) : await result;
+      const allowed = result instanceof Observable ? await firstValueFrom(result) : await result;
       if (!allowed) {
         return;
       }
@@ -138,9 +124,7 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
     this.saving = true;
     const request$ = this.resolveSaveRequest(payload);
 
-    request$
-      .pipe(finalize(() => (this.saving = false)))
-      .subscribe({
+    request$.pipe(finalize(() => (this.saving = false))).subscribe({
       next: () => {
         this.toast.success('AUTO.RESULTATS_CREES_AVEC_SUCCES');
         this.readOnly = true;
@@ -159,10 +143,7 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.message = '';
 
-    const rules$ =
-      this.context === 'RECEPTION_OLIVE'
-        ? this.qcRuleService.getAllOliveRules()
-        : this.qcRuleService.getAllOilRules();
+    const rules$ = this.context === 'RECEPTION_OLIVE' ? this.qcRuleService.getAllOliveRules() : this.qcRuleService.getAllOilRules();
 
     rules$.pipe(finalize(() => (this.loading = false))).subscribe({
       next: (response) => {
@@ -214,9 +195,7 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
     this.form = buildQcFormControls(this.rules, this.existingResults, this.readOnly);
     this.refreshSummary();
 
-    this.subs.push(
-      this.form.valueChanges.subscribe(() => this.refreshSummary())
-    );
+    this.subs.push(this.form.valueChanges.subscribe(() => this.refreshSummary()));
   }
 
   private refreshSummary(): void {
@@ -241,17 +220,12 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
 
   private resolveSaveRequest(payload: QualityControlResultDto[]): Observable<ApiResponse<unknown>> {
     if (this.context === 'OIL_FROM_OLIVE' && this.oliveIdx) {
-      return this.qcResultService.saveResultsWithIdx(
-        this.oliveIdx,
-        payload,
-        this.storageUnitId || null
-      ) as Observable<ApiResponse<unknown>>;
+      return this.qcResultService.saveResultsWithIdx(this.oliveIdx, payload, this.storageUnitId || null) as Observable<
+        ApiResponse<unknown>
+      >;
     }
     if (this.context === 'FILTRATION' && this.filtrationOperationId) {
-      return this.qcResultService.saveResultsForFiltration(
-        this.filtrationOperationId,
-        payload
-      ) as Observable<ApiResponse<unknown>>;
+      return this.qcResultService.saveResultsForFiltration(this.filtrationOperationId, payload) as Observable<ApiResponse<unknown>>;
     }
     return this.qcResultService.createResults(payload) as Observable<ApiResponse<unknown>>;
   }

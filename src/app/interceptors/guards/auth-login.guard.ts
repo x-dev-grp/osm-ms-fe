@@ -1,5 +1,5 @@
-import {  inject } from '@angular/core';
-import { Router, CanActivateFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 
 import { AuthenticationService } from '../../auth/services/authentication.service';
 import { TokenService } from 'src/app/auth/services/tokenService.service';
@@ -21,7 +21,5 @@ export const AuthGuardLogin: CanActivateFn = () => {
     return router.createUrlTree(['/auth/user/update-password']);
   }
 
-  return router.createUrlTree([
-    currentUser?.role === Role.OsmAdmin ? '/administration/dashboard' : '/welcome'
-  ]);
+  return router.createUrlTree([currentUser?.role === Role.OsmAdmin ? '/administration/dashboard' : '/welcome']);
 };

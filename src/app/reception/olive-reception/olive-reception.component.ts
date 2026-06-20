@@ -7,9 +7,9 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { MatCardModule } from '@angular/material/card';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Data, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
@@ -36,7 +36,8 @@ function setOpToLS(opKey?: string) {
 @Component({
   selector: 'app-olive-reception',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     MatButtonModule,
     MatTableModule,
@@ -248,8 +249,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         return undefined;
     }
   }
-
-
 
   private setPrice(row: UnifiedDelivery): void {
     this.selectedRow = row;

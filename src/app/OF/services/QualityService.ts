@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from 'src/app/shared/models/api-response'; // adaptez selon votre structure
 import { QCControlPoint } from '../models/QCControlPoint.model';
-import {QCPlan} from "../models/QCPlan.model";
-import {QCResult} from "../models/QCResult.model";
+import { QCPlan } from '../models/QCPlan.model';
+import { QCResult } from '../models/QCResult.model';
 
 import { environment } from '../../../environments/environment';
 
@@ -46,5 +46,4 @@ export class QualityService {
   getLastResultsByPoint(ofId: string): Observable<ApiResponse<QCResult[]>> {
     return this.getHistoryByOF(ofId);
   }
-
 }

@@ -16,11 +16,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from '../../shared/shared.module';
-import { OilCredit, CreditState, UnitType } from '../models/OilCredit';
+import { CreditState, OilCredit, UnitType } from '../models/OilCredit';
 import { OilCreditService } from '../service/oil-credit.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
 import { ToastService } from '../../shared/services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -87,7 +87,6 @@ export class OilCreditComponent implements OnInit {
     this.loadCredits();
   }
 
-
   cancel(): void {
     this.editing = false;
     this.submitted = false;
@@ -113,8 +112,6 @@ export class OilCreditComponent implements OnInit {
     this.router.navigate(['/finance/oil-credit', id, 'view']);
   }
 
-
-
   /**
    * Handles various actions on an OilCredit row.
    *
@@ -139,11 +136,8 @@ export class OilCreditComponent implements OnInit {
       case 'UPDATE':
         this.openForm(row);
         break;
-
     }
   }
-
-
 
   private loadCredits(): void {
     this.isLoading = true;
@@ -159,7 +153,4 @@ export class OilCreditComponent implements OnInit {
       }
     });
   }
-
-
 }
-

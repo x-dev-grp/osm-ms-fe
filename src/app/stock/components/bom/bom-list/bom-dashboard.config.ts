@@ -17,10 +17,50 @@ export const BOM_DASHBOARD_CONFIG: DashboardConfig = {
     { action: 'REMOVE', color: 'warn', icon: 'delete' }
   ],
   fields: [
-    { name: 'finalProductName', label: 'Produit fini', labelTranslatePath: 'DASHBOARD_FIELDS.FINAL_PRODUCT', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'version', label: 'Version', labelTranslatePath: 'DASHBOARD_FIELDS.VERSION', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'active', label: 'Actif', labelTranslatePath: 'ADMIN_DASHBOARD.HERO.ACTIVE', attributeType: AttributeType.boolean, fieldType: FieldType.checkbox, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'createdDate', label: 'Date de creation', labelTranslatePath: 'DASHBOARD_FIELDS.CREATED_DATE', attributeType: AttributeType.date, fieldType: FieldType.date, exportable: true, sortable: true, dataTable: true, filterable: true }
+    {
+      name: 'finalProductName',
+      label: 'Produit fini',
+      labelTranslatePath: 'DASHBOARD_FIELDS.FINAL_PRODUCT',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'version',
+      label: 'Version',
+      labelTranslatePath: 'DASHBOARD_FIELDS.VERSION',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'active',
+      label: 'Actif',
+      labelTranslatePath: 'ADMIN_DASHBOARD.HERO.ACTIVE',
+      attributeType: AttributeType.boolean,
+      fieldType: FieldType.checkbox,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'createdDate',
+      label: 'Date de creation',
+      labelTranslatePath: 'DASHBOARD_FIELDS.CREATED_DATE',
+      attributeType: AttributeType.date,
+      fieldType: FieldType.date,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    }
   ],
   defaultSearchData: {
     page: 0,

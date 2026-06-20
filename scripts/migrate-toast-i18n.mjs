@@ -1,6 +1,6 @@
 import ts from 'typescript';
 import { createHash } from 'node:crypto';
-import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -66,7 +66,7 @@ async function listTypeScriptFiles(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
-      files.push(...await listTypeScriptFiles(fullPath));
+      files.push(...(await listTypeScriptFiles(fullPath)));
     } else if (entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.spec.ts')) {
       files.push(fullPath);
     }
@@ -114,25 +114,19 @@ function resolveKey(value) {
 
 for (const filePath of await listTypeScriptFiles(appRoot)) {
   const source = await readFile(filePath, 'utf8');
-  const sourceFile = ts.createSourceFile(
-    filePath,
-    source,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TS
-  );
+  const sourceFile = ts.createSourceFile(filePath, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
   const replacements = [];
 
   function collectLiterals(node) {
-    if (ts.isCallExpression(node)
-        && ts.isPropertyAccessExpression(node.expression)
-        && node.expression.name.text === 'instant') {
+    if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) && node.expression.name.text === 'instant') {
       return;
     }
-    if ((ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node))
-        && normalize(node.text)
-        && !isTranslationKey(node.text)
-        && !catalogKeys.has(node.text)) {
+    if (
+      (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) &&
+      normalize(node.text) &&
+      !isTranslationKey(node.text) &&
+      !catalogKeys.has(node.text)
+    ) {
       const key = resolveKey(node.text);
       replacements.push({
         start: node.getStart(sourceFile),
@@ -146,12 +140,14 @@ for (const filePath of await listTypeScriptFiles(appRoot)) {
   }
 
   function visit(node) {
-    if (ts.isCallExpression(node)
-        && ts.isPropertyAccessExpression(node.expression)
-        && ['success', 'error', 'warning', 'info'].includes(node.expression.name.text)
-        && ts.isPropertyAccessExpression(node.expression.expression)
-        && node.expression.expression.name.text === 'toast'
-        && node.arguments[0]) {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isPropertyAccessExpression(node.expression) &&
+      ['success', 'error', 'warning', 'info'].includes(node.expression.name.text) &&
+      ts.isPropertyAccessExpression(node.expression.expression) &&
+      node.expression.expression.name.text === 'toast' &&
+      node.arguments[0]
+    ) {
       collectLiterals(node.arguments[0]);
       return;
     }
@@ -165,9 +161,7 @@ for (const filePath of await listTypeScriptFiles(appRoot)) {
 
   let updated = source;
   for (const replacement of replacements.sort((a, b) => b.start - a.start)) {
-    updated = updated.slice(0, replacement.start)
-      + replacement.value
-      + updated.slice(replacement.end);
+    updated = updated.slice(0, replacement.start) + replacement.value + updated.slice(replacement.end);
   }
   changedFiles.push(path.relative(root, filePath));
   if (applyChanges) {
@@ -186,10 +180,16 @@ if (applyChanges) {
   }
 }
 
-console.log(JSON.stringify({
-  mode: applyChanges ? 'apply' : 'dry-run',
-  changedFiles: changedFiles.length,
-  replacements: replacementCount,
-  generatedKeys: generated.size,
-  files: changedFiles
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      mode: applyChanges ? 'apply' : 'dry-run',
+      changedFiles: changedFiles.length,
+      replacements: replacementCount,
+      generatedKeys: generated.size,
+      files: changedFiles
+    },
+    null,
+    2
+  )
+);

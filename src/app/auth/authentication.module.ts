@@ -7,6 +7,6 @@ import { UpdatePasswordComponent } from './update-password/update-password.compo
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, AuthenticationRoutingModule,ResetConfirmComponent,ResetConfirmComponent,UpdatePasswordComponent]
+  imports: [CommonModule, AuthenticationRoutingModule, ResetConfirmComponent, ResetConfirmComponent, UpdatePasswordComponent]
 })
 export class AuthenticationModule {}

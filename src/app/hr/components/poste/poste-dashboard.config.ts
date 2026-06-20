@@ -51,7 +51,6 @@ export const dashboardConfig: DashboardConfig = {
       dataTable: true,
       exportable: true,
       exportLabel: 'description'
-    },
-
+    }
   ]
 };

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastService } from '../../shared/services/toast.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -23,7 +23,6 @@ import { Parameter } from '../../shared/models/Parameter';
 import { normalizeMetricValue } from '../../shared/services/DailyMetricPayload';
 import { CampaignService } from '../../shared/services/campaign.service';
 import { switchMap } from 'rxjs/operators';
-
 
 @Component({
   selector: 'app-general-config',
@@ -101,11 +100,7 @@ export class GeneralConfigComponent implements OnInit {
 
     const rawValue = this.productionConfigForm.getRawValue();
     const campaignStartAt = this.campaignService.combineDateTime(rawValue.campaignStartDate, rawValue.campaignStartTime);
-    const monthDayFields = this.campaignService.extractMonthDayFields(
-      campaignStartAt,
-      rawValue.campaignEndAt,
-      currentProfile
-    );
+    const monthDayFields = this.campaignService.extractMonthDayFields(campaignStartAt, rawValue.campaignEndAt, currentProfile);
 
     const payload: CompanyProfile = {
       ...currentProfile,
@@ -135,27 +130,30 @@ export class GeneralConfigComponent implements OnInit {
     const rawValue = this.financeConfigForm.getRawValue().millingPricePerKg;
     const numericValue = normalizeMetricValue(rawValue);
 
-    this.parameterService.ensureParameterByCode(this.millingPriceCode).pipe(
-      switchMap((parameter) => {
-        const updatedParam: Parameter = {
-          ...parameter,
-          value: String(numericValue)
-        };
-        return this.parameterService.updateValue(updatedParam);
-      })
-    ).subscribe({
-      next: (res) => {
-        const updated = Array.isArray(res?.data) ? res.data[0] : res?.data;
-        this.millingPriceParameter = updated ?? this.millingPriceParameter;
-        this.patchFinanceConfig(this.millingPriceParameter);
-        this.financeConfigForm.disable();
-        this.financeConfigFormEnabled = false;
-        this.toast.success('AUTO.CONFIGURATION_FINANCE_ENREGISTREE_AVEC_SUCCES');
-      },
-      error: () => {
-        this.toast.error('AUTO.ERREUR_LORS_DE_L_ENREGISTREMENT_DU_PRIX_DE_TRITURATION');
-      }
-    });
+    this.parameterService
+      .ensureParameterByCode(this.millingPriceCode)
+      .pipe(
+        switchMap((parameter) => {
+          const updatedParam: Parameter = {
+            ...parameter,
+            value: String(numericValue)
+          };
+          return this.parameterService.updateValue(updatedParam);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          const updated = Array.isArray(res?.data) ? res.data[0] : res?.data;
+          this.millingPriceParameter = updated ?? this.millingPriceParameter;
+          this.patchFinanceConfig(this.millingPriceParameter);
+          this.financeConfigForm.disable();
+          this.financeConfigFormEnabled = false;
+          this.toast.success('AUTO.CONFIGURATION_FINANCE_ENREGISTREE_AVEC_SUCCES');
+        },
+        error: () => {
+          this.toast.error('AUTO.ERREUR_LORS_DE_L_ENREGISTREMENT_DU_PRIX_DE_TRITURATION');
+        }
+      });
   }
   onSaveHrConfig(): void {
     if (this.hrConfigForm.invalid) return;
@@ -200,22 +198,21 @@ export class GeneralConfigComponent implements OnInit {
     this.otherConfigForm.enable();
   }
 
-// This function is called when a tab is changed
+  // This function is called when a tab is changed
   onTabChange(event: MatTabChangeEvent) {
     // Log the event to the console
     console.log(event);
-       const tabLabel = event.tab.textLabel.toLowerCase();
+    const tabLabel = event.tab.textLabel.toLowerCase();
 
-      if (tabLabel.includes('production')) {
-        this.activeTab = 'parameter';
-      } else if (tabLabel.includes('general')) {
-        this.activeTab = 'company';
-      } else if (tabLabel.includes('finance')) {
-        this.activeTab = 'finance';
-      } else {
-        this.activeTab = 'other';
-      }
-
+    if (tabLabel.includes('production')) {
+      this.activeTab = 'parameter';
+    } else if (tabLabel.includes('general')) {
+      this.activeTab = 'company';
+    } else if (tabLabel.includes('finance')) {
+      this.activeTab = 'finance';
+    } else {
+      this.activeTab = 'other';
+    }
   }
 
   get campaignPreview(): string {
@@ -259,11 +256,14 @@ export class GeneralConfigComponent implements OnInit {
 
   private patchProductionConfig(profile: CompanyProfile | null): void {
     const { date, time } = this.campaignService.splitDateTime(profile?.campaignStartAt);
-    this.productionConfigForm.patchValue({
-      campaignStartDate: date ?? this.campaignService.resolveStartDate(profile),
-      campaignStartTime: date ? time : '00:00',
-      campaignEndAt: profile?.campaignEndAt ?? null
-    }, { emitEvent: false });
+    this.productionConfigForm.patchValue(
+      {
+        campaignStartDate: date ?? this.campaignService.resolveStartDate(profile),
+        campaignStartTime: date ? time : '00:00',
+        campaignEndAt: profile?.campaignEndAt ?? null
+      },
+      { emitEvent: false }
+    );
   }
 
   private buildCampaignProfileFromForm(): CompanyProfile {
@@ -289,9 +289,6 @@ export class GeneralConfigComponent implements OnInit {
   }
 
   private patchFinanceConfig(parameter: Parameter | null): void {
-    this.financeConfigForm.patchValue(
-      { millingPricePerKg: normalizeMetricValue(parameter?.value) },
-      { emitEvent: false }
-    );
+    this.financeConfigForm.patchValue({ millingPricePerKg: normalizeMetricValue(parameter?.value) }, { emitEvent: false });
   }
 }

@@ -1,4 +1,4 @@
-import { enableProdMode, importProvidersFrom, APP_INITIALIZER } from '@angular/core';
+import { APP_INITIALIZER, enableProdMode, importProvidersFrom } from '@angular/core';
 
 import { environment } from './environments/environment';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -7,14 +7,14 @@ import { ResponseMessageInterceptor } from './app/interceptors/response-message.
 import { AppRoutingModule } from './app/app-routing.module';
 import { SharedModule } from './app/shared/shared.module';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideServiceWorker } from '@angular/service-worker';
 import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { AuthenticationService } from './app/auth/services/authentication.service';
 import { CookieService } from 'ngx-cookie-service';
-import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CustomTranslateLoader } from './app/shared/custom-translate-loader';
 import { ThemeConfigService } from './app/shared/services/theme-config.service';
 import { PwaUpdateService } from './app/shared/services/pwa-update.service';

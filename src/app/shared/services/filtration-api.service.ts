@@ -6,15 +6,14 @@ import { FiltrationRequest } from '../models/filtration-request';
 import { FiltrationCompletion } from '../models/filtration-completion';
 import { UpdateFiltrationStatus } from '../models/update-filtration-status';
 import { FiltrationStatus } from '../models/filtration-status';
-import {environment} from "../../../environments/environment";
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class FiltrationApiService {
   // Base URL alignée sur le controller backend: /api/production/filtration
-  private readonly baseUrl = environment.apiUrl+'/api/production/filtration';
+  private readonly baseUrl = environment.apiUrl + '/api/production/filtration';
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   // Création d’une nouvelle opération de filtration.
   create(req: FiltrationRequest): Observable<FiltrationOperation> {
@@ -51,7 +50,6 @@ export class FiltrationApiService {
     return this.http.put<FiltrationOperation>(`${this.baseUrl}/${operationId}/status`, body);
   }
 
-
   update(operationId: string, payload: any) {
     return this.http.put<FiltrationOperation>(`${this.baseUrl}/${operationId}`, payload);
   }
@@ -61,8 +59,4 @@ export class FiltrationApiService {
   delete(operationId: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${operationId}`);
   }
-
-
-
-
 }

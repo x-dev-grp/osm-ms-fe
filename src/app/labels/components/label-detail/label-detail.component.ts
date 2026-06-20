@@ -1,10 +1,9 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Subject, forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { LabelCategory, LabelClaimType, LabelContentDto, LabelContentStatus, LabelValidationIssueDto } from '../../models/label.model';
@@ -12,15 +11,9 @@ import { LabelService } from '../../services/label.service';
 import { CertificationService } from '../../services/certification.service';
 import { Certification } from '../../models/certification.model';
 import { LabelPreviewCardComponent } from '../label-preview-card/label-preview-card.component';
-import {
-  LabelPreviewDialogComponent,
-  LabelPreviewDialogData
-} from '../label-preview-dialog/label-preview-dialog.component';
+import { LabelPreviewDialogComponent, LabelPreviewDialogData } from '../label-preview-dialog/label-preview-dialog.component';
 import { LabelPreviewViewModel } from '../../models/label-preview.model';
-import {
-  buildLabelPreviewFromDto,
-  formatLabelPayloadJson
-} from '../../utils/label-preview-payload.util';
+import { buildLabelPreviewFromDto, formatLabelPayloadJson } from '../../utils/label-preview-payload.util';
 import {
   filterNonCompositionQualityControls,
   hasSensoryQualityControls,
@@ -42,16 +35,16 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatChip, MatChipListbox } from '@angular/material/chips';
-import { TypeCategory } from "../../../shared/models/type-category.enum";
+import { TypeCategory } from '../../../shared/models/type-category.enum';
 import { resolveQualityGradeLabel } from '../../../shared/models/quality-grades.enum';
 import { ProductionGenealogy, ProductionRootSource } from '../../../shared/models/production-genealogy.model';
 import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-label-detail',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,
@@ -105,7 +98,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     private readonly certificationService: CertificationService,
     private readonly companyProfileService: CompanyProfileService,
     private readonly dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadInitialData();
@@ -160,7 +153,8 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.labelService.getById(id)
+    this.labelService
+      .getById(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (label) => {
@@ -170,10 +164,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.loading = false;
-          this.errorMessage = this.resolveErrorMessage(
-            error,
-            this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_LE_DETAIL_DE_CETTE_ETIQUETTE')
-          );
+          this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_LE_DETAIL_DE_CETTE_ETIQUETTE'));
         }
       });
   }
@@ -185,7 +176,8 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.productionTraceabilityService.getGenealogy(genealogyId)
+    this.productionTraceabilityService
+      .getGenealogy(genealogyId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (genealogy) => {
@@ -268,7 +260,8 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
       this.companyProfile = cachedProfile;
     }
 
-    this.companyProfileService.getProfile()
+    this.companyProfileService
+      .getProfile()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (profile) => {
@@ -361,10 +354,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
   }
 
   unlock(): void {
-    if (
-      !this.label?.id ||
-      !confirm(this.i18n.instant('AUTO.ETES_VOUS_SUR_DE_VOULOIR_DEVERROUILLER_CETTE_ETIQUETTE_ELLE_REPA'))
-    ) {
+    if (!this.label?.id || !confirm(this.i18n.instant('AUTO.ETES_VOUS_SUR_DE_VOULOIR_DEVERROUILLER_CETTE_ETIQUETTE_ELLE_REPA'))) {
       return;
     }
 
@@ -372,7 +362,8 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.labelService.markAsDraft(this.label.id)
+    this.labelService
+      .markAsDraft(this.label.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updated) => {
@@ -395,7 +386,8 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     let message = 'Êtes-vous sûr de vouloir supprimer cette étiquette ?';
 
     if (this.isFinalized()) {
-      message = 'ATTENTION : Cette étiquette est FINALISÉE. Sa suppression est fortement déconseillée pour la traçabilité. Voulez-vous vraiment continuer ?';
+      message =
+        'ATTENTION : Cette étiquette est FINALISÉE. Sa suppression est fortement déconseillée pour la traçabilité. Voulez-vous vraiment continuer ?';
     }
 
     if (!confirm(message)) {
@@ -406,7 +398,8 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.labelService.delete(this.label.id)
+    this.labelService
+      .delete(this.label.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
@@ -437,7 +430,8 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.labelService.export(this.label.id)
+    this.labelService
+      .export(this.label.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (labelExport) => {
@@ -462,10 +456,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.exporting = false;
-          this.errorMessage = this.resolveErrorMessage(
-            error,
-            this.i18n.instant('AUTO.ERREUR_LORS_DE_L_EXPORT_DE_L_ETIQUETTE')
-          );
+          this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.ERREUR_LORS_DE_L_EXPORT_DE_L_ETIQUETTE'));
         }
       });
   }
@@ -534,7 +525,12 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
 
   getInitials(name: string | undefined): string {
     if (!name) return '??';
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
   }
 
   getIssueColor(issue: LabelValidationIssueDto): string {
@@ -571,9 +567,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
   }
 
   get filteredLotSnapshot(): Record<string, unknown> | null {
-    return this.parseSnapshot(
-      this.label?.sourceSnapshots?.find((snapshot) => snapshot.sourceType === 'FILTERED_LOT')?.snapshotJson
-    );
+    return this.parseSnapshot(this.label?.sourceSnapshots?.find((snapshot) => snapshot.sourceType === 'FILTERED_LOT')?.snapshotJson);
   }
 
   get filteredLotGenealogy(): ProductionGenealogy | null {
@@ -582,7 +576,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     }
 
     const genealogy = this.filteredLotSnapshot?.['genealogy'];
-    return genealogy && typeof genealogy === 'object' ? genealogy as ProductionGenealogy : null;
+    return genealogy && typeof genealogy === 'object' ? (genealogy as ProductionGenealogy) : null;
   }
 
   get rootSource(): ProductionRootSource | null {
@@ -598,9 +592,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
       return '-';
     }
 
-    return this.label?.netQuantity
-      ? `Packaging lie - ${this.label.netQuantity}`
-      : 'Packaging lie';
+    return this.label?.netQuantity ? `Packaging lie - ${this.label.netQuantity}` : 'Packaging lie';
   }
 
   get certificationsLabel(): string {
@@ -651,11 +643,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
   }
 
   get postFiltrationQualityControls(): Record<string, string> {
-    return resolvePostFiltrationQualityControls(
-      this.filteredLotGenealogy,
-      this.label,
-      null
-    );
+    return resolvePostFiltrationQualityControls(this.filteredLotGenealogy, this.label, null);
   }
 
   get nonCompositionPostFiltrationQualityControls(): Record<string, string> {
@@ -681,7 +669,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
 
     try {
       const parsed = JSON.parse(snapshotJson);
-      return parsed && typeof parsed === 'object' ? parsed as Record<string, unknown> : null;
+      return parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : null;
     } catch {
       return null;
     }

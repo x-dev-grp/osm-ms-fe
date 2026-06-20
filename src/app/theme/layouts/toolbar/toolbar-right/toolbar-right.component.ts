@@ -13,16 +13,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service';
-import { AbleProConfig } from 'src/app/app-config';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { RTL } from '../../../const';
-import { ThemeConfigService } from '../../../../shared/services/theme-config.service';
 import { GlobalSearchService } from '../../../../shared/services/global-search.service';
 import { QrResolveResponse } from '../../../../shared/models/qr-models';
 import { UserAvatarComponent } from '../../../../shared/components/user-avatar/user-avatar.component';
 import { NotificationService } from '../../../../shared/services/notification.service';
-import { PushNotificationService } from '../../../../shared/services/push-notification.service';
+import { NotificationTextService } from '../../../../shared/services/notification-text.service';
+import { LanguageService } from '../../../../shared/services/language.service';
+import { ChatService } from '../../../../shared/services/chat.service';
 import { UserNotification } from '../../../../shared/models/notification.model';
+import { NotificationTextPipe } from '../../../../shared/pipes/notification-text.pipe';
 
 @Component({
   selector: 'app-nav-right',
@@ -38,7 +38,8 @@ import { UserNotification } from '../../../../shared/models/notification.model';
     MatButtonModule,
     MatMenuModule,
     MatBadgeModule,
-    UserAvatarComponent
+    UserAvatarComponent,
+    NotificationTextPipe
   ],
   templateUrl: './toolbar-right.component.html',
   standalone: true,
@@ -47,10 +48,12 @@ import { UserNotification } from '../../../../shared/models/notification.model';
 export class NavRightComponent implements OnInit {
   authenticationService = inject(AuthenticationService);
   private readonly notificationService = inject(NotificationService);
-  private readonly pushNotificationService = inject(PushNotificationService);
+  readonly notificationTextService = inject(NotificationTextService);
+  private readonly chatService = inject(ChatService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly unreadCount = this.notificationService.unreadCount;
+  readonly messageUnreadCount = this.chatService.unreadCount;
   readonly notifications = this.notificationService.notifications;
 
   readonly HeaderBlur = output();
@@ -59,35 +62,19 @@ export class NavRightComponent implements OnInit {
   searching = false;
 
   private translate = inject(TranslateService);
+  private languageService = inject(LanguageService);
   private themeService = inject(ThemeLayoutService);
   private router = inject(Router);
   private globalSearchService = inject(GlobalSearchService);
-  private themeDirection = inject(ThemeConfigService);
 
   constructor() {
-    const savedLang = localStorage.getItem('app_language');
-    if (savedLang) {
-      this.translate.use(savedLang);
-      if (savedLang === 'ar') {
-        this.themeService.directionChange.set(RTL);
-        this.themeDirection.applyrtl(true);
-      } else {
-        this.themeDirection.applyrtl(false);
-      }
-    } else {
-      this.translate.setDefaultLang(AbleProConfig.i18n);
-    }
-
     effect(() => {
       this.isRtlTheme(this.themeService.directionChange());
     });
   }
 
   ngOnInit(): void {
-    if (this.authenticationService.currentUserValue) {
-      this.notificationService.startPolling();
-      void this.pushNotificationService.initAfterLogin();
-    }
+    // Notification polling is started from AdminComponent after login.
   }
 
   openNotificationsMenu(): void {
@@ -103,9 +90,7 @@ export class NavRightComponent implements OnInit {
   }
 
   useLanguage(language: string) {
-    this.translate.use(language);
-    localStorage.setItem('app_language', language);
-    window.location.reload();
+    this.languageService.applyLanguage(language);
   }
 
   headerBlur() {
@@ -113,7 +98,6 @@ export class NavRightComponent implements OnInit {
   }
 
   logout() {
-    this.notificationService.stopPolling();
     this.authenticationService.logout();
   }
 

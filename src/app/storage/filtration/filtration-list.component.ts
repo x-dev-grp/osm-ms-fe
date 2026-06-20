@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ViewChild, inject } from '@angular/core';
+import { Component, DestroyRef, inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -79,9 +79,12 @@ export class FiltrationListComponent {
   }
 
   private onStart(operationId: string): void {
-    this.api.start(operationId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => this.refreshDashboard()
-    });
+    this.api
+      .start(operationId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.refreshDashboard()
+      });
   }
 
   private onChangeStatus(row: FiltrationOperation): void {
@@ -90,11 +93,14 @@ export class FiltrationListComponent {
       data: { row: this.normalizeRow(row) }
     });
 
-    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((changed: boolean) => {
-      if (changed) {
-        this.refreshDashboard();
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((changed: boolean) => {
+        if (changed) {
+          this.refreshDashboard();
+        }
+      });
   }
 
   private onDelete(row: FiltrationOperation): void {
@@ -103,15 +109,21 @@ export class FiltrationListComponent {
       data: { row: this.normalizeRow(row) }
     });
 
-    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((confirmed: boolean) => {
-      if (!confirmed) {
-        return;
-      }
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed: boolean) => {
+        if (!confirmed) {
+          return;
+        }
 
-      this.api.delete(row.operationId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: () => this.refreshDashboard()
+        this.api
+          .delete(row.operationId)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => this.refreshDashboard()
+          });
       });
-    });
   }
 
   private onPrepareLabel(row: FiltrationOperation & { targetStorageUnit?: { id?: string }; target?: { id?: string } }): void {

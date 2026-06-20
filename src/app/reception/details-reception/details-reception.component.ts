@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -205,20 +205,23 @@ export class DetailsReceptionComponent implements OnInit {
       return;
     }
 
-    this.confirmationDialog.confirm({
-      title: this.translate.instant('AUTO.REGENERATE_QR_CODE'),
-      message: this.translate.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
-      type: ConfirmationType.WARNING,
-      confirmText: this.translate.instant('AUTO.REGENERATE'),
-      cancelText: this.translate.instant('ADMIN.CANCEL'),
-      showIcon: true,
-      destructive: true,
-      requiredText: this.translate.instant('AUTO.OKAY'),
-      requiredTextHint: this.translate.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
-      requiredTextPlaceholder: this.translate.instant('AUTO.TYPE_OKAY')
-    }).pipe(take(1)).subscribe((result) => {
-      onResolved(!!result?.confirmed);
-    });
+    this.confirmationDialog
+      .confirm({
+        title: this.translate.instant('AUTO.REGENERATE_QR_CODE'),
+        message: this.translate.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
+        type: ConfirmationType.WARNING,
+        confirmText: this.translate.instant('AUTO.REGENERATE'),
+        cancelText: this.translate.instant('ADMIN.CANCEL'),
+        showIcon: true,
+        destructive: true,
+        requiredText: this.translate.instant('AUTO.OKAY'),
+        requiredTextHint: this.translate.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+        requiredTextPlaceholder: this.translate.instant('AUTO.TYPE_OKAY')
+      })
+      .pipe(take(1))
+      .subscribe((result) => {
+        onResolved(!!result?.confirmed);
+      });
   }
 
   private normalizeDelivery(delivery: UnifiedDelivery): UnifiedDelivery {
@@ -253,9 +256,7 @@ export class DetailsReceptionComponent implements OnInit {
 
           const lot = this.deliveryData?.lotNumber;
           const curType = (this.deliveryData?.deliveryType || '').toUpperCase();
-          const targetType =
-            curType === 'OIL' ? deliveryType.OLIVE :
-              curType === 'OLIVE' ? deliveryType.OIL : null;
+          const targetType = curType === 'OIL' ? deliveryType.OLIVE : curType === 'OLIVE' ? deliveryType.OIL : null;
 
           if (lot && targetType) {
             this.loadAssociatedCounterpart(lot, targetType);

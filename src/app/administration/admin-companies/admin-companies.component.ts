@@ -7,7 +7,9 @@ import { companyProfileDashboardConfig } from '../administration-dashboard/compa
   selector: 'app-admin-companies',
   standalone: true,
   imports: [OsmDashboard, SharedModule],
-  template: `<osm-dashboard [config]="companyProfileConfig"></osm-dashboard>`
+  template: `
+    <osm-dashboard [config]="companyProfileConfig"></osm-dashboard>
+  `
 })
 export class AdminCompaniesComponent {
   companyProfileConfig = companyProfileDashboardConfig;

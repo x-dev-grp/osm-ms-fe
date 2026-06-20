@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit, effect, inject, input } from '@angular/core';
+import { Component, effect, inject, input, OnInit } from '@angular/core';
 
 // project import
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -9,7 +9,7 @@ import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service'
 import { DARK, LIGHT } from 'src/app/theme/const';
 
 // apexChart
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

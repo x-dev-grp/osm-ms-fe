@@ -19,21 +19,15 @@ export class ExpeditionService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<ExpeditionDto[]> {
-    return this.http.get<ApiResponse<ExpeditionDto>>(`${this.baseUrl}/fetchAll`).pipe(
-      map((response) => response?.data ?? [])
-    );
+    return this.http.get<ApiResponse<ExpeditionDto>>(`${this.baseUrl}/fetchAll`).pipe(map((response) => response?.data ?? []));
   }
 
   create(request: ExpeditionCreateRequest): Observable<ExpeditionDto> {
-    return this.http
-      .post<ApiSingleResponse<ExpeditionDto>>(this.baseUrl, request)
-      .pipe(map((response) => response.data));
+    return this.http.post<ApiSingleResponse<ExpeditionDto>>(this.baseUrl, request).pipe(map((response) => response.data));
   }
 
   getById(expeditionId: string): Observable<ExpeditionDto> {
-    return this.http
-      .get<ApiSingleResponse<ExpeditionDto>>(`${this.baseUrl}/fetch/${expeditionId}`)
-      .pipe(map((response) => response.data));
+    return this.http.get<ApiSingleResponse<ExpeditionDto>>(`${this.baseUrl}/fetch/${expeditionId}`).pipe(map((response) => response.data));
   }
 
   getByProject(projectId: string): Observable<ExpeditionDto[]> {
@@ -41,7 +35,8 @@ export class ExpeditionService {
   }
 
   getProjectTraceability(projectId: string): Observable<any> {
-    return this.http.get<ApiSingleResponse<any>>(`${this.baseUrl}/project/${projectId}/traceability`)
+    return this.http
+      .get<ApiSingleResponse<any>>(`${this.baseUrl}/project/${projectId}/traceability`)
       .pipe(map((response) => response.data || response));
   }
 
@@ -53,9 +48,7 @@ export class ExpeditionService {
 
   update(expeditionId: string, request: ExpeditionUpdateRequest): Observable<ExpeditionDto> {
     const payload = { ...request, id: expeditionId };
-    return this.http
-      .put<ApiSingleResponse<ExpeditionDto>>(this.baseUrl, payload)
-      .pipe(map((response) => response.data));
+    return this.http.put<ApiSingleResponse<ExpeditionDto>>(this.baseUrl, payload).pipe(map((response) => response.data));
   }
 
   addLine(expeditionId: string, request: ExpeditionLineCreateRequest): Observable<ExpeditionDto> {
@@ -95,8 +88,6 @@ export class ExpeditionService {
   }
 
   delete(expeditionId: string): Observable<void> {
-    return this.http
-      .delete<ApiSingleResponse<ExpeditionDto>>(`${this.baseUrl}/delete/${expeditionId}`)
-      .pipe(map(() => undefined));
+    return this.http.delete<ApiSingleResponse<ExpeditionDto>>(`${this.baseUrl}/delete/${expeditionId}`).pipe(map(() => undefined));
   }
 }

@@ -1,6 +1,6 @@
-import { inject } from "@angular/core";
-import { CanActivateFn, Router } from "@angular/router";
-import { AuthenticationService } from "src/app/auth/services/authentication.service";
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 
 export function allPermissionGuard(requiredPermissions: string[]): CanActivateFn {
   return () => {
@@ -9,8 +9,7 @@ export function allPermissionGuard(requiredPermissions: string[]): CanActivateFn
     if (authService.hasAllPermissions(requiredPermissions) || authService.isAdmin()) {
       return true;
     }
-    return router.createUrlTree(
-      ['/access-denied']);
+    return router.createUrlTree(['/access-denied']);
   };
 }
 export function anyPermissionGuard(requiredPermissions: string[]): CanActivateFn {

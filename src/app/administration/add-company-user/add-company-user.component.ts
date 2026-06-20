@@ -57,8 +57,6 @@ export class AddCompanyUserComponent {
 
   constructor() {}
 
-
-
   ngOnInit() {
     this.userForm = this._fb.group(
       {

@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -83,13 +83,10 @@ export class LabelListComponent {
 
     this.labelService.export(label.id).subscribe({
       next: (labelExport) => {
-        this.downloadJson(
-          labelExport.payloadJson ?? '{}',
-          String(labelExport.lotNumber || labelExport.labelId || label.id || 'etiquette')
-        );
+        this.downloadJson(labelExport.payloadJson ?? '{}', String(labelExport.lotNumber || labelExport.labelId || label.id || 'etiquette'));
         this.refreshDashboard();
       },
-      error: (error) => console.error(this.resolveErrorMessage(error, 'Erreur lors de l\'export'), error)
+      error: (error) => console.error(this.resolveErrorMessage(error, "Erreur lors de l'export"), error)
     });
   }
 
@@ -116,7 +113,8 @@ export class LabelListComponent {
 
     let message = 'Etes-vous sur de vouloir supprimer cette etiquette ?';
     if (label.status === 'FINALIZED' || label.status === 'EXPORTED_JSON') {
-      message = 'ATTENTION : Cette etiquette est FINALISEE. Sa suppression est fortement deconseillee pour la tracabilite. Voulez-vous vraiment continuer ?';
+      message =
+        'ATTENTION : Cette etiquette est FINALISEE. Sa suppression est fortement deconseillee pour la tracabilite. Voulez-vous vraiment continuer ?';
     }
 
     if (!confirm(message)) {

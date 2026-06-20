@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 // project import
 // CHANGE: permissions - import permission guards and enums
+import { AuthGuardChild } from './interceptors/guards/auth.guard';
 import { anyPermissionGuard, moduleGuard } from './interceptors/guards/permission.guard';
 import { Action, OSMModule, permissionKey, ProductionEntity, ReceptionEntity } from './theme/types/permissions';
 
@@ -22,6 +23,7 @@ const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
+    canActivate: [AuthGuardChild],
     children: [
       {
         path: '',
@@ -49,6 +51,16 @@ const routes: Routes = [
       {
         path: 'welcome',
         loadComponent: () => import('./home-dashboard/home-dashboard.component').then((m) => m.HomeDashboardComponent)
+      },
+      {
+        path: 'notifications',
+        loadComponent: () =>
+          import('./notifications/notification-center.component').then((m) => m.NotificationCenterComponent)
+      },
+      {
+        path: 'messages',
+        loadComponent: () =>
+          import('./messages/messages-center.component').then((m) => m.MessagesCenterComponent)
       },
 
       {
@@ -95,6 +107,17 @@ const routes: Routes = [
         path: 'reception',
         canActivate: [moduleGuard([OSMModule.RECEPTION])],
         children: receptionRoutes
+      },
+
+      {
+        path: 'account/profile',
+        canActivate: [AuthGuardChild],
+        loadComponent: () => import('./settings/user-profile/user-profile.component').then((c) => c.UserProfileComponent)
+      },
+      {
+        path: 'settings/profile',
+        canActivate: [AuthGuardChild],
+        loadComponent: () => import('./settings/user-profile/user-profile.component').then((c) => c.UserProfileComponent)
       },
 
       {

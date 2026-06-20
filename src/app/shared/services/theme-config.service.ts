@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AbleProConfig } from '../../app-config';
 import { ThemeLayoutService } from '../../theme/services/theme-layout.service';
 import { LTR, RTL } from '../../theme/const';

@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -8,20 +7,16 @@ import { FinalProductService } from '../../../services/final-product.service';
 import { LabelService } from '../../../../labels/services/label.service';
 import { LabelContentDto } from '../../../../labels/models/label.model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import {
-  ConfirmationDialogService,
-  ConfirmationType
-} from '../../../../shared/services/confirmation-dialog.service';
+import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import {
   FinalProduct,
-  FinalProductType,
   finalProductCartonsPerPallet,
   finalProductDisplayName,
+  FinalProductType,
   finalProductTypeLabel,
   finalProductUnitsPerCarton
 } from '../../../models/final-product.model';
 import { resolveQualityGradeLabel } from '../../../../shared/models/quality-grades.enum';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sku-detail',
@@ -90,35 +85,37 @@ export class SkuDetailComponent implements OnInit {
     const isCurrentlyActif = this.sku.actif === true;
     const action = isCurrentlyActif ? 'desactiver' : 'activer';
 
-    this.confirmationDialog.confirm({
-      title: this.i18n.instant('STANDARD.CONFIRMATION.SIMPLE.TITLE'),
-      message: `Voulez-vous vraiment ${action} le produit "${this.getProductName()}" ?`,
-      type: ConfirmationType.WARNING,
-      confirmText: isCurrentlyActif ? this.i18n.instant('AUTO.DESACTIVER') : this.i18n.instant('AUTO.ACTIVER'),
-      cancelText: this.i18n.instant('ADMIN.CANCEL'),
-      showIcon: true,
-      destructive: isCurrentlyActif
-    }).subscribe((result) => {
-      if (!result?.confirmed || !this.sku?.id) {
-        return;
-      }
-
-      const request = this.sku.actif
-        ? this.finalProductService.deactivateFinalProduct(this.sku.id)
-        : this.finalProductService.activateFinalProduct(this.sku.id);
-
-      request.subscribe({
-        next: () => {
-          if (this.sku) {
-            this.sku.actif = !this.sku.actif;
-          }
-          this.toast.success('AUTO.PRODUIT_AVEC_SUCCES', { value0: action });
-        },
-        error: (err) => {
-          console.error(`Erreur lors de ${action}`, err);
+    this.confirmationDialog
+      .confirm({
+        title: this.i18n.instant('STANDARD.CONFIRMATION.SIMPLE.TITLE'),
+        message: `Voulez-vous vraiment ${action} le produit "${this.getProductName()}" ?`,
+        type: ConfirmationType.WARNING,
+        confirmText: isCurrentlyActif ? this.i18n.instant('AUTO.DESACTIVER') : this.i18n.instant('AUTO.ACTIVER'),
+        cancelText: this.i18n.instant('ADMIN.CANCEL'),
+        showIcon: true,
+        destructive: isCurrentlyActif
+      })
+      .subscribe((result) => {
+        if (!result?.confirmed || !this.sku?.id) {
+          return;
         }
+
+        const request = this.sku.actif
+          ? this.finalProductService.deactivateFinalProduct(this.sku.id)
+          : this.finalProductService.activateFinalProduct(this.sku.id);
+
+        request.subscribe({
+          next: () => {
+            if (this.sku) {
+              this.sku.actif = !this.sku.actif;
+            }
+            this.toast.success('AUTO.PRODUIT_AVEC_SUCCES', { value0: action });
+          },
+          error: (err) => {
+            console.error(`Erreur lors de ${action}`, err);
+          }
+        });
       });
-    });
   }
 
   goBack(): void {
@@ -131,7 +128,8 @@ export class SkuDetailComponent implements OnInit {
     }
 
     const productName = this.getProductName();
-    this.confirmationDialog.confirmDelete(productName, `Voulez-vous vraiment supprimer le produit "${productName}" ?`)
+    this.confirmationDialog
+      .confirmDelete(productName, `Voulez-vous vraiment supprimer le produit "${productName}" ?`)
       .subscribe((result) => {
         if (!result?.confirmed || !this.sku?.id) {
           return;
@@ -198,24 +196,23 @@ export class SkuDetailComponent implements OnInit {
   }
 
   hasPackagingInfo(): boolean {
-    return !!this.sku && !!(
-      this.sku.volume ||
-      this.sku.packagingType ||
-      this.sku.barcode ||
-      this.sku.brand ||
-      this.getUnitsPerCarton() ||
-      this.getCartonsPerPallet() ||
-      this.sku.netWeight ||
-      this.sku.grossWeight
+    return (
+      !!this.sku &&
+      !!(
+        this.sku.volume ||
+        this.sku.packagingType ||
+        this.sku.barcode ||
+        this.sku.brand ||
+        this.getUnitsPerCarton() ||
+        this.getCartonsPerPallet() ||
+        this.sku.netWeight ||
+        this.sku.grossWeight
+      )
     );
   }
 
   hasBulkInfo(): boolean {
-    return !!this.sku && !!(
-      this.sku.density ||
-      this.sku.storageUnit ||
-      this.sku.unitOfMeasure
-    );
+    return !!this.sku && !!(this.sku.density || this.sku.storageUnit || this.sku.unitOfMeasure);
   }
 
   relatedLabelsCount(): number {

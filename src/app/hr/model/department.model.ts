@@ -7,5 +7,5 @@ export interface Department {
   managerId?: string;
   employees?: Employee[];
   externalId?: string;
-  manager?:Employee;
+  manager?: Employee;
 }

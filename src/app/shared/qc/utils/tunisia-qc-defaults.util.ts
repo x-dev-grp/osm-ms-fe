@@ -38,7 +38,7 @@ export function mapGradeToQcCategory(grade: QualityGrades | string | null | unde
   if (Object.values(QualityGrades).includes(grade as QualityGrades)) {
     return GRADE_TO_QC_CATEGORY[grade as QualityGrades] ?? null;
   }
-  return QC_CATEGORY_TO_GRADE[grade] ? GRADE_TO_QC_CATEGORY[QC_CATEGORY_TO_GRADE[grade]] ?? grade : grade;
+  return QC_CATEGORY_TO_GRADE[grade] ? (GRADE_TO_QC_CATEGORY[QC_CATEGORY_TO_GRADE[grade]] ?? grade) : grade;
 }
 
 export const COI_EVOO_LIMITS = {
@@ -92,12 +92,7 @@ function withinVirgin(values: OilMeasurementValues): boolean {
 }
 
 export function suggestOilGrade(values: OilMeasurementValues): string | null {
-  const hasAny =
-    values.acidity != null ||
-    values.k232 != null ||
-    values.k270 != null ||
-    values.deltaK != null ||
-    values.peroxide != null;
+  const hasAny = values.acidity != null || values.k232 != null || values.k270 != null || values.deltaK != null || values.peroxide != null;
 
   if (!hasAny) {
     return null;
@@ -111,9 +106,7 @@ export function suggestOilGrade(values: OilMeasurementValues): string | null {
   return TUNISIA_OIL_CATEGORY_LABELS.LAMPANTE;
 }
 
-export function extractOilMeasurements(
-  values: Record<string, string | number | boolean | null | undefined>
-): OilMeasurementValues {
+export function extractOilMeasurements(values: Record<string, string | number | boolean | null | undefined>): OilMeasurementValues {
   const num = (key: string): number | null => {
     const raw = values[key];
     if (raw == null || raw === '') {

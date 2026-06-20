@@ -51,9 +51,7 @@ export class ArticleListComponent {
       return;
     }
 
-    const request = article.actif
-      ? this.articleService.desactiverArticle(article.id)
-      : this.articleService.activerArticle(article.id);
+    const request = article.actif ? this.articleService.desactiverArticle(article.id) : this.articleService.activerArticle(article.id);
 
     request.subscribe({
       next: () => this.dashboard?.refrechData(),

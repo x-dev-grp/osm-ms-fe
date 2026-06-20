@@ -23,8 +23,6 @@ export class UnifiedDeliveryService {
 
   constructor(private http: HttpClient) {}
 
-
-
   getAllDeliveriesList(): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/fetchAll`);
   }

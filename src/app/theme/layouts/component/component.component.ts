@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 
 // project import
- import { ComponentNavigationComponent } from '../../components/navigation/navigation.component';
+import { ComponentNavigationComponent } from '../../components/navigation/navigation.component';
 import { osm_menus } from '../../../shared/osm_menu';
 
 @Component({

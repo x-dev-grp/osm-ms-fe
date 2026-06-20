@@ -25,11 +25,7 @@ export function numericStepForRule(rule: QualityControlRule): string {
   return '0.1';
 }
 
-export function isWithinNumericBounds(
-  value: number,
-  min?: number | null,
-  max?: number | null
-): boolean {
+export function isWithinNumericBounds(value: number, min?: number | null, max?: number | null): boolean {
   if (Number.isNaN(value)) {
     return false;
   }
@@ -79,10 +75,7 @@ export function stringOptions(rule: QualityControlRule): string[] {
     .filter((v) => !!v);
 }
 
-export function evaluateRule(
-  rule: QualityControlRule,
-  rawValue: string | number | boolean | null | undefined
-): QcRuleEvaluation {
+export function evaluateRule(rule: QualityControlRule, rawValue: string | number | boolean | null | undefined): QcRuleEvaluation {
   const isEmpty = rawValue === null || rawValue === undefined || rawValue === '';
 
   if (isEmpty) {
@@ -152,10 +145,7 @@ export function buildQcFormControls(
       }
     }
 
-    group[rule.ruleKey] = new FormControl(
-      { value: initialValue, disabled: readOnly },
-      validators
-    );
+    group[rule.ruleKey] = new FormControl({ value: initialValue, disabled: readOnly }, validators);
   });
 
   return new FormGroup(group);

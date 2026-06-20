@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CertificationService } from '../../services/certification.service';
 import { Certification } from '../../models/certification.model';
 import { CertificationFormComponent } from '../certification-form/certification-form.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-certification-detail',
@@ -119,7 +121,3 @@ export class ImagePreviewDialog {
   constructor(@Inject(MAT_DIALOG_DATA) public data: { image: string, name: string }) {}
 }
 
-import { Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';

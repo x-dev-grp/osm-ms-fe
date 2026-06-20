@@ -1,5 +1,5 @@
 // Angular import
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { Location, LocationStrategy } from '@angular/common';
 
 // project import

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { OilTransaction, TransactionState } from '../models/OilTransaction';
 import { ApiResponse } from '../models/api-response';
-import {QrCodeRequest, QrCodeResponse} from "../models/qr-models";
+import { QrCodeRequest, QrCodeResponse } from '../models/qr-models';
 
 // Interface for exchange completion payload
 export interface ExchangeCompletionPayload {

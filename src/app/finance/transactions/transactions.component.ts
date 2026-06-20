@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,8 +14,7 @@ import { FinancialTransactionService } from '../service/financial-transaction.se
 import { TRANSACTIONS_DASHBOARD_CONFIG } from './transactions-dashboard.config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { SharedModule } from '../../shared/shared.module';
-import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import { ACTION_ICONS } from 'src/app/shared/modules/osm-dashboard/models/actions';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
@@ -27,15 +25,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    SharedModule,
-    OsmDashboard
-  ],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule, SharedModule, OsmDashboard],
   styleUrls: ['./transactions.component.scss']
 })
 export class TransactionsComponent implements OnInit, OnDestroy {
@@ -55,14 +45,12 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.dashboardConfig = this.buildDashboardConfigFromQueryParams();
-   }
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-
 
   /** Gère les actions depuis le tableau */
   handleAction(event: { row: FinancialTransaction; action: string }): void {
@@ -85,7 +73,6 @@ export class TransactionsComponent implements OnInit, OnDestroy {
         this.router.navigate(['/finance/transactions', event.row.id, 'edit']);
         break;
 
-
       case 'APPROVE':
         this.approve(event.row.id!);
         break;
@@ -97,13 +84,10 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       case 'DUPLICATE':
         this.duplicate(event.row.id!);
         break;
-
-
     }
   }
 
   /** Refresh dashboard data */
-
 
   /** Ouvre dans un nouvel onglet la vue et imprime */
   print(id: string): void {
@@ -125,7 +109,8 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    this.transactionService.generateTransactionBillPdf(transaction.id, this.buildBillRequest(transaction, profile))
+    this.transactionService
+      .generateTransactionBillPdf(transaction.id, this.buildBillRequest(transaction, profile))
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -140,8 +125,6 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       });
   }
 
-
-
   /** Approuve une transaction */
   approve(id: string): void {
     if (!confirm(this.i18n.instant('AUTO.ETES_VOUS_SUR_DE_VOULOIR_APPROUVER_CETTE_TRANSACTION'))) {
@@ -150,13 +133,14 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-    this.transactionService.approveTransaction(id)
+    this.transactionService
+      .approveTransaction(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
           if (response.success) {
             this.showSuccess('TRANSACTIONS.MESSAGES.APPROVE_SUCCESS');
-           } else {
+          } else {
             this.showError(response.message || 'TRANSACTIONS.MESSAGES.APPROVE_ERROR');
           }
           this.loading = false;
@@ -181,13 +165,13 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-    this.transactionService.rejectTransaction(id, reason)
+    this.transactionService
+      .rejectTransaction(id, reason)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
           if (response.success) {
             this.showSuccess('TRANSACTIONS.MESSAGES.REJECT_SUCCESS');
-
           } else {
             this.showError(response.message || 'TRANSACTIONS.MESSAGES.REJECT_ERROR');
           }
@@ -207,7 +191,8 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    this.transactionService.getTransactionById(id)
+    this.transactionService
+      .getTransactionById(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -238,7 +223,6 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   /** Export single transaction */
 
-
   /** Bulk operations */
   bulkApprove(ids: string[]): void {
     if (!confirm(`Êtes-vous sûr de vouloir approuver ${ids.length} transaction(s) ?`)) {
@@ -249,8 +233,9 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     let completed = 0;
     let errors = 0;
 
-    ids.forEach(id => {
-      this.transactionService.approveTransaction(id)
+    ids.forEach((id) => {
+      this.transactionService
+        .approveTransaction(id)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response: any) => {
@@ -282,14 +267,12 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   private showSuccess(message: string): void {
-    this.toast.success(message );
+    this.toast.success(message);
   }
 
   private showError(message: string): void {
-    this.toast.error(message );
+    this.toast.error(message);
   }
 
   private showBillError(error: unknown): void {

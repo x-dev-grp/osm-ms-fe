@@ -21,7 +21,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     {
       action: 'GEN_INVOICE',
       color: 'secondary',
-      icon: 'file_copy',
+      icon: 'file_copy'
       // disabled: {
       //   field: 'paid',
       //   value: false
@@ -141,7 +141,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     // ==================== QUANTITY & PRICING ====================
     {
       name: 'quantity',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Quantité (L)',
       labelTranslatePath: 'OIL_SALES.FIELDS.QUANTITY',
       attributeType: AttributeType.number,
@@ -166,7 +166,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
     {
       name: 'totalAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,

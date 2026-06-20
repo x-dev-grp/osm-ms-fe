@@ -64,7 +64,7 @@ export const dashboardConfig: DashboardConfig = {
     // },
     {
       name: 'employees',
-      label: 'Nombre d\'employés',
+      label: "Nombre d'employés",
       labelTranslatePath: 'DEPARTMENT.DASHBOARD.FIELDS.EMPLOYEES_COUNT',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -72,8 +72,7 @@ export const dashboardConfig: DashboardConfig = {
       filterable: false,
       defaultFilter: false,
       dataTable: true,
-      exportable: true,
-
+      exportable: true
     }
   ]
 };

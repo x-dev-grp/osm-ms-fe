@@ -75,11 +75,13 @@ export const userDashboardConfig: DashboardConfig = {
       options: [
         {
           label: 'Email',
-          value: 'EMAIL',labelTranslatePath:'EMPLOYEE.EMAIL'
+          value: 'EMAIL',
+          labelTranslatePath: 'EMPLOYEE.EMAIL'
         },
         {
           label: 'Téléphone',
-          value: 'PHONE',labelTranslatePath:'EMPLOYEE.PHONE'
+          value: 'PHONE',
+          labelTranslatePath: 'EMPLOYEE.PHONE'
         }
       ]
     },

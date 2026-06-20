@@ -1,52 +1,54 @@
-# Railway deployment
+# Railway deployment (testing)
 
-## Service
+Full stack guide (backend + Postgres + variables): **[../oosm/RAILWAY_TESTING.md](../oosm/RAILWAY_TESTING.md)** in the backend repo.
 
-Deploy the `osm-ms-fe` directory as a Railway service. The included `railway.json` forces Dockerfile builds.
+## This service
+
+Deploy the **`osm-ms-fe`** root as a Railway service. Railway reads:
+
+- `Dockerfile` — multi-stage Angular build + nginx
+- `railway.json` — Dockerfile builder, health check `/`
 
 ## Required variable
 
-Set this Railway variable on the frontend service:
-
 ```text
-BACKEND_URL=https://<backend-service-domain>
+BACKEND_URL=https://<your-backend-service>.up.railway.app
 ```
 
-The Angular production build uses same-origin API paths. Nginx forwards `/api/*` and `/oauth2/*` to `BACKEND_URL`.
+Nginx proxies:
 
-The frontend can keep Railway's generated URL. No Angular rebuild is needed when Railway assigns the frontend domain because production uses relative paths:
+- `/api/`, `/oauth2/`, `/ws/`, `/.well-known/`, `/jwks`, `/actuator/`
 
-```text
-apiUrl=''
-apiAuth=''
-```
+Production Angular uses relative URLs (`environment.apiUrl = ''`), so the app works on any Railway frontend domain without rebuild.
 
-Set these variables on the backend service after Railway gives the frontend URL:
+## After deploy
 
-```text
-FRONTEND_ENTRY_POINT=https://<frontend-service-domain>
-APP_CORS_ALLOWED_ORIGIN_PATTERNS=https://<frontend-service-domain>,https://*.up.railway.app
-```
-
-## Build
-
-Railway uses:
+Update the **backend** service:
 
 ```text
-Dockerfile
+FRONTEND_ENTRY_POINT=https://<your-frontend>.up.railway.app
+APP_CORS_ALLOWED_ORIGIN_PATTERNS=https://<your-frontend>.up.railway.app,https://*.up.railway.app
 ```
 
-The Dockerfile runs:
+## GitHub Actions
 
-```text
-npm ci --force
-npm run build -- -c=production --base-href=/ --deploy-url=/
-```
+`.github/workflows/deploy-railway.yml` deploys on push to `develop` / `testing`.
 
-and serves `dist/ui` with Nginx on Railway's `$PORT`.
+Secrets (environment **`railway-test`**):
 
-## Local verification
+| Secret | Description |
+|--------|-------------|
+| `RAILWAY_TOKEN` | Railway project token |
+| `RAILWAY_SERVICE_ID` | This frontend service UUID |
+| `RAILWAY_ENVIRONMENT_NAME` | Optional, e.g. `testing` |
+
+## Env template
+
+See [`.env.railway.example`](.env.railway.example).
+
+## Local build check
 
 ```bash
+npm ci --force
 npm run build -- --configuration production
 ```

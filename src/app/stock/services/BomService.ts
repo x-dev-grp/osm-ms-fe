@@ -15,15 +15,13 @@ export class BomService {
   constructor(private http: HttpClient) {}
 
   getById(id: string): Observable<Bom> {
-    return this.http.get<ApiSingleResponse<Bom>>(`${this.apiUrl}/fetch/${id}`).pipe(
-      map((response) => this.normalizeBom(response.data))
-    );
+    return this.http.get<ApiSingleResponse<Bom>>(`${this.apiUrl}/fetch/${id}`).pipe(map((response) => this.normalizeBom(response.data)));
   }
 
   getBomsByFinalProduct(finalProductId: string): Observable<Bom[]> {
-    return this.http.get<Bom[]>(`${this.apiUrl}/product/${finalProductId}`).pipe(
-      map((boms) => (boms ?? []).map((bom) => this.normalizeBom(bom)))
-    );
+    return this.http
+      .get<Bom[]>(`${this.apiUrl}/product/${finalProductId}`)
+      .pipe(map((boms) => (boms ?? []).map((bom) => this.normalizeBom(bom))));
   }
 
   getBomsByProduct(productId: string): Observable<Bom[]> {
@@ -35,22 +33,20 @@ export class BomService {
   }
 
   create(bom: Bom): Observable<Bom> {
-    return this.http.post<ApiSingleResponse<Bom>>(this.apiUrl, this.toPayload(bom)).pipe(
-      map((response) => this.normalizeBom(response.data))
-    );
+    return this.http
+      .post<ApiSingleResponse<Bom>>(this.apiUrl, this.toPayload(bom))
+      .pipe(map((response) => this.normalizeBom(response.data)));
   }
 
   update(id: string, bom: Bom): Observable<Bom> {
     const payload = { ...this.toPayload(bom), id };
-    return this.http.put<ApiSingleResponse<Bom>>(this.apiUrl, payload).pipe(
-      map((response) => this.normalizeBom(response.data))
-    );
+    return this.http.put<ApiSingleResponse<Bom>>(this.apiUrl, payload).pipe(map((response) => this.normalizeBom(response.data)));
   }
 
   getAll(): Observable<Bom[]> {
-    return this.http.get<ApiResponse<Bom>>(`${this.apiUrl}/fetchAll`).pipe(
-      map((response) => (response?.data ?? []).map((bom) => this.normalizeBom(bom)))
-    );
+    return this.http
+      .get<ApiResponse<Bom>>(`${this.apiUrl}/fetchAll`)
+      .pipe(map((response) => (response?.data ?? []).map((bom) => this.normalizeBom(bom))));
   }
 
   delete(id: string): Observable<void> {
@@ -58,9 +54,7 @@ export class BomService {
   }
 
   getActiveBomForFinalProduct(finalProductId: string): Observable<Bom | null> {
-    return this.http.get<Bom>(`${this.apiUrl}/product/${finalProductId}/active`).pipe(
-      map((bom) => this.normalizeBom(bom))
-    );
+    return this.http.get<Bom>(`${this.apiUrl}/product/${finalProductId}/active`).pipe(map((bom) => this.normalizeBom(bom)));
   }
 
   getActiveBomForProduct(productId: string): Observable<Bom | null> {
@@ -68,9 +62,7 @@ export class BomService {
   }
 
   activate(id: string): Observable<Bom> {
-    return this.http.put<Bom>(`${this.apiUrl}/${id}/activate`, {}).pipe(
-      map((bom) => this.normalizeBom(bom))
-    );
+    return this.http.put<Bom>(`${this.apiUrl}/${id}/activate`, {}).pipe(map((bom) => this.normalizeBom(bom)));
   }
 
   getMaterialNeeds(bomId: string, quantity: number): Observable<MaterialNeedLine[]> {

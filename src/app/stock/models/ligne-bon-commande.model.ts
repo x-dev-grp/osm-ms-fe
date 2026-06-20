@@ -1,5 +1,5 @@
-import { Article } from "./article.model";
-import { BonCommande } from "./bon-commande.model";
+import { Article } from './article.model';
+import { BonCommande } from './bon-commande.model';
 
 export interface LigneBonCommande {
   id?: string;

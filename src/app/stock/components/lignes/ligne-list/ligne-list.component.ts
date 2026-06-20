@@ -53,9 +53,7 @@ export class LigneListComponent {
       return;
     }
 
-    const serviceCall = isCurrentlyActif
-      ? this.ligneService.desactiverLigne(ligne.id)
-      : this.ligneService.activerLigne(ligne.id);
+    const serviceCall = isCurrentlyActif ? this.ligneService.desactiverLigne(ligne.id) : this.ligneService.activerLigne(ligne.id);
 
     serviceCall.subscribe({
       next: () => {

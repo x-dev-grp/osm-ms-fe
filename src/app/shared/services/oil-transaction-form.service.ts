@@ -82,11 +82,14 @@ export class OilTransactionFormService {
   prefillExchangeForm(calculation: ExchangeCalculation, qualityGrade: string): void {
     const form = this.getCurrentExchangeForm();
     if (form) {
-      form.patchValue({
-        oilQuantity: calculation.calculatedOilQuantity,
-        oilUnitPrice: calculation.oilUnitPrice,
-        qualityGrade: qualityGrade
-      }, { emitEvent: false });
+      form.patchValue(
+        {
+          oilQuantity: calculation.calculatedOilQuantity,
+          oilUnitPrice: calculation.oilUnitPrice,
+          qualityGrade: qualityGrade
+        },
+        { emitEvent: false }
+      );
     }
   }
 
@@ -113,7 +116,7 @@ export class OilTransactionFormService {
     const errors: string[] = [];
 
     if (form.invalid) {
-      Object.keys(form.controls).forEach(key => {
+      Object.keys(form.controls).forEach((key) => {
         const control = form.get(key);
         if (control?.errors) {
           if (control.errors['required']) {
@@ -138,7 +141,7 @@ export class OilTransactionFormService {
   setFormErrors(errors: { [key: string]: string }): void {
     const form = this.getCurrentExchangeForm();
     if (form) {
-      Object.keys(errors).forEach(key => {
+      Object.keys(errors).forEach((key) => {
         const control = form.get(key);
         if (control) {
           control.setErrors({ custom: errors[key] });
@@ -153,7 +156,7 @@ export class OilTransactionFormService {
   clearFormErrors(): void {
     const form = this.getCurrentExchangeForm();
     if (form) {
-      Object.keys(form.controls).forEach(key => {
+      Object.keys(form.controls).forEach((key) => {
         const control = form.get(key);
         if (control) {
           control.setErrors(null);

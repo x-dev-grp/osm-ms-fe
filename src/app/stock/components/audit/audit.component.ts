@@ -19,14 +19,7 @@ interface AuditRow extends AuditDto {
 @Component({
   selector: 'app-audit',
   standalone: true,
-  imports: [
-    TranslateModule,
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    OsmDashboard
-  ],
+  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard],
   templateUrl: './audit.component.html',
   styleUrls: ['./audit.component.scss']
 })
@@ -121,12 +114,8 @@ export class AuditComponent implements OnInit {
       }
     });
 
-    this.utilisateurs = Array.from(users).sort((a, b) =>
-      a.localeCompare(b, 'fr', { sensitivity: 'base' })
-    );
-    this.entityNames = Array.from(entities).sort((a, b) =>
-      a.localeCompare(b, 'fr', { sensitivity: 'base' })
-    );
+    this.utilisateurs = Array.from(users).sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
+    this.entityNames = Array.from(entities).sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
   }
 
   getEntityDisplayName(entityName: string | null | undefined): string {

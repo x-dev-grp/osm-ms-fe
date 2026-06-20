@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {QualityControlRule} from '../models/quality-control-rule';
-import {ApiResponse} from '../models/api-response';
+import { QualityControlRule } from '../models/quality-control-rule';
+import { ApiResponse } from '../models/api-response';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -58,9 +58,6 @@ export class QualityControlRuleService {
   }
 
   provisionDefaults(): Observable<{ success: boolean; created: number; message: string }> {
-    return this.http.post<{ success: boolean; created: number; message: string }>(
-      `${this.baseUrl}/provision-defaults`,
-      {}
-    );
+    return this.http.post<{ success: boolean; created: number; message: string }>(`${this.baseUrl}/provision-defaults`, {});
   }
 }

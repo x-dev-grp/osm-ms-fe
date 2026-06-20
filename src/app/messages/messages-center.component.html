@@ -1,0 +1,164 @@
+<div class="messages-center">
+  <app-card cardClass="messages-center-card" [padding]="24">
+    <div class="messages-center__header">
+      <div>
+        <h2 class="messages-center__title">{{ 'CHAT.CENTER_TITLE' | translate }}</h2>
+        @if (unreadCount() > 0) {
+          <p class="messages-center__subtitle">
+            {{ unreadCount() }} {{ 'CHAT.UNREAD' | translate | lowercase }}
+          </p>
+        }
+      </div>
+      <button mat-stroked-button type="button" (click)="toggleContacts()">
+        <mat-icon>{{ showContacts ? 'forum' : 'person_add' }}</mat-icon>
+        {{ (showContacts ? 'CHAT.BACK_TO_INBOX' : 'CHAT.NEW_MESSAGE') | translate }}
+      </button>
+    </div>
+
+    <div class="messages-center__body">
+      <div class="messages-center__list-panel">
+        @if (showContacts) {
+          <mat-form-field appearance="outline" class="messages-center__search" subscriptSizing="dynamic">
+            <mat-label>{{ 'CHAT.SEARCH_CONTACTS' | translate }}</mat-label>
+            <input matInput [(ngModel)]="contactSearch" (ngModelChange)="onContactSearchChange()" />
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          @if (filteredContacts.length === 0) {
+            <div class="messages-center__empty">
+              <mat-icon>people_outline</mat-icon>
+              <p>{{ 'CHAT.NO_CONTACTS' | translate }}</p>
+            </div>
+          } @else {
+            @for (contact of filteredContacts; track contact.id) {
+              <button type="button" class="messages-thread-item" (click)="startConversationWith(contact.id)">
+                <div class="messages-thread-item__avatar">{{ contact.displayName.charAt(0) | uppercase }}</div>
+                <div class="messages-thread-item__content">
+                  <div class="messages-thread-item__title">{{ contact.displayName }}</div>
+                  <div class="messages-thread-item__preview">{{ '@' + contact.username }}</div>
+                  @if (contact.roleName) {
+                    <div class="messages-thread-item__meta">{{ contact.roleName }}</div>
+                  }
+                </div>
+                <mat-icon class="messages-thread-item__chevron">chevron_right</mat-icon>
+              </button>
+            }
+          }
+        } @else {
+          <mat-form-field appearance="outline" class="messages-center__search" subscriptSizing="dynamic">
+            <mat-label>{{ 'CHAT.SEARCH_CONVERSATIONS' | translate }}</mat-label>
+            <input matInput [(ngModel)]="conversationSearch" />
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          @if (loadingConversations()) {
+            <div class="messages-center__loading">
+              <mat-spinner diameter="40"></mat-spinner>
+            </div>
+          } @else if (filteredConversations().length === 0) {
+            <div class="messages-center__empty">
+              <mat-icon>chat_bubble_outline</mat-icon>
+              <p>{{ 'CHAT.EMPTY_INBOX' | translate }}</p>
+              <button mat-flat-button color="primary" type="button" (click)="toggleContacts()">
+                {{ 'CHAT.START_CHAT' | translate }}
+              </button>
+            </div>
+          } @else {
+            @for (conversation of filteredConversations(); track conversation.id) {
+              <button
+                type="button"
+                class="messages-thread-item"
+                [class.messages-thread-item--selected]="selectedConversation?.id === conversation.id"
+                [class.messages-thread-item--unread]="conversation.unreadCount > 0"
+                (click)="selectConversation(conversation)"
+              >
+                <div class="messages-thread-item__avatar">{{ conversation.otherDisplayName.charAt(0) | uppercase }}</div>
+                <div class="messages-thread-item__content">
+                  <div class="messages-thread-item__title">{{ conversation.otherDisplayName }}</div>
+                  <div class="messages-thread-item__preview">{{ conversation.lastMessagePreview || ('CHAT.NO_MESSAGES_YET' | translate) }}</div>
+                  @if (conversation.lastMessageAt) {
+                    <div class="messages-thread-item__meta">{{ conversation.lastMessageAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+                  }
+                </div>
+                @if (conversation.unreadCount > 0) {
+                  <span class="messages-thread-item__badge">{{ conversation.unreadCount > 99 ? '99+' : conversation.unreadCount }}</span>
+                }
+              </button>
+            }
+          }
+        }
+      </div>
+
+      <mat-divider [vertical]="true" class="messages-center__divider"></mat-divider>
+
+      <div class="messages-center__thread-panel">
+        @if (selectedConversation) {
+          <div class="messages-thread">
+            <div class="messages-thread__header">
+              <div>
+                <h3 class="messages-thread__title">{{ selectedConversation.otherDisplayName }}</h3>
+                <p class="messages-thread__subtitle">{{ '@' + selectedConversation.otherUsername }}</p>
+              </div>
+            </div>
+
+            <div #threadViewport class="messages-thread__viewport">
+              @if (loadingMessages) {
+                <div class="messages-center__loading">
+                  <mat-spinner diameter="36"></mat-spinner>
+                </div>
+              } @else if (messages.length === 0) {
+                <div class="messages-center__placeholder">
+                  <mat-icon>waving_hand</mat-icon>
+                  <p>{{ 'CHAT.SAY_HELLO' | translate }}</p>
+                </div>
+              } @else {
+                @for (message of messages; track message.id) {
+                  <div class="messages-bubble-row" [class.messages-bubble-row--mine]="message.mine">
+                    <div class="messages-bubble">
+                      @if (!message.mine && message.senderDisplayName) {
+                        <div class="messages-bubble__sender">{{ message.senderDisplayName }}</div>
+                      }
+                      <div class="messages-bubble__body">{{ message.body }}</div>
+                      @if (message.createdDate) {
+                        <div class="messages-bubble__time">{{ message.createdDate | date: 'dd/MM/yyyy HH:mm' }}</div>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+
+            <div class="messages-thread__composer">
+              <mat-form-field appearance="outline" class="messages-thread__input" subscriptSizing="dynamic">
+                <mat-label>{{ 'CHAT.TYPE_MESSAGE' | translate }}</mat-label>
+                <textarea
+                  matInput
+                  rows="2"
+                  [(ngModel)]="draft"
+                  (keydown)="onDraftKeydown($event)"
+                  [disabled]="sending"
+                ></textarea>
+              </mat-form-field>
+              <button
+                mat-flat-button
+                color="primary"
+                type="button"
+                class="messages-thread__send"
+                [disabled]="!draft.trim() || sending"
+                (click)="sendMessage()"
+              >
+                <mat-icon>send</mat-icon>
+                {{ 'CHAT.SEND' | translate }}
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="messages-center__placeholder">
+            <mat-icon>forum</mat-icon>
+            <p>{{ 'CHAT.SELECT_PROMPT' | translate }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </app-card>
+</div>

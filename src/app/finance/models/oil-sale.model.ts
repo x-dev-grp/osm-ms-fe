@@ -1,9 +1,9 @@
 import { Currency, PaymentMethod } from './financial-transaction.model';
 import { SupplierType } from '../../shared/models/supplier-type';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
+import { QualityGrades } from '../../shared/models/quality-grades.enum';
 
 export { QualityGrades } from '../../shared/models/quality-grades.enum';
-import { QualityGrades } from '../../shared/models/quality-grades.enum';
 
 export interface OilSale {
   id?: string;
@@ -49,5 +49,3 @@ export enum OilSaleStatus {
   CANCELLED = 'CANCELLED',
   DELIVERED = 'DELIVERED'
 }
-
-

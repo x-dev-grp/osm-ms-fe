@@ -1,4 +1,4 @@
-import { Component, ContentChild, TemplateRef, contentChild, input } from '@angular/core';
+import { Component, ContentChild, contentChild, input, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { Directionality } from '@angular/cdk/bidi';

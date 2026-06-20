@@ -1,4 +1,4 @@
-import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -9,7 +9,7 @@ async function listFiles(directory, suffix) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
-      files.push(...await listFiles(fullPath, suffix));
+      files.push(...(await listFiles(fullPath, suffix)));
     } else if (entry.isFile() && entry.name.endsWith(suffix)) {
       files.push(fullPath);
     }
@@ -34,15 +34,17 @@ for (const htmlPath of await listFiles(appRoot, '.html')) {
 
   const explicitlyStandalone = /standalone\s*:\s*true/.test(source);
   const implicitlyStandalone = /@Component\s*\(\s*\{[\s\S]*?\bimports\s*:\s*\[/.test(source);
-  if ((!explicitlyStandalone && !implicitlyStandalone)
-      || /\bTranslateModule\b/.test(source)) {
+  if ((!explicitlyStandalone && !implicitlyStandalone) || /\bTranslateModule\b/.test(source)) {
     continue;
   }
 
   const ngxImport = /import\s*\{([^}]+)\}\s*from\s*['"]@ngx-translate\/core['"];/;
   if (ngxImport.test(source)) {
     source = source.replace(ngxImport, (full, imports) => {
-      const names = imports.split(',').map((name) => name.trim()).filter(Boolean);
+      const names = imports
+        .split(',')
+        .map((name) => name.trim())
+        .filter(Boolean);
       names.push('TranslateModule');
       return `import { ${[...new Set(names)].join(', ')} } from '@ngx-translate/core';`;
     });
@@ -52,18 +54,13 @@ for (const htmlPath of await listFiles(appRoot, '.html')) {
       throw new Error(`No import insertion point in ${tsPath}`);
     }
     const index = lastImportEnd.index + lastImportEnd[0].length;
-    source = source.slice(0, index)
-      + "\nimport { TranslateModule } from '@ngx-translate/core';"
-      + source.slice(index);
+    source = source.slice(0, index) + "\nimport { TranslateModule } from '@ngx-translate/core';" + source.slice(index);
   }
 
   if (/imports\s*:\s*\[/.test(source)) {
     source = source.replace(/imports\s*:\s*\[/, 'imports: [TranslateModule, ');
   } else if (explicitlyStandalone) {
-    source = source.replace(
-      /(standalone\s*:\s*true\s*,?)/,
-      '$1\n  imports: [TranslateModule],'
-    );
+    source = source.replace(/(standalone\s*:\s*true\s*,?)/, '$1\n  imports: [TranslateModule],');
   } else {
     throw new Error(`Implicit standalone component has no imports array: ${tsPath}`);
   }

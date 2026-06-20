@@ -29,9 +29,7 @@ export class EmployeeService {
   }
 
   // Update an existing Employee
-  updateEmployee( Employee: Employee): Observable<ApiResponse<Employee>> {
+  updateEmployee(Employee: Employee): Observable<ApiResponse<Employee>> {
     return this.http.put<ApiResponse<Employee>>(`${this.baseUrl}`, Employee);
   }
-
-
 }

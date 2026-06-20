@@ -1,14 +1,11 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ClientService } from '../../../services/client.service';
 import { Client, ClientType } from '../../../models/client.model';
-import { ApiResponse } from '../../../../shared/models/api-response';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-client-form',
@@ -65,20 +62,20 @@ export class ClientFormComponent implements OnInit {
     this.clientService.getClientById(this.clientId!).subscribe({
       next: (client) => {
         this.clientForm.patchValue({
-            nom: client.nom,
-            type: client.type ?? ClientType.BUYER,
-            codeClient: client.codeClient || '',
-            email: client.email || '',
-            telephone: client.telephone || '',
-            adresse: client.adresse || '',
-            ville: client.ville || '',
-            pays: client.pays || '',
-            codePostal: client.codePostal || '',
-            privateLabel: client.privateLabel ?? false,
-            siret: client.siret || '',
-            numeroTva: client.numeroTva || '',
-            notes: client.notes || ''
-          });
+          nom: client.nom,
+          type: client.type ?? ClientType.BUYER,
+          codeClient: client.codeClient || '',
+          email: client.email || '',
+          telephone: client.telephone || '',
+          adresse: client.adresse || '',
+          ville: client.ville || '',
+          pays: client.pays || '',
+          codePostal: client.codePostal || '',
+          privateLabel: client.privateLabel ?? false,
+          siret: client.siret || '',
+          numeroTva: client.numeroTva || '',
+          notes: client.notes || ''
+        });
       },
       error: (err) => {
         console.error('Erreur chargement client', err);
@@ -95,7 +92,7 @@ export class ClientFormComponent implements OnInit {
 
     if (this.clientForm.invalid) {
       alert(this.i18n.instant('AUTO.LE_FORMULAIRE_EST_INVALIDE_VERIFIEZ_LES_CHAMPS_OBLIGATOIRES_EX_N'));
-      this.error = "Veuillez remplir correctement tous les champs obligatoires.";
+      this.error = 'Veuillez remplir correctement tous les champs obligatoires.';
       this.clientForm.markAllAsTouched();
       return;
     }
@@ -136,7 +133,9 @@ export class ClientFormComponent implements OnInit {
         },
         error: (err) => {
           console.error('Erreur création', err);
-          alert(this.i18n.instant('AUTO.ERREUR_DU_SERVEUR') + (err.error?.message || err.message || this.i18n.instant('AUTO.ERREUR_INCONNUE')));
+          alert(
+            this.i18n.instant('AUTO.ERREUR_DU_SERVEUR') + (err.error?.message || err.message || this.i18n.instant('AUTO.ERREUR_INCONNUE'))
+          );
           this.error = err.error?.message || 'Erreur lors de la création';
           this.submitting = false;
         }

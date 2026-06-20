@@ -20,28 +20,20 @@ export class EmplacementStockService {
   }
 
   getAllEmplacements(): Observable<EmplacementStock[]> {
-    return this.http.get<ApiResponse<EmplacementStock>>(`${this.apiUrl}/fetchAll`).pipe(
-      map((response) => response?.data ?? [])
-    );
+    return this.http.get<ApiResponse<EmplacementStock>>(`${this.apiUrl}/fetchAll`).pipe(map((response) => response?.data ?? []));
   }
 
   getEmplacementById(id: string): Observable<EmplacementStock> {
-    return this.http.get<ApiSingleResponse<EmplacementStock>>(`${this.apiUrl}/fetch/${id}`).pipe(
-      map((response) => response.data)
-    );
+    return this.http.get<ApiSingleResponse<EmplacementStock>>(`${this.apiUrl}/fetch/${id}`).pipe(map((response) => response.data));
   }
 
   createEmplacement(emplacement: EmplacementStock): Observable<EmplacementStock> {
-    return this.http.post<ApiSingleResponse<EmplacementStock>>(this.apiUrl, emplacement).pipe(
-      map((response) => response.data)
-    );
+    return this.http.post<ApiSingleResponse<EmplacementStock>>(this.apiUrl, emplacement).pipe(map((response) => response.data));
   }
 
   updateEmplacement(id: string, emplacement: EmplacementStock): Observable<EmplacementStock> {
     const payload = { ...emplacement, id };
-    return this.http.put<ApiSingleResponse<EmplacementStock>>(this.apiUrl, payload).pipe(
-      map((response) => response.data)
-    );
+    return this.http.put<ApiSingleResponse<EmplacementStock>>(this.apiUrl, payload).pipe(map((response) => response.data));
   }
 
   reserverEmplacement(id: string, reservePour: string): Observable<EmplacementStock> {

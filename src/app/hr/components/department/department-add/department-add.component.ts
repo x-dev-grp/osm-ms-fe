@@ -1,29 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DepartmentService } from '../../../services/departement-service';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslatePipe, TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CardComponent } from '../../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import {Department} from "../../../model/department.model";
-import {Employee} from "../../../model/employee-model";
-import {EmployeeService} from "../../../services/employee-service";
-import {MatOption} from "@angular/material/core";
-import {MatSelect} from "@angular/material/select";
+import { Employee } from '../../../model/employee-model';
+import { EmployeeService } from '../../../services/employee-service';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-department-add',
   standalone: true,
   templateUrl: './department-add.component.html',
   styleUrls: ['./department-add.component.scss'],
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -52,7 +52,7 @@ export class DepartmentAddComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private translate: TranslateService,
-    private employeeService: EmployeeService,
+    private employeeService: EmployeeService
   ) {
     this.departmentForm = this.createForm();
   }
@@ -111,24 +111,20 @@ export class DepartmentAddComponent implements OnInit {
     });
   }
 
-
   onSubmit(): void {
     if (this.departmentForm.valid) {
       this.loading = true;
       const formValue = this.departmentForm.value;
 
       // Trouver l'employé sélectionné pour être manager
-      const selectedManager = this.employees.find(emp => emp.id === formValue.managerId);
+      const selectedManager = this.employees.find((emp) => emp.id === formValue.managerId);
 
       const departmentData: any = {
         id: this.departmentId,
         name: formValue.name,
         description: formValue.description || '',
         externalId: formValue.externalId,
-        managerId: formValue.managerId || null,
-
-
-
+        managerId: formValue.managerId || null
       };
       console.log('Données envoyées:', departmentData);
 
@@ -179,13 +175,11 @@ export class DepartmentAddComponent implements OnInit {
     this.router.navigate(['/hr/department']);
   }
 
-
   getErrorMessage(controlName: string): string {
     const control = this.departmentForm.get(controlName);
     if (control?.hasError('required')) {
       return this.translate.instant('COMMON.VALIDATION.REQUIRED');
     }
     return '';
-
   }
 }

@@ -180,10 +180,8 @@ export const dashboardConfig: DashboardConfig = {
       dataTable: true,
       exportable: true,
       options: [
-        { value: 'MALE', label: 'MALE',
-                         labelTranslatePath: 'AUTO.MALE' },
-        { value: 'FEMALE', label: 'FEMALE',
-                           labelTranslatePath: 'AUTO.FEMALE' }
+        { value: 'MALE', label: 'MALE', labelTranslatePath: 'AUTO.MALE' },
+        { value: 'FEMALE', label: 'FEMALE', labelTranslatePath: 'AUTO.FEMALE' }
       ]
     },
 
@@ -199,14 +197,10 @@ export const dashboardConfig: DashboardConfig = {
       dataTable: true,
       exportable: true,
       options: [
-        { value: 'SINGLE', label: 'SINGLE',
-                           labelTranslatePath: 'AUTO.SINGLE' },
-        { value: 'MARRIED', label: 'MARRIED',
-                            labelTranslatePath: 'AUTO.MARRIED' },
-        { value: 'WIDOWED', label: 'WIDOWED',
-                            labelTranslatePath: 'AUTO.WIDOWED' },
-        { value: 'DIVORCED', label: 'DIVORCED',
-                             labelTranslatePath: 'AUTO.DIVORCED' }
+        { value: 'SINGLE', label: 'SINGLE', labelTranslatePath: 'AUTO.SINGLE' },
+        { value: 'MARRIED', label: 'MARRIED', labelTranslatePath: 'AUTO.MARRIED' },
+        { value: 'WIDOWED', label: 'WIDOWED', labelTranslatePath: 'AUTO.WIDOWED' },
+        { value: 'DIVORCED', label: 'DIVORCED', labelTranslatePath: 'AUTO.DIVORCED' }
       ]
     },
     {

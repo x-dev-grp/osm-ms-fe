@@ -1,5 +1,6 @@
 import { BaseType } from './base-type';
 import { PartnerCategory } from '../../finance/models/PartnerCategory';
+
 export interface SupplierInfo {
   id?: string;
   name: string;
@@ -13,5 +14,3 @@ export interface SupplierInfo {
   rib: string;
   bankName: string;
 }
-
-

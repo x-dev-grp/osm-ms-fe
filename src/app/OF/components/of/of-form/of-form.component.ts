@@ -1,25 +1,23 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { LigneConditionnement } from "../../../../stock/models/ligne-conditionnement.model";
-import { Product, productDisplayName } from "../../../../stock/models/sku.model";
-import { OFService } from "../../../services/OFService";
-import { LigneConditionnementService } from "../../../../stock/services/ligne-conditionnement.service";
-import { OrdreFabrication, StatutOF } from "../../../models/of.model";
-import { SKUService } from "../../../../stock/services/sku.service";
-import { Bom } from "../../../../stock/models/Bom";
-import { BomService } from "../../../../stock/services/BomService";
-import { ToastService } from "../../../../shared/services/toast.service";
-import { StorageUnitDtoService } from "../../../../shared/services/storage.service";
-import { StorageUnitDto } from "../../../../shared/models/StorageUnitDto";
-import { ProjetService } from "../../../../projet/services/projet.service";
-import { ProjetDto } from "../../../../projet/models/TypeProduit";
-import { TraceabilityPreviewComponent } from "../../../../shared/components/traceability-preview/traceability-preview.component";
+import { LigneConditionnement } from '../../../../stock/models/ligne-conditionnement.model';
+import { Product, productDisplayName } from '../../../../stock/models/sku.model';
+import { OFService } from '../../../services/OFService';
+import { LigneConditionnementService } from '../../../../stock/services/ligne-conditionnement.service';
+import { OrdreFabrication, StatutOF } from '../../../models/of.model';
+import { SKUService } from '../../../../stock/services/sku.service';
+import { Bom } from '../../../../stock/models/Bom';
+import { BomService } from '../../../../stock/services/BomService';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { StorageUnitDtoService } from '../../../../shared/services/storage.service';
+import { StorageUnitDto } from '../../../../shared/models/StorageUnitDto';
+import { ProjetService } from '../../../../projet/services/projet.service';
+import { ProjetDto } from '../../../../projet/models/TypeProduit';
+import { TraceabilityPreviewComponent } from '../../../../shared/components/traceability-preview/traceability-preview.component';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-of-form',
@@ -61,7 +59,7 @@ export class OFFormComponent implements OnInit {
     private storageService: StorageUnitDtoService,
     private projetService: ProjetService,
     private toast: ToastService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -76,7 +74,7 @@ export class OFFormComponent implements OnInit {
       this.loadOF(this.ofId);
     }
 
-    this.ofForm.get('productId')?.valueChanges.subscribe(productId => {
+    this.ofForm.get('productId')?.valueChanges.subscribe((productId) => {
       if (productId) {
         this.loadBomsForProduct(productId);
       } else {
@@ -85,9 +83,9 @@ export class OFFormComponent implements OnInit {
       }
     });
 
-    this.ofForm.get('projectId')?.valueChanges.subscribe(projectId => {
+    this.ofForm.get('projectId')?.valueChanges.subscribe((projectId) => {
       if (projectId) {
-        const p = this.projects.find(x => x.id === projectId);
+        const p = this.projects.find((x) => x.id === projectId);
         if (p) {
           this.selectedProject = p;
           this.applyProjectDefaults(p);
@@ -101,11 +99,9 @@ export class OFFormComponent implements OnInit {
   }
 
   calculateRemainingQuantity(projectId: string): void {
-    this.ofService.getByProject(projectId).subscribe(data => {
+    this.ofService.getByProject(projectId).subscribe((data) => {
       const existingOfs = (data as any)?.data ? (data as any).data : data;
-      const otherOfs = this.isEditMode && this.ofId
-        ? existingOfs.filter((o: any) => o.id !== this.ofId)
-        : existingOfs;
+      const otherOfs = this.isEditMode && this.ofId ? existingOfs.filter((o: any) => o.id !== this.ofId) : existingOfs;
 
       const sumExisting = otherOfs.reduce((sum: number, o: any) => sum + (o.quantiteCible || 0), 0);
       this.projectRemainingQuantity = (this.selectedProject?.quantiteCible || 0) - sumExisting;
@@ -117,16 +113,19 @@ export class OFFormComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.ofForm = this.fb.group({
-      projectId: ['', Validators.required],
-      productId: ['', Validators.required],
-      bomId: ['', Validators.required],
-      ligneId: [''],
-      lotVracId: [''],
-      quantiteCible: [null, [Validators.required, Validators.min(1)]],
-      dateDebutPrevue: [''],
-      dateFinPrevue: ['']
-    }, { validators: this.dateRangeValidator });
+    this.ofForm = this.fb.group(
+      {
+        projectId: ['', Validators.required],
+        productId: ['', Validators.required],
+        bomId: ['', Validators.required],
+        ligneId: [''],
+        lotVracId: [''],
+        quantiteCible: [null, [Validators.required, Validators.min(1)]],
+        dateDebutPrevue: [''],
+        dateFinPrevue: ['']
+      },
+      { validators: this.dateRangeValidator }
+    );
   }
   private dateRangeValidator(group: FormGroup): ValidationErrors | null {
     const debut = group.get('dateDebutPrevue')?.value;
@@ -137,13 +136,12 @@ export class OFFormComponent implements OnInit {
     return null;
   }
 
-
   loadSkus(): void {
-    this.skuService.getActiveProductsByType('NON_VRAC').subscribe((data: Product[]) => this.products = data);
+    this.skuService.getActiveProductsByType('NON_VRAC').subscribe((data: Product[]) => (this.products = data));
   }
 
   loadProjects(): void {
-    this.projetService.getAll().subscribe(data => {
+    this.projetService.getAll().subscribe((data) => {
       this.projects = data;
       const projectId = this.route.snapshot.queryParamMap.get('projetId');
       if (projectId) {
@@ -154,7 +152,7 @@ export class OFFormComponent implements OnInit {
   }
 
   loadLignes(): void {
-    this.ligneService.getActiveLignes().subscribe(data => {
+    this.ligneService.getActiveLignes().subscribe((data) => {
       this.lignes = data;
       this.autoSelectSingleOption('ligneId', this.lignes);
     });
@@ -165,9 +163,7 @@ export class OFFormComponent implements OnInit {
       next: (resp) => {
         if (resp && resp.data) {
           // Filtrer les cuves qui ont de l'huile (volume > 0) ET qui est FILTRÉE
-          this.storageUnits = Array.isArray(resp.data)
-            ? resp.data.filter(u => (u.currentVolume || 0) > 0 && u.filteredOil === true)
-            : [];
+          this.storageUnits = Array.isArray(resp.data) ? resp.data.filter((u) => (u.currentVolume || 0) > 0 && u.filteredOil === true) : [];
           this.autoSelectSingleOption('lotVracId', this.storageUnits);
         }
       },
@@ -181,12 +177,10 @@ export class OFFormComponent implements OnInit {
       next: (boms) => {
         this.boms = boms;
         const currentBomId = this.ofForm.get('bomId')?.value;
-        const projectBom = this.preferredProjectBomId
-          ? boms.find(bom => bom.id === this.preferredProjectBomId)
-          : null;
+        const projectBom = this.preferredProjectBomId ? boms.find((bom) => bom.id === this.preferredProjectBomId) : null;
 
         const activeBom = boms.find((bom) => bom.active);
-        if (currentBomId && boms.some(bom => bom.id === currentBomId)) {
+        if (currentBomId && boms.some((bom) => bom.id === currentBomId)) {
           this.ofForm.get('bomId')?.setValue(currentBomId);
         } else if (projectBom) {
           this.ofForm.get('bomId')?.setValue(projectBom.id);
@@ -236,7 +230,7 @@ export class OFFormComponent implements OnInit {
   private formatDate(date: any): string {
     if (!date) return '';
     const d = new Date(date);
-    const pad = (n: number) => n < 10 ? '0' + n : n;
+    const pad = (n: number) => (n < 10 ? '0' + n : n);
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   }
 
@@ -249,9 +243,7 @@ export class OFFormComponent implements OnInit {
       return date;
     }
 
-    return boundary === 'start'
-      ? `${date}T00:00:00`
-      : `${date}T23:59:59`;
+    return boundary === 'start' ? `${date}T00:00:00` : `${date}T23:59:59`;
   }
 
   private applyProjectDefaults(project: ProjetDto): void {
@@ -293,7 +285,11 @@ export class OFFormComponent implements OnInit {
     // Validation métier: Quantité totale projet
     if (this.selectedProject && this.projectRemainingQuantity !== null) {
       if (formValue.quantiteCible > this.projectRemainingQuantity) {
-        this.toast.error('AUTO.LA_QUANTITE_DEPASSE_LE_RESTE_A_PRODUIRE_DU_PROJET', { value0: formValue.quantiteCible, value1: this.projectRemainingQuantity, value2: this.selectedProject.unite || '' });
+        this.toast.error('AUTO.LA_QUANTITE_DEPASSE_LE_RESTE_A_PRODUIRE_DU_PROJET', {
+          value0: formValue.quantiteCible,
+          value1: this.projectRemainingQuantity,
+          value2: this.selectedProject.unite || ''
+        });
         this.isSubmitting = false;
         return;
       }
@@ -310,12 +306,10 @@ export class OFFormComponent implements OnInit {
       quantiteBonne: 0,
       quantiteNC: 0,
       dateDebutPrevue: this.toLocalDateTime(formValue.dateDebutPrevue, 'start'),
-      dateFinPrevue: this.toLocalDateTime(formValue.dateFinPrevue, 'end'),
+      dateFinPrevue: this.toLocalDateTime(formValue.dateFinPrevue, 'end')
     };
 
-    const request = this.isEditMode && this.ofId
-      ? this.ofService.update(this.ofId, newOF)
-      : this.ofService.create(newOF);
+    const request = this.isEditMode && this.ofId ? this.ofService.update(this.ofId, newOF) : this.ofService.create(newOF);
 
     request.subscribe({
       next: () => {

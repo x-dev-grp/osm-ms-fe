@@ -1,6 +1,6 @@
-import { Article } from "./article.model";
+import { Article } from './article.model';
 
-export interface MouvementStock{
+export interface MouvementStock {
   id?: string;
   article: Article;
   articleId?: string;

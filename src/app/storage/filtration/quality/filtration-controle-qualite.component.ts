@@ -6,9 +6,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
 
 import { FiltrationApiService } from '../../../shared/services/filtration-api.service';
 import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
@@ -60,44 +59,47 @@ export class FiltrationControleQualiteComponent implements OnInit, OnDestroy {
     }
 
     this.subs.push(
-      this.filtrationApi.getById(operationId).pipe(
-        switchMap((operation) => {
-          this.operation = operation;
-          if (String(operation.status) !== 'COMPLETED') {
-            this.message = 'FILTRATION_QC.ONLY_COMPLETED';
+      this.filtrationApi
+        .getById(operationId)
+        .pipe(
+          switchMap((operation) => {
+            this.operation = operation;
+            if (String(operation.status) !== 'COMPLETED') {
+              this.message = 'FILTRATION_QC.ONLY_COMPLETED';
+              return of(null);
+            }
+
+            const genealogyAnchor = operation.target?.id || operation.source?.id;
+            const genealogy$ = genealogyAnchor
+              ? this.productionTraceability.getGenealogy(genealogyAnchor).pipe(catchError(() => of(null)))
+              : of(null);
+
+            return genealogy$.pipe(
+              switchMap((genealogy) => {
+                this.traceabilityLotId = genealogy?.traceabilityLotId || null;
+                return this.qcResultService.getResultsByFiltration(operationId);
+              })
+            );
+          }),
+          catchError(() => {
+            this.message = 'CONTROLE_QUALITE.MESSAGES.ERROR.LOAD';
             return of(null);
+          })
+        )
+        .subscribe((qcResponse) => {
+          if (qcResponse?.data) {
+            const results = Array.isArray(qcResponse.data) ? qcResponse.data : [qcResponse.data];
+            this.isQualityControlDone = results.length > 0;
           }
-
-          const genealogyAnchor = operation.target?.id || operation.source?.id;
-          const genealogy$ = genealogyAnchor
-            ? this.productionTraceability.getGenealogy(genealogyAnchor).pipe(catchError(() => of(null)))
-            : of(null);
-
-          return genealogy$.pipe(
-            switchMap((genealogy) => {
-              this.traceabilityLotId = genealogy?.traceabilityLotId || null;
-              return this.qcResultService.getResultsByFiltration(operationId);
-            })
-          );
-        }),
-        catchError(() => {
-          this.message = 'CONTROLE_QUALITE.MESSAGES.ERROR.LOAD';
-          return of(null);
+          if (!this.message) {
+            this.isLoading = false;
+          } else if (this.message !== 'FILTRATION_QC.ONLY_COMPLETED') {
+            this.isLoading = false;
+          } else {
+            this.isLoading = false;
+          }
+          this.cdr.detectChanges();
         })
-      ).subscribe((qcResponse) => {
-        if (qcResponse?.data) {
-          const results = Array.isArray(qcResponse.data) ? qcResponse.data : [qcResponse.data];
-          this.isQualityControlDone = results.length > 0;
-        }
-        if (!this.message) {
-          this.isLoading = false;
-        } else if (this.message !== 'FILTRATION_QC.ONLY_COMPLETED') {
-          this.isLoading = false;
-        } else {
-          this.isLoading = false;
-        }
-        this.cdr.detectChanges();
-      })
     );
   }
 

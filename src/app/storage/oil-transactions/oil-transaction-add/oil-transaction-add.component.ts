@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
- import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { OilTransaction, TransactionState, TransactionType } from '../../../shared/models/OilTransaction';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
@@ -125,10 +125,11 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.containerList = res?.data;
-          console.log(this.containerList)
+          console.log(this.containerList);
         })
       )
-      .subscribe();}
+      .subscribe();
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -151,30 +152,35 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
 
   private setupFormSubscriptions(): void {
     // Watch transaction type changes
-    this.form.get('transactionType')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(type => {
+    this.form
+      .get('transactionType')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((type) => {
         this.updateFieldRequirements(type);
         this.updatePricingFields(type);
       });
 
     // Auto-calculate total price
-    this.form.get('quantityKg')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+    this.form
+      .get('quantityKg')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(() => this.calculateTotalPrice());
 
-    this.form.get('unitPrice')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+    this.form
+      .get('unitPrice')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(() => this.calculateTotalPrice());
 
     // Add subscription to show warning if selected source unit does not have enough oil
-    this.form.get('storageUnitSourceId')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+    this.form
+      .get('storageUnitSourceId')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.checkSourceUnitVolumeWarning();
       });
-    this.form.get('quantityKg')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+    this.form
+      .get('quantityKg')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.checkSourceUnitVolumeWarning();
       });
@@ -182,14 +188,18 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
 
   private checkSourceUnitVolumeWarning(): void {
     const transactionType = this.form.get('transactionType')?.value;
-    if (transactionType !== TransactionType.SALE && transactionType !== TransactionType.LOAN && transactionType !== TransactionType.EXCHANGE) {
+    if (
+      transactionType !== TransactionType.SALE &&
+      transactionType !== TransactionType.LOAN &&
+      transactionType !== TransactionType.EXCHANGE
+    ) {
       this.sourceUnitWarning = null;
       return;
     }
     const sourceId = this.form.get('storageUnitSourceId')?.value;
     const quantity = this.form.get('quantityKg')?.value;
     if (sourceId && quantity) {
-      const sourceUnit = this.storageUnits.find(u => u.id === sourceId);
+      const sourceUnit = this.storageUnits.find((u) => u.id === sourceId);
       if (sourceUnit && quantity > sourceUnit.currentVolume) {
         this.sourceUnitWarning = this.translate.instant('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.QUANTITY_EXCEEDS_SOURCE');
         return;
@@ -222,7 +232,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
         controls['storageUnitSourceId'].setValidators(Validators.required);
         controls['storageUnitDestinationId'].setValidators(Validators.required);
         break;
-        case TransactionType.LOAN:
+      case TransactionType.LOAN:
         controls['storageUnitSourceId'].setValidators(Validators.required);
         break;
     }
@@ -267,7 +277,8 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
 
   // Data loading
   private loadStorageUnits(): void {
-    this.storageUnitService.getAllStorageUnit()
+    this.storageUnitService
+      .getAllStorageUnit()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: ApiResponse<StorageUnitDto>) => {
@@ -282,16 +293,14 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
 
   private checkEditMode(): void {
     this.transactionId = this.route.snapshot.paramMap.get('id');
-    const url = this.route.snapshot.url.map(segment => segment.path).join('/');
+    const url = this.route.snapshot.url.map((segment) => segment.path).join('/');
     this.isValidationMode = url.endsWith('validate'); // <-- Add this line
     if (this.transactionId) {
       this.isEditMode = true;
       this.loadTransactionForEdit();
     } else {
       // In add mode, only allow TRANSFER_IN
-      this.transactionTypes = [
-        { value: TransactionType.TRANSFER_IN, label: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' }
-      ];
+      this.transactionTypes = [{ value: TransactionType.TRANSFER_IN, label: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' }];
     }
   }
 
@@ -299,7 +308,8 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     if (!this.transactionId) return;
 
     this.loading = true;
-    this.oilTransactionService.getOilTransaction(this.transactionId)
+    this.oilTransactionService
+      .getOilTransaction(this.transactionId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -325,12 +335,13 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   private populateForm(transaction: OilTransaction): void {
     // Determine quality grade value
     let qualityGradeValue = '';
-    const possibleGrade = transaction.qualityGrade || (transaction.reception?.categoryOliveOil || '');
+    const possibleGrade = transaction.qualityGrade || transaction.reception?.categoryOliveOil || '';
     console.log('Reception categoryOliveOil:', transaction.reception?.categoryOliveOil); // Debug log
     if (possibleGrade) {
-      const match = this.qualityGrades.find(q =>
-        (q.value && q.value.toLowerCase() === possibleGrade.toLowerCase()) ||
-        (q.label && q.label.toLowerCase() === possibleGrade.toLowerCase())
+      const match = this.qualityGrades.find(
+        (q) =>
+          (q.value && q.value.toLowerCase() === possibleGrade.toLowerCase()) ||
+          (q.label && q.label.toLowerCase() === possibleGrade.toLowerCase())
       );
       if (match) {
         qualityGradeValue = match.value;
@@ -374,18 +385,27 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     const transactionType = this.form.get('transactionType')?.value;
     const sourceId = this.form.get('storageUnitSourceId')?.value;
     const destId = this.form.get('storageUnitDestinationId')?.value;
-    if (transactionType === TransactionType.SALE || transactionType === TransactionType.LOAN || transactionType === TransactionType.EXCHANGE) {
+    if (
+      transactionType === TransactionType.SALE ||
+      transactionType === TransactionType.LOAN ||
+      transactionType === TransactionType.EXCHANGE
+    ) {
       if (sourceId) {
-        const sourceUnit = this.storageUnits.find(u => u.id === sourceId);
+        const sourceUnit = this.storageUnits.find((u) => u.id === sourceId);
         if (sourceUnit && quantity > sourceUnit.currentVolume) {
           this.toast.warning('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.QUANTITY_EXCEEDS_SOURCE');
           return;
         }
       }
     }
-    if (transactionType === TransactionType.TRANSFER_IN || transactionType === TransactionType.RECEPTION_IN || transactionType === TransactionType.SALE || transactionType === TransactionType.LOAN) {
+    if (
+      transactionType === TransactionType.TRANSFER_IN ||
+      transactionType === TransactionType.RECEPTION_IN ||
+      transactionType === TransactionType.SALE ||
+      transactionType === TransactionType.LOAN
+    ) {
       if (destId) {
-        const destUnit = this.storageUnits.find(u => u.id === destId);
+        const destUnit = this.storageUnits.find((u) => u.id === destId);
         if (!destUnit) {
           this.toast.warning('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.DEST_UNIT_NOT_FOUND');
           return;
@@ -421,18 +441,20 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   }
 
   private showApprovalConfirmation(): void {
-    this.confirmationDialog.confirm({
-      title: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.TITLE'),
-      message: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.MESSAGE'),
-      type: ConfirmationType.WARNING,
-      confirmText: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.CONFIRM'),
-      cancelText: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.CANCEL'),
-      showIcon: true
-    }).subscribe(result => {
-      if (result?.confirmed) {
-        this.approveTransaction();
-      }
-    });
+    this.confirmationDialog
+      .confirm({
+        title: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.TITLE'),
+        message: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.MESSAGE'),
+        type: ConfirmationType.WARNING,
+        confirmText: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.CONFIRM'),
+        cancelText: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.CANCEL'),
+        showIcon: true
+      })
+      .subscribe((result) => {
+        if (result?.confirmed) {
+          this.approveTransaction();
+        }
+      });
   }
 
   private approveTransaction(): void {
@@ -453,7 +475,8 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       totalPrice: formValue.totalPrice
     } as OilTransaction;
 
-    this.oilTransactionService.approveOilTransaction(transactionRequest)
+    this.oilTransactionService
+      .approveOilTransaction(transactionRequest)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -473,18 +496,20 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   }
 
   private showUpdateConfirmation(): void {
-    this.confirmationDialog.confirm({
-      title: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.TITLE'),
-      message: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.MESSAGE'),
-      type: ConfirmationType.WARNING,
-      confirmText: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.CONFIRM'),
-      cancelText: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.CANCEL'),
-      showIcon: true
-    }).subscribe(result => {
-      if (result?.confirmed) {
-        this.saveTransaction();
-      }
-    });
+    this.confirmationDialog
+      .confirm({
+        title: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.TITLE'),
+        message: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.MESSAGE'),
+        type: ConfirmationType.WARNING,
+        confirmText: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.CONFIRM'),
+        cancelText: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.CANCEL'),
+        showIcon: true
+      })
+      .subscribe((result) => {
+        if (result?.confirmed) {
+          this.saveTransaction();
+        }
+      });
   }
 
   private saveTransaction(): void {
@@ -512,9 +537,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
         this.submitting = false;
         if (response.success) {
           this.toast.success(
-            this.isEditMode
-              ? 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.UPDATE'
-              : 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.CREATE'
+            this.isEditMode ? 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.UPDATE' : 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.CREATE'
           );
           this.router.navigate(['/storage/oil-transactions']);
         } else {
@@ -548,7 +571,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   getStorageUnitInfo(unit: StorageUnitDto): string {
     // Include supplier info if available for better context
     if (unit.supplier) {
-      return `${unit.name} (${unit.currentVolume.toFixed(2)} / ${unit.maxCapacity.toFixed(2)} KG) [${unit.supplier?.name + " " + unit.supplier?.lastname}]`;
+      return `${unit.name} (${unit.currentVolume.toFixed(2)} / ${unit.maxCapacity.toFixed(2)} KG) [${unit.supplier?.name + ' ' + unit.supplier?.lastname}]`;
     }
     return `${unit.name} (${unit.currentVolume.toFixed(2)} / ${unit.maxCapacity.toFixed(2)} KG)`;
   }
@@ -556,17 +579,17 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   // Field visibility helpers
   shouldShowSourceUnit(): boolean {
     const type = this.form.get('transactionType')?.value;
-    return type === TransactionType.TRANSFER_IN ||
-           type === TransactionType.SALE ||
-           type === TransactionType.LOAN ||
-           type === TransactionType.EXCHANGE;
+    return (
+      type === TransactionType.TRANSFER_IN ||
+      type === TransactionType.SALE ||
+      type === TransactionType.LOAN ||
+      type === TransactionType.EXCHANGE
+    );
   }
 
   shouldShowDestinationUnit(): boolean {
     const type = this.form.get('transactionType')?.value;
-    return type === TransactionType.TRANSFER_IN ||
-           type === TransactionType.RECEPTION_IN ||
-           type === TransactionType.SALE
+    return type === TransactionType.TRANSFER_IN || type === TransactionType.RECEPTION_IN || type === TransactionType.SALE;
   }
 
   shouldShowPricingFields(): boolean {
@@ -575,9 +598,4 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   }
 
   // Notification helpers
-
-
-
 }
-
-

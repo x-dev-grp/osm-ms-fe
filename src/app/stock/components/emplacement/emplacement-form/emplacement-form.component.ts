@@ -1,5 +1,4 @@
-import { inject } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -100,9 +99,7 @@ export class EmplacementFormComponent implements OnInit {
   }
 
   pageTitle(): string {
-    return this.isEditMode
-      ? this.i18n.instant('AUTO.MODIFIER_CET_EMPLACEMENT')
-      : this.i18n.instant('AUTO.NOUVEL_EMPLACEMENT');
+    return this.isEditMode ? this.i18n.instant('AUTO.MODIFIER_CET_EMPLACEMENT') : this.i18n.instant('AUTO.NOUVEL_EMPLACEMENT');
   }
 
   pageSubtitle(): string {
@@ -112,22 +109,22 @@ export class EmplacementFormComponent implements OnInit {
   }
 
   submitLabel(): string {
-    return this.isEditMode
-      ? this.i18n.instant('ADMIN.SAVE')
-      : this.i18n.instant('AUTO.CREER_UN_EMPLACEMENT');
+    return this.isEditMode ? this.i18n.instant('ADMIN.SAVE') : this.i18n.instant('AUTO.CREER_UN_EMPLACEMENT');
   }
 
   availabilityLabel(): string {
-    return this.emplacementForm.get('disponible')?.value
-      ? this.i18n.instant('AUTO.DISPONIBLE')
-      : this.i18n.instant('AUTO.RESERVE');
+    return this.emplacementForm.get('disponible')?.value ? this.i18n.instant('AUTO.DISPONIBLE') : this.i18n.instant('AUTO.RESERVE');
   }
 
   parseCapacity(value: unknown): number | null {
     if (value == null || value === '') {
       return null;
     }
-    const num = Number(String(value).replace(',', '.').replace(/[^\d.-]/g, ''));
+    const num = Number(
+      String(value)
+        .replace(',', '.')
+        .replace(/[^\d.-]/g, '')
+    );
     return Number.isFinite(num) ? num : null;
   }
 

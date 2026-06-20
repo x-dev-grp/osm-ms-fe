@@ -16,11 +16,7 @@ import { catchError, of } from 'rxjs';
 
 import { SharedModule } from '../../shared/shared.module';
 import { MaintenanceWorkOrderService } from '../services/maintenance-work-order.service';
-import {
-  MaintenanceAssetOption,
-  MaintenanceAssetType,
-  MaintenanceWorkOrder
-} from '../models/maintenance-work-order.model';
+import { MaintenanceAssetOption, MaintenanceAssetType, MaintenanceWorkOrder } from '../models/maintenance-work-order.model';
 import { MillMachineService } from '../../shared/services/mill-machine.service';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { LigneConditionnementService } from '../../stock/services/ligne-conditionnement.service';
@@ -77,13 +73,19 @@ export class MaintenanceFormComponent implements OnInit {
     this.editing = this.route.snapshot.url.some((segment) => segment.path === 'edit');
     this.workOrderId = this.route.snapshot.paramMap.get('id');
 
-    this.form.get('assetType')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((type) => {
-      this.loadAssets(type as MaintenanceAssetType);
-    });
+    this.form
+      .get('assetType')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((type) => {
+        this.loadAssets(type as MaintenanceAssetType);
+      });
 
-    this.form.get('partsReplaced')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.syncPartsCostValidator();
-    });
+    this.form
+      .get('partsReplaced')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.syncPartsCostValidator();
+      });
 
     if (this.workOrderId) {
       this.loadWorkOrder(this.workOrderId);
@@ -173,9 +175,7 @@ export class MaintenanceFormComponent implements OnInit {
     if (assetType === 'MILL_MACHINE') {
       this.millMachineService.getAllMillMachines().subscribe({
         next: (machines) => {
-          this.assetOptions = machines
-            .filter((m) => !!m.id)
-            .map((m) => ({ id: m.id!, label: m.name || m.id! }));
+          this.assetOptions = machines.filter((m) => !!m.id).map((m) => ({ id: m.id!, label: m.name || m.id! }));
         },
         error: () => (this.assetOptions = [])
       });
@@ -259,9 +259,7 @@ export class MaintenanceFormComponent implements OnInit {
       notes: raw.notes
     };
 
-    const request$ = this.editing
-      ? this.maintenanceService.update(payload)
-      : this.maintenanceService.create(payload);
+    const request$ = this.editing ? this.maintenanceService.update(payload) : this.maintenanceService.create(payload);
 
     request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {

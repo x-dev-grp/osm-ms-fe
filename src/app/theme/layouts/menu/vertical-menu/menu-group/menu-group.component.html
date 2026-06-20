@@ -1,8 +1,10 @@
 @if (!item().hidden) {
-  <li class="nav-item coded-menu-caption">
+  <li class="nav-item coded-menu-caption menu-section-caption">
     <label>
-      <mat-icon *ngIf="item().icon" class="coded-micon">{{ item().icon }}</mat-icon>
-      {{ item().title | translate }}
+      @if (item().icon) {
+        <mat-icon class="coded-micon menu-section-caption__icon">{{ item().icon }}</mat-icon>
+      }
+      <span class="menu-section-caption__text">{{ item().title | translate }}</span>
     </label>
   </li>
   @for (items of item().children; track $index) {

@@ -118,10 +118,9 @@ export class DailyMetricClient {
 
         const payload: DailyMetricPayload = {
           current: numericValue,
-          history: [
-            ...state.payload.history.filter(([date]) => date !== today),
-            [today, numericValue] as HistoryTuple
-          ].sort((a, b) => a[0].localeCompare(b[0]))
+          history: [...state.payload.history.filter(([date]) => date !== today), [today, numericValue] as HistoryTuple].sort((a, b) =>
+            a[0].localeCompare(b[0])
+          )
         };
 
         const updatedParam: Parameter = {
@@ -132,9 +131,7 @@ export class DailyMetricClient {
 
         return this.params.updateValue(updatedParam).pipe(
           map((response) => response?.data ?? updatedParam),
-          catchError((error) =>
-            throwError(() => new Error(error?.error?.message || error?.message || 'UPDATE_FAILED'))
-          )
+          catchError((error) => throwError(() => new Error(error?.error?.message || error?.message || 'UPDATE_FAILED')))
         );
       })
     );

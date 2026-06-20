@@ -32,7 +32,12 @@ import { filterMenuByPermissions } from '../../../shared/utils/menu-permission.f
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-config.service';
+import { NotificationService } from '../../../shared/services/notification.service';
+import { PushNotificationService } from '../../../shared/services/push-notification.service';
+import { ChatService } from '../../../shared/services/chat.service';
+import { ChatStompService } from '../../../shared/services/chat-stomp.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-admin',
@@ -46,7 +51,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     HorizontalMenuComponent,
 
     BreadcrumbComponent,
-     FooterComponent
+    FooterComponent,
+    TranslateModule
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
@@ -55,6 +61,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
    authenticationService = inject(AuthenticationService);
   companyProfileService = inject(CompanyProfileService);
   private themeConfig = inject(ThemeConfigService);
+  private notificationService = inject(NotificationService);
+  private pushNotificationService = inject(PushNotificationService);
+  private chatService = inject(ChatService);
+  private chatStompService = inject(ChatStompService);
   private router = inject(Router);
 // public props
   readonly sidebar = viewChild<MatDrawer>('sidebar');
@@ -90,6 +100,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
   // life cycle event
   logoPreview: string | null = null;
+  companyName = '';
   ngOnInit() {
     const cfg = this.themeConfig.loadConfig();
     this.themeConfig.applyConfig(cfg);
@@ -113,7 +124,15 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
 
     // Load company profile and logo
-    this.loadCompanyLogoFromCache();
+    this.loadCompanyProfile();
+
+    if (this.authenticationService.currentUserValue) {
+      this.notificationService.startPolling();
+      void this.pushNotificationService.initAfterLogin();
+      this.chatStompService.connect();
+      this.chatService.refreshUnreadCount();
+      this.chatService.loadConversations().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+    }
 
     this.buildMenus();
     this.authenticationService.refreshSessionSilently();
@@ -153,12 +172,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
   }
   ngAfterViewInit() {
-    const cfg = this.themeConfig.loadConfig();
-    this.themeConfig.applyConfig(cfg);
-    // now your currentLayout/rtlMode etc can read from cfg:
-    this.rtlMode = cfg.rtlLayout;
-    this.currentLayout = cfg.layout;
-    this.manageLayout(this.currentLayout);
     this.cdr.detectChanges();
   }
 
@@ -204,47 +217,62 @@ export class AdminComponent implements OnInit, AfterViewInit {
   // ────────────────────────────────────
 
   /**
-   * Loads company profile and logo from API or cache
+   * Loads company profile (name + logo) from cache then API.
    */
-  private loadCompanyProfileAndLogo(): void {
+  private loadCompanyProfile(): void {
     const currentUser = this.authenticationService.currentUserValue;
-
-    // Only fetch company profile for non-OsmAdmin users who have a tenantId
-    if (currentUser && currentUser.role !== Role.OsmAdmin && currentUser.tenantId) {
-      console.log('[AdminComponent] Fetching company profile for tenantId:', currentUser.tenantId);
-      this.loadCompanyLogoFromCache();
-
-    } else {
-      console.log('[AdminComponent] Skipping company profile fetch - user is OsmAdmin or has no tenantId');
-    }
-  }
-
-  /**
-   * Loads company logo from localStorage cache (fallback method)
-   */
-  private loadCompanyLogoFromCache(): void {
-    if (this.authenticationService.currentUserValue?.role === Role.OsmAdmin) {
+    if (currentUser?.role === Role.OsmAdmin) {
       this.logoPreview = null;
+      this.companyName = '';
       return;
     }
 
-    // Try to get company profile from localStorage
-    const cachedProfile = localStorage.getItem('company_profile');
-    if (cachedProfile) {
+    const cached = this.companyProfileService.getProfileFromCache();
+    if (cached) {
+      this.applyCompanyProfile(cached);
+    }
 
-        const parsed = JSON.parse(cachedProfile);
-        if (parsed) {
-          this.profile = parsed;
-          if (this.profile.logoData && this.profile.logoContentType) {
-            this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
-          }
-        }
+    this.companyProfileService
+      .getProfile()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (profile) => this.applyCompanyProfile(profile),
+        error: () => undefined
+      });
+  }
 
-    }else {
-      this.companyProfileService.getProfile().subscribe({
-        next:  p => { this.profile =  p;   },
-        error: () => { this.error = 'Unable to load profile';   }
-      });    }
+  private applyCompanyProfile(profile: CompanyProfile): void {
+    this.profile = profile;
+    this.companyName = profile.legalName?.trim() || '';
+    this.logoPreview = this.companyProfileService.getLogoDataUrlFromCache() ?? this.buildLogoUrl(profile);
+    this.cdr.markForCheck();
+  }
+
+  private buildLogoUrl(profile: CompanyProfile | null): string | null {
+    if (!profile?.logoData) {
+      return null;
+    }
+    if (profile.logoData.startsWith('data:')) {
+      return profile.logoData;
+    }
+    if (profile.logoContentType) {
+      return `data:${profile.logoContentType};base64,${profile.logoData}`;
+    }
+    return profile.logoData;
+  }
+
+  /**
+   * Loads company profile and logo from API or cache
+   */
+  private loadCompanyProfileAndLogo(): void {
+    this.loadCompanyProfile();
+  }
+
+  /**
+   * @deprecated Use loadCompanyProfile()
+   */
+  private loadCompanyLogoFromCache(): void {
+    this.loadCompanyProfile();
   }
 
   /**

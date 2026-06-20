@@ -2,11 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { CardComponent } from '../theme/components/card/card.component';
-import { MatTab, MatTabGroup, MatTabLabel, MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatIcon } from '@angular/material/icon';
-import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
-import { MatCheckbox } from '@angular/material/checkbox';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import {
@@ -27,27 +25,21 @@ import { NgForOf, NgIf } from '@angular/common';
 import { TypeCategory } from '../shared/models/type-category.enum';
 import { BaseType } from '../shared/models/base-type';
 import { GenericTypeService } from '../shared/services/generic-type.service';
-import { TranslatePipe, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-configuration',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CardComponent,
     MatTab,
     MatTabGroup,
     MatIcon,
-    MatButtonToggleGroup,
-    MatButtonToggle,
-    MatTabNav,
-    MatTabLink,
-    MatTabNavPanel,
     MatFormField,
-    MatCheckbox,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButton,
-    MatTabLabel,
     MatInput,
     MatCell,
     MatCellDef,
@@ -79,7 +71,7 @@ export class ConfigurationComponent implements OnInit {
   typeOptions = [
     { name: 'Waste Type', value: TypeCategory.WASTE_TYPE },
     { name: 'Region', value: TypeCategory.REGION },
-     { name: 'Olive Variety', value: TypeCategory.OLIVE_VARIETY },
+    { name: 'Olive Variety', value: TypeCategory.OLIVE_VARIETY },
     { name: 'Production Method', value: TypeCategory.PRODUCTION_METHOD }, // e.g. Organic, Conventional
     { name: 'Oil Variety', value: TypeCategory.OIL_VARIETY }
   ];

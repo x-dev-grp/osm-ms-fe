@@ -17,14 +17,94 @@ export const SKU_DASHBOARD_CONFIG: DashboardConfig = {
     { action: 'REMOVE', color: 'warn', icon: 'delete' }
   ],
   fields: [
-    { name: 'code', label: 'Code', labelTranslatePath: 'DASHBOARD_FIELDS.CODE', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'name', label: 'Nom', labelTranslatePath: 'DASHBOARD_FIELDS.NAME', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'type', label: 'Type', labelTranslatePath: 'DASHBOARD_FIELDS.TYPE', attributeType: AttributeType.enum, fieldType: FieldType.select, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'category', label: 'Categorie', labelTranslatePath: 'DASHBOARD_FIELDS.CATEGORY', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'brand', label: 'Marque', labelTranslatePath: 'DASHBOARD_FIELDS.BRAND', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'barcode', label: 'Code barre', labelTranslatePath: 'DASHBOARD_FIELDS.BARCODE', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'actif', label: 'Actif', labelTranslatePath: 'ADMIN_DASHBOARD.HERO.ACTIVE', attributeType: AttributeType.boolean, fieldType: FieldType.checkbox, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'createdDate', label: 'Date de creation', labelTranslatePath: 'DASHBOARD_FIELDS.CREATED_DATE', attributeType: AttributeType.date, fieldType: FieldType.date, exportable: true, sortable: true, dataTable: true, filterable: true }
+    {
+      name: 'code',
+      label: 'Code',
+      labelTranslatePath: 'DASHBOARD_FIELDS.CODE',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'name',
+      label: 'Nom',
+      labelTranslatePath: 'DASHBOARD_FIELDS.NAME',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'type',
+      label: 'Type',
+      labelTranslatePath: 'DASHBOARD_FIELDS.TYPE',
+      attributeType: AttributeType.enum,
+      fieldType: FieldType.select,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'category',
+      label: 'Categorie',
+      labelTranslatePath: 'DASHBOARD_FIELDS.CATEGORY',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'brand',
+      label: 'Marque',
+      labelTranslatePath: 'DASHBOARD_FIELDS.BRAND',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'barcode',
+      label: 'Code barre',
+      labelTranslatePath: 'DASHBOARD_FIELDS.BARCODE',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'actif',
+      label: 'Actif',
+      labelTranslatePath: 'ADMIN_DASHBOARD.HERO.ACTIVE',
+      attributeType: AttributeType.boolean,
+      fieldType: FieldType.checkbox,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'createdDate',
+      label: 'Date de creation',
+      labelTranslatePath: 'DASHBOARD_FIELDS.CREATED_DATE',
+      attributeType: AttributeType.date,
+      fieldType: FieldType.date,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    }
   ],
   defaultSearchData: {
     page: 0,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,25 +7,26 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { EmployeeService } from '../../../services/employee-service';
-import { Employee, Gender, MaritalStatus } from '../../../model/employee-model';
+import { Employee } from '../../../model/employee-model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslatePipe, TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CardComponent } from '../../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { format } from 'date-fns';
-import {DepartmentService} from "../../../services/departement-service";
-import{Department} from "../../../model/department.model";
+import { DepartmentService } from '../../../services/departement-service';
+import { Department } from '../../../model/department.model';
 
 @Component({
   selector: 'app-employee-add',
   standalone: true,
   templateUrl: './employee-add.component.html',
   styleUrls: ['./employee-add.component.scss'],
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -70,7 +71,6 @@ export class EmployeeAddComponent implements OnInit {
       this.isEditing = true;
       this.employeeId = id;
       this.loadEmployee(this.employeeId);
-
     }
   }
   private loadDepartments(): void {
@@ -115,9 +115,7 @@ export class EmployeeAddComponent implements OnInit {
       country: [''],
       externalId: [''],
       active: [true],
-      departmentId: [''],
-
-
+      departmentId: ['']
     });
   }
 
@@ -143,7 +141,7 @@ export class EmployeeAddComponent implements OnInit {
             country: employee.country,
             externalId: employee.externalId,
             active: employee.active,
-            departmentId: employee.department ? employee.department.id : null,
+            departmentId: employee.department ? employee.department.id : null
           });
         }
         this.loading = false;
@@ -164,9 +162,7 @@ export class EmployeeAddComponent implements OnInit {
       console.log('Tous les départements:', this.departments);
       console.log('ID département recherché:', formValue.departmentId);
 
-      const selectedDepartment = this.departments.find(dept =>
-        String(dept.id) === String(formValue.departmentId)
-      );
+      const selectedDepartment = this.departments.find((dept) => String(dept.id) === String(formValue.departmentId));
 
       console.log('Département sélectionné:', selectedDepartment); // Debug
 
@@ -193,9 +189,7 @@ export class EmployeeAddComponent implements OnInit {
         country: formValue.country || '',
         externalId: formValue.externalId || '',
         active: formValue.active,
-        department:selectedDepartment
-
-
+        department: selectedDepartment
       };
 
       console.log('Payload envoyé :', employeeData);

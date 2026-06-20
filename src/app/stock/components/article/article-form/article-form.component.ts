@@ -1,14 +1,12 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { MaterielSupplierService } from '../../../services/materiel-supplier.service';
-import { Article, CategorieArticle, UniteMesure, UniteMesureOption, ArticleConfig, categorieLabels } from '../../../models/article.model';
+import { Article, ArticleConfig, CategorieArticle, categorieLabels, UniteMesure, UniteMesureOption } from '../../../models/article.model';
 import { MaterielSupplier } from '../../../models/materiel-supplier.model';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-article-form',
@@ -57,7 +55,7 @@ export class ArticleFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private articleService: ArticleService,
-    private materielSupplierService: MaterielSupplierService,
+    private materielSupplierService: MaterielSupplierService
   ) {
     this.articleForm = this.fb.group({
       nom: ['', Validators.required],
@@ -80,7 +78,6 @@ export class ArticleFormComponent implements OnInit {
       colisWidth: [0],
       colisHeight: [0],
       colisMaxWeightKg: [0],
-
 
       paletteType: [''],
       paletteMaterial: [''],
@@ -122,7 +119,7 @@ export class ArticleFormComponent implements OnInit {
       this.handleCategoryChange(preselectedCategorie);
     }
 
-    this.articleForm.get('categorie')?.valueChanges.subscribe(cat => {
+    this.articleForm.get('categorie')?.valueChanges.subscribe((cat) => {
       this.handleCategoryChange(cat);
     });
 
@@ -181,10 +178,7 @@ export class ArticleFormComponent implements OnInit {
       return;
     }
 
-    this.unitesMesure = [
-      { value: selectedUnite, label: this.getUniteMesureLabel(selectedUnite) },
-      ...this.unitesMesure
-    ];
+    this.unitesMesure = [{ value: selectedUnite, label: this.getUniteMesureLabel(selectedUnite) }, ...this.unitesMesure];
   }
 
   private updateUnitesMesureForCategorie(cat: string, preserveCurrentUnit = false): void {
@@ -195,9 +189,7 @@ export class ArticleFormComponent implements OnInit {
 
     const categorie = cat as CategorieArticle;
     const allowedValues = this.unitesMesureByCategorie[categorie];
-    this.unitesMesure = this.allUnitesMesure.filter((unite) =>
-      allowedValues.includes(unite.value as UniteMesure)
-    );
+    this.unitesMesure = this.allUnitesMesure.filter((unite) => allowedValues.includes(unite.value as UniteMesure));
 
     const currentUnit = this.articleForm.get('um')?.value;
     if (preserveCurrentUnit && currentUnit && allowedValues.includes(currentUnit as UniteMesure)) {
@@ -275,12 +267,18 @@ export class ArticleFormComponent implements OnInit {
 
   clearAllDynamicValidators(): void {
     const dynamicFields = [
-      'uniteVolumeMl', 'colisUnitArticleId', 'colisUnitsPerColis',
-      'colisLength', 'colisWidth', 'colisHeight',
-      'paletteColisId', 'paletteColisPerLayer', 'paletteNumberOfLayers'
+      'uniteVolumeMl',
+      'colisUnitArticleId',
+      'colisUnitsPerColis',
+      'colisLength',
+      'colisWidth',
+      'colisHeight',
+      'paletteColisId',
+      'paletteColisPerLayer',
+      'paletteNumberOfLayers'
     ];
 
-    dynamicFields.forEach(field => {
+    dynamicFields.forEach((field) => {
       const control = this.articleForm.get(field);
       if (control) {
         control.clearValidators();
@@ -339,18 +337,18 @@ export class ArticleFormComponent implements OnInit {
 
   setupAutoCalculations(): void {
     // Colis: Auto-calculate Max Weight based on unit weight * units
-    this.articleForm.get('colisUnitsPerColis')?.valueChanges.subscribe(units => {
+    this.articleForm.get('colisUnitsPerColis')?.valueChanges.subscribe((units) => {
       this.calculateColisMaxWeight(units, this.articleForm.get('colisUnitArticleId')?.value);
     });
 
-    this.articleForm.get('colisUnitArticleId')?.valueChanges.subscribe(unitId => {
+    this.articleForm.get('colisUnitArticleId')?.valueChanges.subscribe((unitId) => {
       this.calculateColisMaxWeight(this.articleForm.get('colisUnitsPerColis')?.value, unitId);
     });
   }
 
   calculateColisMaxWeight(units: number, unitId: string): void {
     if (units && unitId && this.uniteArticles.length > 0) {
-      const unit = this.uniteArticles.find(u => u.id === unitId);
+      const unit = this.uniteArticles.find((u) => u.id === unitId);
       if (unit && unit.configuration && (unit.configuration as any).weightGr) {
         const weightGr = (unit.configuration as any).weightGr;
         // Poids total en KG (poids unitaire * nbr d'unités / 1000)
@@ -364,15 +362,18 @@ export class ArticleFormComponent implements OnInit {
   loadArticle(): void {
     this.articleService.getArticleById(this.articleId!).subscribe({
       next: (article) => {
-        this.articleForm.patchValue({
-          nom: article.nom,
-          categorie: article.categorie,
-          um: article.um,
-          materielSupplier: article.materielSupplier?.id ?? '',
-          stockMinimum: article.stockMinimum,
-          stockMaximum: article.stockMaximum,
-          actif: article.actif
-        }, { emitEvent: false });
+        this.articleForm.patchValue(
+          {
+            nom: article.nom,
+            categorie: article.categorie,
+            um: article.um,
+            materielSupplier: article.materielSupplier?.id ?? '',
+            stockMinimum: article.stockMinimum,
+            stockMaximum: article.stockMaximum,
+            actif: article.actif
+          },
+          { emitEvent: false }
+        );
         this.handleCategoryChange(article.categorie, true);
         this.ensureSelectedUniteMesureOption();
 
@@ -429,8 +430,6 @@ export class ArticleFormComponent implements OnInit {
                 consommableTemperatureStockage: (config as any).temperatureStockageCelsius
               });
               break;
-
-
           }
         }
       },
@@ -479,13 +478,14 @@ export class ArticleFormComponent implements OnInit {
           colisId: form.paletteColisId
         };
       case CategorieArticle.EMBALLAGE:
-        const dimensions = (form.emballageLength || form.emballageWidth || form.emballageHeight)
-          ? {
-            length: form.emballageLength || 0,
-            width: form.emballageWidth || 0,
-            height: form.emballageHeight || 0
-          }
-          : undefined;
+        const dimensions =
+          form.emballageLength || form.emballageWidth || form.emballageHeight
+            ? {
+                length: form.emballageLength || 0,
+                width: form.emballageWidth || 0,
+                height: form.emballageHeight || 0
+              }
+            : undefined;
         return {
           configType: 'EMBALLAGE',
           sousType: form.emballageSousType,
@@ -503,7 +503,6 @@ export class ArticleFormComponent implements OnInit {
           quantity: form.consommableQuantity,
           temperatureStockageCelsius: form.consommableTemperatureStockage
         };
-
 
       default:
         throw new Error('Catégorie non prise en charge');
@@ -523,7 +522,7 @@ export class ArticleFormComponent implements OnInit {
     this.submitting = true;
     const formValue = this.articleForm.value;
     const selectedMaterielSupplier = formValue.materielSupplier
-      ? this.materielSuppliers.find(f => f.id === formValue.materielSupplier)
+      ? this.materielSuppliers.find((f) => f.id === formValue.materielSupplier)
       : undefined;
 
     const articleData: any = {
@@ -556,7 +555,9 @@ export class ArticleFormComponent implements OnInit {
         error: (error) => {
           console.error('Erreur création:', error);
           this.submitting = false;
-          alert(this.i18n.instant('AUTO.ERREUR_DU_SERVEUR') + (error.error?.error || error.message || this.i18n.instant('AUTO.ERREUR_INCONNUE')));
+          alert(
+            this.i18n.instant('AUTO.ERREUR_DU_SERVEUR') + (error.error?.error || error.message || this.i18n.instant('AUTO.ERREUR_INCONNUE'))
+          );
         }
       });
     }

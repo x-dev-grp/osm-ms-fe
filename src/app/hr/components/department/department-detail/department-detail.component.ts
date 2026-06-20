@@ -4,28 +4,29 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DepartmentService } from '../../../services/departement-service';
 import { Department } from '../../../model/department.model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslatePipe, TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CardComponent } from '../../../../theme/components/card/card.component';
-import { Employee } from "../../../model/employee-model";
-import { EmployeeService } from "../../../services/employee-service";
+import { Employee } from '../../../model/employee-model';
+import { EmployeeService } from '../../../services/employee-service';
 
 @Component({
   selector: 'app-department-detail',
   standalone: true,
   templateUrl: './department-detail.component.html',
   styleUrls: ['./department-detail.component.scss'],
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
     TranslatePipe,
-    CardComponent,
+    CardComponent
   ]
 })
 export class DepartmentDetailComponent implements OnInit {
@@ -60,9 +61,7 @@ export class DepartmentDetailComponent implements OnInit {
 
           // Charger les employés du département
           if (this.department.employees) {
-            this.employees = Array.isArray(this.department.employees) ?
-              this.department.employees :
-              [this.department.employees];
+            this.employees = Array.isArray(this.department.employees) ? this.department.employees : [this.department.employees];
           }
 
           // Charger les informations du manager si un managerId existe

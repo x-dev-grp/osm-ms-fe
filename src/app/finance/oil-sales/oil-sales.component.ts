@@ -12,10 +12,7 @@ import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 
 import { OilSaleActionsService } from '../service/oil-sale-actions.service';
 
-
-
 @Component({
-
   selector: 'app-oil-sales',
 
   standalone: true,
@@ -23,28 +20,15 @@ import { OilSaleActionsService } from '../service/oil-sale-actions.service';
   templateUrl: './oil-sales.component.html',
 
   imports: [CommonModule, OsmDashboard]
-
 })
-
 export class OilSalesComponent {
-
   dashboardConfig: DashboardConfig = OIL_SALES_DASHBOARD_CONFIG;
-
-
 
   @ViewChild('dashboard') dashboard!: OsmDashboard;
 
-
-
   constructor(private oilSaleActions: OilSaleActionsService) {}
 
-
-
   handleAction(event: { action: string; row: OilSale }): void {
-
     this.oilSaleActions.handleAction(event.action, event.row, () => this.dashboard?.refrechData());
-
   }
-
 }
-

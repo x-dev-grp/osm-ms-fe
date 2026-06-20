@@ -5,13 +5,7 @@ import { LabelContentDto } from '../../labels/models/label.model';
 export type FinalProductType = 'VRAC' | 'NON_VRAC';
 export type FinalProductUnitOfMeasure = 'L' | 'KG' | 'BOTTLE' | 'CARTON';
 
-export type ProductStatus =
-  | 'DRAFT'
-  | 'PENDING_REVIEW'
-  | 'APPROVED'
-  | 'ACTIVE'
-  | 'INACTIVE'
-  | 'ARCHIVED';
+export type ProductStatus = 'DRAFT' | 'PENDING_REVIEW' | 'APPROVED' | 'ACTIVE' | 'INACTIVE' | 'ARCHIVED';
 
 export interface FinalProduct {
   id?: string;

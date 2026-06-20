@@ -9,13 +9,7 @@ import { QrCodeResponse } from '../../models/qr-models';
 @Component({
   selector: 'app-qr-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    TranslateModule
-  ],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, TranslateModule],
   template: `
     <h2 mat-dialog-title>{{ 'QR.TITLE' | translate }}</h2>
     <mat-dialog-content class="qr-content">
@@ -23,8 +17,14 @@ import { QrCodeResponse } from '../../models/qr-models';
         <img [src]="'data:image/png;base64,' + data.qrImageBase64" alt="QR Code" />
       </div>
       <div class="qr-details">
-        <p><strong>{{ 'QR.TYPE' | translate }}:</strong> {{ data.payloadType }}</p>
-        <p><strong>{{ 'QR.ENCRYPTED' | translate }}:</strong> {{ (data.encrypted ? 'COMMON.YES' : 'COMMON.NO') | translate }}</p>
+        <p>
+          <strong>{{ 'QR.TYPE' | translate }}:</strong>
+          {{ data.payloadType }}
+        </p>
+        <p>
+          <strong>{{ 'QR.ENCRYPTED' | translate }}:</strong>
+          {{ (data.encrypted ? 'COMMON.YES' : 'COMMON.NO') | translate }}
+        </p>
       </div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
@@ -35,29 +35,31 @@ import { QrCodeResponse } from '../../models/qr-models';
       </button>
     </mat-dialog-actions>
   `,
-  styles: [`
-    .qr-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    .qr-image-container {
-      margin-bottom: 20px;
-      padding: 10px;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
-    .qr-image-container img {
-      max-width: 250px;
-      height: auto;
-    }
-    .qr-details {
-      text-align: center;
-      color: #666;
-    }
-  `]
+  styles: [
+    `
+      .qr-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+      .qr-image-container {
+        margin-bottom: 20px;
+        padding: 10px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+      .qr-image-container img {
+        max-width: 250px;
+        height: auto;
+      }
+      .qr-details {
+        text-align: center;
+        color: #666;
+      }
+    `
+  ]
 })
 export class QrDialogComponent {
   constructor(

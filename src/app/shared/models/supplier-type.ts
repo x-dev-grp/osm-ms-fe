@@ -1,12 +1,11 @@
 import { BaseType } from './base-type';
 import { SupplierInfo } from './supplier';
-import { PartnerCategory } from '../../finance/models/PartnerCategory';
 
 export interface SupplierType {
   id?: string;
-  supplierInfo: SupplierInfo ;
-  genericSupplierType:BaseType;
-  hasStorage?:boolean
+  supplierInfo: SupplierInfo;
+  genericSupplierType: BaseType;
+  hasStorage?: boolean;
   name: string;
   lastname: string;
   phone: string;
@@ -18,5 +17,3 @@ export interface SupplierType {
   bankName: string;
   fullName?: string;
 }
-
-

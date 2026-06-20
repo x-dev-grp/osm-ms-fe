@@ -1,20 +1,17 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { take } from 'rxjs/operators';
-import { BomService } from "../../../services/BomService";
-import { Bom } from "../../../models/Bom";
+import { BomService } from '../../../services/BomService';
+import { Bom } from '../../../models/Bom';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
 import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
-import { TranslateModule } from '@ngx-translate/core';
-
 
 @Component({
   selector: 'app-bom-detail',
@@ -38,7 +35,7 @@ export class BomDetailComponent implements OnInit {
     private toast: ToastService,
     private dialog: MatDialog,
     private confirmationDialog: ConfirmationDialogService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -160,18 +157,20 @@ export class BomDetailComponent implements OnInit {
       return;
     }
 
-    this.confirmationDialog.confirm({
-      title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
-      message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
-      type: ConfirmationType.WARNING,
-      confirmText: this.i18n.instant('AUTO.REGENERATE'),
-      cancelText: this.i18n.instant('ADMIN.CANCEL'),
-      showIcon: true,
-      destructive: true,
-      requiredText: this.i18n.instant('AUTO.OKAY'),
-      requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
-      requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
-    }).pipe(take(1))
+    this.confirmationDialog
+      .confirm({
+        title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
+        message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
+        type: ConfirmationType.WARNING,
+        confirmText: this.i18n.instant('AUTO.REGENERATE'),
+        cancelText: this.i18n.instant('ADMIN.CANCEL'),
+        showIcon: true,
+        destructive: true,
+        requiredText: this.i18n.instant('AUTO.OKAY'),
+        requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+        requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
+      })
+      .pipe(take(1))
       .subscribe((result) => {
         onResolved(!!result?.confirmed);
       });

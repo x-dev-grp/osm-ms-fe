@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {environment} from '../../../environments/environment';
-import {WasteSale} from "../models/Waste.model";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { WasteSale } from '../models/Waste.model';
 import { ApiResponse } from '../../shared/models/api-response';
 
 @Injectable({
@@ -11,8 +11,7 @@ import { ApiResponse } from '../../shared/models/api-response';
 export class WasteSaleService {
   private baseUrl = `${environment.apiUrl}/api/production/waste`;
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   // Get all waste sales
   getAllWasteSales(): Observable<ApiResponse<WasteSale>> {
@@ -48,7 +47,7 @@ export class WasteSaleService {
   deliverWasteSale(id: string): Observable<ApiResponse<WasteSale>> {
     return this.http.patch<ApiResponse<WasteSale>>(`${this.baseUrl}/${id}/deliver`, {});
   }
-  processPayment(payload:any): Observable<ApiResponse<any>> {
+  processPayment(payload: any): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<void>>(`${this.baseUrl}/payment`, payload);
   }
 }

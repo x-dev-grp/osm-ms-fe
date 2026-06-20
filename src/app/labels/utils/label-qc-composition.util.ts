@@ -1,6 +1,5 @@
 import { ProductionGenealogy } from '../../shared/models/production-genealogy.model';
-import { LabelContentDto } from '../models/label.model';
-import { LabelLanguage } from '../models/label.model';
+import { LabelContentDto, LabelLanguage } from '../models/label.model';
 import {
   LabelCompositionEntry,
   LabelCompositionSource,
@@ -213,17 +212,14 @@ const NUTRITION_LABELS: Record<
 };
 
 /** Default conservation text when no value is set on the label. */
-export const DEFAULT_LABEL_STORAGE_CONDITIONS =
-  'A conserver a l\'abri de la lumiere et de la chaleur';
+export const DEFAULT_LABEL_STORAGE_CONDITIONS = "A conserver a l'abri de la lumiere et de la chaleur";
 
 export function resolveStorageConditionsDisplay(value?: string | null): string {
   const trimmed = value?.trim();
   return trimmed || DEFAULT_LABEL_STORAGE_CONDITIONS;
 }
 
-export function formatQualityControlsDisplay(
-  controls: Record<string, string> | null | undefined
-): string {
+export function formatQualityControlsDisplay(controls: Record<string, string> | null | undefined): string {
   if (!controls) {
     return '';
   }
@@ -234,22 +230,15 @@ export function formatQualityControlsDisplay(
     .join(' | ');
 }
 
-export function filterNonCompositionQualityControls(
-  controls: Record<string, string> | null | undefined
-): Record<string, string> {
+export function filterNonCompositionQualityControls(controls: Record<string, string> | null | undefined): Record<string, string> {
   if (!controls) {
     return {};
   }
 
-  return Object.fromEntries(
-    Object.entries(controls).filter(([key]) => !isCompositionQcKey(key))
-  );
+  return Object.fromEntries(Object.entries(controls).filter(([key]) => !isCompositionQcKey(key)));
 }
 
-export function resolveSensoryProfileDisplay(
-  controls: Record<string, string> | null | undefined,
-  sensoryProfile?: string | null
-): string {
+export function resolveSensoryProfileDisplay(controls: Record<string, string> | null | undefined, sensoryProfile?: string | null): string {
   const qcText = formatQualityControlsDisplay(filterNonCompositionQualityControls(controls));
   if (qcText) {
     return qcText;
@@ -258,15 +247,11 @@ export function resolveSensoryProfileDisplay(
   return sensoryProfile?.trim() || '';
 }
 
-export function hasPostFiltrationQualityControls(
-  controls: Record<string, string> | null | undefined
-): boolean {
+export function hasPostFiltrationQualityControls(controls: Record<string, string> | null | undefined): boolean {
   return !!controls && Object.keys(controls).length > 0;
 }
 
-export function hasSensoryQualityControls(
-  controls: Record<string, string> | null | undefined
-): boolean {
+export function hasSensoryQualityControls(controls: Record<string, string> | null | undefined): boolean {
   return Object.keys(filterNonCompositionQualityControls(controls)).length > 0;
 }
 
@@ -281,9 +266,7 @@ export function normalizeQcKey(value: string): string {
 
 export function isCompositionQcKey(key: string): boolean {
   const normalized = normalizeQcKey(key);
-  return COMPOSITION_KEY_PATTERNS.some((entry) =>
-    entry.patterns.some((pattern) => normalized.includes(normalizeQcKey(pattern)))
-  );
+  return COMPOSITION_KEY_PATTERNS.some((entry) => entry.patterns.some((pattern) => normalized.includes(normalizeQcKey(pattern))));
 }
 
 export function resolvePostFiltrationQualityControls(
@@ -321,9 +304,7 @@ function extractControlsFromPayloadJson(finalPayloadJson?: string | null): Recor
   }
 }
 
-function extractControlsFromSourceSnapshots(
-  sourceSnapshots?: LabelContentDto['sourceSnapshots']
-): Record<string, string> {
+function extractControlsFromSourceSnapshots(sourceSnapshots?: LabelContentDto['sourceSnapshots']): Record<string, string> {
   const snapshot = sourceSnapshots?.find((item) => item.sourceType === 'FILTERED_LOT')?.snapshotJson;
   if (!snapshot?.trim()) {
     return {};
@@ -377,9 +358,7 @@ function toStringRecord(source: unknown): Record<string, string> {
 
 function matchCompositionDefinition(key: string): (typeof COMPOSITION_KEY_PATTERNS)[number] | undefined {
   const normalized = normalizeQcKey(key);
-  return COMPOSITION_KEY_PATTERNS.find((entry) =>
-    entry.patterns.some((pattern) => normalized.includes(normalizeQcKey(pattern)))
-  );
+  return COMPOSITION_KEY_PATTERNS.find((entry) => entry.patterns.some((pattern) => normalized.includes(normalizeQcKey(pattern))));
 }
 
 function parseVolumeMl(netQuantity?: string | null): number | null {
@@ -580,10 +559,7 @@ export function buildLabelNutritionTable(
   };
 }
 
-export function nutritionSourceLabel(
-  source: LabelCompositionSource,
-  language?: LabelLanguage | string | null
-): string {
+export function nutritionSourceLabel(source: LabelCompositionSource, language?: LabelLanguage | string | null): string {
   const labels = resolveNutritionLabels(language);
   return source === 'measured' ? labels.footnotes.measured : labels.footnotes.estimated;
 }

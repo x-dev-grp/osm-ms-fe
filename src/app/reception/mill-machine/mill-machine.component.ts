@@ -11,13 +11,12 @@ import { Subscription } from 'rxjs';
 
 import { SharedModule } from '../../shared/shared.module';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { MillMachine } from '../../shared/models/millMachine';
 import { MillMachineService } from '../../shared/services/mill-machine.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { MILL_MACHINE_DASHBOARD } from './MILL_MACHINE_DASHBOARD';
 import { TranslateModule } from '@ngx-translate/core';
-import { event } from '@ngrx/signals/events';
 
 @Component({
   selector: 'app-mill-machine',
@@ -49,7 +48,6 @@ export class MillMachineComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private router: Router
   ) {}
-
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -89,6 +87,5 @@ export class MillMachineComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

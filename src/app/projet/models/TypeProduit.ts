@@ -1,11 +1,17 @@
-import {Client} from "./client.model";
+import { Client } from './client.model';
 
 export enum TypeProduit {
-  EXTRA_VIERGE = 'EXTRA_VIERGE', VIERGE = 'VIERGE', RAFFINE = 'RAFFINE', BLEND = 'BLEND'
+  EXTRA_VIERGE = 'EXTRA_VIERGE',
+  VIERGE = 'VIERGE',
+  RAFFINE = 'RAFFINE',
+  BLEND = 'BLEND'
 }
 
 export enum TypeEmballage {
-  BOUTEILLE = 'BOUTEILLE', CANETTE = 'CANETTE', PET = 'PET', VRAC = 'VRAC'
+  BOUTEILLE = 'BOUTEILLE',
+  CANETTE = 'CANETTE',
+  PET = 'PET',
+  VRAC = 'VRAC'
 }
 
 export type Unite = 'LITRES' | 'UNITES';

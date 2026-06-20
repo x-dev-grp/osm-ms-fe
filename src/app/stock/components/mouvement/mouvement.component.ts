@@ -3,10 +3,8 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-mouvement',
-  imports: [TranslateModule, ],
+  imports: [TranslateModule],
   templateUrl: './mouvement.component.html',
   styleUrl: './mouvement.component.scss'
 })
-export class MouvementComponent {
-
-}
+export class MouvementComponent {}

@@ -1325,9 +1325,13 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           const outboundTransactions = transactions.filter((t) => t.direction === TransactionDirection.OUTBOUND);
 
           const inboundPaid = inboundTransactions.filter((t) => t.approved).reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
-          const inboundUnpaid = inboundTransactions.filter((t) => !t.approved).reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
+          const inboundUnpaid = inboundTransactions
+            .filter((t) => !t.approved)
+            .reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
           const outboundPaid = outboundTransactions.filter((t) => t.approved).reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
-          const outboundUnpaid = outboundTransactions.filter((t) => !t.approved).reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
+          const outboundUnpaid = outboundTransactions
+            .filter((t) => !t.approved)
+            .reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
 
           const inboundPaidCount = inboundTransactions.filter((t) => t.approved).length;
           const inboundUnpaidCount = inboundTransactions.filter((t) => !t.approved).length;

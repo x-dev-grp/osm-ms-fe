@@ -2,8 +2,8 @@ import { Currency, PaymentMethod } from '../../models/financial-transaction.mode
 import { QualityGrades } from '../../models/oil-sale.model';
 
 export interface ContainerSaleLine {
-  id: string;      // OilContainer id
-  count: number;   // units to sell
+  id: string; // OilContainer id
+  count: number; // units to sell
 }
 
 /**
@@ -13,23 +13,23 @@ export interface ContainerSaleLine {
  * - containerSales is optional; omit or send [] for "no containers".
  */
 export interface OilSaleCreateRequest {
-  supplier?: string;               // supplier id (optional)
-  storageUnit: string;             // storage unit id (required)
+  supplier?: string; // supplier id (optional)
+  storageUnit: string; // storage unit id (required)
 
-  quantity: number;                // oil quantity
-  unitPrice: number;               // oil unit price
+  quantity: number; // oil quantity
+  unitPrice: number; // oil unit price
 
-  currency: Currency;              // e.g. 'TND'
-  paymentMethod: PaymentMethod;    // e.g. 'CASH'
+  currency: Currency; // e.g. 'TND'
+  paymentMethod: PaymentMethod; // e.g. 'CASH'
 
-  saleDate: string;                // LocalDateTime string (see helper below)
-  qualityGrade: QualityGrades;     // VIRGIN | EXTRA_VIRGIN | ...
+  saleDate: string; // LocalDateTime string (see helper below)
+  qualityGrade: QualityGrades; // VIRGIN | EXTRA_VIRGIN | ...
 
   invoiceNumber?: string;
   description?: string;
   deliveryAddress?: string;
 
-  paidAmount?: number;             // optional; default 0 if omitted
+  paidAmount?: number; // optional; default 0 if omitted
 
   // optional lines for containers
   containerSales?: ContainerSaleLine[];

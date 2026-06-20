@@ -43,21 +43,40 @@ export interface OilContainerPurchaseFormValue {
     TranslateModule
   ],
   templateUrl: './oil-container-purchase-dialog.component.html',
-  styles: [`
-    .dialog-hint { margin: 0 0 16px; color: #666; font-size: 0.9rem; }
-    .purchase-form { display: flex; flex-direction: column; gap: 8px; min-width: 360px; }
-    .full-width { width: 100%; }
-    .summary-box {
-      margin-top: 8px;
-      padding: 12px;
-      border-radius: 8px;
-      background: #f5f7fa;
-      display: grid;
-      gap: 6px;
-    }
-    .summary-row { display: flex; justify-content: space-between; gap: 12px; }
-    .summary-row.total { font-weight: 600; }
-  `]
+  styles: [
+    `
+      .dialog-hint {
+        margin: 0 0 16px;
+        color: #666;
+        font-size: 0.9rem;
+      }
+      .purchase-form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 360px;
+      }
+      .full-width {
+        width: 100%;
+      }
+      .summary-box {
+        margin-top: 8px;
+        padding: 12px;
+        border-radius: 8px;
+        background: #f5f7fa;
+        display: grid;
+        gap: 6px;
+      }
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .summary-row.total {
+        font-weight: 600;
+      }
+    `
+  ]
 })
 export class OilContainerPurchaseDialogComponent implements OnInit, OnDestroy {
   private readonly dialogRef = inject(MatDialogRef<OilContainerPurchaseDialogComponent, OilContainerPurchaseFormValue | undefined>);

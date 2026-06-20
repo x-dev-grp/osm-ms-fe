@@ -37,8 +37,9 @@ import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.c
 import { ToastService } from '../../../shared/services/toast.service';
 import { CardComponent } from '../../../theme/components/card/card.component';
 import { Olive_Oil_Type } from '../../../shared/models/olive-type.enum';
-import { GenericTypeDialogComponent } from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
-import { MatDivider } from '@angular/material/divider';
+import {
+  GenericTypeDialogComponent
+} from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -74,8 +75,7 @@ function isObjectWithId(value: unknown): value is { id: string | number } {
     MatAutocompleteModule,
     FormsModule,
     TranslateModule,
-    BaseTypeComponent,
-    MatDivider
+    BaseTypeComponent
   ],
   templateUrl: './olive-reception-form.component.html',
   styleUrls: ['./olive-reception-form.component.scss']
@@ -175,7 +175,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getRoutingData();
-     const deliveryId = this.route.snapshot.paramMap.get('id');
+    const deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = deliveryId !== null && deliveryId !== 'new';
     const supplierCtrl = this.receptionForm.get('supplier')!;
     this.recomputeNet();
@@ -387,7 +387,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
           'success'
         );
         // Navigate back to the op-specific list if available
-         if (this.forcedOp) {
+        if (this.forcedOp) {
           this.router.navigate([`/reception/reception-olive/${this.forcedOp?.toLowerCase()}`]);
         } else {
           this.router.navigate(['/reception/reception-olive']);
@@ -415,8 +415,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   // Navigate back to the op-specific list (if forced), else general route
   resetForm(): void {
-       this.router.navigate([`/reception/reception-olive/${this.forcedOp?.toLowerCase()}`]);
-
+    this.router.navigate([`/reception/reception-olive/${this.forcedOp?.toLowerCase()}`]);
   }
 
   // FIX: accept string | object to play nice while typing
@@ -481,11 +480,10 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   private getRoutingData(): void {
     this.route.data.subscribe((d: Data) => {
-      this.forcedOp=d?.['op'];
-       this.receptionForm.get('operationType')?.setValue(this.forcedOp);
+      this.forcedOp = d?.['op'];
+      this.receptionForm.get('operationType')?.setValue(this.forcedOp);
     });
   }
-
 
   private applyNextNumbers(res: { success?: boolean; data?: { deliveryNumber: string; lotNumber: string } }): void {
     if (res?.success && res.data) {

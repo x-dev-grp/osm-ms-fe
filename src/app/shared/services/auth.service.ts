@@ -14,7 +14,7 @@ export interface UserDTO {
   activated: boolean;
 }
 export interface OSMUserOUTDTO {
-  id: string;            // UUID from backend
+  id: string; // UUID from backend
   // ... other backend fields if needed
 }
 export interface PasswordResetRequest {
@@ -31,15 +31,11 @@ export interface PasswordResetResponse {
 export class AuthService {
   private readonly api = environment.apiUrl + '/api/security';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   login(username: string, password: string): Observable<any> {
-    return this.http.post<any>(
-      `${this.api}/login`,
-      { username, password }
-    );
+    return this.http.post<any>(`${this.api}/login`, { username, password });
   }
-
 
   requestPasswordReset(identifier: string): Observable<any> {
     const url = `${this.api}/user/auth/resetPassword`; // removed `/user`
@@ -60,19 +56,12 @@ export class AuthService {
     return this.http.post<void>(url, dto);
   }
   resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post<any>(
-      `${this.api}/set-password?token=${token}`,
-      { newPassword }
-    );
+    return this.http.post<any>(`${this.api}/set-password?token=${token}`, { newPassword });
   }
-
-
 
   getToken(): string | null {
     return localStorage.getItem('jwt_token');
   }
-
-
 
   logout(): void {
     localStorage.removeItem('jwt_token');

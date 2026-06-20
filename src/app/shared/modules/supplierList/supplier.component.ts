@@ -1,4 +1,14 @@
-import { AfterViewInit, Component, DestroyRef, inject, input, OnChanges, OnInit, output, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  OnChanges,
+  OnInit,
+  output,
+  SimpleChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -11,7 +21,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../shared.module';
-import { DynamicInput } from '../osm-dashboard/components/dynamic-input/dynamic-input.component';
 import { OptionsScrollDirective } from '../../directives/options-scroll.directive';
 import { SearchOperation } from '../../models/advanced-search/searchOperation';
 import { SearchData } from '../../models/advanced-search/searchData';
@@ -36,7 +45,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     ReactiveFormsModule,
     MatSortModule,
     SharedModule,
-    DynamicInput,
     OptionsScrollDirective,
     TranslateModule
   ],
@@ -58,9 +66,11 @@ export class SupplierComponent implements OnInit, AfterViewInit, OnChanges {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      search: {isDeleted:{
-          equalValue:false
-        },},
+      search: {
+        isDeleted: {
+          equalValue: false
+        }
+      },
       searchs: []
     }
   };
@@ -82,11 +92,12 @@ export class SupplierComponent implements OnInit, AfterViewInit, OnChanges {
             ...this.searchData,
             searchData: {
               ...this.searchData.searchData,
-              search: { isDeleted:{
-                  equalValue:false
+              search: {
+                isDeleted: {
+                  equalValue: false
                 },
                 ...this.searchData.searchData?.search,
-                'name': {
+                name: {
                   likeValue: value
                 }
               }
@@ -105,7 +116,7 @@ export class SupplierComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.fetch(false).subscribe()
+    this.fetch(false).subscribe();
   }
 
   fetch(scroll: boolean): Observable<SearchResponse> {

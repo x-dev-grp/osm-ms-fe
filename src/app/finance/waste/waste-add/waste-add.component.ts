@@ -1,38 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {map, Observable, startWith} from "rxjs";
- import {SupplierType} from "../../../shared/models/supplier-type";
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators
-} from "@angular/forms";
- import {SupplierTypeService} from "../../../shared/services/supplier.service";
-import {WasteSaleService} from "../../service/wasteSale.service";
-import {MatSelectModule} from "@angular/material/select";
-import {MatSnackBar} from "@angular/material/snack-bar";
- import {CommonModule} from "@angular/common";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
-import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
-import {MatButtonModule} from "@angular/material/button";
-import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import {MatIconModule} from "@angular/material/icon";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {CardComponent} from "../../../theme/components/card/card.component";
- import { WasteSale } from '../../models/Waste.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map, Observable, startWith } from 'rxjs';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import { WasteSaleService } from '../../service/wasteSale.service';
+import { MatSelectModule } from '@angular/material/select';
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CardComponent } from '../../../theme/components/card/card.component';
+import { WasteSale } from '../../models/Waste.model';
 import { ToastService } from '../../../shared/services/toast.service';
-import { Currency } from '../../models/financial-transaction.model';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-waste-add',
-  imports: [TranslateModule,
+  selector: 'app-waste-add',
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -47,11 +39,11 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     CardComponent
   ],
-    standalone: true,
-    templateUrl: './waste-add.component.html',
-    styleUrl: './waste-add.component.scss'
+  standalone: true,
+  templateUrl: './waste-add.component.html',
+  styleUrl: './waste-add.component.scss'
 })
-export class WasteAddComponent implements OnInit{
+export class WasteAddComponent implements OnInit {
   wasteId: string | null;
   isEditing: boolean = false;
   suppliers: SupplierType[];
@@ -61,31 +53,32 @@ export class WasteAddComponent implements OnInit{
   loading: boolean = false;
   totalPrice: number = 0;
 
-    constructor(
-        private router: Router,
-        private route: ActivatedRoute,
-         private supplierService: SupplierTypeService,
-        private wasteSaleService: WasteSaleService,
-        private fb: FormBuilder,
-        private toast: ToastService
-    ) {
-        console.log('WasteAddComponent constructor called');
-        console.log('Route params:', this.route.snapshot.paramMap.get('id'));
-    }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private supplierService: SupplierTypeService,
+    private wasteSaleService: WasteSaleService,
+    private fb: FormBuilder,
+    private toast: ToastService
+  ) {
+    console.log('WasteAddComponent constructor called');
+    console.log('Route params:', this.route.snapshot.paramMap.get('id'));
+  }
 
-    ngOnInit() {
-      console.log('ngOnInit called');
-      this.wasteId = this.route.snapshot.paramMap.get('id') ?? null;
-      this.isEditing = this.wasteId !== null;
-      console.log('wasteId:', this.wasteId, 'isEditing:', this.isEditing);
+  ngOnInit() {
+    console.log('ngOnInit called');
+    this.wasteId = this.route.snapshot.paramMap.get('id') ?? null;
+    this.isEditing = this.wasteId !== null;
+    console.log('wasteId:', this.wasteId, 'isEditing:', this.isEditing);
 
-      this.buildForm();
-      this.setupFormListeners();
+    this.buildForm();
+    this.setupFormListeners();
 
-      this.loading = true;
+    this.loading = true;
 
-      // Load suppliers first, then load waste sale data if editing
-      this.loadSuppliers().then(() => {
+    // Load suppliers first, then load waste sale data if editing
+    this.loadSuppliers()
+      .then(() => {
         console.log('Suppliers loaded successfully, count:', this.suppliers?.length);
         if (this.isEditing) {
           console.log('Loading waste sale for editing...');
@@ -94,11 +87,12 @@ export class WasteAddComponent implements OnInit{
           console.log('New waste sale mode');
           this.loading = false;
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error('Error loading suppliers:', error);
         this.loading = false;
       });
-    }
+  }
 
   displaySupplierFn = (supplier: SupplierType): string => {
     return supplier ? `${supplier.name} ${supplier.lastname}` : '';
@@ -118,7 +112,7 @@ export class WasteAddComponent implements OnInit{
       const wasteSale: WasteSale = {
         currency: formValue.currency || null,
         paidAmount: 0,
-        unpaidAmount:  this.totalPrice,
+        unpaidAmount: this.totalPrice,
         type: formValue.type,
         paymentMethod: formValue.paymentMethod || null,
         quantityInKg: formValue.quantity,
@@ -129,7 +123,7 @@ export class WasteAddComponent implements OnInit{
         paid: formValue.paid,
         paymentDate: formValue.paymentDate,
         storageLocationCode: formValue.storageLocationCode,
-         supplier: formValue.supplierId,
+        supplier: formValue.supplierId,
         description: formValue.description,
         notes: formValue.notes
       };
@@ -170,12 +164,11 @@ export class WasteAddComponent implements OnInit{
         });
       }
     }
-    }
+  }
 
   onCancel(): void {
     this.router.navigate(['/finance/waste-sales']);
   }
-
 
   getSelectedSupplier(): SupplierType | null {
     return this.wasteSaleForm.get('supplierId')?.value || null;
@@ -255,8 +248,7 @@ export class WasteAddComponent implements OnInit{
     }
     const filterValue = value.toLowerCase();
     return suppliers.filter(
-      (supplier) =>
-        supplier.name.toLowerCase().includes(filterValue) || supplier.lastname.toLowerCase().includes(filterValue)
+      (supplier) => supplier.name.toLowerCase().includes(filterValue) || supplier.lastname.toLowerCase().includes(filterValue)
     );
   }
 
@@ -309,7 +301,7 @@ export class WasteAddComponent implements OnInit{
             }
 
             if (supplierId) {
-              selectedSupplier = this.suppliers.find(s => s.id === supplierId);
+              selectedSupplier = this.suppliers.find((s) => s.id === supplierId);
             }
           }
 

@@ -21,7 +21,7 @@ export interface StorageUnitDto {
   oilVariety?: BaseType;
   qualityGrade: QualityGrades;
   status: 'AVAILABLE' | 'FULL' | 'FILLING' | 'MAINTENANCE' | 'IN_USE' | 'CLEANING' | 'RESERVED' | 'OUT_OF_SERVICE';
-  externalId:string;
+  externalId: string;
   lastFillDate?: Date;
   lastEmptyDate?: Date;
   supplier: SupplierType;

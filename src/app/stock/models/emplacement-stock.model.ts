@@ -1,4 +1,4 @@
-import {CategorieArticle} from "./article.model";
+import { CategorieArticle } from './article.model';
 
 export interface EmplacementStock {
   id?: string;

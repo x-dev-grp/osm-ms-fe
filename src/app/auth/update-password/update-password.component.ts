@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -9,9 +9,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
-import { User } from 'src/app/theme/types/user';
 import { TokenService } from '../services/tokenService.service';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-update-password',
@@ -30,8 +29,8 @@ export class UpdatePasswordComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
   private translateService = inject(TranslateService);
-  conHide:boolean=false;
-  newHide:boolean=false;
+  conHide: boolean = false;
+  newHide: boolean = false;
   // Form and UI state
   _form: FormGroup;
   errorMessage = '';
@@ -70,14 +69,16 @@ export class UpdatePasswordComponent implements OnInit {
 
     const passwordValid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
 
-    return passwordValid ? null : {
-      passwordStrength: {
-        hasUpperCase,
-        hasLowerCase,
-        hasNumber,
-        hasSpecialChar
-      }
-    };
+    return passwordValid
+      ? null
+      : {
+          passwordStrength: {
+            hasUpperCase,
+            hasLowerCase,
+            hasNumber,
+            hasSpecialChar
+          }
+        };
   }
 
   private invalidConfirmPassword() {
@@ -125,7 +126,8 @@ export class UpdatePasswordComponent implements OnInit {
       oldPassword: temporaryPassword
     };
 
-    this.userService.updateInitialPassword(payload, userId)
+    this.userService
+      .updateInitialPassword(payload, userId)
       .pipe(
         tap(() => {
           this.loading = false;
@@ -141,8 +143,7 @@ export class UpdatePasswordComponent implements OnInit {
   }
 
   private openChangePasswordDialog(): void {
-    const dialogRef = this.dialog.open(  this.changePwdTpl
-    , {
+    const dialogRef = this.dialog.open(this.changePwdTpl, {
       width: '400px',
       disableClose: true
       // data: {
@@ -171,15 +172,16 @@ export class UpdatePasswordComponent implements OnInit {
     };
 
     this.loading = true;
-    this.authService.login(payload)
+    this.authService
+      .login(payload)
       .pipe(
         first(),
-        tap(response => {
+        tap((response) => {
           if (response) {
             this.handleSuccessfulLogin(response);
           }
         }),
-        catchError(err => {
+        catchError((err) => {
           this.loading = false;
           this.handleError(err);
           return of(null);
@@ -190,11 +192,7 @@ export class UpdatePasswordComponent implements OnInit {
 
   private handleSuccessfulLogin(response: unknown): void {
     const resp = response as Record<string, unknown>;
-    this.tokenService.persistLogin(
-      resp['access_token'] as string,
-      resp['refresh_token'] as string,
-      false
-    );
+    this.tokenService.persistLogin(resp['access_token'] as string, resp['refresh_token'] as string, false);
     if (this.authService.applyAccessToken(this.tokenService.getToken()!)) {
       this.router.navigate(['welcome']);
     }

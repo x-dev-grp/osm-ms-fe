@@ -1,15 +1,13 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { OrdreFabrication, StatutOF } from "../../../models/of.model";
-import { OFService } from "../../../services/OFService";
-import { ToastService } from "../../../../shared/services/toast.service";
+import { OrdreFabrication, StatutOF } from '../../../models/of.model';
+import { OFService } from '../../../services/OFService';
+import { ToastService } from '../../../../shared/services/toast.service';
 import { ProductionGenealogy, ProductionRootSource } from '../../../../shared/models/production-genealogy.model';
 import { ProductionTraceabilityService } from '../../../../shared/services/production-traceability.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-of-detail',
@@ -136,9 +134,6 @@ export class OFDetailComponent implements OnInit, OnDestroy {
     this.stopTimer();
   }
 
-
-
-
   goToProduction(): void {
     this.router.navigate(['/of/production'], {
       queryParams: { ofId: this.of.id, ofCode: this.of.code }
@@ -195,6 +190,4 @@ export class OFDetailComponent implements OnInit, OnDestroy {
     printWindow?.document.close();
     printWindow?.print();
   }
-
-
 }

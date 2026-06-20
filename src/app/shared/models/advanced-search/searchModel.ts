@@ -1,5 +1,5 @@
-import {SearchDetails} from "./searchDetails"
-import {SearchOperation} from "./searchOperation"
+import { SearchDetails } from './searchDetails';
+import { SearchOperation } from './searchOperation';
 
 export class SearchModel {
   search?: { [key: string]: SearchDetails } = {};

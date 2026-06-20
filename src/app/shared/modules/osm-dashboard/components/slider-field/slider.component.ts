@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, DestroyRef, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 
 import { MatDialogModule } from '@angular/material/dialog';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,7 +24,8 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.scss'],
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,
@@ -55,7 +56,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   sliderValueChange() {
     console.log(this.rangeNumber.value);
     const { start, end } = this.rangeNumber.value;
-    if ((start!=null && start!=undefined) && (end!=null && end!=undefined)) {
+    if (start != null && start != undefined && end != null && end != undefined) {
       const search: { [key: string]: SearchDetails } = {
         [this.field()?.name!]: {
           minValueOrEqual: start,
@@ -66,21 +67,23 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     }
   }
 
-
   ngAfterViewInit(): void {
-    this._store.resetFields$()
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(() => {
-      this.rangeNumber.reset({
-        start: this.field()?.sliderMinValue || 0,
-        end: this.field()?.sliderMaxValue || 1000000
-      }, { emitEvent: false });
-    });
+    this._store
+      .resetFields$()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.rangeNumber.reset(
+          {
+            start: this.field()?.sliderMinValue || 0,
+            end: this.field()?.sliderMaxValue || 1000000
+          },
+          { emitEvent: false }
+        );
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {}
   ngOnInit(): void {
-
     this.rangeNumber = new FormGroup({
       start: new FormControl<number | null>(this.field()?.sliderMinValue || 0),
       end: new FormControl<number | null>(this.field()?.sliderMaxValue || 1000000)
@@ -88,5 +91,4 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges, OnDest
 
     console.log('field', this.field());
   }
-
 }

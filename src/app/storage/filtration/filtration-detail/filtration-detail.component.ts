@@ -49,16 +49,19 @@ export class FiltrationDetailComponent implements OnInit {
       return;
     }
 
-    this.api.getById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (op) => {
-        this.operation.set(op);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.errorMessage.set('Impossible de charger l’opération.');
-      }
-    });
+    this.api
+      .getById(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (op) => {
+          this.operation.set(op);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+          this.errorMessage.set('Impossible de charger l’opération.');
+        }
+      });
   }
 
   backToList(): void {

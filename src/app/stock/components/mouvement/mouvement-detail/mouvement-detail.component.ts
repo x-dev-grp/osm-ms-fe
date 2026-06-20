@@ -47,16 +47,19 @@ export class MouvementDetailComponent implements OnInit {
       return;
     }
 
-    this.stockService.getMouvementById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (mouvement: MouvementStock) => {
-        this.mouvement = mouvement;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-        this.errorMessage = 'Impossible de charger le mouvement.';
-      }
-    });
+    this.stockService
+      .getMouvementById(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (mouvement: MouvementStock) => {
+          this.mouvement = mouvement;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+          this.errorMessage = 'Impossible de charger le mouvement.';
+        }
+      });
   }
 
   backToList(): void {

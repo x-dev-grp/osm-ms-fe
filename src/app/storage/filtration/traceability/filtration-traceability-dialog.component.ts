@@ -10,13 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './filtration-traceability-dialog.component.html',
   styleUrls: ['./filtration-traceability-dialog.component.scss'],
   standalone: true,
-  imports: [TranslateModule, 
-    CommonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatButtonModule
-  ]
+  imports: [TranslateModule, CommonModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule]
 })
 export class FiltrationTraceabilityDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: { operation: FiltrationOperation }) {}

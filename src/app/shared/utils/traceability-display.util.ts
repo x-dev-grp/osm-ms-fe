@@ -1,18 +1,8 @@
-import {
-  ProductionGenealogy,
-  ProductionIntakeStep,
-  ProductionRootSource
-} from '../models/production-genealogy.model';
+import { ProductionGenealogy, ProductionIntakeStep, ProductionRootSource } from '../models/production-genealogy.model';
 import { TraceabilityEvent } from '../models/traceability-event.model';
 
 const OIL_RECEPTION_TYPES = new Set(['OIL_RECEPTION', 'RECEPTION']);
-const ORIGIN_INTAKE_TYPES = new Set([
-  'OIL_RECEPTION',
-  'OLIVE_RECEPTION',
-  'RECEPTION',
-  'TRITURATION',
-  'STORAGE_INTAKE'
-]);
+const ORIGIN_INTAKE_TYPES = new Set(['OIL_RECEPTION', 'OLIVE_RECEPTION', 'RECEPTION', 'TRITURATION', 'STORAGE_INTAKE']);
 
 export interface OilReceptionDisplay {
   index: number;
@@ -37,8 +27,8 @@ export function oilReceptionsFromGenealogy(genealogy: ProductionGenealogy | null
     return fromIntake.map((step, i) => intakeStepToDisplay(step, i + 1, fromIntake.length));
   }
 
-  const fromRoots = (genealogy.rootSources ?? []).filter((r) =>
-    OIL_RECEPTION_TYPES.has((r.type ?? '').toUpperCase()) || r.type === 'TRITURATION'
+  const fromRoots = (genealogy.rootSources ?? []).filter(
+    (r) => OIL_RECEPTION_TYPES.has((r.type ?? '').toUpperCase()) || r.type === 'TRITURATION'
   );
   return fromRoots.map((root, i) => rootSourceToDisplay(root, i + 1, fromRoots.length));
 }

@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,15 +8,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { take } from 'rxjs/operators';
 import { MaterielSupplierService } from '../../../services/materiel-supplier.service';
-import {
-  MaterielSupplier,
-  MaterielSupplierCategory,
-  materielSupplierCategoryLabels
-} from '../../../models/materiel-supplier.model';
+import { MaterielSupplier, MaterielSupplierCategory, materielSupplierCategoryLabels } from '../../../models/materiel-supplier.model';
 import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-materiel-supplier-detail',
@@ -133,55 +127,57 @@ export class MaterielSupplierDetailComponent implements OnInit {
     if (!this.supplier?.id) return;
 
     const activating = !this.supplier.actif;
-    this.confirmationDialog.confirm({
-      title: this.i18n.instant(activating
-        ? 'MATERIEL_SUPPLIER.CONFIRM.ACTIVATE_TITLE'
-        : 'MATERIEL_SUPPLIER.CONFIRM.DEACTIVATE_TITLE'),
-      message: this.i18n.instant(activating
-        ? 'MATERIEL_SUPPLIER.CONFIRM.ACTIVATE_MESSAGE'
-        : 'MATERIEL_SUPPLIER.CONFIRM.DEACTIVATE_MESSAGE', { name: this.supplier.nom }),
-      type: ConfirmationType.WARNING,
-      confirmText: this.i18n.instant(activating
-        ? 'MATERIEL_SUPPLIER.ACTIONS.ACTIVATE'
-        : 'MATERIEL_SUPPLIER.ACTIONS.DEACTIVATE'),
-      cancelText: this.i18n.instant('ADMIN.CANCEL'),
-      showIcon: true
-    }).pipe(take(1)).subscribe((result) => {
-      if (!result?.confirmed) return;
+    this.confirmationDialog
+      .confirm({
+        title: this.i18n.instant(activating ? 'MATERIEL_SUPPLIER.CONFIRM.ACTIVATE_TITLE' : 'MATERIEL_SUPPLIER.CONFIRM.DEACTIVATE_TITLE'),
+        message: this.i18n.instant(
+          activating ? 'MATERIEL_SUPPLIER.CONFIRM.ACTIVATE_MESSAGE' : 'MATERIEL_SUPPLIER.CONFIRM.DEACTIVATE_MESSAGE',
+          { name: this.supplier.nom }
+        ),
+        type: ConfirmationType.WARNING,
+        confirmText: this.i18n.instant(activating ? 'MATERIEL_SUPPLIER.ACTIONS.ACTIVATE' : 'MATERIEL_SUPPLIER.ACTIONS.DEACTIVATE'),
+        cancelText: this.i18n.instant('ADMIN.CANCEL'),
+        showIcon: true
+      })
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (!result?.confirmed) return;
 
-      const serviceCall = activating
-        ? this.materielSupplierService.activate(this.supplier!.id!)
-        : this.materielSupplierService.deactivate(this.supplier!.id!);
+        const serviceCall = activating
+          ? this.materielSupplierService.activate(this.supplier!.id!)
+          : this.materielSupplierService.deactivate(this.supplier!.id!);
 
-      serviceCall.subscribe({
-        next: (updated) => {
-          this.supplier = this.normalizeQrFields(updated);
-          this.toastService.success(activating
-            ? 'MATERIEL_SUPPLIER.MESSAGES.ACTIVATED'
-            : 'MATERIEL_SUPPLIER.MESSAGES.DEACTIVATED');
-        },
-        error: () => this.toastService.error('MATERIEL_SUPPLIER.ERRORS.STATUS_UPDATE_FAILED')
+        serviceCall.subscribe({
+          next: (updated) => {
+            this.supplier = this.normalizeQrFields(updated);
+            this.toastService.success(activating ? 'MATERIEL_SUPPLIER.MESSAGES.ACTIVATED' : 'MATERIEL_SUPPLIER.MESSAGES.DEACTIVATED');
+          },
+          error: () => this.toastService.error('MATERIEL_SUPPLIER.ERRORS.STATUS_UPDATE_FAILED')
+        });
       });
-    });
   }
 
   showDeliveryFields(): boolean {
     const cat = this.supplier?.category;
-    return cat === MaterielSupplierCategory.MATIERES_PREMIERES
-      || cat === MaterielSupplierCategory.PRODUITS_FINIS
-      || cat === MaterielSupplierCategory.TRANSPORT;
+    return (
+      cat === MaterielSupplierCategory.MATIERES_PREMIERES ||
+      cat === MaterielSupplierCategory.PRODUITS_FINIS ||
+      cat === MaterielSupplierCategory.TRANSPORT
+    );
   }
 
   showPackagingFields(): boolean {
     const cat = this.supplier?.category;
-    return cat === MaterielSupplierCategory.EMBALLAGES
-      || cat === MaterielSupplierCategory.ETIQUETTES
-      || cat === MaterielSupplierCategory.BOUCHONS
-      || cat === MaterielSupplierCategory.CAPSULES
-      || cat === MaterielSupplierCategory.OPERCULES
-      || cat === MaterielSupplierCategory.FILMS
-      || cat === MaterielSupplierCategory.CARTONS
-      || cat === MaterielSupplierCategory.PALETTES;
+    return (
+      cat === MaterielSupplierCategory.EMBALLAGES ||
+      cat === MaterielSupplierCategory.ETIQUETTES ||
+      cat === MaterielSupplierCategory.BOUCHONS ||
+      cat === MaterielSupplierCategory.CAPSULES ||
+      cat === MaterielSupplierCategory.OPERCULES ||
+      cat === MaterielSupplierCategory.FILMS ||
+      cat === MaterielSupplierCategory.CARTONS ||
+      cat === MaterielSupplierCategory.PALETTES
+    );
   }
 
   showServiceFields(): boolean {
@@ -204,17 +200,20 @@ export class MaterielSupplierDetailComponent implements OnInit {
       onResolved(true);
       return;
     }
-    this.confirmationDialog.confirm({
-      title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
-      message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
-      type: ConfirmationType.WARNING,
-      confirmText: this.i18n.instant('AUTO.REGENERATE'),
-      cancelText: this.i18n.instant('ADMIN.CANCEL'),
-      showIcon: true,
-      destructive: true,
-      requiredText: this.i18n.instant('AUTO.OKAY'),
-      requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
-      requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
-    }).pipe(take(1)).subscribe((result) => onResolved(!!result?.confirmed));
+    this.confirmationDialog
+      .confirm({
+        title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
+        message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
+        type: ConfirmationType.WARNING,
+        confirmText: this.i18n.instant('AUTO.REGENERATE'),
+        cancelText: this.i18n.instant('ADMIN.CANCEL'),
+        showIcon: true,
+        destructive: true,
+        requiredText: this.i18n.instant('AUTO.OKAY'),
+        requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+        requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
+      })
+      .pipe(take(1))
+      .subscribe((result) => onResolved(!!result?.confirmed));
   }
 }

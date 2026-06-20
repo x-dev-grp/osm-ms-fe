@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ViewChild, inject } from '@angular/core';
+import { Component, DestroyRef, inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -84,7 +84,8 @@ export class ProjetListComponent {
       return;
     }
 
-    this.projetService.delete(row.id)
+    this.projetService
+      .delete(row.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => this.dashboard?.refrechData(),
@@ -131,14 +132,16 @@ export class ProjetListComponent {
       }
     );
 
-    dialogRef.afterClosed()
+    dialogRef
+      .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(result => {
+      .subscribe((result) => {
         if (!result?.status) {
           return;
         }
 
-        this.projetService.updateStatus(row.id, result.status)
+        this.projetService
+          .updateStatus(row.id, result.status)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: () => this.dashboard?.refrechData(),

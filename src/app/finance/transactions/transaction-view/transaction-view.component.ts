@@ -7,11 +7,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CardComponent } from '../../../theme/components/card/card.component';
-import {
-  FinancialTransaction,
-  parseTransactionAmount,
-  TransactionDirection
-} from '../../models/financial-transaction.model';
+import { FinancialTransaction, parseTransactionAmount, TransactionDirection } from '../../models/financial-transaction.model';
 import { FinancialTransactionService } from '../../service/financial-transaction.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';

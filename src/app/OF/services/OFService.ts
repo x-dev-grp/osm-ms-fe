@@ -13,9 +13,7 @@ export class OFService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<OrdreFabrication[]> {
-    return this.http.get<ApiResponse<OrdreFabrication>>(`${this.baseUrl}/fetchAll`).pipe(
-      map((response) => response?.data ?? [])
-    );
+    return this.http.get<ApiResponse<OrdreFabrication>>(`${this.baseUrl}/fetchAll`).pipe(map((response) => response?.data ?? []));
   }
 
   getByProject(projectId: string): Observable<OrdreFabrication[]> {
@@ -23,9 +21,7 @@ export class OFService {
   }
 
   getById(id: string): Observable<OrdreFabrication> {
-    return this.http.get<ApiSingleResponse<OrdreFabrication>>(`${this.baseUrl}/fetch/${id}`).pipe(
-      map((response) => response.data)
-    );
+    return this.http.get<ApiSingleResponse<OrdreFabrication>>(`${this.baseUrl}/fetch/${id}`).pipe(map((response) => response.data));
   }
 
   getByCode(code: string): Observable<OrdreFabrication> {
@@ -35,15 +31,11 @@ export class OFService {
   }
 
   create(of: OrdreFabrication): Observable<OrdreFabrication> {
-    return this.http
-      .post<ApiSingleResponse<OrdreFabrication>>(this.baseUrl, of)
-      .pipe(map((response) => response.data));
+    return this.http.post<ApiSingleResponse<OrdreFabrication>>(this.baseUrl, of).pipe(map((response) => response.data));
   }
 
   update(id: string, of: OrdreFabrication): Observable<OrdreFabrication> {
-    return this.http
-      .put<ApiSingleResponse<OrdreFabrication>>(this.baseUrl, { ...of, id })
-      .pipe(map((response) => response.data));
+    return this.http.put<ApiSingleResponse<OrdreFabrication>>(this.baseUrl, { ...of, id }).pipe(map((response) => response.data));
   }
 
   demarrer(id: string): Observable<OrdreFabrication> {

@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,7 +23,6 @@ import { TypeCategory } from '../../shared/models/type-category.enum';
 import { ToastService } from '../../shared/services/toast.service';
 import { BaseTypeComponent } from '../../shared/modules/base-type/base-type.component';
 import { QualityGrades } from '../../shared/models/quality-grades.enum';
-import { TranslateModule } from '@ngx-translate/core';
 
 function toISO(d: any) {
   return d instanceof Date ? d.toISOString() : (d ?? null);
@@ -203,9 +201,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
   }
 
   pageTitle(): string {
-    return this.isEditing
-      ? this.i18n.instant('STORAGE.EDIT.TITLE')
-      : this.i18n.instant('STORAGE.ADD.TITLE');
+    return this.isEditing ? this.i18n.instant('STORAGE.EDIT.TITLE') : this.i18n.instant('STORAGE.ADD.TITLE');
   }
 
   statusLabel(): string {

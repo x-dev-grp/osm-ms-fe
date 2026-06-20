@@ -1,5 +1,5 @@
 import { MaterielSupplier } from './materiel-supplier.model';
-import {EmplacementStock} from "./emplacement-stock.model";
+import { EmplacementStock } from './emplacement-stock.model';
 
 export interface Article {
   id?: string;
@@ -34,7 +34,7 @@ export enum CategorieArticle {
   COLIS = 'COLIS',
   PALETTE = 'PALETTE',
   EMBALLAGE = 'EMBALLAGE',
-  CONSOMMABLE = 'CONSOMMABLE',
+  CONSOMMABLE = 'CONSOMMABLE'
 }
 
 export const categorieLabels: Record<CategorieArticle, string> = {
@@ -107,9 +107,4 @@ export interface ConsommableConfig {
   temperatureStockageCelsius: number;
 }
 
-export type ArticleConfig =
-  | UniteConfig
-  | ColisConfig
-  | PaletteConfig
-  | EmballageConfig
-  | ConsommableConfig;
+export type ArticleConfig = UniteConfig | ColisConfig | PaletteConfig | EmballageConfig | ConsommableConfig;

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, combineLatest, map } from 'rxjs';
+import { combineLatest, map, Observable } from 'rxjs';
 import { OilTransaction, TransactionState, TransactionType } from '../models/OilTransaction';
 import { StorageUnitDto } from '../models/StorageUnitDto';
-import { OilTransactionService, ExchangeCompletionPayload } from './OilTransactionService';
+import { ExchangeCompletionPayload, OilTransactionService } from './OilTransactionService';
 import { StorageUnitDtoService } from './storage.service';
 import { ApiResponse } from '../models/api-response';
 
@@ -33,7 +33,6 @@ export interface TransactionViewData {
   providedIn: 'root'
 })
 export class OilTransactionViewService {
-
   constructor(
     private oilTransactionService: OilTransactionService,
     private storageService: StorageUnitDtoService
@@ -54,10 +53,7 @@ export class OilTransactionViewService {
           throw new Error('Transaction not found');
         }
 
-        const availableStorageUnits = this.filterAndEnrichStorageUnits(
-          storageUnits.data || [],
-          oilTransaction
-        );
+        const availableStorageUnits = this.filterAndEnrichStorageUnits(storageUnits.data || [], oilTransaction);
 
         const canCompleteExchange = this.canCompleteExchange(oilTransaction);
         const showExchangeForm = canCompleteExchange;
@@ -89,9 +85,7 @@ export class OilTransactionViewService {
     const oliveUnitPrice = reception.unitPrice || 0;
     const oliveTotalValue = oliveQuantity * oliveUnitPrice;
 
-    const selectedStorageUnit = availableStorageUnits.find(
-      unit => unit.unit.id === storageUnitId
-    );
+    const selectedStorageUnit = availableStorageUnits.find((unit) => unit.unit.id === storageUnitId);
 
     if (!selectedStorageUnit) {
       return null;
@@ -123,7 +117,7 @@ export class OilTransactionViewService {
   /**
    * Validate exchange completion data
    */
-    validateExchangeCompletion(
+  validateExchangeCompletion(
     formData: { storageUnitDestinationId: string; oilQuantity: number; oilUnitPrice: number; qualityGrade: string },
     availableStorageUnits: StorageUnitInfo[]
   ): { isValid: boolean; errors: string[] } {
@@ -146,9 +140,7 @@ export class OilTransactionViewService {
     }
 
     // Check storage capacity
-    const selectedStorageUnit = availableStorageUnits.find(
-      unit => unit.unit.id === formData.storageUnitDestinationId
-    );
+    const selectedStorageUnit = availableStorageUnits.find((unit) => unit.unit.id === formData.storageUnitDestinationId);
 
     if (selectedStorageUnit && formData.oilQuantity > selectedStorageUnit.availableCapacity) {
       errors.push(`Insufficient storage capacity. Available: ${selectedStorageUnit.availableCapacity.toFixed(2)} kg`);
@@ -178,32 +170,30 @@ export class OilTransactionViewService {
    * Check if exchange can be completed
    */
   private canCompleteExchange(transaction: OilTransaction): boolean {
-    return transaction.transactionType === TransactionType.EXCHANGE &&
-           transaction.transactionState === TransactionState.PENDING &&
-           !!transaction.reception;
+    return (
+      transaction.transactionType === TransactionType.EXCHANGE &&
+      transaction.transactionState === TransactionState.PENDING &&
+      !!transaction.reception
+    );
   }
 
   /**
    * Filter and enrich storage units with additional information
    */
-  private filterAndEnrichStorageUnits(
-    units: StorageUnitDto[],
-    transaction: OilTransaction
-  ): StorageUnitInfo[] {
+  private filterAndEnrichStorageUnits(units: StorageUnitDto[], transaction: OilTransaction): StorageUnitInfo[] {
     // Filter for available storage units that can receive oil
-    let filteredUnits = units.filter(unit =>
-      unit.status === 'AVAILABLE' && unit.currentVolume < unit.maxCapacity
-    );
+    let filteredUnits = units.filter((unit) => unit.status === 'AVAILABLE' && unit.currentVolume < unit.maxCapacity);
 
     // For exchange transactions, filter by quality grade if available
-    if (transaction.transactionType === TransactionType.EXCHANGE &&
-        transaction.qualityGrade) {
+    if (transaction.transactionType === TransactionType.EXCHANGE && transaction.qualityGrade) {
       const targetQualityGrade = transaction.qualityGrade;
-      filteredUnits = filteredUnits.filter(unit => {
+      filteredUnits = filteredUnits.filter((unit) => {
         // If storage unit has a specific oil type, it must match the quality grade
         if (unit.oilVariety) {
-          return unit.oilVariety.name.toLowerCase().includes(targetQualityGrade.toLowerCase()) ||
-                 (unit.oilVariety.id && unit.oilVariety.id.toString() === targetQualityGrade);
+          return (
+            unit.oilVariety.name.toLowerCase().includes(targetQualityGrade.toLowerCase()) ||
+            (unit.oilVariety.id && unit.oilVariety.id.toString() === targetQualityGrade)
+          );
         }
         // If no specific oil type, allow any storage unit (general purpose)
         return true;
@@ -211,7 +201,7 @@ export class OilTransactionViewService {
     }
 
     // Enrich with additional information
-    return filteredUnits.map(unit => ({
+    return filteredUnits.map((unit) => ({
       unit,
       availableCapacity: unit.maxCapacity - unit.currentVolume,
       displayInfo: this.createStorageUnitDisplayInfo(unit)

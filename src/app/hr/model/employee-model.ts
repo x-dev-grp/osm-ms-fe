@@ -2,6 +2,7 @@ import { Contract } from './contract.model';
 import { Department } from './department.model';
 import { PayRolls } from './payrolls.model';
 import { Pointage } from './pointage.model';
+
 export enum Gender {
   MALE = 'MALE',
   FEMALE = 'FEMALE'

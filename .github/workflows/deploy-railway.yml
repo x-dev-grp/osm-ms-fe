@@ -1,0 +1,33 @@
+name: Deploy to Railway (testing)
+
+on:
+  push:
+    branches: [develop, testing]
+  workflow_dispatch:
+
+concurrency:
+  group: railway-frontend-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: railway-test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli@latest
+
+      - name: Deploy frontend to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT_NAME || 'testing' }}
+        run: |
+          railway up \
+            --service "${{ secrets.RAILWAY_SERVICE_ID }}" \
+            --environment "$RAILWAY_ENVIRONMENT" \
+            --detach \
+            --ci

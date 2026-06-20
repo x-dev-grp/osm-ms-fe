@@ -12,9 +12,7 @@ import { ProjetFormComponent } from './pages/projets/projet-form/projet-form.com
 import { ExpeditionListComponent } from './pages/expeditions/expedition-list/expedition-list.component';
 
 @NgModule({
-  declarations: [
-
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -27,4 +25,4 @@ import { ExpeditionListComponent } from './pages/expeditions/expedition-list/exp
     ExpeditionListComponent
   ]
 })
-export class ProjetModule { }
+export class ProjetModule {}

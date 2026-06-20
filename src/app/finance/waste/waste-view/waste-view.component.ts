@@ -1,27 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {CardComponent} from '../../../theme/components/card/card.component';
-import {WasteSale} from '../../models/Waste.model';
-import {WasteSaleService} from '../../service/wasteSale.service';
-import {ToastService} from '../../../shared/services/toast.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CardComponent } from '../../../theme/components/card/card.component';
+import { WasteSale } from '../../models/Waste.model';
+import { WasteSaleService } from '../../service/wasteSale.service';
+import { ToastService } from '../../../shared/services/toast.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-waste-view',
   standalone: true,
-  imports: [TranslateModule,
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    CardComponent
-  ],
+  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, CardComponent],
   templateUrl: './waste-view.component.html',
   styleUrl: './waste-view.component.scss'
 })

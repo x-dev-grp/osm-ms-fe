@@ -149,12 +149,9 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { value: 'TND', label: 'TND',
-                        labelTranslatePath: 'OIL_SALES.CURRENCIES.TND' },
-        { value: 'EUR', label: 'EUR',
-                        labelTranslatePath: 'OIL_SALES.CURRENCIES.EUR' },
-        { value: 'USD', label: 'USD',
-                        labelTranslatePath: 'OIL_SALES.CURRENCIES.USD' }
+        { value: 'TND', label: 'TND', labelTranslatePath: 'OIL_SALES.CURRENCIES.TND' },
+        { value: 'EUR', label: 'EUR', labelTranslatePath: 'OIL_SALES.CURRENCIES.EUR' },
+        { value: 'USD', label: 'USD', labelTranslatePath: 'OIL_SALES.CURRENCIES.USD' }
       ]
     },
 

@@ -8,8 +8,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
-
-import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Field } from '../../models/dashboard-config';
@@ -25,7 +23,8 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./date-range.component.scss'],
   standalone: true,
   providers: [provideNativeDateAdapter(), DatePipe],
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,
@@ -46,10 +45,9 @@ export class DateRangeComponent implements OnInit, AfterViewInit, OnChanges, OnD
   range: FormGroup;
   ngOnDestroy(): void {}
 
-
-
   ngAfterViewInit(): void {
-    this._store.resetFields$()
+    this._store
+      .resetFields$()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.range.reset({ start: null, end: null }, { emitEvent: false });
@@ -73,7 +71,7 @@ export class DateRangeComponent implements OnInit, AfterViewInit, OnChanges, OnD
     }
     if (start && !end) {
       const search: { [key: string]: SearchDetails } = {
-        [ this.field()?.name!]: {
+        [this.field()?.name!]: {
           minValueOrEqual: this._date.transform(start, 'yyyy-MM-ddTHH:mm:ss')!
         }
       };
@@ -87,7 +85,5 @@ export class DateRangeComponent implements OnInit, AfterViewInit, OnChanges, OnD
       start: new FormControl<Date | null>(null),
       end: new FormControl<Date | null>(null)
     });
-
   }
-
 }

@@ -1,26 +1,24 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import {Component, OnInit} from '@angular/core';
-import {CommonModule, CurrencyPipe, TitleCasePipe} from '@angular/common';
-import {FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { CommonModule, CurrencyPipe, TitleCasePipe } from '@angular/common';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import {TypeEmballage, TypeProduit} from '../../../models/TypeProduit';
-import {Client, ClientType} from '../../../models/client.model';
-import {ProjetService} from '../../../services/projet.service';
-import {ClientService} from '../../../services/client.service';
-import {LigneConditionnement} from '../../../../stock/models/ligne-conditionnement.model';
-import {LigneConditionnementService} from '../../../../stock/services/ligne-conditionnement.service';
-import {SKUService} from '../../../../stock/services/sku.service';
-import {BomService} from '../../../../stock/services/BomService';
-import {SKU} from '../../../../stock/models/sku.model';
-import {Bom} from '../../../../stock/models/Bom';
-import {ArticleService} from '../../../../stock/services/article.service';
-import {Article} from '../../../../stock/models/article.model';
+import { TypeEmballage, TypeProduit } from '../../../models/TypeProduit';
+import { Client, ClientType } from '../../../models/client.model';
+import { ProjetService } from '../../../services/projet.service';
+import { ClientService } from '../../../services/client.service';
+import { LigneConditionnement } from '../../../../stock/models/ligne-conditionnement.model';
+import { LigneConditionnementService } from '../../../../stock/services/ligne-conditionnement.service';
+import { SKUService } from '../../../../stock/services/sku.service';
+import { BomService } from '../../../../stock/services/BomService';
+import { SKU } from '../../../../stock/models/sku.model';
+import { Bom } from '../../../../stock/models/Bom';
+import { ArticleService } from '../../../../stock/services/article.service';
+import { Article } from '../../../../stock/models/article.model';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-projet-form',
@@ -51,13 +49,26 @@ export class ProjetFormComponent implements OnInit {
   projetCode?: string;
 
   bomSummary: {
-    articleId: string; articleName: string; totalQuantity: number; unit: string;
+    articleId: string;
+    articleName: string;
+    totalQuantity: number;
+    unit: string;
   }[] = [];
 
   protected readonly ClientType = ClientType;
 
-  constructor(private fb: FormBuilder, private projetService: ProjetService, private clientService: ClientService, private ligneService: LigneConditionnementService, private skuService: SKUService, private bomService: BomService, private articleService: ArticleService, private route: ActivatedRoute, private router: Router, private toast: ToastService) {
-  }
+  constructor(
+    private fb: FormBuilder,
+    private projetService: ProjetService,
+    private clientService: ClientService,
+    private ligneService: LigneConditionnementService,
+    private skuService: SKUService,
+    private bomService: BomService,
+    private articleService: ArticleService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private toast: ToastService
+  ) {}
 
   get materialPreviewBomId(): string | null {
     if (this.produits.length !== 1) {
@@ -71,7 +82,7 @@ export class ProjetFormComponent implements OnInit {
       const productControl = this.produits.at(0);
       const quantity = Number(productControl.get('quantiteCible')?.value || 0);
       const productId = productControl.get('productId')?.value;
-      const sku = this.skus.find(s => s.id === productId);
+      const sku = this.skus.find((s) => s.id === productId);
 
       return sku ? this.calculateBaseUnitCount(quantity, sku) : Math.ceil(quantity);
     }
@@ -84,7 +95,7 @@ export class ProjetFormComponent implements OnInit {
 
   get filteredSkus(): SKU[] {
     const expectedType = this.form?.get('typeEmballage')?.value === TypeEmballage.VRAC ? 'VRAC' : 'NON_VRAC';
-    return this.skus.filter(sku => sku.type === expectedType);
+    return this.skus.filter((sku) => sku.type === expectedType);
   }
 
   ngOnInit(): void {
@@ -111,7 +122,7 @@ export class ProjetFormComponent implements OnInit {
       quantiteCible: [defaultQty, [Validators.required, Validators.min(1)]]
     });
 
-    produitGroup.get('productId')?.valueChanges.subscribe(id => {
+    produitGroup.get('productId')?.valueChanges.subscribe((id) => {
       produitGroup.get('bomId')?.setValue('');
       if (id) {
         this.loadBomsForProduct(id, produitGroup);
@@ -134,11 +145,11 @@ export class ProjetFormComponent implements OnInit {
     const globalQty = Number(this.form.get('quantiteCible')?.value || 0);
 
     if (globalQty > 0 && this.produits.length > 0) {
-      this.produits.controls.forEach(control => {
+      this.produits.controls.forEach((control) => {
         const prodControl = control.get('quantiteCible');
 
         if (prodControl && Number(prodControl.value || 0) !== globalQty) {
-          prodControl.setValue(globalQty, {emitEvent: false});
+          prodControl.setValue(globalQty, { emitEvent: false });
         }
       });
     }
@@ -146,11 +157,17 @@ export class ProjetFormComponent implements OnInit {
 
   calculateSummary(): void {
     try {
-      const summaryMap = new Map<string, {
-        articleId: string; articleName: string; totalQuantity: number; unit: string;
-      }>();
+      const summaryMap = new Map<
+        string,
+        {
+          articleId: string;
+          articleName: string;
+          totalQuantity: number;
+          unit: string;
+        }
+      >();
 
-      this.produits.controls.forEach(control => {
+      this.produits.controls.forEach((control) => {
         const productId = control.get('productId')?.value;
         const bomId = control.get('bomId')?.value;
         const qteCible = Number(control.get('quantiteCible')?.value || 0);
@@ -159,9 +176,9 @@ export class ProjetFormComponent implements OnInit {
           return;
         }
 
-        const sku = this.skus.find(s => s.id === productId);
+        const sku = this.skus.find((s) => s.id === productId);
         const boms = this.productBoms[productId] || [];
-        const selectedBom = boms.find(b => b.id === bomId);
+        const selectedBom = boms.find((b) => b.id === bomId);
 
         if (!selectedBom?.lines || !sku) {
           return;
@@ -169,7 +186,7 @@ export class ProjetFormComponent implements OnInit {
 
         const baseUnitCount = this.calculateBaseUnitCount(qteCible, sku);
 
-        selectedBom.lines.forEach(line => {
+        selectedBom.lines.forEach((line) => {
           const article = this.articlesCache[line.articleId];
 
           if (!article) {
@@ -201,13 +218,13 @@ export class ProjetFormComponent implements OnInit {
 
   getCalculatedBomLines(productId: string, bomId: string, qteCible: number): any[] {
     const boms = this.productBoms[productId] || [];
-    const bom = boms.find(b => b.id === bomId);
+    const bom = boms.find((b) => b.id === bomId);
 
     if (!bom?.lines) {
       return [];
     }
 
-    const sku = this.skus.find(s => s.id === productId);
+    const sku = this.skus.find((s) => s.id === productId);
 
     if (!sku) {
       return bom.lines;
@@ -215,19 +232,20 @@ export class ProjetFormComponent implements OnInit {
 
     const baseUnitCount = this.calculateBaseUnitCount(qteCible, sku);
 
-    return bom.lines.map(line => {
+    return bom.lines.map((line) => {
       const article = this.articlesCache[line.articleId];
       const calculatedQuantity = this.calculateBomLineQuantity(baseUnitCount, line, article);
 
       return {
-        ...line, calculatedQuantity
+        ...line,
+        calculatedQuantity
       };
     });
   }
 
   getBomLines(productId: string, bomId: string): any[] {
     const boms = this.productBoms[productId] || [];
-    const bom = boms.find(b => b.id === bomId);
+    const bom = boms.find((b) => b.id === bomId);
 
     return bom?.lines || [];
   }
@@ -245,7 +263,7 @@ export class ProjetFormComponent implements OnInit {
 
       const invalidFields: string[] = [];
 
-      Object.keys(this.form.controls).forEach(name => {
+      Object.keys(this.form.controls).forEach((name) => {
         if (this.form.controls[name].invalid) {
           invalidFields.push(name);
         }
@@ -259,14 +277,14 @@ export class ProjetFormComponent implements OnInit {
     const selectedClient = this.getSelectedClient();
 
     if (!selectedClient) {
-      this.form.get('clientId')?.setErrors({required: true});
+      this.form.get('clientId')?.setErrors({ required: true });
       this.form.get('clientId')?.markAsTouched();
       alert(this.i18n.instant('AUTO.VEUILLEZ_SELECTIONNER_UN_CLIENT_VALIDE'));
       return;
     }
 
     if (this.form.get('typeEmballage')?.value !== TypeEmballage.VRAC) {
-      const missingBom = this.produits.controls.some(control => !control.get('bomId')?.value);
+      const missingBom = this.produits.controls.some((control) => !control.get('bomId')?.value);
       if (missingBom) {
         alert(this.i18n.instant('AUTO.LA_NOMENCLATURE_EST_OBLIGATOIRE_POUR_UN_PROJET_NON_VRAC'));
         return;
@@ -297,10 +315,12 @@ export class ProjetFormComponent implements OnInit {
       conditionsLivraison: formValue.conditionsLivraison,
       ligneIds: formValue.ligneIds ?? [],
 
-      produits: (formValue.produits || []).map((p: any) => ({...p, bomId: p.bomId || null})),
+      produits: (formValue.produits || []).map((p: any) => ({ ...p, bomId: p.bomId || null })),
 
-      reservations: this.bomSummary.map(item => ({
-        articleId: item.articleId, quantiteReservee: item.totalQuantity, statut: 'PRE-CALCULE'
+      reservations: this.bomSummary.map((item) => ({
+        articleId: item.articleId,
+        quantiteReservee: item.totalQuantity,
+        statut: 'PRE-CALCULE'
       })),
 
       statut: formValue.statut === 'FAILED' ? 'BROUILLON' : formValue.statut
@@ -311,8 +331,9 @@ export class ProjetFormComponent implements OnInit {
     action.subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['../'], {relativeTo: this.route});
-      }, error: (err: unknown) => {
+        this.router.navigate(['../'], { relativeTo: this.route });
+      },
+      error: (err: unknown) => {
         console.error(err);
         this.loading = false;
         this.toast.error(this.buildProjetSaveErrorMessage(err));
@@ -321,7 +342,7 @@ export class ProjetFormComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['../'], {relativeTo: this.route});
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -346,7 +367,7 @@ export class ProjetFormComponent implements OnInit {
     const control = this.form.get('ligneIds');
     const current: string[] = control?.value ?? [];
 
-    const next = checked ? Array.from(new Set([...current, ligneId])) : current.filter(id => id !== ligneId);
+    const next = checked ? Array.from(new Set([...current, ligneId])) : current.filter((id) => id !== ligneId);
 
     control?.setValue(next);
     control?.markAsTouched();
@@ -368,16 +389,16 @@ export class ProjetFormComponent implements OnInit {
       produits: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
 
-    this.form.get('typeEmballage')?.valueChanges.subscribe(value => {
+    this.form.get('typeEmballage')?.valueChanges.subscribe((value) => {
       const expectedType = value === TypeEmballage.VRAC ? 'VRAC' : 'NON_VRAC';
-      this.produits.controls.forEach(control => {
-        const product = this.skus.find(sku => sku.id === control.get('productId')?.value);
+      this.produits.controls.forEach((control) => {
+        const product = this.skus.find((sku) => sku.id === control.get('productId')?.value);
         if (product && product.type !== expectedType) {
           control.get('productId')?.setValue('');
         }
       });
       if (value === TypeEmballage.VRAC) {
-        this.produits.controls.forEach(control => control.get('bomId')?.setValue(''));
+        this.produits.controls.forEach((control) => control.get('bomId')?.setValue(''));
       }
       this.calculateSummary();
     });
@@ -462,7 +483,8 @@ export class ProjetFormComponent implements OnInit {
         }
 
         this.calculateSummary();
-      }, error: (err) => {
+      },
+      error: (err) => {
         console.error('Erreur chargement article', err);
       }
     });
@@ -472,7 +494,8 @@ export class ProjetFormComponent implements OnInit {
     this.clientService.getAllClients().subscribe({
       next: (data: Client[]) => {
         this.clients = data || [];
-      }, error: (err: unknown) => {
+      },
+      error: (err: unknown) => {
         console.error('Erreur chargement clients', err);
         this.clients = [];
       }
@@ -483,7 +506,8 @@ export class ProjetFormComponent implements OnInit {
     this.ligneService.getActiveLignes().subscribe({
       next: (data: LigneConditionnement[]) => {
         this.lignes = data || [];
-      }, error: (err: unknown) => {
+      },
+      error: (err: unknown) => {
         console.error('Erreur chargement lignes', err);
         this.lignes = [];
       }
@@ -494,7 +518,8 @@ export class ProjetFormComponent implements OnInit {
     this.skuService.getAllProducts().subscribe({
       next: (data: SKU[]) => {
         this.skus = data || [];
-      }, error: (err: unknown) => {
+      },
+      error: (err: unknown) => {
         console.error('Erreur chargement SKUs', err);
         this.skus = [];
       }
@@ -513,13 +538,14 @@ export class ProjetFormComponent implements OnInit {
         next: (boms) => {
           this.productBoms[productId] = boms || [];
 
-          this.productBoms[productId].forEach(bom => {
-            bom.lines?.forEach(line => this.loadArticleForCache(line.articleId));
+          this.productBoms[productId].forEach((bom) => {
+            bom.lines?.forEach((line) => this.loadArticleForCache(line.articleId));
           });
 
           this.autoSelectBom(productId, control);
           this.calculateSummary();
-        }, error: (err) => {
+        },
+        error: (err) => {
           console.error('Erreur chargement BOMs pour produit', err);
         }
       });
@@ -574,7 +600,8 @@ export class ProjetFormComponent implements OnInit {
 
         this.valeurTotaleEstimee = this.calculValeurTotale();
         this.calculateSummary();
-      }, error: (err: unknown) => {
+      },
+      error: (err: unknown) => {
         console.error('Erreur chargement projet', err);
       }
     });
@@ -582,26 +609,22 @@ export class ProjetFormComponent implements OnInit {
 
   private getSelectedClient(): Client | undefined {
     const clientId = this.form.get('clientId')?.value;
-    return this.clients.find(client => client.id === clientId);
+    return this.clients.find((client) => client.id === clientId);
   }
 
   private buildProjetSaveErrorMessage(err: unknown): string {
-    const message = extractHttpErrorMessage(err, 'Erreur lors de l\'enregistrement du projet');
+    const message = extractHttpErrorMessage(err, "Erreur lors de l'enregistrement du projet");
     return this.replaceProductIdsWithNames(message);
   }
 
   private replaceProductIdsWithNames(message: string): string {
-    return message.replace(
-      /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/gi,
-      (uuid) => {
-        const product = this.skus.find((sku) => sku.id === uuid);
-        if (!product) {
-          return uuid;
-        }
-
-        return product.name || product.code || uuid;
+    return message.replace(/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/gi, (uuid) => {
+      const product = this.skus.find((sku) => sku.id === uuid);
+      if (!product) {
+        return uuid;
       }
-    );
-  }
 
+      return product.name || product.code || uuid;
+    });
+  }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -10,22 +10,14 @@ import { ToastService } from 'src/app/shared/services/toast.service';
 import { OFService } from '../../../services/OFService';
 import { QCResult } from '../../../models/QCResult.model';
 import { OrdreFabrication } from '../../../models/of.model';
-import { QualityService } from "../../../services/QualityService";
+import { QualityService } from '../../../services/QualityService';
 import { QCControlPoint } from '../../../models/QCControlPoint.model';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-quality-history',
   standalone: true,
-  imports: [TranslateModule,
-    CommonModule,
-    FormsModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-
-  ],
+  imports: [TranslateModule, CommonModule, FormsModule, MatExpansionModule, MatFormFieldModule, MatSelectModule, MatOptionModule],
   templateUrl: './quality-history.component.html',
   styleUrls: ['./quality-history.component.scss']
 })
@@ -47,7 +39,7 @@ export class QualityHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.loadOFs();
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       const ofId = params['ofId'];
       if (ofId) {
         if (this.ofs.length > 0) {
@@ -107,7 +99,7 @@ export class QualityHistoryComponent implements OnInit {
           // @ts-ignore
           const points = res.data as QCControlPoint[];
           this.pointNames.clear();
-          points.forEach(point => {
+          points.forEach((point) => {
             if (point.id && point.nom) {
               this.pointNames.set(point.id, point.nom);
             }
@@ -126,9 +118,4 @@ export class QualityHistoryComponent implements OnInit {
   getPointName(controlPointId: string): string {
     return this.pointNames.get(controlPointId) || controlPointId;
   }
-
-
-
-
-
 }

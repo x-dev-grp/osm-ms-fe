@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { ContractService } from '../../../services/contract-service';
 import { Contract, ContractStatus, ContractType } from '../../../model/contract.model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslatePipe, TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CardComponent } from '../../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,7 +25,8 @@ import { EmployeeService } from '../../../services/employee-service';
   standalone: true,
   templateUrl: './contract-add.component.html',
   styleUrls: ['./contract-add.component.scss'],
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -46,7 +47,7 @@ export class ContractAddComponent implements OnInit {
   contractId?: string;
   employeeId?: string;
   loading = false;
-  postes: Poste[] ;
+  postes: Poste[];
   selectedPoste: Poste | undefined;
   contractTypes = Object.values(ContractType);
   contractStatuses = Object.values(ContractStatus);
@@ -63,7 +64,7 @@ export class ContractAddComponent implements OnInit {
   ) {
     this.contractForm = this.createForm();
     // Subscribe to poste changes to update externalId
-    this.contractForm.get('poste')?.valueChanges.subscribe(poste => {
+    this.contractForm.get('poste')?.valueChanges.subscribe((poste) => {
       if (poste && poste.externalId) {
         this.contractForm.get('externalId')?.setValue(poste.externalId);
       } else {
@@ -126,7 +127,7 @@ export class ContractAddComponent implements OnInit {
             startDate: new Date(contract.startDate),
             endDate: new Date(contract.endDate),
             salary: contract.salary,
-            poste:   contract.poste!,
+            poste: contract.poste!,
             externalId: contract.externalId
           });
         }

@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +12,6 @@ import { Stock } from '../../../../stock/models/stock.model';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { BomService } from '../../../../stock/services/BomService';
 import { MaterialNeedLine } from '../../../../shared/models/material-need-line.model';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-of-production',
@@ -173,9 +171,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
 
   private buildStockRowFromMaterialNeed(line: MaterialNeedLine): StockCheckRow {
     const required = Number(line.quantityNeededRounded || 0);
-    const available = this.isProjectMode()
-      ? Number(line.quantiteReservee || 0)
-      : Number(line.quantiteDisponible || 0);
+    const available = this.isProjectMode() ? Number(line.quantiteReservee || 0) : Number(line.quantiteDisponible || 0);
 
     return {
       articleId: line.articleId,
@@ -190,9 +186,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
 
   private buildStockRow(line: LigneOF, stock: Stock | null): StockCheckRow {
     const required = Number(line.quantiteTheorique || 0);
-    const available = this.isProjectMode()
-      ? Number(stock?.quantiteReservee || 0)
-      : Number(stock?.quantiteDisponible || 0);
+    const available = this.isProjectMode() ? Number(stock?.quantiteReservee || 0) : Number(stock?.quantiteDisponible || 0);
 
     if (!stock) {
       return {

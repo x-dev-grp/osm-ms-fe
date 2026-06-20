@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit, Renderer2, inject, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -7,7 +7,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AbleProConfig } from 'src/app/app-config';
 import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service';
-import { HORIZONTAL, VERTICAL, COMPACT, RTL, LTR, LIGHT, DARK } from '../../const';
+import { COMPACT, DARK, HORIZONTAL, LIGHT, LTR, RTL, VERTICAL } from '../../const';
 
 @Component({
   selector: 'app-configuration',

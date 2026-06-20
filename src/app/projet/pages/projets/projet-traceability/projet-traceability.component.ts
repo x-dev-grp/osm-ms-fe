@@ -16,7 +16,8 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-projet-traceability',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     DatePipe,
     MatButtonModule,

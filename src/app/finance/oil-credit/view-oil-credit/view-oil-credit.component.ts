@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OilCredit, CreditState, UnitType } from '../../models/OilCredit';
+import { CreditState, OilCredit, UnitType } from '../../models/OilCredit';
 import { OilCreditService } from '../../service/oil-credit.service';
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -54,7 +54,7 @@ export class ViewOilCreditComponent implements OnInit {
   private loadOilCredit(id: string): void {
     this.loading = true;
     this.error = false;
-    
+
     this.svc.getOilCredit(id).subscribe({
       next: (res) => {
         if (res.data) {

@@ -1,0 +1,137 @@
+<div class="notification-center">
+  <app-card cardClass="notification-center-card" [padding]="24">
+    <div class="notification-center__header">
+      <div>
+        <h2 class="notification-center__title">{{ 'NOTIFICATIONS.CENTER_TITLE' | translate }}</h2>
+        @if (unreadCount() > 0) {
+          <p class="notification-center__subtitle">
+            {{ unreadCount() }} {{ 'NOTIFICATIONS.UNREAD' | translate | lowercase }}
+          </p>
+        }
+      </div>
+      @if (unreadCount() > 0) {
+        <button mat-stroked-button type="button" (click)="markAllRead()">
+          <mat-icon>done_all</mat-icon>
+          {{ 'NOTIFICATIONS.MARK_ALL_READ' | translate }}
+        </button>
+      }
+    </div>
+
+    <mat-tab-group
+      [selectedIndex]="unreadOnly ? 1 : 0"
+      (selectedIndexChange)="onFilterChange($event === 1)"
+      class="notification-center__tabs"
+    >
+      <mat-tab [label]="'NOTIFICATIONS.FILTER_ALL' | translate"></mat-tab>
+      <mat-tab [label]="'NOTIFICATIONS.FILTER_UNREAD' | translate"></mat-tab>
+    </mat-tab-group>
+
+    <div class="notification-center__body">
+      <div class="notification-center__list-panel">
+        @if (loading) {
+          <div class="notification-center__loading">
+            <mat-spinner diameter="40"></mat-spinner>
+          </div>
+        } @else if (items.length === 0) {
+          <div class="notification-center__empty">
+            <mat-icon>notifications_none</mat-icon>
+            <p>{{ 'NOTIFICATIONS.EMPTY' | translate }}</p>
+          </div>
+        } @else {
+          @for (item of items; track item.id) {
+            <button
+              type="button"
+              class="notification-item"
+              [class.notification-item--unread]="!item.read"
+              [class.notification-item--selected]="selected?.id === item.id"
+              (click)="selectNotification(item)"
+            >
+              <div class="notification-item__indicator">
+                @if (!item.read) {
+                  <span class="notification-item__dot"></span>
+                }
+              </div>
+              <div class="notification-item__content">
+                <div class="notification-item__title">{{ item | notificationText: 'title':notificationTextService.languageVersion() }}</div>
+                <div class="notification-item__recap">{{ item | notificationText: 'recap':notificationTextService.languageVersion() }}</div>
+                @if (item.createdDate) {
+                  <div class="notification-item__time">{{ item.createdDate | date: 'dd/MM/yyyy HH:mm' }}</div>
+                }
+              </div>
+              <mat-icon class="notification-item__chevron">chevron_right</mat-icon>
+            </button>
+          }
+
+          <mat-paginator
+            [length]="paginatorLength()"
+            [pageIndex]="pageIndex"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[10, 15, 25, 50]"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+          ></mat-paginator>
+        }
+      </div>
+
+      <mat-divider [vertical]="true" class="notification-center__divider"></mat-divider>
+
+      <div class="notification-center__detail-panel">
+        @if (selected) {
+          <div class="notification-detail">
+            <div class="notification-detail__badges">
+              <span class="notification-detail__badge" [class.notification-detail__badge--unread]="!selected.read">
+                {{ (selected.read ? 'NOTIFICATIONS.READ' : 'NOTIFICATIONS.UNREAD') | translate }}
+              </span>
+              @if (selected.priority === 'HIGH') {
+                <span class="notification-detail__badge notification-detail__badge--high">
+                  {{ 'NOTIFICATIONS.PRIORITY_HIGH' | translate }}
+                </span>
+              }
+            </div>
+
+            <h3 class="notification-detail__title">{{ selected | notificationText: 'title':notificationTextService.languageVersion() }}</h3>
+
+            @if (selected.createdDate) {
+              <div class="notification-detail__meta">
+                <mat-icon>schedule</mat-icon>
+                <span>{{ selected.createdDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+            }
+
+            @if (selected.actorDisplayName) {
+              <div class="notification-detail__meta">
+                <mat-icon>person</mat-icon>
+                <span>{{ 'NOTIFICATIONS.ACTOR' | translate: { name: selected.actorDisplayName } }}</span>
+              </div>
+            }
+
+            <mat-divider class="notification-detail__divider"></mat-divider>
+
+            <div class="notification-detail__section-label">{{ 'NOTIFICATIONS.DETAILS' | translate }}</div>
+            <p class="notification-detail__body">{{ selected | notificationText: 'recap':notificationTextService.languageVersion() }}</p>
+
+            <div class="notification-detail__actions">
+              @if (!selected.read) {
+                <button mat-stroked-button type="button" (click)="markSelectedRead()">
+                  <mat-icon>mark_email_read</mat-icon>
+                  {{ 'NOTIFICATIONS.MARK_READ' | translate }}
+                </button>
+              }
+              @if (selected.webRoute || selected.payload?.['webRoute']) {
+                <button mat-flat-button color="primary" type="button" (click)="openRelatedRecord(selected)">
+                  <mat-icon>open_in_new</mat-icon>
+                  {{ 'NOTIFICATIONS.OPEN_ENTITY' | translate }}
+                </button>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="notification-center__placeholder">
+            <mat-icon>notifications</mat-icon>
+            <p>{{ 'NOTIFICATIONS.SELECT_PROMPT' | translate }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </app-card>
+</div>

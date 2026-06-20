@@ -4,18 +4,12 @@ import { LabelCompositionEntry } from '../models/label-qc-composition.model';
 
 export const TUNISIA_LABEL_DEFAULTS = {
   origin: 'Tunisie',
-  storageFr:
-    "A conserver dans un endroit frais et sec, à l'abri de la chaleur et de la lumière directe du soleil.",
+  storageFr: "A conserver dans un endroit frais et sec, à l'abri de la chaleur et de la lumière directe du soleil.",
   storageEn: 'Store in a cool, dry place away from heat and direct sunlight.',
-  evooStatement:
-    'Superior category olive oil obtained directly from olives and solely by mechanical means.'
+  evooStatement: 'Superior category olive oil obtained directly from olives and solely by mechanical means.'
 } as const;
 
-export const APPROVED_OLIVE_CATEGORIES: QualityGrades[] = [
-  QualityGrades.EXTRA_VIRGIN,
-  QualityGrades.VIRGIN,
-  QualityGrades.REFINED
-];
+export const APPROVED_OLIVE_CATEGORIES: QualityGrades[] = [QualityGrades.EXTRA_VIRGIN, QualityGrades.VIRGIN, QualityGrades.REFINED];
 
 export const POMACE_CATEGORY = 'POMACE';
 
@@ -76,9 +70,7 @@ export function buildProductName(qualityGrade?: string | null): string {
   return PRODUCT_NAME_BY_CATEGORY[qualityGrade] ?? '';
 }
 
-export function buildNutritionDeclarationJson(
-  compositionEstimate?: LabelCompositionEntry[] | null
-): string {
+export function buildNutritionDeclarationJson(compositionEstimate?: LabelCompositionEntry[] | null): string {
   const payload: NutritionDeclarationPayload = {
     basis: 'per100ml',
     ...TUNISIA_NUTRITION_PER_100ML
@@ -96,9 +88,7 @@ export function buildNutritionDeclarationJson(
   return JSON.stringify(payload);
 }
 
-export function parseNutritionDeclarationJson(
-  json?: string | null
-): NutritionDeclarationPayload | null {
+export function parseNutritionDeclarationJson(json?: string | null): NutritionDeclarationPayload | null {
   if (!json?.trim()) {
     return null;
   }
@@ -117,9 +107,7 @@ export function extractCompositionOverrides(json?: string | null): Record<string
   }
 
   return Object.fromEntries(
-    parsed.oilCompositionEstimate
-      .filter((entry) => entry.key && entry.per100ml)
-      .map((entry) => [entry.key, entry.per100ml])
+    parsed.oilCompositionEstimate.filter((entry) => entry.key && entry.per100ml).map((entry) => [entry.key, entry.per100ml])
   );
 }
 
@@ -232,10 +220,7 @@ export function applyComplianceDefaultsToLabel(label: Partial<LabelContentDto>):
   };
 }
 
-export function mergeValidationIssues(
-  local: LabelComplianceField[],
-  server: LabelValidationIssueDto[] = []
-): LabelComplianceField[] {
+export function mergeValidationIssues(local: LabelComplianceField[], server: LabelValidationIssueDto[] = []): LabelComplianceField[] {
   const merged = [...local];
   for (const issue of server.filter((i) => i.blocking)) {
     if (!merged.some((m) => m.field === issue.field)) {

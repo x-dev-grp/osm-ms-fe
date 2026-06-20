@@ -1,62 +1,57 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { GeneralConfigComponent } from './general-config/general-config.component';
-import { GenericTypeComponent } from './generic-type/generic-type.component';
-import { ApplicationConfigComponent } from './application-config/application-config.component';
 import { AuthGuardChild } from '../interceptors/guards/auth.guard';
-// CHANGE: permissions - import permission guards
 import { allPermissionGuard } from 'src/app/interceptors/guards/permission.guard';
-// CHANGE: permissions - use enums
 import { Action, HabilitationEntity, OSMModule, permissionKey, ProductionEntity } from 'src/app/theme/types/permissions';
 import { UserResolver } from './user-management/services/user.resolver';
 import { RoleResolver } from './user-management/services/role.resolver';
 import { qualityControlRoutes } from './quality-control-rule/qualityControlQualityRule.routes';
-import { GenericTypeFormComponent } from './generic-type/generic-type-form/generic-type-form.component';
 
 const routes: Routes = [
-  { path: 'general-config', component: GeneralConfigComponent, canActivate: [AuthGuardChild] },
   {
-    path: 'profile',
+    path: 'general-config',
     canActivate: [AuthGuardChild],
-    loadComponent: () => import('./user-profile/user-profile.component').then((c) => c.UserProfileComponent)
+    loadComponent: () => import('./general-config/general-config.component').then((c) => c.GeneralConfigComponent)
   },
   {
     path: 'quality-control',
-    canActivateChild: [AuthGuardChild], // 👈 meilleure pratique
+    canActivateChild: [AuthGuardChild],
     children: qualityControlRoutes
-  }, // CHANGE: permissions - require HABILITATION:PARAMETER:READ to access app configuration
+  },
   {
     path: 'configuration',
-    component: ApplicationConfigComponent,
-    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, 'PARAMETER', Action.READ)])]
-  }, // CHANGE: permissions - PRODUCTION:base_type:READ for generic types
+    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, 'PARAMETER', Action.READ)])],
+    loadComponent: () => import('./application-config/application-config.component').then((c) => c.ApplicationConfigComponent)
+  },
   {
     path: 'generic',
     canActivateChild: [AuthGuardChild],
     children: [
       {
         path: '',
-        component: GenericTypeComponent,
-        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])]
+        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
+        loadComponent: () => import('./generic-type/generic-type.component').then((c) => c.GenericTypeComponent)
       },
       {
         path: 'new',
-        component: GenericTypeFormComponent,
-        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.CREATE)])]
+        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.CREATE)])],
+        loadComponent: () =>
+          import('./generic-type/generic-type-form/generic-type-form.component').then((c) => c.GenericTypeFormComponent)
       },
       {
         path: ':id/edit',
-        component: GenericTypeFormComponent,
-        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.UPDATE)])]
+        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.UPDATE)])],
+        loadComponent: () =>
+          import('./generic-type/generic-type-form/generic-type-form.component').then((c) => c.GenericTypeFormComponent)
       },
       {
         path: ':id/view',
-        component: GenericTypeFormComponent,
-        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])]
+        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
+        loadComponent: () =>
+          import('./generic-type/generic-type-form/generic-type-form.component').then((c) => c.GenericTypeFormComponent)
       }
     ]
   },
-
   {
     path: 'users',
     children: [
@@ -66,12 +61,12 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
-        path: 'dashboard', // CHANGE: permissions - HABILITATION:OSMUSER:READ for users dashboard
+        path: 'dashboard',
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.OSMUSER, Action.READ)])],
         loadComponent: () => import('./user-management/user-mangement.component').then((c) => c.UserManagementComponent)
       },
       {
-        path: 'add', // CHANGE: permissions - HABILITATION:OSMUSER:CREATE
+        path: 'add',
         canActivate: [
           AuthGuardChild,
           allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.OSMUSER, Action.CREATE)])
@@ -79,7 +74,7 @@ const routes: Routes = [
         loadComponent: () => import('./user-management/components/form/user-form.component').then((c) => c.UserFormComponent)
       },
       {
-        path: 'update/:id', // CHANGE: permissions - HABILITATION:OSMUSER:UPDATE
+        path: 'update/:id',
         canActivate: [
           AuthGuardChild,
           allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.OSMUSER, Action.UPDATE)])
@@ -91,7 +86,7 @@ const routes: Routes = [
         loadComponent: () => import('./user-management/components/form/user-form.component').then((c) => c.UserFormComponent)
       },
       {
-        path: 'view/:id', // CHANGE: permissions - HABILITATION:OSMUSER:READ
+        path: 'view/:id',
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.OSMUSER, Action.READ)])],
         resolve: { user: UserResolver },
         data: {
@@ -99,7 +94,6 @@ const routes: Routes = [
         },
         loadComponent: () => import('./user-management/components/form/user-form.component').then((c) => c.UserFormComponent)
       }
-
     ]
   },
   {
@@ -111,18 +105,18 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
-        path: 'dashboard', // CHANGE: permissions - HABILITATION:ROLE:READ
+        path: 'dashboard',
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.ROLE, Action.READ)])],
         loadComponent: () =>
           import('./user-management/components/role-dashboard/role-dashboard.component').then((c) => c.RoleDashboardComponent)
       },
       {
-        path: 'add', // CHANGE: permissions - HABILITATION:ROLE:CREATE
+        path: 'add',
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.ROLE, Action.CREATE)])],
         loadComponent: () => import('./user-management/components/role-form/role-form.component').then((c) => c.RoleFormComponent)
       },
       {
-        path: 'update/:id', // CHANGE: permissions - HABILITATION:ROLE:UPDATE
+        path: 'update/:id',
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.ROLE, Action.UPDATE)])],
         resolve: { role: RoleResolver },
         data: {
@@ -131,7 +125,7 @@ const routes: Routes = [
         loadComponent: () => import('./user-management/components/role-form/role-form.component').then((c) => c.RoleFormComponent)
       },
       {
-        path: 'view/:id', // CHANGE: permissions - HABILITATION:ROLE:READ
+        path: 'view/:id',
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.ROLE, Action.READ)])],
         resolve: { role: RoleResolver },
         data: {
@@ -139,7 +133,6 @@ const routes: Routes = [
         },
         loadComponent: () => import('./user-management/components/role-form/role-form.component').then((c) => c.RoleFormComponent)
       }
-
     ]
   }
 ];

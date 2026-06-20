@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from "../models/api-response";
+import { ApiResponse } from '../models/api-response';
 import { MillMachine } from '../models/millMachine';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -49,7 +49,7 @@ export class MillMachineService {
   }
 
   // Update an existing MillMachine
-  updateMillMachine( MillMachine: MillMachine): Observable<ApiResponse<MillMachine>> {
+  updateMillMachine(MillMachine: MillMachine): Observable<ApiResponse<MillMachine>> {
     return this.http.put<ApiResponse<MillMachine>>(`${this.baseUrl}`, MillMachine);
   }
 

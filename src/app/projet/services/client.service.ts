@@ -15,28 +15,20 @@ export class ClientService {
   constructor(private http: HttpClient) {}
 
   getAllClients(): Observable<Client[]> {
-    return this.http.get<ApiResponse<Client>>(`${this.apiUrl}/fetchAll`).pipe(
-      map((response) => response?.data ?? [])
-    );
+    return this.http.get<ApiResponse<Client>>(`${this.apiUrl}/fetchAll`).pipe(map((response) => response?.data ?? []));
   }
 
   getClientById(id: string): Observable<Client> {
-    return this.http.get<ApiSingleResponse<Client>>(`${this.apiUrl}/fetch/${id}`).pipe(
-      map((response) => response.data)
-    );
+    return this.http.get<ApiSingleResponse<Client>>(`${this.apiUrl}/fetch/${id}`).pipe(map((response) => response.data));
   }
 
   createClient(client: Client): Observable<Client> {
-    return this.http.post<ApiSingleResponse<Client>>(this.apiUrl, client).pipe(
-      map((response) => response.data)
-    );
+    return this.http.post<ApiSingleResponse<Client>>(this.apiUrl, client).pipe(map((response) => response.data));
   }
 
   updateClient(id: string, client: Client): Observable<Client> {
     const payload = { ...client, id };
-    return this.http.put<ApiSingleResponse<Client>>(this.apiUrl, payload).pipe(
-      map((response) => response.data)
-    );
+    return this.http.put<ApiSingleResponse<Client>>(this.apiUrl, payload).pipe(map((response) => response.data));
   }
 
   activerClient(id: string): Observable<void> {

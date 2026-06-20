@@ -136,10 +136,77 @@
     "UPDATE_AVAILABLE": "Une nouvelle version est disponible. Rechargez l'application pour mettre à jour.",
     "UNRECOVERABLE_ERROR": "L'application n'a pas pu se charger correctement. Rechargement..."
   },
+  "SIDEBAR": {
+    "BRAND_HOME": "Aller à l'accueil",
+    "DEFAULT_COMPANY": "Mon entreprise",
+    "PLATFORM": "Plateforme OSM"
+  },
+  "CHAT": {
+    "TITLE": "Messages",
+    "CENTER_TITLE": "Messages",
+    "UNREAD": "Non lus",
+    "NEW_MESSAGE": "Nouveau message",
+    "BACK_TO_INBOX": "Retour à la boîte de réception",
+    "SEARCH_CONTACTS": "Rechercher un collègue",
+    "SEARCH_CONVERSATIONS": "Rechercher une conversation",
+    "NO_CONTACTS": "Aucun collègue disponible.",
+    "EMPTY_INBOX": "Aucune conversation pour le moment.",
+    "START_CHAT": "Démarrer une conversation",
+    "NO_MESSAGES_YET": "Aucun message",
+    "SELECT_PROMPT": "Sélectionnez une conversation ou démarrez un nouveau message.",
+    "SAY_HELLO": "Envoyez le premier message pour démarrer la conversation.",
+    "TYPE_MESSAGE": "Écrire un message",
+    "SEND": "Envoyer",
+    "LOADING": "Chargement des messages…",
+    "SEND_ERROR": "Impossible d'envoyer le message. Veuillez réessayer.",
+    "VIEW_ALL": "Ouvrir les messages"
+  },
   "NOTIFICATIONS": {
     "TITLE": "Notifications",
+    "CENTER_TITLE": "Centre de notifications",
     "EMPTY": "Aucune notification pour le moment.",
-    "MARK_ALL_READ": "Tout marquer comme lu"
+    "MARK_ALL_READ": "Tout marquer comme lu",
+    "MARK_READ": "Marquer comme lu",
+    "VIEW_ALL": "Tout voir",
+    "FILTER_ALL": "Toutes",
+    "FILTER_UNREAD": "Non lues",
+    "READ": "Lue",
+    "UNREAD": "Non lue",
+    "DETAILS": "Détails",
+    "SELECT_PROMPT": "Sélectionnez une notification pour lire son contenu complet.",
+    "OPEN_ENTITY": "Ouvrir l'enregistrement associé",
+    "ACTOR": "Par {{name}}",
+    "PRIORITY_HIGH": "Priorité élevée",
+    "RULES": {
+      "OF_QC_BLOCKED": {
+        "TITLE": "Ordre de fabrication bloqué",
+        "RECAP": "{{actor}} a bloqué l'OF {{entityLabel}} après un contrôle qualité échoué."
+      },
+      "MAINTENANCEWORKORDER_CREATED": {
+        "TITLE": "Maintenance planifiée",
+        "RECAP": "{{actor}} a créé une maintenance sur {{entityLabel}} ({{maintenanceType}}, {{status}})."
+      },
+      "MAINTENANCEWORKORDER_EXPENSE_RECORDED": {
+        "TITLE": "Dépense de maintenance enregistrée",
+        "RECAP": "{{actor}} a enregistré {{totalCost}} TND de coût de maintenance sur {{entityLabel}}. Facture : {{invoiceRef}}."
+      },
+      "EXPENSE_CREATED": {
+        "TITLE": "Nouvelle dépense",
+        "RECAP": "{{actor}} a créé la dépense {{entityLabel}} pour {{amount}} TND ({{category}})."
+      },
+      "UNIFIEDDELIVERY_CREATED": {
+        "TITLE": "Nouvelle réception",
+        "RECAP": "{{actor}} a enregistré la réception {{entityLabel}} ({{deliveryType}})."
+      },
+      "UNIFIEDDELIVERY_QC_COMPLETED": {
+        "TITLE": "Contrôle qualité terminé",
+        "RECAP": "{{actor}} a terminé le contrôle qualité pour la réception {{entityLabel}} ({{deliveryType}}, {{status}})."
+      },
+      "UNIFIEDDELIVERY_CRUSHING_COMPLETED": {
+        "TITLE": "Broyage terminé",
+        "RECAP": "{{actor}} a terminé le broyage pour le lot {{entityLabel}} (huile : {{oilQuantity}} kg, rendement : {{rendement}} %)."
+      }
+    }
   },
   "MAINTENANCE": {
     "SUBTITLE": "Suivez la maintenance, les pièces utilisées et les dépenses associées.",
@@ -1374,7 +1441,9 @@
   "Invoice": "Facture",
   "Kanban": "Kanban",
   "LOGIN": {
+    "ACCOUNT_LOCKED": "Votre compte est verrouillé. Contactez un administrateur.",
     "FORGOT_PASSWORD": "Mot de passe oublié ?",
+    "NO_ACCESS": "Aucun module n'est disponible pour votre compte. Contactez un administrateur si vous avez besoin d'un accès.",
     "PASSWORD": "Mot de pass",
     "PASSWORDCONFIRM": "Confirmer mot de passe",
     "PASSWORDNEW": "Nouveau mot de passe",
@@ -1673,9 +1742,6 @@
       "HISTORY": "Historique fournisseurs",
       "TITLE": "Fournisseurs"
     }
-  },
-  "MESSAGES": {
-    "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les modifications non enregistrées seront perdues."
   },
   "MILL_MACHINE": {
     "ACTIONS": {

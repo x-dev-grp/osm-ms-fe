@@ -93,7 +93,7 @@ export class EmplacementListComponent {
         this.toast.success('AUTO.EMPLACEMENT_SUPPRIME_AVEC_SUCCES');
       },
       error: (err) => {
-        console.error('Erreur lors de la suppression de l\'emplacement', err);
+        console.error("Erreur lors de la suppression de l'emplacement", err);
         this.error = extractHttpErrorMessage(err, 'Impossible de supprimer cet emplacement');
       }
     });

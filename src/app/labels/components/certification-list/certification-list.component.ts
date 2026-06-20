@@ -50,7 +50,7 @@ export class CertificationListComponent {
       data: cert || {}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (result.id) {
           this.certService.update(result).subscribe(() => this.refreshDashboard());

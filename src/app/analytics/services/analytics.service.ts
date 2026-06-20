@@ -19,9 +19,7 @@ export class AnalyticsService {
    */
   private readonly apiUrl = `${environment.apiUrl}/api/ordreConditionement/analytics`;
 
-
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // =========================
   // 23.1 Rendement des OF
@@ -42,7 +40,7 @@ export class AnalyticsService {
   // =========================
 
   getGlobalOf(request: any = {}): Observable<any> {
-      return this.http.post<any>(`${this.apiUrl}/reports/global`, request);
+    return this.http.post<any>(`${this.apiUrl}/reports/global`, request);
   }
 
   exportGlobalOfPdf(request: any = {}): Observable<Blob> {

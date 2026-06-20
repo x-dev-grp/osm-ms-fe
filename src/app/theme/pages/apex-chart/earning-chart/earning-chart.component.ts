@@ -1,12 +1,12 @@
 // angular import
-import { Component, OnInit, OnChanges, SimpleChanges, effect, inject, input } from '@angular/core';
+import { Component, effect, inject, input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 // project import
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service';
 
 // third party
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 
 // const
 import { DARK, LIGHT } from 'src/app/theme/const';

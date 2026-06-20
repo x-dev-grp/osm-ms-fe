@@ -15,9 +15,7 @@ export class AppParameterService {
 
   /** Fetch all parameters from API and cache. Backend ensures default params exist. */
   getAll(): Observable<ApiResponse<Parameter>> {
-    return this.http.get<ApiResponse<Parameter>>(`${this.baseUrl}/fetchAll`).pipe(
-      tap((res) => this.cacheAll(res.data))
-    );
+    return this.http.get<ApiResponse<Parameter>>(`${this.baseUrl}/fetchAll`).pipe(tap((res) => this.cacheAll(res.data)));
   }
 
   /** Get a parameter by code. Backend creates the default row when missing. */

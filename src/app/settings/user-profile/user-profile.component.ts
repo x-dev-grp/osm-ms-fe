@@ -297,9 +297,7 @@ export class UserProfileComponent implements OnInit {
     const hasNumber = /[0-9]/.test(value);
     const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(value);
 
-    return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar
-      ? null
-      : { passwordStrength: true };
+    return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar ? null : { passwordStrength: true };
   }
 
   private passwordConfirmationMatcher() {

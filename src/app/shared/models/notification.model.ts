@@ -19,3 +19,13 @@ export interface UnreadCountResponse {
   success: boolean;
   count: number;
 }
+
+export interface NotificationPageResponse {
+  success: boolean;
+  message: string;
+  data: UserNotification[];
+  total: number;
+  page: number;
+  totalPages: number;
+  unreadCount: number;
+}

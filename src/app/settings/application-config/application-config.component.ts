@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,15 +15,7 @@ type ThemeColor = ThemeConfig['bodyColor'];
 @Component({
   selector: 'app-application-config',
   standalone: true,
-  imports: [
-    CommonModule,
-    SharedModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule,
-    TranslateModule
-  ],
+  imports: [CommonModule, SharedModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatTooltipModule, TranslateModule],
   templateUrl: './application-config.component.html',
   styleUrls: ['./application-config.component.scss']
 })

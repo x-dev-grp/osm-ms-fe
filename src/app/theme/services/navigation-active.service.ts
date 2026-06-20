@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
@@ -18,19 +18,15 @@ export class NavigationActiveService {
   private readonly router = inject(Router);
   private readonly currentUrlState = signal(normalizeNavigationUrl(this.router.url));
   private readonly menuUrlsState = signal<string[]>([]);
-  private readonly activeMenuUrlState = signal<string | null>(
-    findBestMatchingNavigationUrl(this.router.url, [])
-  );
+  private readonly activeMenuUrlState = signal<string | null>(findBestMatchingNavigationUrl(this.router.url, []));
 
   readonly currentUrl = this.currentUrlState.asReadonly();
   readonly activeMenuUrl = this.activeMenuUrlState.asReadonly();
 
   constructor() {
-    this.router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
-      .subscribe((event) => {
-        this.updateCurrentUrl(normalizeNavigationUrl(event.urlAfterRedirects));
-      });
+    this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe((event) => {
+      this.updateCurrentUrl(normalizeNavigationUrl(event.urlAfterRedirects));
+    });
   }
 
   setMenuItems(items: NavigationItem[] | undefined): void {
@@ -40,12 +36,7 @@ export class NavigationActiveService {
   }
 
   isRouteActive(menuUrl?: string, exactMatch = false): boolean {
-    return isNavigationUrlActive(
-      this.currentUrlState(),
-      menuUrl,
-      exactMatch,
-      exactMatch ? undefined : this.activeMenuUrlState()
-    );
+    return isNavigationUrlActive(this.currentUrlState(), menuUrl, exactMatch, exactMatch ? undefined : this.activeMenuUrlState());
   }
 
   isItemActive(item: NavigationItem | undefined): boolean {

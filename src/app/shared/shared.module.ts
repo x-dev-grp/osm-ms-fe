@@ -43,7 +43,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 
 // third party import
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CustomTranslateLoader } from './custom-translate-loader';
 
 // project import

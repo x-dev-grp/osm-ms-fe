@@ -1,19 +1,23 @@
-import en from '../../assets/i18n/en.json';
-import fr from '../../assets/i18n/fr.json';
-import ar from '../../assets/i18n/ar.json';
-
 import { TranslateLoader } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { Observable, from } from 'rxjs';
+
+type TranslationDictionary = Record<string, unknown>;
 
 export class CustomTranslateLoader implements TranslateLoader {
-  public getTranslation(lang: string) {
-    if (lang === 'fr') {
-      return of(fr);
-    }
-    if (lang === 'ar') {
-      return of(ar);
-    }
+  getTranslation(lang: string): Observable<TranslationDictionary> {
+    const normalized = ['en', 'fr', 'ar'].includes(lang) ? lang : 'en';
+    const loader =
+      normalized === 'fr'
+        ? import('../../assets/i18n/fr.json')
+        : normalized === 'ar'
+          ? import('../../assets/i18n/ar.json')
+          : import('../../assets/i18n/en.json');
 
-    return of(en);
+    return from(
+      loader.then((module) => {
+        const payload = (module as { default?: TranslationDictionary }).default ?? module;
+        return payload as TranslationDictionary;
+      })
+    );
   }
 }

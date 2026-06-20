@@ -16,9 +16,7 @@ export class ArticleService {
   constructor(private http: HttpClient) {}
 
   getAllArticles(): Observable<Article[]> {
-    return this.http.get<ApiResponse<Article>>(`${this.apiUrl}/fetchAll`).pipe(
-      map((response) => response?.data ?? [])
-    );
+    return this.http.get<ApiResponse<Article>>(`${this.apiUrl}/fetchAll`).pipe(map((response) => response?.data ?? []));
   }
 
   getArticlesByCategorie(categorie: CategorieArticle | string): Observable<Article[]> {
@@ -30,22 +28,16 @@ export class ArticleService {
   }
 
   getArticleById(id: string): Observable<Article> {
-    return this.http.get<ApiSingleResponse<Article>>(`${this.apiUrl}/fetch/${id}`).pipe(
-      map((response) => response.data)
-    );
+    return this.http.get<ApiSingleResponse<Article>>(`${this.apiUrl}/fetch/${id}`).pipe(map((response) => response.data));
   }
 
   createArticle(article: Article): Observable<Article> {
-    return this.http.post<ApiSingleResponse<Article>>(this.apiUrl, article).pipe(
-      map((response) => response.data)
-    );
+    return this.http.post<ApiSingleResponse<Article>>(this.apiUrl, article).pipe(map((response) => response.data));
   }
 
   updateArticle(id: string, article: Article): Observable<Article> {
     const payload = { ...article, id };
-    return this.http.put<ApiSingleResponse<Article>>(this.apiUrl, payload).pipe(
-      map((response) => response.data)
-    );
+    return this.http.put<ApiSingleResponse<Article>>(this.apiUrl, payload).pipe(map((response) => response.data));
   }
 
   deleteArticle(id: string): Observable<void> {

@@ -7,8 +7,7 @@ import { Action, OSMModule, permissionKey, ProductionEntity } from '../theme/typ
 const routes: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./maintenance-list/maintenance-list.component').then((m) => m.MaintenanceListComponent),
+    loadComponent: () => import('./maintenance-list/maintenance-list.component').then((m) => m.MaintenanceListComponent),
     canActivate: [
       AuthGuardChild,
       allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)])
@@ -16,8 +15,7 @@ const routes: Routes = [
   },
   {
     path: 'new',
-    loadComponent: () =>
-      import('./maintenance-form/maintenance-form.component').then((m) => m.MaintenanceFormComponent),
+    loadComponent: () => import('./maintenance-form/maintenance-form.component').then((m) => m.MaintenanceFormComponent),
     canActivate: [
       AuthGuardChild,
       allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.CREATE)])
@@ -25,8 +23,7 @@ const routes: Routes = [
   },
   {
     path: ':id/edit',
-    loadComponent: () =>
-      import('./maintenance-form/maintenance-form.component').then((m) => m.MaintenanceFormComponent),
+    loadComponent: () => import('./maintenance-form/maintenance-form.component').then((m) => m.MaintenanceFormComponent),
     canActivate: [
       AuthGuardChild,
       allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.UPDATE)])
@@ -34,8 +31,7 @@ const routes: Routes = [
   },
   {
     path: ':id/view',
-    loadComponent: () =>
-      import('./maintenance-form/maintenance-form.component').then((m) => m.MaintenanceFormComponent),
+    loadComponent: () => import('./maintenance-form/maintenance-form.component').then((m) => m.MaintenanceFormComponent),
     canActivate: [
       AuthGuardChild,
       allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)])

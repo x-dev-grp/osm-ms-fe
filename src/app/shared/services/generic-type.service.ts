@@ -6,8 +6,8 @@ import { ApiResponse } from '../models/api-response';
 import { TypeCategory } from '../models/type-category.enum';
 import { environment } from '../../../environments/environment';
 import { map, tap } from 'rxjs/operators';
-import { SupplierType } from '../models/supplier-type';
- // import {TypeCategory} from "../../osm/models/type-category.enum";
+
+// import {TypeCategory} from "../../osm/models/type-category.enum";
 
 @Injectable({
   providedIn: 'root'
@@ -15,22 +15,21 @@ import { SupplierType } from '../models/supplier-type';
 export class GenericTypeService {
   // ⬇️ Adjust endpoints if your routes differ
   private readonly prodBaseUrl = `${environment.apiUrl}/api/production/types`;
-  private readonly finBaseUrl  = `${environment.apiUrl}/api/finance/types`;
+  private readonly finBaseUrl = `${environment.apiUrl}/api/finance/types`;
 
   private readonly httpJson = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    withCredentials: false,
+    withCredentials: false
   };
 
   constructor(private http: HttpClient) {}
-// Get all records for a specific type category
-  getAllTypes(type: TypeCategory|string): Observable<ApiResponse<BaseType>> {
+  // Get all records for a specific type category
+  getAllTypes(type: TypeCategory | string): Observable<ApiResponse<BaseType>> {
     return this.http.get<ApiResponse<BaseType>>(`${this.prodBaseUrl}/${type}`);
   }
 
   private prepareForFinance(source: any): any {
     const body: any = { ...source };
-
 
     // Finance should generate its own id
     delete body.id;
@@ -50,7 +49,7 @@ export class GenericTypeService {
   getType(id: string): Observable<ApiResponse<BaseType>> {
     return this.http
       .get<ApiResponse<BaseType>>(`${this.prodBaseUrl}/fetch/${id}`)
-      .pipe(catchError(err => this.handleHttp('getType', err)));
+      .pipe(catchError((err) => this.handleHttp('getType', err)));
   }
   createType(typr: BaseType): Observable<ApiResponse<BaseType>> {
     return this.http.post<ApiResponse<BaseType>>(this.prodBaseUrl, typr).pipe(
@@ -122,19 +121,18 @@ export class GenericTypeService {
     );
   }
 
-
   /** Delete in Production, then best-effort delete in Finance */
   deleteType(id: string): Observable<void> {
     return this.http.delete<void>(`${this.prodBaseUrl}/${id}`).pipe(
       switchMap(() =>
         this.http.delete<void>(`${this.finBaseUrl}/${id}`).pipe(
-          catchError(err => {
+          catchError((err) => {
             console.warn('[GenericTypeService] deleteType: Finance delete failed (ignored)', err);
             return of(void 0);
           })
         )
       ),
-      catchError(err => this.handleHttp('deleteType', err))
+      catchError((err) => this.handleHttp('deleteType', err))
     );
   }
 
@@ -145,23 +143,23 @@ export class GenericTypeService {
   /** Force resend one entity to Finance (idempotent) */
   resendToFinance(id: string): Observable<ApiResponse<BaseType>> {
     return this.getType(id).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         const entity = res?.data;
         if (!entity) {
           return throwError(() => new Error(`[GenericTypeService] resendToFinance: Not found in Production (id=${id})`));
         }
         return this.upsertToFinance(entity, 'update').pipe(map(() => res));
       }),
-      catchError(err => this.handleHttp('resendToFinance', err))
+      catchError((err) => this.handleHttp('resendToFinance', err))
     );
   }
 
   /** Bulk resend to Finance; never fails the whole batch */
   resendManyToFinance(ids: string[]): Observable<(ApiResponse<BaseType> | null)[]> {
     if (!ids?.length) return of([]);
-    const jobs = ids.map(id =>
+    const jobs = ids.map((id) =>
       this.resendToFinance(id).pipe(
-        catchError(err => {
+        catchError((err) => {
           console.warn(`[GenericTypeService] resendManyToFinance: failed id=${id}`, err);
           return of(null);
         })
@@ -174,8 +172,8 @@ export class GenericTypeService {
   // Finance upsert: PUT first (idempotent), fallback to POST on 404/409
   // ----------------------------------------------------------------
 
-  private upsertToFinance(entity: BaseType|BaseType[], intent: 'create' | 'update'): Observable<ApiResponse<BaseType>> {
-    const body =  entity;
+  private upsertToFinance(entity: BaseType | BaseType[], intent: 'create' | 'update'): Observable<ApiResponse<BaseType>> {
+    const body = entity;
 
     return this.http.put<ApiResponse<BaseType>>(this.finBaseUrl, body, this.httpJson).pipe(
       catchError((err: HttpErrorResponse) => {

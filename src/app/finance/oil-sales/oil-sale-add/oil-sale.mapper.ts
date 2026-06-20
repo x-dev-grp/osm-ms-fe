@@ -5,11 +5,11 @@ import { OilSale } from '../../models/oil-sale.model';
 export function toLocalDateTimeString(d: Date | string): string {
   const date = typeof d === 'string' ? new Date(d) : d;
   const pad = (n: number) => String(n).padStart(2, '0');
-  return [
-    date.getFullYear(),
-    pad(date.getMonth() + 1),
-    pad(date.getDate())
-  ].join('-') + 'T' + [pad(date.getHours()), pad(date.getMinutes()), pad(date.getSeconds())].join(':');
+  return (
+    [date.getFullYear(), pad(date.getMonth() + 1), pad(date.getDate())].join('-') +
+    'T' +
+    [pad(date.getHours()), pad(date.getMinutes()), pad(date.getSeconds())].join(':')
+  );
 }
 
 function mapContainerSales(lines: OilSale['containerSales']): ContainerSaleLine[] | undefined {
@@ -33,8 +33,8 @@ function mapContainerSales(lines: OilSale['containerSales']): ContainerSaleLine[
 /** Maps the rich UI model to the lean create payload expected by the backend. */
 export function mapOilSaleToCreateRequest(ui: OilSale): OilSaleCreateRequest {
   return {
-    supplier: ui.supplier?.id,              // send only the id (or undefined)
-    storageUnit: ui.storageUnit?.id!,       // required
+    supplier: ui.supplier?.id, // send only the id (or undefined)
+    storageUnit: ui.storageUnit?.id!, // required
 
     quantity: ui.quantity,
     unitPrice: ui.unitPrice,
@@ -51,6 +51,6 @@ export function mapOilSaleToCreateRequest(ui: OilSale): OilSaleCreateRequest {
     paidAmount: ui.paidAmount ?? 0,
 
     // if containers not provided or empty, omit the field
-    containerSales: mapContainerSales(ui.containerSales),
+    containerSales: mapContainerSales(ui.containerSales)
   };
 }

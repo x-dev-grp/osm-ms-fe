@@ -24,7 +24,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
       color: 'secondary',
       icon: 'file_copy',
       disabled: {
-         value: false
+        value: false
       }
     }
   ],
@@ -50,7 +50,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
               equalValue: 'COMPLETED'
             }
           }
-        },
+        }
       ],
       search: {
         isDeleted: {
@@ -125,7 +125,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
 
     {
       name: 'price',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,
@@ -137,7 +137,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'unpaidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
@@ -149,7 +149,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'paidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant partiallment',
       labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
       attributeType: AttributeType.number,
@@ -188,7 +188,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'poidsNet',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Poids net (kg)',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
@@ -202,7 +202,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'oilQuantity',
       label: 'Qté huile (KG)',
-      calculateTotal:true,
+      calculateTotal: true,
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -341,7 +341,8 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
           value: 'OC',
           labelTranslatePath: 'OC'
         }
-      ]    },
+      ]
+    },
     {
       name: 'trtDate',
       label: 'Date traitement',
@@ -409,7 +410,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'oliveQuantity',
       calculateTotal: true,
-      label: "Qté olives (KG)",
+      label: 'Qté olives (KG)',
       labelTranslatePath: 'OLIVE_RECEPTION.FORM.FIELDS.OLIVE_QUANTITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,

@@ -9,23 +9,26 @@ export const WASTE_DASHBOARD: DashboardConfig = {
   searchEndpoint: 'production/waste',
   addNewItem: false,
   addNewItemUrl: '/finance/waste-sales/new',
-  specificActions: [{
-    action: 'PAY',
-    color: 'primary',
-    icon: 'payment',
-    disabled: {
-      field: 'paid',
-      value: true
+  specificActions: [
+    {
+      action: 'PAY',
+      color: 'primary',
+      icon: 'payment',
+      disabled: {
+        field: 'paid',
+        value: true
+      }
+    },
+    {
+      action: 'GEN_INVOICE',
+      color: 'secondary',
+      icon: 'file_copy',
+      disabled: {
+        field: 'paid',
+        value: false
+      }
     }
-  },{
-    action: 'GEN_INVOICE',
-    color: 'secondary',
-    icon: 'file_copy',
-    disabled: {
-      field: 'paid',
-      value: false
-    }
-  }],
+  ],
   defaultSearchData: {
     page: 0,
     size: 10,
@@ -34,7 +37,7 @@ export const WASTE_DASHBOARD: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       search: {
-        isDeleted: {equalValue: false}
+        isDeleted: { equalValue: false }
       },
       searchs: []
     }
@@ -51,15 +54,15 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        {label: 'Margine', value: 'MARGINE', labelTranslatePath: 'WASTE.TYPES.MARGINE'},
-        {label: 'Grignon', value: 'POMACE', labelTranslatePath: 'WASTE.TYPES.GRIGNON'},
-        {label: 'Solides végétaux', value: 'VEGETAL_SOLIDS', labelTranslatePath: 'WASTE.TYPES.SOLID'},
-        {label: 'Autre', value: 'OTHER', labelTranslatePath: 'WASTE.TYPES.OTHER'}
+        { label: 'Margine', value: 'MARGINE', labelTranslatePath: 'WASTE.TYPES.MARGINE' },
+        { label: 'Grignon', value: 'POMACE', labelTranslatePath: 'WASTE.TYPES.GRIGNON' },
+        { label: 'Solides végétaux', value: 'VEGETAL_SOLIDS', labelTranslatePath: 'WASTE.TYPES.SOLID' },
+        { label: 'Autre', value: 'OTHER', labelTranslatePath: 'WASTE.TYPES.OTHER' }
       ]
     },
     {
       name: 'quantityInKg',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Quantité (kg)',
       labelTranslatePath: 'WASTE.FIELDS.QUANTITY',
       attributeType: AttributeType.number,
@@ -72,7 +75,7 @@ export const WASTE_DASHBOARD: DashboardConfig = {
     {
       name: 'unitPrice',
       label: 'Prix unitaire (TND/kg)',
-      calculateTotal:true,
+      calculateTotal: true,
       labelTranslatePath: 'WASTE.FIELDS.UNIT_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -85,7 +88,7 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       name: 'totalPrice',
       label: 'Prix total (TND)',
 
-      calculateTotal:true,
+      calculateTotal: true,
       labelTranslatePath: 'WASTE.FIELDS.TOTAL_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,

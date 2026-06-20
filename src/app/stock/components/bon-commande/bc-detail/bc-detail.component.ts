@@ -1,19 +1,17 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BonCommandeService } from '../../../services/bon-commande.service';
 import { BonCommande, StatutBonCommande } from '../../../models/bon-commande.model';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { take } from 'rxjs/operators';
-import { ApiResponse } from "../../../../shared/models/api-response";
+import { ApiResponse } from '../../../../shared/models/api-response';
 import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bc-detail',
@@ -119,7 +117,7 @@ export class BcDetailComponent implements OnInit {
   }
 
   getTotalPrix(): number {
-    return this.bon?.lignes?.reduce((s, l) => s + (l.quantiteCommandee * (l.prixUnitaire || 0)), 0) || 0;
+    return this.bon?.lignes?.reduce((s, l) => s + l.quantiteCommandee * (l.prixUnitaire || 0), 0) || 0;
   }
 
   getStatutBadgeClass(statut: StatutBonCommande): string {
@@ -137,11 +135,10 @@ export class BcDetailComponent implements OnInit {
     alert(message);
   }
 
-
   toggleReception(): void {
     if (this.bon?.lignes) {
       this.receptionQuantities = {};
-      this.bon.lignes.forEach(ligne => {
+      this.bon.lignes.forEach((ligne) => {
         if (ligne.id) {
           this.receptionQuantities[ligne.id] = 0;
         }
@@ -254,18 +251,20 @@ export class BcDetailComponent implements OnInit {
       return;
     }
 
-    this.confirmationDialog.confirm({
-      title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
-      message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
-      type: ConfirmationType.WARNING,
-      confirmText: this.i18n.instant('AUTO.REGENERATE'),
-      cancelText: this.i18n.instant('ADMIN.CANCEL'),
-      showIcon: true,
-      destructive: true,
-      requiredText: this.i18n.instant('AUTO.OKAY'),
-      requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
-      requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
-    }).pipe(take(1))
+    this.confirmationDialog
+      .confirm({
+        title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
+        message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
+        type: ConfirmationType.WARNING,
+        confirmText: this.i18n.instant('AUTO.REGENERATE'),
+        cancelText: this.i18n.instant('ADMIN.CANCEL'),
+        showIcon: true,
+        destructive: true,
+        requiredText: this.i18n.instant('AUTO.OKAY'),
+        requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+        requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
+      })
+      .pipe(take(1))
       .subscribe((result) => {
         onResolved(!!result?.confirmed);
       });

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, DestroyRef, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 
 import { MatDialogModule } from '@angular/material/dialog';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,7 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Field } from '../../models/dashboard-config';
 
@@ -24,7 +24,8 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,
@@ -45,9 +46,9 @@ export class SelectComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   formControl: AbstractControl;
   ngOnDestroy(): void {}
 
-
   ngAfterViewInit(): void {
-    this._store.resetFields$()
+    this._store
+      .resetFields$()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.formControl.reset(null, { emitEvent: false });
@@ -60,13 +61,12 @@ export class SelectComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     console.log('field', this.field());
   }
   selectChange(option: any) {
-     const search: { [key: string]: SearchDetails } =
-    {
-    [ this.field()?.name!]: {
-       equalValue: option?.value,
-          }
-     }
-   this._store.setSearchDataAttribute(search);
+    const search: { [key: string]: SearchDetails } = {
+      [this.field()?.name!]: {
+        equalValue: option?.value
+      }
+    };
+    this._store.setSearchDataAttribute(search);
     console.log(option?.value);
   }
   clearSelect(ev: MouseEvent): void {

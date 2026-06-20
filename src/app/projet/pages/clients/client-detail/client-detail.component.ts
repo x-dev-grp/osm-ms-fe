@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClientService } from '../../../services/client.service';
 import { Client } from '../../../models/client.model';
-import { ApiResponse } from '../../../../shared/models/api-response';
 import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -63,8 +62,8 @@ export class ClientDetailComponent implements OnInit {
       this.Actif = true;
 
       const request = this.client.actif
-        ? this.clientService.desactiverClient(this.client.id)  // If actif=true → désactiver
-        : this.clientService.activerClient(this.client.id);     // If actif=false → activer
+        ? this.clientService.desactiverClient(this.client.id) // If actif=true → désactiver
+        : this.clientService.activerClient(this.client.id); // If actif=false → activer
 
       request.subscribe({
         next: () => {
@@ -88,14 +87,10 @@ export class ClientDetailComponent implements OnInit {
   getAdresseComplete(): string {
     if (!this.client) return '';
 
-    const parts = [
-      this.client.adresse,
-      this.client.codePostal,
-      this.client.ville,
-      this.client.pays
-    ].filter(part => part && part.trim() !== '');
+    const parts = [this.client.adresse, this.client.codePostal, this.client.ville, this.client.pays].filter(
+      (part) => part && part.trim() !== ''
+    );
 
     return parts.join(', ');
   }
-
 }

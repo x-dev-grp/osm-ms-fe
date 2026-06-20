@@ -24,7 +24,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       color: 'secondary',
       icon: 'file_copy',
       disabled: {
-         value: false
+        value: false
       }
     }
   ],
@@ -95,7 +95,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
                   inValues: ['STOCK_READY', 'IN_STOCK']
                 }
               }
-            },
+            }
             // {
             //   operation: SearchOperation.AND,
             //   search: {
@@ -162,7 +162,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       valueAttributeType: AttributeType.enum,
       options: [
-        { label: 'Huile', value: 'OIL' , labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL'},
+        { label: 'Huile', value: 'OIL', labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL' },
         {
           label: 'Olive',
           labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE',
@@ -190,7 +190,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'price',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,
@@ -202,7 +202,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'unpaidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
@@ -220,7 +220,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      calculateTotal:true,
+      calculateTotal: true,
       dataTable: true,
       filterable: true
     },
@@ -259,7 +259,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      calculateTotal:true,
+      calculateTotal: true,
       dataTable: true,
       filterable: true
     },
@@ -271,7 +271,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       exportable: true,
-      calculateTotal:true,
+      calculateTotal: true,
       sortable: true,
       dataTable: true,
       filterable: true

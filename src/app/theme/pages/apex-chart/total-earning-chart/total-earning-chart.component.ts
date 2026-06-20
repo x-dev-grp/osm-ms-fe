@@ -1,11 +1,11 @@
 // angular import
-import { Component, OnInit, input } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 
 // project import
 import { SharedModule } from 'src/app/shared/shared.module';
 
 // third party
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

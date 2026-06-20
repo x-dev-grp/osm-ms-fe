@@ -5,7 +5,7 @@ import { CompanyUserDto } from '../models/company-user-dto';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AddCompanyUserService {
   private http = inject(HttpClient);

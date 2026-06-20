@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Product, ProductType, SKU } from '../models/sku.model';
-import { environment } from "../../../environments/environment";
+import { environment } from '../../../environments/environment';
 import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
 
@@ -16,9 +16,9 @@ export class SKUService {
   constructor(private http: HttpClient) {}
 
   getAllProducts(): Observable<Product[]> {
-    return this.http.get<ApiResponse<Product>>(`${this.apiUrl}/fetchAll`).pipe(
-      map((response) => (response?.data ?? []).map((product) => this.normalizeProduct(product)))
-    );
+    return this.http
+      .get<ApiResponse<Product>>(`${this.apiUrl}/fetchAll`)
+      .pipe(map((response) => (response?.data ?? []).map((product) => this.normalizeProduct(product))));
   }
 
   getAllSkus(): Observable<SKU[]> {
@@ -26,9 +26,9 @@ export class SKUService {
   }
 
   getProductById(id: string): Observable<Product> {
-    return this.http.get<ApiSingleResponse<Product>>(`${this.apiUrl}/fetch/${id}`).pipe(
-      map((response) => this.normalizeProduct(response.data))
-    );
+    return this.http
+      .get<ApiSingleResponse<Product>>(`${this.apiUrl}/fetch/${id}`)
+      .pipe(map((response) => this.normalizeProduct(response.data)));
   }
 
   getSkuById(id: string): Observable<SKU> {
@@ -36,9 +36,9 @@ export class SKUService {
   }
 
   createProduct(product: Product): Observable<Product> {
-    return this.http.post<ApiSingleResponse<Product>>(this.apiUrl, this.toPayload(product)).pipe(
-      map((response) => this.normalizeProduct(response.data))
-    );
+    return this.http
+      .post<ApiSingleResponse<Product>>(this.apiUrl, this.toPayload(product))
+      .pipe(map((response) => this.normalizeProduct(response.data)));
   }
 
   createSku(sku: SKU): Observable<SKU> {
@@ -47,9 +47,7 @@ export class SKUService {
 
   updateProduct(id: string, product: Product): Observable<Product> {
     const payload = { ...this.toPayload(product), id };
-    return this.http.put<ApiSingleResponse<Product>>(this.apiUrl, payload).pipe(
-      map((response) => this.normalizeProduct(response.data))
-    );
+    return this.http.put<ApiSingleResponse<Product>>(this.apiUrl, payload).pipe(map((response) => this.normalizeProduct(response.data)));
   }
 
   updateSku(id: string, sku: SKU): Observable<SKU> {
@@ -81,9 +79,9 @@ export class SKUService {
   }
 
   getActiveProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/actifs`).pipe(
-      map((products) => (products ?? []).map((product) => this.normalizeProduct(product)))
-    );
+    return this.http
+      .get<Product[]>(`${this.apiUrl}/actifs`)
+      .pipe(map((products) => (products ?? []).map((product) => this.normalizeProduct(product))));
   }
 
   getActiveSKUs(): Observable<SKU[]> {
@@ -91,21 +89,17 @@ export class SKUService {
   }
 
   getProductsByType(type: ProductType): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/type/${type}`).pipe(
-      map((products) => (products ?? []).map((product) => this.normalizeProduct(product)))
-    );
+    return this.http
+      .get<Product[]>(`${this.apiUrl}/type/${type}`)
+      .pipe(map((products) => (products ?? []).map((product) => this.normalizeProduct(product))));
   }
 
   getActiveProductsByType(type: ProductType): Observable<Product[]> {
-    return this.getProductsByType(type).pipe(
-      map((products) => products.filter((product) => product.actif))
-    );
+    return this.getProductsByType(type).pipe(map((products) => products.filter((product) => product.actif)));
   }
 
   generateQr(productId: string): Observable<QrCodeInfo> {
-    return this.http.get<QrCodeInfo>(
-      `${this.apiUrl}/qr/PRODUITFINAL/${productId}`
-    );
+    return this.http.get<QrCodeInfo>(`${this.apiUrl}/qr/PRODUITFINAL/${productId}`);
   }
 
   searchByCode(code: string): Observable<QrResolveResponse> {

@@ -1,13 +1,13 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { AuthenticationService } from '../../auth/services/authentication.service';
+import { TokenService } from '../../auth/services/tokenService.service';
 import { UserNotification } from '../models/notification.model';
 
 @Injectable({ providedIn: 'root' })
 export class PushNotificationService {
   private readonly http = inject(HttpClient);
-  private readonly auth = inject(AuthenticationService);
+  private readonly tokenService = inject(TokenService);
   private permissionRequested = false;
   private lastShownTitle = '';
 
@@ -55,13 +55,14 @@ export class PushNotificationService {
   }
 
   registerDevice(playerId: string): void {
-    const user = this.auth.currentUserValue;
-    if (!user?.id || !playerId) {
+    const decoded = this.tokenService.decodeToken() as Record<string, unknown> | null;
+    const userId = (decoded?.['osmUser'] as { id?: string } | undefined)?.id;
+    if (!userId || !playerId) {
       return;
     }
     this.http
       .post(`${environment.apiUrl}/api/security/user/register-device`, {
-        userId: user.id,
+        userId,
         playerId
       })
       .subscribe({ error: () => undefined });

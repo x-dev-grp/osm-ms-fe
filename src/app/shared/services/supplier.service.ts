@@ -135,7 +135,6 @@ export class SupplierTypeService {
   private prepareForFinance(source: any): any {
     const body: any = { ...source };
 
-
     // Finance should generate its own id
     delete body.id;
 

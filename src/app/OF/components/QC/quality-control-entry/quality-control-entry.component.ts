@@ -21,7 +21,8 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-quality-control-entry',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -59,7 +60,7 @@ export class QualityControlEntryComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOFs();
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       const ofId = params['ofId'];
       if (ofId) {
         this.selectedOfId = ofId;
@@ -81,14 +82,14 @@ export class QualityControlEntryComponent implements OnInit {
 
   loadOFs(): void {
     this.ofService.getAll().subscribe({
-      next: (data) => this.ofs = data,
+      next: (data) => (this.ofs = data),
       error: () => this.toast.error('AUTO.ERREUR_CHARGEMENT_OF')
     });
   }
 
   onOfSelected(): void {
     if (!this.selectedOfId) return;
-    const selectedOf = this.ofs.find(of => of.id === this.selectedOfId);
+    const selectedOf = this.ofs.find((of) => of.id === this.selectedOfId);
     this.selectedOfCode = selectedOf?.code || null;
 
     this.qualityService.getPointsForOF(this.selectedOfId).subscribe({
@@ -111,7 +112,7 @@ export class QualityControlEntryComponent implements OnInit {
 
   buildForm(): void {
     const controls: Record<string, any> = {};
-    this.points.forEach(point => {
+    this.points.forEach((point) => {
       if (!point.id) return;
       controls[`val_${point.id}`] = ['', Validators.required];
       controls[`commentaire_${point.id}`] = [''];

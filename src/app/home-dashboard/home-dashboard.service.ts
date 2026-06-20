@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { forkJoin, map, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AdvancedSearchService } from '../shared/services/advanced-serach.service';
@@ -152,17 +152,13 @@ export class HomeDashboardService {
       catchError(() =>
         forkJoin({
           orders: this.count('ordreConditionement/of')
-        }).pipe(
-          map(({ orders }) => [{ labelKey: 'HOME_DASHBOARD.METRICS.PRODUCTION_ORDERS', value: orders }])
-        )
+        }).pipe(map(({ orders }) => [{ labelKey: 'HOME_DASHBOARD.METRICS.PRODUCTION_ORDERS', value: orders }]))
       )
     );
   }
 
   private loadHrMetrics(): Observable<HomeMetric[]> {
-    return this.count('hr/employee').pipe(
-      map((employees) => [{ labelKey: 'HOME_DASHBOARD.METRICS.EMPLOYEES', value: employees }])
-    );
+    return this.count('hr/employee').pipe(map((employees) => [{ labelKey: 'HOME_DASHBOARD.METRICS.EMPLOYEES', value: employees }]));
   }
 }
 

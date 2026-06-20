@@ -1,6 +1,6 @@
 import ts from 'typescript';
 import { createHash } from 'node:crypto';
-import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -11,14 +11,7 @@ const localePaths = {
   fr: path.join(root, 'src', 'assets', 'i18n', 'fr.json'),
   ar: path.join(root, 'src', 'assets', 'i18n', 'ar.json')
 };
-const stateNames = new Set([
-  'dialogTitle',
-  'errorMessage',
-  'pageTitle',
-  'placeholder',
-  'successMessage',
-  'warningMessage'
-]);
+const stateNames = new Set(['dialogTitle', 'errorMessage', 'pageTitle', 'placeholder', 'successMessage', 'warningMessage']);
 
 function normalize(value) {
   return value.replace(/\s+/g, ' ').trim();
@@ -95,7 +88,7 @@ async function listTypeScriptFiles(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
-      files.push(...await listTypeScriptFiles(fullPath));
+      files.push(...(await listTypeScriptFiles(fullPath)));
     } else if (entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.spec.ts')) {
       files.push(fullPath);
     }
@@ -132,34 +125,31 @@ function resolveKey(value) {
 
 for (const filePath of await listTypeScriptFiles(appRoot)) {
   const source = await readFile(filePath, 'utf8');
-  const sourceFile = ts.createSourceFile(
-    filePath,
-    source,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TS
-  );
+  const sourceFile = ts.createSourceFile(filePath, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
   const replacements = [];
   const classIdentifiers = new Map();
   const classesNeedingInjection = new Set();
 
   function existingTranslateIdentifier(classNode) {
     for (const member of classNode.members) {
-      if (ts.isPropertyDeclaration(member)
-          && member.initializer
-          && ts.isCallExpression(member.initializer)
-          && ts.isIdentifier(member.initializer.expression)
-          && member.initializer.expression.text === 'inject'
-          && member.initializer.arguments.some(argument =>
-            ts.isIdentifier(argument) && argument.text === 'TranslateService')) {
+      if (
+        ts.isPropertyDeclaration(member) &&
+        member.initializer &&
+        ts.isCallExpression(member.initializer) &&
+        ts.isIdentifier(member.initializer.expression) &&
+        member.initializer.expression.text === 'inject' &&
+        member.initializer.arguments.some((argument) => ts.isIdentifier(argument) && argument.text === 'TranslateService')
+      ) {
         return propertyName(member.name);
       }
       if (ts.isConstructorDeclaration(member)) {
         for (const parameter of member.parameters) {
-          if (parameter.type
-              && ts.isTypeReferenceNode(parameter.type)
-              && ts.isIdentifier(parameter.type.typeName)
-              && parameter.type.typeName.text === 'TranslateService') {
+          if (
+            parameter.type &&
+            ts.isTypeReferenceNode(parameter.type) &&
+            ts.isIdentifier(parameter.type.typeName) &&
+            parameter.type.typeName.text === 'TranslateService'
+          ) {
             return propertyName(parameter.name);
           }
         }
@@ -178,7 +168,7 @@ for (const filePath of await listTypeScriptFiles(appRoot)) {
       return existing;
     }
     let candidate = 'i18n';
-    const memberNames = new Set(classNode.members.map(member => propertyName(member.name)).filter(Boolean));
+    const memberNames = new Set(classNode.members.map((member) => propertyName(member.name)).filter(Boolean));
     while (memberNames.has(candidate)) {
       candidate = `_${candidate}`;
     }
@@ -209,9 +199,7 @@ for (const filePath of await listTypeScriptFiles(appRoot)) {
   }
 
   function collectExpressionLiterals(node) {
-    if (ts.isCallExpression(node)
-        && ts.isPropertyAccessExpression(node.expression)
-        && node.expression.name.text === 'instant') {
+    if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) && node.expression.name.text === 'instant') {
       return;
     }
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
@@ -222,15 +210,11 @@ for (const filePath of await listTypeScriptFiles(appRoot)) {
   }
 
   function visit(node) {
-    if (ts.isBinaryExpression(node)
-        && node.operatorToken.kind === ts.SyntaxKind.EqualsToken
-        && stateNames.has(propertyName(node.left))) {
+    if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.EqualsToken && stateNames.has(propertyName(node.left))) {
       collectExpressionLiterals(node.right);
       return;
     }
-    if ((ts.isVariableDeclaration(node) || ts.isPropertyDeclaration(node))
-        && stateNames.has(propertyName(node.name))
-        && node.initializer) {
+    if ((ts.isVariableDeclaration(node) || ts.isPropertyDeclaration(node)) && stateNames.has(propertyName(node.name)) && node.initializer) {
       collectExpressionLiterals(node.initializer);
       return;
     }
@@ -264,10 +248,10 @@ for (const filePath of await listTypeScriptFiles(appRoot)) {
     injectedClasses += 1;
   }
 
-  const needsInjectImport = classesNeedingInjection.size > 0
-    && !/\bimport\s*{[^}]*\binject\b[^}]*}\s*from\s*['"]@angular\/core['"]/.test(source);
-  const needsTranslateImport = classesNeedingInjection.size > 0
-    && !/\bimport\s*{[^}]*\bTranslateService\b[^}]*}\s*from\s*['"]@ngx-translate\/core['"]/.test(source);
+  const needsInjectImport =
+    classesNeedingInjection.size > 0 && !/\bimport\s*{[^}]*\binject\b[^}]*}\s*from\s*['"]@angular\/core['"]/.test(source);
+  const needsTranslateImport =
+    classesNeedingInjection.size > 0 && !/\bimport\s*{[^}]*\bTranslateService\b[^}]*}\s*from\s*['"]@ngx-translate\/core['"]/.test(source);
   let imports = '';
   if (needsInjectImport) {
     imports += `import { inject } from '@angular/core';\n`;
@@ -281,9 +265,7 @@ for (const filePath of await listTypeScriptFiles(appRoot)) {
 
   let updated = source;
   for (const replacement of replacements.sort((a, b) => b.start - a.start)) {
-    updated = updated.slice(0, replacement.start)
-      + replacement.value
-      + updated.slice(replacement.end);
+    updated = updated.slice(0, replacement.start) + replacement.value + updated.slice(replacement.end);
   }
   changedFiles.push(path.relative(root, filePath));
   if (applyChanges) {
@@ -302,11 +284,17 @@ if (applyChanges) {
   }
 }
 
-console.log(JSON.stringify({
-  mode: applyChanges ? 'apply' : 'dry-run',
-  changedFiles: changedFiles.length,
-  replacements: replacementCount,
-  injectedClasses,
-  generatedKeys: generated.size,
-  files: changedFiles
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      mode: applyChanges ? 'apply' : 'dry-run',
+      changedFiles: changedFiles.length,
+      replacements: replacementCount,
+      injectedClasses,
+      generatedKeys: generated.size,
+      files: changedFiles
+    },
+    null,
+    2
+  )
+);

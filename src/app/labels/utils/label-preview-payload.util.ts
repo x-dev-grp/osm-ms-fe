@@ -1,15 +1,8 @@
 import { Certification } from '../models/certification.model';
-import {
-  LabelCategory,
-  LabelClaimType,
-  LabelContentDto,
-  LabelLanguage
-} from '../models/label.model';
+import { LabelCategory, LabelClaimType, LabelContentDto, LabelLanguage } from '../models/label.model';
 import { LabelPreviewViewModel } from '../models/label-preview.model';
 import { ProductionGenealogy } from '../../shared/models/production-genealogy.model';
-import {
-  showEvooLegalStatement
-} from './label-compliance.util';
+import { showEvooLegalStatement } from './label-compliance.util';
 import {
   applyCompositionOverrides,
   buildLabelQcCompositionBundle,
@@ -67,51 +60,24 @@ export interface BuildLabelPreviewPayloadOptions {
   resolveClaimLabel: (value: LabelClaimType | string) => string;
 }
 
-function resolveBrandName(
-  brandName: string | undefined,
-  form: LabelFormPreviewValues,
-  currentLabel?: LabelContentDto | null
-): string {
-  return (
-    brandName?.trim() ||
-    form.responsibleName?.trim() ||
-    currentLabel?.responsibleName?.trim() ||
-    'Entreprise'
-  );
+function resolveBrandName(brandName: string | undefined, form: LabelFormPreviewValues, currentLabel?: LabelContentDto | null): string {
+  return brandName?.trim() || form.responsibleName?.trim() || currentLabel?.responsibleName?.trim() || 'Entreprise';
 }
 
 function buildQcBundle(options: BuildLabelPreviewPayloadOptions) {
   const { form, currentLabel } = options;
-  const resolvedControls = resolvePostFiltrationQualityControls(
-    options.genealogy,
-    currentLabel,
-    options.postFiltrationQualityControls
-  );
-  const language =
-    options.previewLanguage || form.language || currentLabel?.language || 'FR';
-  const baseBundle = buildLabelQcCompositionBundle(
-    resolvedControls,
-    form.netQuantity,
-    options.productDensity,
-    language
-  );
+  const resolvedControls = resolvePostFiltrationQualityControls(options.genealogy, currentLabel, options.postFiltrationQualityControls);
+  const language = options.previewLanguage || form.language || currentLabel?.language || 'FR';
+  const baseBundle = buildLabelQcCompositionBundle(resolvedControls, form.netQuantity, options.productDensity, language);
 
-  return applyCompositionOverrides(
-    baseBundle,
-    options.compositionOverrides,
-    form.netQuantity,
-    language
-  );
+  return applyCompositionOverrides(baseBundle, options.compositionOverrides, form.netQuantity, language);
 }
 
 function resolvePreviewLanguage(options: BuildLabelPreviewPayloadOptions): LabelLanguage {
   return options.previewLanguage || options.form.language || options.currentLabel?.language || 'FR';
 }
 
-function resolvePreviewIngredientDeclaration(
-  options: BuildLabelPreviewPayloadOptions,
-  previewLang: LabelLanguage
-): string {
+function resolvePreviewIngredientDeclaration(options: BuildLabelPreviewPayloadOptions, previewLang: LabelLanguage): string {
   const { form, currentLabel } = options;
   const formLang = form.language || currentLabel?.language || 'FR';
   const custom = form.ingredientDeclaration?.trim() || currentLabel?.ingredientDeclaration?.trim();
@@ -123,10 +89,7 @@ function resolvePreviewIngredientDeclaration(
   return buildLocalizedIngredientDeclaration(form.qualityGrade, previewLang);
 }
 
-function resolvePreviewLegalDenomination(
-  options: BuildLabelPreviewPayloadOptions,
-  previewLang: LabelLanguage
-): string {
+function resolvePreviewLegalDenomination(options: BuildLabelPreviewPayloadOptions, previewLang: LabelLanguage): string {
   const { form, currentLabel } = options;
   const custom = form.legalDenomination?.trim() || currentLabel?.legalDenomination?.trim();
   const localized = buildLocalizedProductName(form.qualityGrade, previewLang);
@@ -135,13 +98,10 @@ function resolvePreviewLegalDenomination(
     return custom;
   }
 
-  return localized || custom || (previewLang === 'FR' ? 'Huile d\'Olive' : localized || 'Olive Oil');
+  return localized || custom || (previewLang === 'FR' ? "Huile d'Olive" : localized || 'Olive Oil');
 }
 
-function resolvePreviewStorageConditions(
-  options: BuildLabelPreviewPayloadOptions,
-  previewLang: LabelLanguage
-): string {
+function resolvePreviewStorageConditions(options: BuildLabelPreviewPayloadOptions, previewLang: LabelLanguage): string {
   const { form, currentLabel } = options;
   const formLang = form.language || currentLabel?.language || 'FR';
   const custom = form.storageConditions?.trim() || currentLabel?.storageConditions?.trim();
@@ -153,19 +113,22 @@ function resolvePreviewStorageConditions(
   return resolveLocalizedStorageConditions(custom, previewLang);
 }
 
-export function buildLabelPreviewViewModel(
-  options: BuildLabelPreviewPayloadOptions
-): LabelPreviewViewModel {
-  const { form, currentLabel, certifications, brandName, brandLogoData, brandLogoContentType, resolveQualityLabel, resolveVarietyLabel, resolveClaimLabel } =
-    options;
+export function buildLabelPreviewViewModel(options: BuildLabelPreviewPayloadOptions): LabelPreviewViewModel {
+  const {
+    form,
+    currentLabel,
+    certifications,
+    brandName,
+    brandLogoData,
+    brandLogoContentType,
+    resolveQualityLabel,
+    resolveVarietyLabel,
+    resolveClaimLabel
+  } = options;
 
   const selectedCertNames = form.certifications || [];
   const claimTypes = form.claimTypes || [];
-  const resolvedControls = resolvePostFiltrationQualityControls(
-    options.genealogy,
-    currentLabel,
-    options.postFiltrationQualityControls
-  );
+  const resolvedControls = resolvePostFiltrationQualityControls(options.genealogy, currentLabel, options.postFiltrationQualityControls);
   const qcBundle = buildQcBundle(options);
   const previewLang = resolvePreviewLanguage(options);
   const originCountry = resolveLocalizedOrigin(form.originCountry, previewLang);
@@ -186,9 +149,7 @@ export function buildLabelPreviewViewModel(
     bestBeforeDate: form.bestBeforeDate?.trim() || '-',
     packagingDate: form.packagingDate?.trim() || '-',
     claimTypes,
-    claimLabels: claimTypes.length
-      ? claimTypes.map((claim) => resolveClaimLabel(claim))
-      : (currentLabel?.marketingClaims || []),
+    claimLabels: claimTypes.length ? claimTypes.map((claim) => resolveClaimLabel(claim)) : currentLabel?.marketingClaims || [],
     certifications: certifications.filter((cert) => selectedCertNames.includes(cert.name)),
     extractionMethod: form.extractionMethod?.trim() || undefined,
     storageConditions: resolvePreviewStorageConditions(options, previewLang),
@@ -200,9 +161,7 @@ export function buildLabelPreviewViewModel(
     responsibleName: form.responsibleName?.trim() || '-',
     responsibleAddress: form.responsibleAddress?.trim() || undefined,
     ingredientDeclaration: resolvePreviewIngredientDeclaration(options, previewLang),
-    evooLegalStatement: showEvooLegalStatement(form.qualityGrade)
-      ? buildLocalizedEvooStatement(previewLang)
-      : undefined,
+    evooLegalStatement: showEvooLegalStatement(form.qualityGrade) ? buildLocalizedEvooStatement(previewLang) : undefined,
     ean13: form.ean13?.trim() || currentLabel?.ean13,
     harvestYear: form.harvestYear?.trim() || currentLabel?.harvestYear,
     acidityLevel: form.acidityLevel?.trim() || currentLabel?.acidityLevel,
@@ -212,27 +171,24 @@ export function buildLabelPreviewViewModel(
   };
 }
 
-export function buildLabelEtiquettePayload(
-  options: BuildLabelPreviewPayloadOptions
-): Record<string, unknown> {
-  const { form, currentLabel, certifications, brandName, brandLogoData, brandLogoContentType, resolveQualityLabel, resolveVarietyLabel, resolveClaimLabel } =
-    options;
-
-  const selectedCerts = certifications.filter((cert) =>
-    (form.certifications || []).includes(cert.name)
-  );
-  const claimTypes = form.claimTypes || [];
-  const marketingClaims = claimTypes.length
-    ? claimTypes.map((claim) => resolveClaimLabel(claim))
-    : (currentLabel?.marketingClaims || []);
-  const mergedCertifications = Array.from(
-    new Set([...(form.certifications || []), ...marketingClaims])
-  );
-  const resolvedControls = resolvePostFiltrationQualityControls(
-    options.genealogy,
+export function buildLabelEtiquettePayload(options: BuildLabelPreviewPayloadOptions): Record<string, unknown> {
+  const {
+    form,
     currentLabel,
-    options.postFiltrationQualityControls
-  );
+    certifications,
+    brandName,
+    brandLogoData,
+    brandLogoContentType,
+    resolveQualityLabel,
+    resolveVarietyLabel,
+    resolveClaimLabel
+  } = options;
+
+  const selectedCerts = certifications.filter((cert) => (form.certifications || []).includes(cert.name));
+  const claimTypes = form.claimTypes || [];
+  const marketingClaims = claimTypes.length ? claimTypes.map((claim) => resolveClaimLabel(claim)) : currentLabel?.marketingClaims || [];
+  const mergedCertifications = Array.from(new Set([...(form.certifications || []), ...marketingClaims]));
+  const resolvedControls = resolvePostFiltrationQualityControls(options.genealogy, currentLabel, options.postFiltrationQualityControls);
   const qcBundle = buildQcBundle(options);
   const previewLang = resolvePreviewLanguage(options);
 
@@ -335,16 +291,16 @@ export function labelDtoToFormValues(label: LabelContentDto): LabelFormPreviewVa
   };
 }
 
-export interface BuildLabelPreviewFromDtoOptions
-  extends Omit<BuildLabelPreviewPayloadOptions, 'form' | 'currentLabel'> {
+export interface BuildLabelPreviewFromDtoOptions extends Omit<BuildLabelPreviewPayloadOptions, 'form' | 'currentLabel'> {
   label: LabelContentDto;
   languageDisplay?: string;
   categoryDisplay?: string;
 }
 
-export function buildLabelPreviewFromDto(
-  options: BuildLabelPreviewFromDtoOptions
-): { viewModel: LabelPreviewViewModel; payload: Record<string, unknown> } {
+export function buildLabelPreviewFromDto(options: BuildLabelPreviewFromDtoOptions): {
+  viewModel: LabelPreviewViewModel;
+  payload: Record<string, unknown>;
+} {
   const form = labelDtoToFormValues(options.label);
   const baseOptions = {
     ...options,

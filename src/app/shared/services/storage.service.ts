@@ -40,8 +40,6 @@ export class StorageUnitDtoService {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/delete/${id}`);
   }
 
-
-
   assignSupplier(dto: ChangeSupplierDto): Observable<ApiResponse<void>> {
     const url = `${this.baseUrl}/${dto.storageId}/assign-supplier`;
     let params = new HttpParams();

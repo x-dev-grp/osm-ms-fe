@@ -11,7 +11,7 @@ const routes: Routes = [
         path: '',
         redirectTo: '/components/input/button',
         pathMatch: 'full'
-      },
+      }
       /*{
         path: 'input',
         loadChildren: () => import('../../pages/components/input-component/input-component.module').then((m) => m.InputComponentModule)

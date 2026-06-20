@@ -1,11 +1,9 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
 import { ArticleService } from '../../../stock/services/article.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 type BomGapRow = {
   materialName: string;
@@ -122,15 +120,15 @@ export class RapportBomComponent implements OnInit {
       dataLabels: { enabled: true }
     };
 
-    const sortedData = [...this.data]
-      .sort((a, b) => Math.abs(b.gapPercentage) - Math.abs(a.gapPercentage))
-      .slice(0, 10);
+    const sortedData = [...this.data].sort((a, b) => Math.abs(b.gapPercentage) - Math.abs(a.gapPercentage)).slice(0, 10);
 
     this.topGapsChartOptions = {
-      series: [{
-        name: 'Ecart (%)',
-        data: sortedData.map((item) => Number(item.gapPercentage))
-      }],
+      series: [
+        {
+          name: 'Ecart (%)',
+          data: sortedData.map((item) => Number(item.gapPercentage))
+        }
+      ],
       chart: { type: 'bar', height: 320, toolbar: { show: false } },
       plotOptions: {
         bar: {
@@ -166,7 +164,9 @@ export class RapportBomComponent implements OnInit {
     this.articleService.getActiveArticles().subscribe({
       next: (articles) => {
         this.articleNamesByPrefix = (articles || []).reduce((acc: Record<string, string>, article: any) => {
-          const id = String(article?.id || '').trim().toLowerCase();
+          const id = String(article?.id || '')
+            .trim()
+            .toLowerCase();
           const name = String(article?.nom || '').trim();
           if (id.length >= 8 && name) {
             acc[id.substring(0, 8)] = name;

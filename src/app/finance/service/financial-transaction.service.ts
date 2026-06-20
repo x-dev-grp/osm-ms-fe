@@ -60,7 +60,6 @@ export class FinancialTransactionService {
    * Delete transaction
    */
 
-
   /**
    * Approve transaction
    */
@@ -75,15 +74,9 @@ export class FinancialTransactionService {
     return this.http.post<ApiSingleResponse<FinancialTransaction>>(`${this.baseUrl}/${id}/reject`, { reason });
   }
 
-
-  getTransactionsByBankId(
-    bankId: string,
-  ): Observable<ApiResponse<FinancialTransaction>> {
-
+  getTransactionsByBankId(bankId: string): Observable<ApiResponse<FinancialTransaction>> {
     // Example endpoint: /api/finance/transactions/bank/{bankId}?page=&size=
-    return this.http.get<ApiResponse<FinancialTransaction>>(
-      `${this.baseUrl}/bank/${bankId}`,
-     );
+    return this.http.get<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/bank/${bankId}`);
   }
 
   getTransactionsBySupplier(supplierId: string): Observable<ApiResponse<FinancialTransaction>> {
@@ -100,5 +93,4 @@ export class FinancialTransactionService {
       responseType: 'blob'
     });
   }
-
 }

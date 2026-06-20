@@ -80,18 +80,12 @@ function filterMenuItem(item: Navigation, permissionSet: Set<string>): Navigatio
  * Module groups are hidden when the user has no permission in that module
  * or when all nested items are filtered out.
  */
-export function filterMenuByPermissions(
-  menuItems: Navigation[],
-  userPermissions: unknown,
-  isAdmin = false
-): Navigation[] {
+export function filterMenuByPermissions(menuItems: Navigation[], userPermissions: unknown, isAdmin = false): Navigation[] {
   if (isAdmin) {
     return menuItems;
   }
 
   const permissionSet = normalizePermissions(userPermissions);
 
-  return menuItems
-    .map((item) => filterMenuItem(item, permissionSet))
-    .filter((item): item is Navigation => item !== null);
+  return menuItems.map((item) => filterMenuItem(item, permissionSet)).filter((item): item is Navigation => item !== null);
 }

@@ -32,12 +32,27 @@ export interface OilSaleDeliverDialogData {
     TranslateModule
   ],
   templateUrl: './oil-sale-deliver-dialog.component.html',
-  styles: [`
-    .dialog-hint { margin: 0 0 16px; color: #666; font-size: 0.9rem; }
-    .deliver-form { display: flex; flex-direction: column; gap: 8px; min-width: 320px; }
-    .full-width { width: 100%; }
-    .address-toggle { margin-bottom: 8px; }
-  `]
+  styles: [
+    `
+      .dialog-hint {
+        margin: 0 0 16px;
+        color: #666;
+        font-size: 0.9rem;
+      }
+      .deliver-form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 320px;
+      }
+      .full-width {
+        width: 100%;
+      }
+      .address-toggle {
+        margin-bottom: 8px;
+      }
+    `
+  ]
 })
 export class OilSaleDeliverDialogComponent implements OnInit {
   private readonly dialogRef = inject(MatDialogRef<OilSaleDeliverDialogComponent, OilSaleDeliveryRequest | undefined>);
@@ -70,9 +85,7 @@ export class OilSaleDeliverDialogComponent implements OnInit {
     }
 
     const value = this.form.getRawValue();
-    const address = value.useClientAddress
-      ? this.clientAddress
-      : value.deliveryAddress?.trim();
+    const address = value.useClientAddress ? this.clientAddress : value.deliveryAddress?.trim();
 
     if (!address) {
       this.form.get('deliveryAddress')?.setErrors({ required: true });

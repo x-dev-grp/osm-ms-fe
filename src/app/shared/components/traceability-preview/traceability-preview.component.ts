@@ -1,17 +1,17 @@
-import { Component, Input, OnChanges, SimpleChanges, signal } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { Component, Input, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { ProductionTraceabilityService } from '../../services/production-traceability.service';
 import { ProductionGenealogy } from '../../models/production-genealogy.model';
-import { oilReceptionsFromGenealogy, OilReceptionDisplay } from '../../utils/traceability-display.util';
+import { OilReceptionDisplay, oilReceptionsFromGenealogy } from '../../utils/traceability-display.util';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-traceability-preview',
   standalone: true,
-  imports: [TranslateModule, CommonModule, DatePipe, MatIconModule, MatProgressSpinnerModule],
+  imports: [TranslateModule, CommonModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './traceability-preview.component.html',
   styleUrls: ['./traceability-preview.component.scss']
 })

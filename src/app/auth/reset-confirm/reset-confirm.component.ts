@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
@@ -9,14 +8,14 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatCard } from '@angular/material/card';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { TranslatePipe, TranslateModule } from '@ngx-translate/core';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-reset-confirm',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatError,
@@ -89,7 +88,8 @@ export class ResetConfirmComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         // Backend uses 400 for invalid/expired code with plain text body
-        this.errorMessage = typeof err?.error === this.i18n.instant('AUTO.STRING') ? err.error : this.i18n.instant('AUTO.INVALID_OR_EXPIRED_CODE');
+        this.errorMessage =
+          typeof err?.error === this.i18n.instant('AUTO.STRING') ? err.error : this.i18n.instant('AUTO.INVALID_OR_EXPIRED_CODE');
       }
     });
   }
@@ -115,7 +115,8 @@ export class ResetConfirmComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        this.errorMessage = typeof err?.error === this.i18n.instant('AUTO.STRING') ? err.error : this.i18n.instant('AUTO.COULD_NOT_UPDATE_PASSWORD');
+        this.errorMessage =
+          typeof err?.error === this.i18n.instant('AUTO.STRING') ? err.error : this.i18n.instant('AUTO.COULD_NOT_UPDATE_PASSWORD');
       }
     });
   }

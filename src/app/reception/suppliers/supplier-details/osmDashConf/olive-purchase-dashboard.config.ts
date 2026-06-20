@@ -24,7 +24,7 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
       color: 'secondary',
       icon: 'file_copy',
       disabled: {
-         value: false
+        value: false
       }
     }
   ],
@@ -53,7 +53,7 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
                   inValues: ['PROD_READY', 'COMPLETED']
                 }
               }
-            },
+            }
           ]
         }
       ],
@@ -106,7 +106,7 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       valueAttributeType: AttributeType.enum,
       options: [
-        { label: 'Huile', value: 'OIL' , labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL'},
+        { label: 'Huile', value: 'OIL', labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL' },
         {
           label: 'Olive',
           labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE',
@@ -126,14 +126,15 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
-      sortable: true,      defaultFilter: true,
+      sortable: true,
+      defaultFilter: true,
 
       dataTable: false,
       filterable: true
     },
     {
       name: 'price',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,
@@ -146,7 +147,7 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
     {
       name: 'unpaidAmount',
       label: 'Montant umpaié',
-      calculateTotal:true,
+      calculateTotal: true,
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -157,7 +158,7 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'paidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant partiallment',
       labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
       attributeType: AttributeType.number,
@@ -209,7 +210,7 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
 
     {
       name: 'oilQuantity',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Qté huile (KG)',
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
       attributeType: AttributeType.number,
@@ -235,7 +236,7 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
         { label: 'OC', value: 'OC', labelTranslatePath: 'OC' }
       ]
     },
-     {
+    {
       name: 'paid',
       label: 'Payé',
       labelTranslatePath: 'Payé',

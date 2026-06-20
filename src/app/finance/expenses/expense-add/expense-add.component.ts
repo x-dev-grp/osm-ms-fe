@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,7 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './expense-add.component.html',
   styleUrls: ['./expense-add.component.scss'],
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -65,10 +66,10 @@ export class ExpenseAddComponent implements OnInit {
     this.checkEditMode();
     this.filteredCategories$ = this.categoryFilterCtrl.valueChanges.pipe(
       startWith(''),
-      map(value => {
+      map((value) => {
         const v = (value ?? '').toLowerCase().trim();
-        return this.categoryOptions.filter(c =>
-          c.toLowerCase().includes(v) // match by enum code
+        return this.categoryOptions.filter(
+          (c) => c.toLowerCase().includes(v) // match by enum code
         );
       })
     );
@@ -113,7 +114,7 @@ export class ExpenseAddComponent implements OnInit {
   }
 
   private checkEditMode(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const id = params['id'];
       if (id) {
         this.expenseId = id;
@@ -166,9 +167,7 @@ export class ExpenseAddComponent implements OnInit {
       id: this.expenseId
     };
 
-    const request$ = this.editing
-      ? this.expenseService.updateExpense(expense)
-      : this.expenseService.createExpense(expense);
+    const request$ = this.editing ? this.expenseService.updateExpense(expense) : this.expenseService.createExpense(expense);
 
     this.loading = true;
     request$.subscribe({

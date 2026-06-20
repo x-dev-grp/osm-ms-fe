@@ -41,23 +41,15 @@ export class ContractService {
     return this.http.get<ApiResponse<Contract[]>>(`${this.baseUrl}/employee/${employeeId}`);
   }
 
-// Récupérer tous les contrats
+  // Récupérer tous les contrats
   getAllContracts(): Observable<ApiResponse<Contract[]>> {
     return this.http.get<ApiResponse<Contract[]>>(`${this.baseUrl}/fetchAll`);
   }
   updateEmployeeContract(employeeId: string, contractId: string, contract: Contract): Observable<ApiResponse<Contract>> {
-    return this.http.put<ApiResponse<Contract>>(
-      `${this.baseUrl}/employee/${employeeId}/${contractId}`,
-      contract
-    );
+    return this.http.put<ApiResponse<Contract>>(`${this.baseUrl}/employee/${employeeId}/${contractId}`, contract);
   }
   //suprimer un contract d un employee
   deleteEmployeeContract(employeeId: string, contractId: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/employee/${employeeId}/${contractId}`);
   }
-
-
-
-
-
 }

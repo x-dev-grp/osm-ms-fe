@@ -1,31 +1,26 @@
-import { inject } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../shared/shared.module';
-import { ConfigurationComponent } from '../theme/layouts/configuration/configuration.component';
 import { StorageUnitDto } from '../shared/models/StorageUnitDto';
 import { BaseType } from '../shared/models/base-type';
 import { StorageUnitDtoService } from '../shared/services/storage.service';
 import { GenericTypeService } from '../shared/services/generic-type.service';
 import { TypeCategory } from '../shared/models/type-category.enum';
-import { AttributeType, DashboardConfig, FieldType } from '../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../shared/modules/osm-dashboard/models/dashboard-config';
 import { OsmDashboard } from '../shared/modules/osm-dashboard/osm-dashboard';
-import { SearchOperation } from '../shared/models/advanced-search/searchOperation';
 import { Router } from '@angular/router';
 import { UnifiedDelivery } from '../shared/models/UnifiedDelivery';
 import { dashboardConfig } from './storage_dash_config';
-import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions/oil-transactions-dashboard.config';
 import { ToastService } from '../shared/services/toast.service';
 import { AssignSupplierComponent } from './assign-supplier/assign-supplier.component';
 
@@ -63,7 +58,7 @@ export class StorageUnitsComponent implements OnInit {
     private oilTypeService: GenericTypeService,
     private toastService: ToastService,
     private dialog: MatDialog,
-  private router: Router
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -103,8 +98,8 @@ export class StorageUnitsComponent implements OnInit {
       }
     });
   }
-  e: { row: UnifiedDelivery; action: string }
-  handleAction(event: { row: StorageUnitDto; action: string } ): void {
+  e: { row: UnifiedDelivery; action: string };
+  handleAction(event: { row: StorageUnitDto; action: string }): void {
     switch (event.action) {
       case 'READ':
         this.router.navigate(['/storage', event.row.id, 'view']);
@@ -150,12 +145,12 @@ export class StorageUnitsComponent implements OnInit {
       data: { storageUnit: unit }
     });
 
-    ref.afterClosed().subscribe(result => {
+    ref.afterClosed().subscribe((result) => {
       // assume the dialog returns true if assignment was made
       if (result === true) {
         this.toastService.success('Supplier assigned successfully');
         this.dashboard.refrechData();
-       }
+      }
     });
   }
 }

@@ -1,35 +1,37 @@
 import {
   AfterViewInit,
   Component,
-  DestroyRef, EventEmitter,
-  inject, Input,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
   input,
   OnChanges,
-  OnInit, Output,
+  OnInit,
+  Output,
   output,
   SimpleChanges
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {ReactiveFormsModule} from '@angular/forms';
-import {MatSortModule} from '@angular/material/sort';
-import {SharedModule} from '../../shared.module';
-import {DynamicInput} from '../osm-dashboard/components/dynamic-input/dynamic-input.component';
-import {OptionsScrollDirective} from '../../directives/options-scroll.directive';
-import {SearchOperation} from '../../models/advanced-search/searchOperation';
-import {SearchData} from '../../models/advanced-search/searchData';
-import {SearchResponse} from '../../models/advanced-search/searchResponse';
-import {catchError, debounceTime, EMPTY, filter, Observable, switchMap, tap} from 'rxjs';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {AdvancedSearchService} from '../../services/advanced-serach.service';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
+import { SharedModule } from '../../shared.module';
+import { OptionsScrollDirective } from '../../directives/options-scroll.directive';
+import { SearchOperation } from '../../models/advanced-search/searchOperation';
+import { SearchData } from '../../models/advanced-search/searchData';
+import { SearchResponse } from '../../models/advanced-search/searchResponse';
+import { catchError, debounceTime, EMPTY, filter, Observable, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AdvancedSearchService } from '../../services/advanced-serach.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'base-type',
@@ -46,7 +48,6 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
     ReactiveFormsModule,
     MatSortModule,
     SharedModule,
-    DynamicInput,
     OptionsScrollDirective,
     TranslateModule
   ],
@@ -55,36 +56,37 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
   standalone: true
 })
 export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
- @Output() addAction = new EventEmitter();
+  @Output() addAction = new EventEmitter();
   @Input() showAddButton?: boolean;
-  type=input.required<string>();
-  formControl=input.required<any> ();
-  selected=output<any>();
+  type = input.required<string>();
+  formControl = input.required<any>();
+  selected = output<any>();
   options = input<any[]>([]); // Nouvelle input pour recevoir les options depuis le parent
   readonly destroyRef = inject(DestroyRef);
   _searchService = inject(AdvancedSearchService);
-  translate=inject(TranslateService);
+  translate = inject(TranslateService);
   autoCompleteOptions: SearchResponse;
-  searchData:SearchData= {
+  searchData: SearchData = {
     page: 0,
     size: 10,
     sort: 'createdDate',
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      search:{isDeleted:{
-          equalValue:false
-        },
+      search: {
+        isDeleted: {
+          equalValue: false
+        }
       },
-      searchs:[]
+      searchs: []
     }
-  }
+  };
   ngAfterViewInit(): void {
     this.setupAutocompleteListener();
   }
   setupAutocompleteListener(): void {
-    this.formControl().valueChanges
-      .pipe(
+    this.formControl()
+      .valueChanges.pipe(
         takeUntilDestroyed(this.destroyRef),
         debounceTime(1000),
         filter((value: any) => typeof value === 'string'),
@@ -95,12 +97,13 @@ export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
             ...this.searchData,
             searchData: {
               ...this.searchData.searchData,
-              search:{
+              search: {
                 ...this.searchData.searchData?.search,
-                isDeleted:{
-                  equalValue:false
-                },name:{
-                  likeValue:value
+                isDeleted: {
+                  equalValue: false
+                },
+                name: {
+                  likeValue: value
                 }
               }
             }
@@ -111,27 +114,27 @@ export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
       .subscribe();
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes["type"] && changes["type"]["currentValue"]){
-      this.searchData={
+    if (changes['type'] && changes['type']['currentValue']) {
+      this.searchData = {
         ...this.searchData,
-        searchData:{
+        searchData: {
           ...this.searchData.searchData,
-          search:{
+          search: {
             ...this.searchData.searchData?.search,
-            isDeleted:{
-              equalValue:false
-            }, type:{
-              equalValue:this.type()
+            isDeleted: {
+              equalValue: false
+            },
+            type: {
+              equalValue: this.type()
             }
           }
-
         }
-      }
-      this.fetch(false).subscribe()
+      };
+      this.fetch(false).subscribe();
     }
 
     // Mise à jour des options si elles sont fournies par le parent
-    if (changes["options"] && this.options().length > 0) {
+    if (changes['options'] && this.options().length > 0) {
       this.updateOptionsFromParent();
     }
   }
@@ -173,7 +176,7 @@ export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   fetch(scroll: boolean): Observable<SearchResponse> {
-    const url ="production/types"
+    const url = 'production/types';
     console.log(url);
     if (!url) {
       console.warn('No options URL provided for autocomplete field');
@@ -207,7 +210,7 @@ export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   displayWith = (option: any): string => {
-    return option?.name
+    return option?.name;
   };
   protected readonly event = event;
 

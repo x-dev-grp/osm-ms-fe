@@ -3,10 +3,8 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bon-commande',
-  imports: [TranslateModule, ],
+  imports: [TranslateModule],
   templateUrl: './bon-commande.component.html',
   styleUrl: './bon-commande.component.scss'
 })
-export class BonCommandeComponent {
-
-}
+export class BonCommandeComponent {}

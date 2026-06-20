@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
@@ -53,37 +53,35 @@ export class MaterielSupplierListComponent {
     }
 
     const activating = !supplier.actif;
-    this.confirmationDialog.confirm({
-      title: this.i18n.instant(activating
-        ? 'MATERIEL_SUPPLIER.CONFIRM.ACTIVATE_TITLE'
-        : 'MATERIEL_SUPPLIER.CONFIRM.DEACTIVATE_TITLE'),
-      message: this.i18n.instant(activating
-        ? 'MATERIEL_SUPPLIER.CONFIRM.ACTIVATE_MESSAGE'
-        : 'MATERIEL_SUPPLIER.CONFIRM.DEACTIVATE_MESSAGE', { name: supplier.nom }),
-      type: ConfirmationType.WARNING,
-      confirmText: this.i18n.instant(activating
-        ? 'MATERIEL_SUPPLIER.ACTIONS.ACTIVATE'
-        : 'MATERIEL_SUPPLIER.ACTIONS.DEACTIVATE'),
-      cancelText: this.i18n.instant('ADMIN.CANCEL'),
-      showIcon: true
-    }).pipe(take(1)).subscribe((result) => {
-      if (!result?.confirmed) {
-        return;
-      }
+    this.confirmationDialog
+      .confirm({
+        title: this.i18n.instant(activating ? 'MATERIEL_SUPPLIER.CONFIRM.ACTIVATE_TITLE' : 'MATERIEL_SUPPLIER.CONFIRM.DEACTIVATE_TITLE'),
+        message: this.i18n.instant(
+          activating ? 'MATERIEL_SUPPLIER.CONFIRM.ACTIVATE_MESSAGE' : 'MATERIEL_SUPPLIER.CONFIRM.DEACTIVATE_MESSAGE',
+          { name: supplier.nom }
+        ),
+        type: ConfirmationType.WARNING,
+        confirmText: this.i18n.instant(activating ? 'MATERIEL_SUPPLIER.ACTIONS.ACTIVATE' : 'MATERIEL_SUPPLIER.ACTIONS.DEACTIVATE'),
+        cancelText: this.i18n.instant('ADMIN.CANCEL'),
+        showIcon: true
+      })
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (!result?.confirmed) {
+          return;
+        }
 
-      const request = activating
-        ? this.materielSupplierService.activate(supplier.id!)
-        : this.materielSupplierService.deactivate(supplier.id!);
+        const request = activating
+          ? this.materielSupplierService.activate(supplier.id!)
+          : this.materielSupplierService.deactivate(supplier.id!);
 
-      request.subscribe({
-        next: () => {
-          this.toastService.success(activating
-            ? 'MATERIEL_SUPPLIER.MESSAGES.ACTIVATED'
-            : 'MATERIEL_SUPPLIER.MESSAGES.DEACTIVATED');
-          this.dashboard?.refrechData();
-        },
-        error: () => this.toastService.error('MATERIEL_SUPPLIER.ERRORS.STATUS_UPDATE_FAILED')
+        request.subscribe({
+          next: () => {
+            this.toastService.success(activating ? 'MATERIEL_SUPPLIER.MESSAGES.ACTIVATED' : 'MATERIEL_SUPPLIER.MESSAGES.DEACTIVATED');
+            this.dashboard?.refrechData();
+          },
+          error: () => this.toastService.error('MATERIEL_SUPPLIER.ERRORS.STATUS_UPDATE_FAILED')
+        });
       });
-    });
   }
 }

@@ -3,16 +3,11 @@ import { CommonModule, DatePipe, KeyValuePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
 import { TraceabilityEvent } from '../../models/traceability-event.model';
-import {
-  eventChainFor,
-  genealogyAnchor,
-  genealogyFor,
-  labelsFor
-} from '../../utils/traceability-snapshot.util';
+import { eventChainFor, genealogyAnchor, genealogyFor, labelsFor } from '../../utils/traceability-snapshot.util';
 import {
   countOilReceptionEvents,
-  intakeStepTypeLabel,
   intakeStepsForLegacyTimeline,
+  intakeStepTypeLabel,
   oilReceptionOrdinal,
   oilReceptionsFromGenealogy
 } from '../../utils/traceability-display.util';

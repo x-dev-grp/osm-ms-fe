@@ -7,9 +7,8 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { SharedModule } from '../../shared/shared.module';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import {MAINTENANCE_DASHBOARD_CONFIG} from "../maintenance-dashboard.config";
-import {MaintenanceWorkOrder} from "../models/maintenance-work-order.model";
-
+import { MAINTENANCE_DASHBOARD_CONFIG } from '../maintenance-dashboard.config';
+import { MaintenanceWorkOrder } from '../models/maintenance-work-order.model';
 
 @Component({
   selector: 'app-maintenance-list',

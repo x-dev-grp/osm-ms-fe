@@ -4,7 +4,7 @@ import { AuthGuardChild } from '../interceptors/guards/auth.guard';
 // CHANGE: permissions - import permission guards
 import { allPermissionGuard } from 'src/app/interceptors/guards/permission.guard';
 // CHANGE: permissions - use enums
-import { OSMModule, HREntity, Action, permissionKey } from 'src/app/theme/types/permissions';
+import { Action, HREntity, OSMModule, permissionKey } from 'src/app/theme/types/permissions';
 
 const routes: Routes = [
   {
@@ -36,8 +36,7 @@ const routes: Routes = [
       },
       {
         path: 'poste',
-        loadComponent: () => import('./components/poste/poste.component').then((m) => m.PosteComponent
-        ),
+        loadComponent: () => import('./components/poste/poste.component').then((m) => m.PosteComponent),
         // CHANGE: permissions - require HR:POSTE:READ
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HR, HREntity.POSTE, Action.READ)])]
       },
@@ -56,7 +55,8 @@ const routes: Routes = [
       },
       {
         path: 'department/new',
-        loadComponent: () => import('./components/department/department-add/department-add.component').then((m) => m.DepartmentAddComponent),
+        loadComponent: () =>
+          import('./components/department/department-add/department-add.component').then((m) => m.DepartmentAddComponent),
         // CHANGE: permissions - require HR:DEPARTMENT:CREATE
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HR, HREntity.DEPARTMENT, Action.CREATE)])]
       },
@@ -74,13 +74,16 @@ const routes: Routes = [
       },
       {
         path: 'department/:id',
-        loadComponent: () => import('./components/department/department-add/department-add.component').then((m) => m.DepartmentAddComponent),
+        loadComponent: () =>
+          import('./components/department/department-add/department-add.component').then((m) => m.DepartmentAddComponent),
         // CHANGE: permissions - require HR:DEPARTMENT:UPDATE
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HR, HREntity.DEPARTMENT, Action.UPDATE)])]
       },
 
-      { path: 'department/fetch/:id',
-        loadComponent: () => import('./components/department/department-detail/department-detail.component').then((m) => m.DepartmentDetailComponent),
+      {
+        path: 'department/fetch/:id',
+        loadComponent: () =>
+          import('./components/department/department-detail/department-detail.component').then((m) => m.DepartmentDetailComponent),
         // CHANGE: permissions - require HR:DEPARTMENT:READ
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HR, HREntity.DEPARTMENT, Action.READ)])]
       },
@@ -98,7 +101,8 @@ const routes: Routes = [
       },
       {
         path: 'employee/fetch/:id',
-        loadComponent: () => import('./components/employee/employee-detail/employee-detail.component').then((m) => m.EmployeeDetailComponent),
+        loadComponent: () =>
+          import('./components/employee/employee-detail/employee-detail.component').then((m) => m.EmployeeDetailComponent),
         // CHANGE: permissions - require HR:EMPLOYEE:READ
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HR, HREntity.EMPLOYEE, Action.READ)])]
       }

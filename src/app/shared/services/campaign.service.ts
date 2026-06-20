@@ -148,9 +148,10 @@ export class CampaignService {
       this.defaultConfig.endDay,
       this.defaultConfig.endMonth
     );
-    const endYear = month < (startAt.getMonth() + 1) || (month === startAt.getMonth() + 1 && day < startAt.getDate())
-      ? startAt.getFullYear() + 1
-      : startAt.getFullYear();
+    const endYear =
+      month < startAt.getMonth() + 1 || (month === startAt.getMonth() + 1 && day < startAt.getDate())
+        ? startAt.getFullYear() + 1
+        : startAt.getFullYear();
     return new Date(endYear, month - 1, day, 23, 59, 0, 0);
   }
 

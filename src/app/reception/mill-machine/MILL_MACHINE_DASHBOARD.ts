@@ -1,5 +1,5 @@
-import {AttributeType, DashboardConfig, FieldType} from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import {SearchOperation} from '../../shared/models/advanced-search/searchOperation';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
   icon: 'precision_manufacturing',
@@ -18,9 +18,10 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
       operation: SearchOperation.AND,
       searchs: [],
       search: {
-        isDeleted:{
-          equalValue:false
-        },}
+        isDeleted: {
+          equalValue: false
+        }
+      }
     }
   },
   fields: [

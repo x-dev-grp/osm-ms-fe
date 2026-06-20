@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,17 +19,13 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
 import { DocumentGenerationService } from '../../../../shared/services/document-generation.service';
 import { TraceabilityTimelineComponent } from '../../../../shared/components/traceability-timeline/traceability-timeline.component';
-import { TranslateModule } from '@ngx-translate/core';
-import {
-  countGenealogyLots,
-  countOfDetails,
-  countPackagedLabels
-} from '../../../../shared/utils/traceability-snapshot.util';
+import { countGenealogyLots, countOfDetails, countPackagedLabels } from '../../../../shared/utils/traceability-snapshot.util';
 
 @Component({
   selector: 'app-projet-expedition',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     DatePipe,
@@ -133,12 +128,12 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   get selectedCreateLineCount(): number {
-    return this.createLineControls.controls.filter(control => control.value.selected).length;
+    return this.createLineControls.controls.filter((control) => control.value.selected).length;
   }
 
   get selectedCreateLineQuantity(): number {
     return this.createLineControls.controls
-      .filter(control => control.value.selected)
+      .filter((control) => control.value.selected)
       .reduce((sum, control) => sum + Number(control.value.quantity || 0), 0);
   }
 
@@ -182,12 +177,7 @@ export class ProjetExpeditionComponent implements OnInit {
     if (!exp) {
       return false;
     }
-    return [
-      ExpeditionStatus.VALIDATED,
-      ExpeditionStatus.SHIPPED,
-      ExpeditionStatus.DELIVERED,
-      ExpeditionStatus.CLOSED
-    ].includes(exp.status);
+    return [ExpeditionStatus.VALIDATED, ExpeditionStatus.SHIPPED, ExpeditionStatus.DELIVERED, ExpeditionStatus.CLOSED].includes(exp.status);
   }
 
   displayTraceabilityData(): Record<string, unknown> | null {
@@ -209,16 +199,8 @@ export class ProjetExpeditionComponent implements OnInit {
 
     const expeditionMeta = (snapshot['expedition'] as Record<string, unknown>) || {};
     const items: Array<{ label: string; value: string }> = [];
-    this.pushTraceabilityItem(
-      items,
-      'Projet',
-      String(expeditionMeta['projectCode'] || snapshot['projectCode'] || exp.projetCode || '')
-    );
-    this.pushTraceabilityItem(
-      items,
-      'Expedition',
-      String(expeditionMeta['expeditionNumber'] || exp.expeditionNumber || '')
-    );
+    this.pushTraceabilityItem(items, 'Projet', String(expeditionMeta['projectCode'] || snapshot['projectCode'] || exp.projetCode || ''));
+    this.pushTraceabilityItem(items, 'Expedition', String(expeditionMeta['expeditionNumber'] || exp.expeditionNumber || ''));
     this.pushTraceabilityItem(
       items,
       'Client',
@@ -323,9 +305,7 @@ export class ProjetExpeditionComponent implements OnInit {
       next: (items) => {
         this.expeditions = items;
         this.applyProjectDeliveryCompletion();
-        this.selectedExpedition = this.queryExpeditionId
-          ? items.find(item => item.id === this.queryExpeditionId) ?? null
-          : null;
+        this.selectedExpedition = this.queryExpeditionId ? (items.find((item) => item.id === this.queryExpeditionId) ?? null) : null;
         if (this.selectedExpedition) {
           this.patchEditForm(this.selectedExpedition);
           if (this.openTraceabilityOnLoad) {
@@ -378,7 +358,7 @@ export class ProjetExpeditionComponent implements OnInit {
 
     this.expeditionService.delete(exp.id).subscribe({
       next: () => {
-        this.expeditions = this.expeditions.filter(e => e.id !== exp.id);
+        this.expeditions = this.expeditions.filter((e) => e.id !== exp.id);
         if (this.selectedExpedition?.id === exp.id) {
           this.deselectExpedition();
         }
@@ -409,7 +389,7 @@ export class ProjetExpeditionComponent implements OnInit {
 
   onOfSelected(event: Event): void {
     const ofId = (event.target as HTMLSelectElement).value;
-    const selectedOf = this.projectOfs.find(o => o.id === ofId);
+    const selectedOf = this.projectOfs.find((o) => o.id === ofId);
     if (selectedOf) {
       this.lineForm.patchValue({
         ofId: selectedOf.id,
@@ -422,10 +402,9 @@ export class ProjetExpeditionComponent implements OnInit {
     }
   }
 
-
   getSelectedLineOf(): OrdreFabrication | undefined {
     const selectedOfId = this.lineForm.value.ofId;
-    return this.projectOfs.find(of => of.id === selectedOfId);
+    return this.projectOfs.find((of) => of.id === selectedOfId);
   }
 
   createExpedition(): void {
@@ -439,15 +418,15 @@ export class ProjetExpeditionComponent implements OnInit {
     }
 
     const selectedLines = this.createLineControls.controls
-      .filter(control => control.value.selected)
-      .map(control => ({
+      .filter((control) => control.value.selected)
+      .map((control) => ({
         ofId: this.trimToUndefined(control.value.ofId),
         quantity: Number(control.value.quantity || 0),
         volume: control.value.volume ?? undefined,
         lotNumber: this.trimToUndefined(control.value.lotNumber),
         unit: this.trimToUndefined(control.value.unit)?.toUpperCase() ?? this.projectUnit()
       }))
-      .filter(line => line.ofId && line.quantity > 0);
+      .filter((line) => line.ofId && line.quantity > 0);
 
     if (!selectedLines.length) {
       this.toast.warning('AUTO.SELECTIONNEZ_AU_MOINS_UN_OF_A_EXPEDIER');
@@ -566,7 +545,7 @@ export class ProjetExpeditionComponent implements OnInit {
         },
         error: (err) => {
           console.error('Erreur ajout ligne expedition', err);
-          const msg = err.error?.message || 'Erreur lors de l\'ajout de la ligne';
+          const msg = err.error?.message || "Erreur lors de l'ajout de la ligne";
           this.toast.error(msg);
           this.addingLine = false;
         }
@@ -605,14 +584,14 @@ export class ProjetExpeditionComponent implements OnInit {
       action === 'ready'
         ? this.expeditionService.ready(this.selectedExpedition.id, payload)
         : action === 'validate'
-        ? this.expeditionService.validate(this.selectedExpedition.id, payload)
-        : action === 'ship'
-        ? this.expeditionService.ship(this.selectedExpedition.id, payload)
-        : action === 'deliver'
-        ? this.expeditionService.deliver(this.selectedExpedition.id, payload)
-        : action === 'close'
-        ? this.expeditionService.close(this.selectedExpedition.id, payload)
-        : this.expeditionService.cancel(this.selectedExpedition.id, payload);
+          ? this.expeditionService.validate(this.selectedExpedition.id, payload)
+          : action === 'ship'
+            ? this.expeditionService.ship(this.selectedExpedition.id, payload)
+            : action === 'deliver'
+              ? this.expeditionService.deliver(this.selectedExpedition.id, payload)
+              : action === 'close'
+                ? this.expeditionService.close(this.selectedExpedition.id, payload)
+                : this.expeditionService.cancel(this.selectedExpedition.id, payload);
 
     request.subscribe({
       next: (updated) => {
@@ -684,11 +663,7 @@ export class ProjetExpeditionComponent implements OnInit {
       return status === ExpeditionStatus.SHIPPED || status === ExpeditionStatus.DELIVERED;
     }
     // cancel
-    return (
-      status === ExpeditionStatus.DRAFT ||
-      status === ExpeditionStatus.READY ||
-      status === ExpeditionStatus.VALIDATED
-    );
+    return status === ExpeditionStatus.DRAFT || status === ExpeditionStatus.READY || status === ExpeditionStatus.VALIDATED;
   }
 
   canCreateExpedition(): boolean {
@@ -717,14 +692,22 @@ export class ProjetExpeditionComponent implements OnInit {
       return '-';
     }
     switch (status) {
-      case ExpeditionStatus.DRAFT: return 'Brouillon';
-      case ExpeditionStatus.READY: return 'Pret';
-      case ExpeditionStatus.VALIDATED: return 'Valide';
-      case ExpeditionStatus.SHIPPED: return 'Expedie';
-      case ExpeditionStatus.DELIVERED: return 'Livre';
-      case ExpeditionStatus.CLOSED: return 'Cloture';
-      case ExpeditionStatus.CANCELLED: return 'Annule';
-      default: return status;
+      case ExpeditionStatus.DRAFT:
+        return 'Brouillon';
+      case ExpeditionStatus.READY:
+        return 'Pret';
+      case ExpeditionStatus.VALIDATED:
+        return 'Valide';
+      case ExpeditionStatus.SHIPPED:
+        return 'Expedie';
+      case ExpeditionStatus.DELIVERED:
+        return 'Livre';
+      case ExpeditionStatus.CLOSED:
+        return 'Cloture';
+      case ExpeditionStatus.CANCELLED:
+        return 'Annule';
+      default:
+        return status;
     }
   }
 
@@ -782,18 +765,20 @@ export class ProjetExpeditionComponent implements OnInit {
     this.createLineControls.clear();
 
     let remaining = this.remainingProjectQuantity;
-    ofs.forEach(of => {
+    ofs.forEach((of) => {
       const defaultQty = this.defaultQuantityForOf(of);
       const quantity = Math.max(0, Math.min(defaultQty, remaining));
       remaining = Math.max(0, remaining - quantity);
-      this.createLineControls.push(this.fb.group({
-        selected: [quantity > 0],
-        ofId: [of.id],
-        quantity: [quantity, [Validators.required, Validators.min(0)]],
-        volume: [null as number | null],
-        lotNumber: [this.defaultLotNumberForOf(of)],
-        unit: [this.projectUnit()]
-      }));
+      this.createLineControls.push(
+        this.fb.group({
+          selected: [quantity > 0],
+          ofId: [of.id],
+          quantity: [quantity, [Validators.required, Validators.min(0)]],
+          volume: [null as number | null],
+          lotNumber: [this.defaultLotNumberForOf(of)],
+          unit: [this.projectUnit()]
+        })
+      );
     });
   }
 
@@ -828,7 +813,7 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   private applyDefaultUnitToCreateLines(): void {
-    this.createLineControls.controls.forEach(control => {
+    this.createLineControls.controls.forEach((control) => {
       if (!control.value.unit || control.value.unit === 'UNIT') {
         control.patchValue({ unit: this.projectUnit() });
       }
@@ -862,12 +847,7 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   private defaultLotNumberForOf(of: OrdreFabrication): string {
-    const raw =
-      (of as any).lotNumber ||
-      (of as any).lotVracNumber ||
-      (of as any).lotVracCode ||
-      (of as any).lotVracName ||
-      '';
+    const raw = (of as any).lotNumber || (of as any).lotVracNumber || (of as any).lotVracCode || (of as any).lotVracName || '';
 
     const value = String(raw || '').trim();
     return this.isUuidLike(value) ? '' : value;

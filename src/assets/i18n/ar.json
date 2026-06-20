@@ -107,6 +107,78 @@
     "TITLE": "جميع المستخدمين",
     "VIEW_TITLE": "تفاصيل المستخدم"
   },
+  "SIDEBAR": {
+    "BRAND_HOME": "الذهاب إلى الصفحة الرئيسية",
+    "DEFAULT_COMPANY": "شركتي",
+    "PLATFORM": "منصة OSM"
+  },
+  "CHAT": {
+    "TITLE": "الرسائل",
+    "CENTER_TITLE": "الرسائل",
+    "UNREAD": "غير مقروء",
+    "NEW_MESSAGE": "رسالة جديدة",
+    "BACK_TO_INBOX": "العودة إلى صندوق الوارد",
+    "SEARCH_CONTACTS": "البحث عن زميل",
+    "SEARCH_CONVERSATIONS": "البحث في المحادثات",
+    "NO_CONTACTS": "لا يوجد زملاء متاحون للمراسلة.",
+    "EMPTY_INBOX": "لا توجد محادثات بعد.",
+    "START_CHAT": "بدء محادثة",
+    "NO_MESSAGES_YET": "لا توجد رسائل بعد",
+    "SELECT_PROMPT": "اختر محادثة أو ابدأ رسالة جديدة.",
+    "SAY_HELLO": "أرسل أول رسالة لبدء المحادثة.",
+    "TYPE_MESSAGE": "اكتب رسالة",
+    "SEND": "إرسال",
+    "LOADING": "جارٍ تحميل الرسائل…",
+    "SEND_ERROR": "تعذّر إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+    "VIEW_ALL": "فتح الرسائل"
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "الإشعارات",
+    "CENTER_TITLE": "مركز الإشعارات",
+    "EMPTY": "لا توجد إشعارات بعد.",
+    "MARK_ALL_READ": "تحديد الكل كمقروء",
+    "MARK_READ": "تحديد كمقروء",
+    "VIEW_ALL": "عرض الكل",
+    "FILTER_ALL": "الكل",
+    "FILTER_UNREAD": "غير مقروء",
+    "READ": "مقروء",
+    "UNREAD": "غير مقروء",
+    "DETAILS": "التفاصيل",
+    "SELECT_PROMPT": "اختر إشعاراً لقراءة محتواه الكامل.",
+    "OPEN_ENTITY": "فتح السجل المرتبط",
+    "ACTOR": "بواسطة {{name}}",
+    "PRIORITY_HIGH": "أولوية عالية",
+    "RULES": {
+      "OF_QC_BLOCKED": {
+        "TITLE": "تم حظر أمر الإنتاج",
+        "RECAP": "قام {{actor}} بحظر أمر الإنتاج {{entityLabel}} بعد فشل مراقبة الجودة."
+      },
+      "MAINTENANCEWORKORDER_CREATED": {
+        "TITLE": "تمت جدولة الصيانة",
+        "RECAP": "قام {{actor}} بإنشاء صيانة على {{entityLabel}} ({{maintenanceType}}، {{status}})."
+      },
+      "MAINTENANCEWORKORDER_EXPENSE_RECORDED": {
+        "TITLE": "تم تسجيل مصروف الصيانة",
+        "RECAP": "قام {{actor}} بتسجيل تكلفة صيانة {{totalCost}} د.ت على {{entityLabel}}. الفاتورة: {{invoiceRef}}."
+      },
+      "EXPENSE_CREATED": {
+        "TITLE": "مصروف جديد",
+        "RECAP": "قام {{actor}} بإنشاء مصروف {{entityLabel}} بقيمة {{amount}} د.ت ({{category}})."
+      },
+      "UNIFIEDDELIVERY_CREATED": {
+        "TITLE": "استلام جديد",
+        "RECAP": "قام {{actor}} بتسجيل الاستلام {{entityLabel}} ({{deliveryType}})."
+      },
+      "UNIFIEDDELIVERY_QC_COMPLETED": {
+        "TITLE": "اكتمل مراقبة الجودة",
+        "RECAP": "قام {{actor}} بإكمال مراقبة الجودة للاستلام {{entityLabel}} ({{deliveryType}}، {{status}})."
+      },
+      "UNIFIEDDELIVERY_CRUSHING_COMPLETED": {
+        "TITLE": "اكتمل التكسير",
+        "RECAP": "قام {{actor}} بإكمال التكسير للدفعة {{entityLabel}} (الزيت: {{oilQuantity}} كغ، العائد: {{rendement}}%)."
+      }
+    }
+  },
   "APPLICATION_CONFIG": {
     "CUSTOM_THEME": {
       "BLUE": "الموضوع الأزرق",
@@ -1306,7 +1378,9 @@
   "Invoice": "فاتورة",
   "Kanban": "كانبان",
   "LOGIN": {
+    "ACCOUNT_LOCKED": "حسابك مقفل. يرجى الاتصال بالمسؤول.",
     "FORGOT_PASSWORD": "نسيت كلمة المرور؟",
+    "NO_ACCESS": "لا توجد وحدات متاحة لحسابك. اتصل بالمسؤول إذا كنت بحاجة إلى الوصول.",
     "PASSWORD": "كلمة المرور",
     "PASSWORDCONFIRM": "تأكيد كلمة المرور الجديدة",
     "PASSWORDNEW": "كلمة المرور الجديدة",
@@ -1602,9 +1676,6 @@
     "DASHBOARDS": {
       "TITLE": "لوحات التحكم"
     }
-  },
-  "MESSAGES": {
-    "CONFIRM_RESET": "هل أنت متأكد أنك تريد إعادة ضبط النموذج؟ سيتم فقدان جميع التغييرات غير المحفوظة."
   },
   "MILL_MACHINE": {
     "ACTIONS": {

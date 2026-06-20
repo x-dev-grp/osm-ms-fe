@@ -1,10 +1,10 @@
-import {AttributeType, DashboardConfig, FieldType} from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import {TransactionState, TransactionType} from '../../shared/models/OilTransaction';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { TransactionState, TransactionType } from '../../shared/models/OilTransaction';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'swap_horiz',
-  title: 'Transactions d\'huile',
+  title: "Transactions d'huile",
   titleTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TITLE',
   baseURL: 'production/oil_transaction',
   searchEndpoint: 'production/oil_transaction',
@@ -47,9 +47,17 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { value: TransactionType.RECEPTION_IN, label: 'Réception Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN' },
+        {
+          value: TransactionType.RECEPTION_IN,
+          label: 'Réception Entrée',
+          labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN'
+        },
         { value: TransactionType.EXCHANGE, label: 'Echange', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.EXCHANGE' },
-        { value: TransactionType.TRANSFER_IN, label: 'Transfert Interne', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
+        {
+          value: TransactionType.TRANSFER_IN,
+          label: 'Transfert Interne',
+          labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN'
+        },
         { value: TransactionType.LOAN, label: 'Prêt', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
         { value: TransactionType.OIL_SALE, label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
       ]
@@ -65,7 +73,8 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
-    },{
+    },
+    {
       name: 'storageUnitDestination.name',
       label: 'Unité de destination',
       labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.STORAGE_UNIT_DESTINATION',
@@ -98,14 +107,15 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true,
-      sliderMinValue:0,
-      sliderMaxValue:10000
+      sliderMinValue: 0,
+      sliderMaxValue: 10000
     },
     {
       name: 'unitPrice',
       label: 'Prix unitaire',
-      isCurrency:true,
-      currency:'TND',labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.UNIT_PRICE',
+      isCurrency: true,
+      currency: 'TND',
+      labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.UNIT_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       exportable: true,
@@ -146,8 +156,7 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
           labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.STATUS.COMPLETED'
         }
       ]
-    },
-
+    }
   ],
 
   /* ── Menu actions (no status mapping) ───────────────────────── */

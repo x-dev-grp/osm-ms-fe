@@ -1,5 +1,5 @@
-import { Article } from "./article.model";
-import { EmplacementStock } from "./emplacement-stock.model";
+import { Article } from './article.model';
+import { EmplacementStock } from './emplacement-stock.model';
 
 export interface Stock {
   id?: string;
@@ -11,6 +11,6 @@ export interface Stock {
   emplacement?: EmplacementStock;
   emplacementId?: string;
   lastModifiedDate: string;
-  actif:boolean
+  actif: boolean;
   createdDate?: string;
 }

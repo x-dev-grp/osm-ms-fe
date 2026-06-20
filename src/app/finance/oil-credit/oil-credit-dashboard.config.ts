@@ -1,10 +1,10 @@
-import { DashboardConfig, AttributeType, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { CreditState, UnitType } from '../models/OilCredit';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   icon: 'credit_score',
-  title: 'Gestion des crédits d\'huile',
+  title: "Gestion des crédits d'huile",
   titleTranslatePath: 'OIL_CREDIT.TITLE',
   baseURL: 'finance/oil-credit',
   searchEndpoint: 'finance/oil-credit',
@@ -76,7 +76,7 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.autocomplete
     },
     {
       name: 'supplier',

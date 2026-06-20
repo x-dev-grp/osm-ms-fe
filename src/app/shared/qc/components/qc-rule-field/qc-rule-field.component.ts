@@ -12,15 +12,7 @@ import { evaluateRule, numericStepForRule, stringOptions } from '../../utils/qc-
 @Component({
   selector: 'app-qc-rule-field',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatChipsModule,
-    TranslateModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatChipsModule, TranslateModule],
   templateUrl: './qc-rule-field.component.html',
   styleUrls: ['./qc-rule-field.component.scss']
 })

@@ -1,7 +1,7 @@
 // angular import
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 // project import
@@ -11,7 +11,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { catchError, first, of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../theme/types/role';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
   errorMessage: any;
   private _fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private tokenService = inject(TokenService);
   private translateService = inject(TranslateService);
 
@@ -60,6 +61,15 @@ export class LoginComponent implements OnInit {
       rememberMe: [false]
     });
     this.prefillRememberedUsername();
+    this.applyLogoutReason(this.route.snapshot.queryParamMap.get('error'));
+  }
+
+  private applyLogoutReason(reason: string | null): void {
+    if (reason === 'locked') {
+      this.errorMessage = { message: this.translateService.instant('LOGIN.ACCOUNT_LOCKED') };
+    } else if (reason === 'no-access') {
+      this.errorMessage = { message: this.translateService.instant('LOGIN.NO_ACCESS') };
+    }
   }
 
   private prefillRememberedUsername(): void {

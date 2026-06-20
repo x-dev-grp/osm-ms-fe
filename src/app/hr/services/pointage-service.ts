@@ -2,17 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Pointage } from '../model/pointage.model';
-import {environment} from "../../../environments/environment";
-import {ApiResponse} from "../../shared/models/api-response";
+import { environment } from '../../../environments/environment';
+import { ApiResponse } from '../../shared/models/api-response';
 
 export interface PointageRequest {
-  employeeId: string|undefined;
+  employeeId: string | undefined;
   date: string;
   checkIn?: Date;
   checkOut?: Date;
 }
-
-
 
 @Injectable({
   providedIn: 'root'

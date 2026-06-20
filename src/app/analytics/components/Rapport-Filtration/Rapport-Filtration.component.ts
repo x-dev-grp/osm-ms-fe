@@ -1,10 +1,8 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 type FiltrationRow = {
   operationId: string;
@@ -124,9 +122,7 @@ export class RapportFiltrationComponent implements OnInit {
       dataLabels: { enabled: true }
     };
 
-    const sortedData = [...this.data]
-      .sort((a, b) => this.timeValue(a.operationDate) - this.timeValue(b.operationDate))
-      .slice(-10);
+    const sortedData = [...this.data].sort((a, b) => this.timeValue(a.operationDate) - this.timeValue(b.operationDate)).slice(-10);
 
     this.volumeTrendsChartOptions = {
       series: [

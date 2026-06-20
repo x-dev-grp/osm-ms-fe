@@ -11,11 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { GlobalLot, PlanItemType, PlanningItem } from '../../../shared/models/planningDTOS';
 import { SupplierType } from '../../../shared/models/supplier-type';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
-import {
-  ConfirmationDialogData,
-  ConfirmationDialogResult,
-  ConfirmationType
-} from '../../../shared/services/confirmation-dialog.service';
+import { ConfirmationDialogData, ConfirmationDialogResult, ConfirmationType } from '../../../shared/services/confirmation-dialog.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppParameterService } from '../../../shared/services/AppParameterService';
 import { ToastService } from '../../../shared/services/toast.service';
@@ -98,9 +94,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
   shouldShowTriturationPrice(): boolean {
     const item: any = this.item;
     const rawOpSource =
-      this.itemType === PlanItemType.GLOBAL_LOT
-        ? this.firstChildOpTypeFromGlobal(item) ?? item?.operationType
-        : item?.operationType;
+      this.itemType === PlanItemType.GLOBAL_LOT ? (this.firstChildOpTypeFromGlobal(item) ?? item?.operationType) : item?.operationType;
     const rawOp = rawOpSource?.toString().toUpperCase();
 
     if (!rawOp) {
@@ -275,9 +269,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
       }
       for (const lot of this.childLotsWithRendement) {
         if (lot.oilQuantity == null || lot.oilQuantity < 0) {
-          this.toast.warning(
-            this.translate.instant('RECEPTION.PLANNING.COMPLETION.INVALID_CHILD_OIL', { lotNumber: lot.lotNumber })
-          );
+          this.toast.warning(this.translate.instant('RECEPTION.PLANNING.COMPLETION.INVALID_CHILD_OIL', { lotNumber: lot.lotNumber }));
           return;
         }
       }
@@ -375,7 +367,6 @@ export class CompletionDetailsDialogComponent implements OnInit {
     }
   }
 
-
   // When global rendement or oliveQuantity changes, recalculate oilQuantity for each child lot
   private calculateChildLotsOilQuantityFromGlobalRendement(globalRendement: number): void {
     if (this.itemType !== PlanItemType.GLOBAL_LOT) return;
@@ -384,7 +375,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
     const totalKg = Number(globalLot.totalKg) || 0;
     if (totalKg <= 0) {
       // No weight -> zero everything
-      this.childLotsWithRendement = this.childLotsWithRendement.map(lot => ({
+      this.childLotsWithRendement = this.childLotsWithRendement.map((lot) => ({
         ...lot,
         oilQuantity: 0,
         calculatedRendement: 0
@@ -398,7 +389,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
 
     // First pass: proportional distribution with 2-decimal rounding
     let running = 0;
-    const updated = this.childLotsWithRendement.map(lot => {
+    const updated = this.childLotsWithRendement.map((lot) => {
       const olive = Number(lot.oliveQuantity) || 0;
       const rawOil = olive * (globalRendement / 100);
       const oil = +rawOil.toFixed(2);
@@ -409,15 +400,15 @@ export class CompletionDetailsDialogComponent implements OnInit {
     // Fix rounding drift on the last nonzero lot so sums match exactly
     const drift = +(targetTotal - running).toFixed(2);
     if (drift !== 0) {
-      const idx = [...updated].reverse().findIndex(l => (Number(l.oliveQuantity) || 0) > 0);
+      const idx = [...updated].reverse().findIndex((l) => (Number(l.oliveQuantity) || 0) > 0);
       if (idx !== -1) {
         const k = updated.length - 1 - idx;
-        updated[k].oilQuantity = +(((updated[k].oilQuantity ?? 0) + drift).toFixed(2));
+        updated[k].oilQuantity = +((updated[k].oilQuantity ?? 0) + drift).toFixed(2);
       }
     }
 
     // Compute per-child rendement from oil/olive (more explicit)
-    this.childLotsWithRendement = updated.map(lot => {
+    this.childLotsWithRendement = updated.map((lot) => {
       const olive = Number(lot.oliveQuantity) || 0;
       const oil = Number(lot.oilQuantity) || 0;
       const rend = olive > 0 ? (oil / olive) * 100 : 0;
@@ -426,7 +417,6 @@ export class CompletionDetailsDialogComponent implements OnInit {
 
     this.calculateChildLotsPrice();
   }
-
 
   private initializeChildLots(): void {
     if (this.itemType === PlanItemType.GLOBAL_LOT) {
@@ -490,5 +480,4 @@ export class CompletionDetailsDialogComponent implements OnInit {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     return `${hours}:${minutes}`;
   }
-
 }

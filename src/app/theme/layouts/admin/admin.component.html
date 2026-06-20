@@ -11,22 +11,24 @@
   >
     <nav>
       <div class="navbar-wrapper">
-        <div class="m-header">
-          <a href="/welcome" class="flex align-item-center">
-            <img
-              [src]="logoPreview || 'assets/OSM.svg'"
-              width="66"
-              height="66"
-              alt="OSM Logo"
-               style="background: transparent;"
-            />
-            <a>
-              v{{ currentApplicationVersion }}
-            </a>
+        <div class="m-header sidebar-brand">
+          <a routerLink="/welcome" class="sidebar-brand__link" [attr.aria-label]="'SIDEBAR.BRAND_HOME' | translate">
+            <div class="sidebar-brand__logo-wrap">
+              <img
+                class="sidebar-brand__logo"
+                [src]="logoPreview || 'assets/OSM.svg'"
+                alt="Company logo"
+              />
+            </div>
+            <div class="sidebar-brand__meta">
+              <span class="sidebar-brand__company">{{ companyName || ('SIDEBAR.DEFAULT_COMPANY' | translate) }}</span>
+              <span class="sidebar-brand__platform">{{ 'SIDEBAR.PLATFORM' | translate }}</span>
+              <span class="sidebar-brand__version">v{{ currentApplicationVersion }}</span>
+            </div>
           </a>
         </div>
         @if (currentLayout === 'vertical' || currentLayout === 'compact') {
-          <app-vertical-menu [menus]="menus" />
+          <app-vertical-menu [menus]="menus" [companyName]="companyName" />
         }
       </div>
     </nav>

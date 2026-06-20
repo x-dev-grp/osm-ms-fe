@@ -26,7 +26,6 @@ export class PosteComponent implements OnInit {
       case 'UPDATE':
         this.router.navigate([`hr/poste/${event.row.id}`]);
         break;
-
     }
   }
 }

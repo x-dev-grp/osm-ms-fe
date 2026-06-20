@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -64,13 +64,18 @@ export class OfYieldReportComponent implements OnInit {
   }
 
   getBadgeClass(statut: string): string {
-    switch(statut) {
-      case 'TERMINE': return 'bg-success';
-      case 'EN_COURS': return 'bg-primary';
-      case 'PLANIFIE': return 'bg-warning text-dark';
+    switch (statut) {
+      case 'TERMINE':
+        return 'bg-success';
+      case 'EN_COURS':
+        return 'bg-primary';
+      case 'PLANIFIE':
+        return 'bg-warning text-dark';
       case 'CLOTURE':
-      case 'ANNULE': return 'bg-danger';
-      default: return 'bg-secondary';
+      case 'ANNULE':
+        return 'bg-danger';
+      default:
+        return 'bg-secondary';
     }
   }
 
@@ -96,35 +101,35 @@ export class OfYieldReportComponent implements OnInit {
       series: series,
       chart: { type: 'donut', height: 320 },
       labels: labels,
-      colors: labels.map(l => this.getColorForStatus(l)),
+      colors: labels.map((l) => this.getColorForStatus(l)),
       legend: { position: 'bottom' },
       dataLabels: { enabled: true }
     };
 
     // Top 10 OFs by Yield
-    const sortedData = [...this.data]
-      .sort((a, b) => Number(b.yieldPercent || 0) - Number(a.yieldPercent || 0))
-      .slice(0, 10);
+    const sortedData = [...this.data].sort((a, b) => Number(b.yieldPercent || 0) - Number(a.yieldPercent || 0)).slice(0, 10);
 
     this.yieldChartOptions = {
-      series: [{
-        name: 'Rendement (%)',
-        data: sortedData.map(item => Number(item.yieldPercent).toFixed(1))
-      }],
+      series: [
+        {
+          name: 'Rendement (%)',
+          data: sortedData.map((item) => Number(item.yieldPercent).toFixed(1))
+        }
+      ],
       chart: { type: 'bar', height: 320, toolbar: { show: false } },
       plotOptions: {
         bar: {
           borderRadius: 4,
           horizontal: false,
-          distributed: true,
+          distributed: true
         }
       },
       dataLabels: { enabled: false },
       xaxis: {
-        categories: sortedData.map(item => item.ofCode),
+        categories: sortedData.map((item) => item.ofCode),
         labels: { style: { fontSize: '10px' } }
       },
-      colors: sortedData.map(item => {
+      colors: sortedData.map((item) => {
         if (item.yieldPercent >= 95) return '#10b981';
         if (item.yieldPercent >= 80) return '#f59e0b';
         return '#ef4444';
@@ -137,13 +142,18 @@ export class OfYieldReportComponent implements OnInit {
   }
 
   private getColorForStatus(statut: string): string {
-    switch(statut) {
-      case 'TERMINE': return '#10b981';
-      case 'EN_COURS': return '#3b82f6';
-      case 'PLANIFIE': return '#f59e0b';
+    switch (statut) {
+      case 'TERMINE':
+        return '#10b981';
+      case 'EN_COURS':
+        return '#3b82f6';
+      case 'PLANIFIE':
+        return '#f59e0b';
       case 'CLOTURE':
-      case 'ANNULE': return '#ef4444';
-      default: return '#64748b';
+      case 'ANNULE':
+        return '#ef4444';
+      default:
+        return '#64748b';
     }
   }
 }

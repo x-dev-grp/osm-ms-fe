@@ -14,38 +14,13 @@ export const APPROVED_PRODUCT_CATEGORIES: QualityGrades[] = [
   QualityGrades.POMACE
 ];
 
-export const PACKAGING_TYPES = [
-  'Glass Bottle',
-  'PET Bottle',
-  'Tin Can',
-  'Stainless Steel Container',
-  'Bulk Tank'
-] as const;
+export const PACKAGING_TYPES = ['Glass Bottle', 'PET Bottle', 'Tin Can', 'Stainless Steel Container', 'Bulk Tank'] as const;
 
-export const ORIGIN_COUNTRIES = [
-  'Tunisia',
-  'Spain',
-  'Italy',
-  'Greece',
-  'Morocco',
-  'Portugal'
-] as const;
+export const ORIGIN_COUNTRIES = ['Tunisia', 'Spain', 'Italy', 'Greece', 'Morocco', 'Portugal'] as const;
 
-export const OLIVE_VARIETIES = [
-  'Chemlali',
-  'Chetoui',
-  'Arbequina',
-  'Koroneiki',
-  'Mixed Blend'
-] as const;
+export const OLIVE_VARIETIES = ['Chemlali', 'Chetoui', 'Arbequina', 'Koroneiki', 'Mixed Blend'] as const;
 
-export const HARVEST_REGIONS = [
-  'Sfax',
-  'Sidi Bouzid',
-  'Kairouan',
-  'Zaghouan',
-  'Bizerte'
-] as const;
+export const HARVEST_REGIONS = ['Sfax', 'Sidi Bouzid', 'Kairouan', 'Zaghouan', 'Bizerte'] as const;
 
 export const OLIVE_SOURCE_TYPES = [
   { value: 'FARM', label: 'Farm' },
@@ -53,14 +28,7 @@ export const OLIVE_SOURCE_TYPES = [
   { value: 'MILL', label: 'Mill' }
 ] as const;
 
-export const PRODUCT_STATUSES = [
-  'DRAFT',
-  'PENDING_REVIEW',
-  'APPROVED',
-  'ACTIVE',
-  'INACTIVE',
-  'ARCHIVED'
-] as const;
+export const PRODUCT_STATUSES = ['DRAFT', 'PENDING_REVIEW', 'APPROVED', 'ACTIVE', 'INACTIVE', 'ARCHIVED'] as const;
 
 export const VOLUME_OPTIONS_ML = [100, 250, 500, 750, 1000, 2000, 3000, 5000] as const;
 
@@ -177,10 +145,7 @@ export function requiresAcidity(grade?: string | null): boolean {
   return grade === QualityGrades.EXTRA_VIRGIN || grade === QualityGrades.VIRGIN;
 }
 
-export function validateProductCompliance(
-  values: ProductComplianceFormValues,
-  type: FinalProductType
-): ProductComplianceIssue[] {
+export function validateProductCompliance(values: ProductComplianceFormValues, type: FinalProductType): ProductComplianceIssue[] {
   const issues: ProductComplianceIssue[] = [];
   const push = (field: string, label: string) => issues.push({ field, label });
 
@@ -265,5 +230,8 @@ export function parseOliveVarieties(value?: string | null): string[] {
   if (!value?.trim()) {
     return [];
   }
-  return value.split(',').map((v) => v.trim()).filter(Boolean);
+  return value
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
 }

@@ -26,6 +26,4 @@ export class ExpenseService {
   updateExpense(expense: Expense): Observable<ApiResponse<Expense>> {
     return this.http.put<ApiResponse<Expense>>(`${this.baseUrl}`, expense);
   }
-
-
 }

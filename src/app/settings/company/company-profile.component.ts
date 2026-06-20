@@ -322,5 +322,4 @@ export class CompanyProfileComponent implements OnInit {
     }
     return invalid;
   }
-
 }

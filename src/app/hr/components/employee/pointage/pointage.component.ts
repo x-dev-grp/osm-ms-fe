@@ -1,27 +1,26 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatTable, MatTableDataSource } from "@angular/material/table";
-import { MatPaginator } from "@angular/material/paginator";
-import { MatTableModule } from "@angular/material/table";
-import { MatPaginatorModule } from "@angular/material/paginator";
-import { MatButtonModule } from "@angular/material/button";
-import { Pointage, PointageStatus } from "../../../model/pointage.model";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatNativeDateModule } from "@angular/material/core";
-import { NgClass, CommonModule } from "@angular/common";
-import { MatIconModule } from "@angular/material/icon";
-import {Employee, Gender, MaritalStatus} from "../../../model/employee-model";
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatButtonModule } from '@angular/material/button';
+import { Pointage, PointageStatus } from '../../../model/pointage.model';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { CommonModule, NgClass } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { Employee } from '../../../model/employee-model';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {MatTooltip} from "@angular/material/tooltip";
-import {EmployeeService} from "../../../services/employee-service";
-import {PointageService} from "../../../services/pointage-service";
+import { MatTooltip } from '@angular/material/tooltip';
+import { EmployeeService } from '../../../services/employee-service';
+import { PointageService } from '../../../services/pointage-service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pointage',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -39,14 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './pointage.component.scss'
 })
 export class PointageComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = [
-    'employee',
-    'checkIn',
-    'checkOut',
-    'pointageDuree',
-    'status',
-    'action'
-  ];
+  displayedColumns: string[] = ['employee', 'checkIn', 'checkOut', 'pointageDuree', 'status', 'action'];
 
   dataSource = new MatTableDataSource<Employee>();
 
@@ -54,10 +46,14 @@ export class PointageComponent implements OnInit, AfterViewInit {
 
   selectedDate: Date = new Date();
 
-  constructor(private snackBar: MatSnackBar, private employeeServices: EmployeeService,private pointageService: PointageService) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private employeeServices: EmployeeService,
+    private pointageService: PointageService
+  ) {}
 
   ngOnInit(): void {
-    console.log("PointageComponent initialisé ✅");
+    console.log('PointageComponent initialisé ✅');
     this.getListeEmployee();
   }
 
@@ -66,7 +62,7 @@ export class PointageComponent implements OnInit, AfterViewInit {
       next: (response) => {
         if (response.success && response.data) {
           // Assurer que response.data est bien un tableau
-          let employees :any;
+          let employees: any;
           if (Array.isArray(response.data)) {
             employees = response.data;
           } else {
@@ -79,16 +75,12 @@ export class PointageComponent implements OnInit, AfterViewInit {
           });
 
           this.dataSource.data = employees;
-          console.log("Employés chargés :", this.dataSource.data);
+          console.log('Employés chargés :', this.dataSource.data);
         }
       },
       error: (error) => {
-        console.error("Erreur lors du chargement des employés :", error);
-        this.snackBar.open(
-          'Erreur lors du chargement des employés',
-          'Fermer',
-          { duration: 3000 }
-        );
+        console.error('Erreur lors du chargement des employés :', error);
+        this.snackBar.open('Erreur lors du chargement des employés', 'Fermer', { duration: 3000 });
       }
     });
   }
@@ -100,18 +92,17 @@ export class PointageComponent implements OnInit, AfterViewInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
     this.dataSource.filterPredicate = (data: Employee, filter: string) =>
-      data.firstName?.toLowerCase().includes(filter) ||
-      data.lastName?.toLowerCase().includes(filter);
+      data.firstName?.toLowerCase().includes(filter) || data.lastName?.toLowerCase().includes(filter);
     this.dataSource.filter = filterValue;
   }
 
   onDateChange(date: Date) {
     this.selectedDate = date;
-    console.log("Date choisie :", date);
+    console.log('Date choisie :', date);
 
     // Recharger les données avec la nouvelle date
     if (this.dataSource.data.length > 0) {
-      this.dataSource.data.forEach(employee => {
+      this.dataSource.data.forEach((employee) => {
         this.ensureCurrentDayPointage(employee);
       });
       // Forcer la mise à jour du tableau
@@ -124,7 +115,7 @@ export class PointageComponent implements OnInit, AfterViewInit {
     const currentDateStr = this.formatDate(this.selectedDate);
 
     // Vérifier si l'employé a déjà un pointage pour cette date
-    const existingPointage = employee.pointages?.find(p => p.date === currentDateStr);
+    const existingPointage = employee.pointages?.find((p) => p.date === currentDateStr);
 
     if (!existingPointage) {
       // Créer un nouveau pointage pour cette date
@@ -146,7 +137,7 @@ export class PointageComponent implements OnInit, AfterViewInit {
   // Obtenir le pointage du jour sélectionné pour un employé
   private getCurrentDayPointage(employee: Employee): Pointage | null {
     const currentDateStr = this.formatDate(this.selectedDate);
-    return employee.pointages?.find(p => p.date === currentDateStr) || null;
+    return employee.pointages?.find((p) => p.date === currentDateStr) || null;
   }
 
   // Marquer l'heure d'entrée
@@ -172,14 +163,10 @@ export class PointageComponent implements OnInit, AfterViewInit {
     this.dataSource.data = [...this.dataSource.data];
 
     // Notification
-    this.snackBar.open(
-      `Entrée marquée à ${currentTime} pour ${employee.firstName} ${employee.lastName}`,
-      'Fermer',
-      { duration: 3000 }
-    );
+    this.snackBar.open(`Entrée marquée à ${currentTime} pour ${employee.firstName} ${employee.lastName}`, 'Fermer', { duration: 3000 });
 
-    console.log("Entrée marquée :", employee, pointage);
-    this.pointageService.markEntry(employee.id!,new Date(),pointage.checkIn)
+    console.log('Entrée marquée :', employee, pointage);
+    this.pointageService.markEntry(employee.id!, new Date(), pointage.checkIn);
   }
 
   // Marquer l'heure de sortie
@@ -194,11 +181,7 @@ export class PointageComponent implements OnInit, AfterViewInit {
 
     // Vérifier si une heure d'entrée existe
     if (!pointage.checkIn) {
-      this.snackBar.open(
-        'Veuillez d\'abord marquer l\'entrée !',
-        'Fermer',
-        { duration: 3000 }
-      );
+      this.snackBar.open("Veuillez d'abord marquer l'entrée !", 'Fermer', { duration: 3000 });
       return;
     }
 
@@ -210,13 +193,9 @@ export class PointageComponent implements OnInit, AfterViewInit {
     this.dataSource.data = [...this.dataSource.data];
 
     // Notification
-    this.snackBar.open(
-      `Sortie marquée à ${currentTime} pour ${employee.firstName} ${employee.lastName}`,
-      'Fermer',
-      { duration: 3000 }
-    );
+    this.snackBar.open(`Sortie marquée à ${currentTime} pour ${employee.firstName} ${employee.lastName}`, 'Fermer', { duration: 3000 });
 
-    console.log("Sortie marquée :", employee, pointage);
+    console.log('Sortie marquée :', employee, pointage);
   }
 
   // Obtenir l'heure actuelle au format HH:MM
@@ -260,24 +239,23 @@ export class PointageComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   // Vérifier si un employé peut marquer son entrée
   canMarkEnter(employee: Employee): boolean {
     const pointage = this.getCurrentDayPointage(employee);
     // Peut marquer l'entrée si pas encore d'heure d'entrée enregistrée
-    return pointage ? (pointage.checkIn !== null && pointage.checkIn !== '') : false;
+    return pointage ? pointage.checkIn !== null && pointage.checkIn !== '' : false;
   }
 
   // Vérifier si un employé peut marquer sa sortie
   canMarkExit(employee: Employee): boolean {
     const pointage = this.getCurrentDayPointage(employee);
-    return pointage ? (pointage.checkIn !== null && pointage.checkIn !== '') : false;
+    return pointage ? pointage.checkIn !== null && pointage.checkIn !== '' : false;
   }
 
   // Vérifier si un employé a déjà marqué sa sortie
   hasMarkedExit(employee: Employee): boolean {
     const pointage = this.getCurrentDayPointage(employee);
-    return pointage ? (pointage.checkOut !== null && pointage.checkOut !== '') : false;
+    return pointage ? pointage.checkOut !== null && pointage.checkOut !== '' : false;
   }
 
   // Obtenir l'heure d'entrée pour l'affichage

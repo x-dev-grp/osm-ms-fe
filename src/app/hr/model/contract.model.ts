@@ -1,5 +1,4 @@
 import { Poste } from './poste.model';
-import { Employee } from './employee-model';
 
 export enum ContractStatus {
   ACTIVE = 'ACTIVE',
@@ -24,5 +23,4 @@ export interface Contract {
   contractType: ContractType;
   contractStatus: ContractStatus;
   externalId: string;
-
 }

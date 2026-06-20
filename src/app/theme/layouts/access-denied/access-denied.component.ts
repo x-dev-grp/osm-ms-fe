@@ -1,9 +1,8 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButton } from '@angular/material/button';
-import { TranslatePipe, TranslateModule } from '@ngx-translate/core';
-import { AuthService } from '../../../shared/services/auth.service';
+import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { AuthenticationService } from '../../../auth/services/authentication.service';
 
 type PermView = { raw: string; segments: string[] };
@@ -34,5 +33,4 @@ export class AccessDeniedComponent {
   logout() {
     this.authenticationService.logout();
   }
-
 }

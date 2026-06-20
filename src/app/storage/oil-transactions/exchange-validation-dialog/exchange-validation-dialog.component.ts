@@ -46,17 +46,16 @@ export class ExchangeValidationDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if(this.data?.isIn){
-
-      this.form.get("storageUnitDestinationId")?.setValidators(Validators.required);
-      this.form.get("storageUnitDestinationId")?.updateValueAndValidity()
-      this.form.get("storageUnitSourceId")?.clearValidators()
-      this.form.get("storageUnitSourceId")?.updateValueAndValidity()
-    }else{
-      this.form.get("storageUnitSourceId")?.setValidators(Validators.required);
-      this.form.get("storageUnitSourceId")?.updateValueAndValidity()
-      this.form.get("storageUnitDestinationId")?.clearValidators()
-      this.form.get("storageUnitDestinationId")?.updateValueAndValidity()
+    if (this.data?.isIn) {
+      this.form.get('storageUnitDestinationId')?.setValidators(Validators.required);
+      this.form.get('storageUnitDestinationId')?.updateValueAndValidity();
+      this.form.get('storageUnitSourceId')?.clearValidators();
+      this.form.get('storageUnitSourceId')?.updateValueAndValidity();
+    } else {
+      this.form.get('storageUnitSourceId')?.setValidators(Validators.required);
+      this.form.get('storageUnitSourceId')?.updateValueAndValidity();
+      this.form.get('storageUnitDestinationId')?.clearValidators();
+      this.form.get('storageUnitDestinationId')?.updateValueAndValidity();
     }
   }
   /** true if selected unit can't hold the requested `data.oilQ` */
@@ -75,7 +74,7 @@ export class ExchangeValidationDialogComponent implements OnInit {
   getStorageUnitInfo(u: StorageUnitDto): string {
     // Include supplier info if available for better context
     if (u.supplier) {
-      return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg) [${u.supplier?.name + " " + u.supplier?.lastname}]`;
+      return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg) [${u.supplier?.name + ' ' + u.supplier?.lastname}]`;
     }
     return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg)`;
   }
@@ -116,5 +115,4 @@ export class ExchangeValidationDialogComponent implements OnInit {
     const available = unit.maxCapacity - unit.currentVolume;
     return available < this.data.oilQ ? { capacity: true } : null;
   }
-
 }

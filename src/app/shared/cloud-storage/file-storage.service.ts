@@ -1,10 +1,10 @@
 // libs/cloud-storage/file-storage.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
-import { Observable, firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 
 export type BackendMeta = {
-  id:string;
+  id: string;
   fileId: string;
   name?: string;
   size?: number;

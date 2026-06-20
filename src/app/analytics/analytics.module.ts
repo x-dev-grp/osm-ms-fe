@@ -5,9 +5,6 @@ import { AnalyticsRoutingModule } from './analytics-routing.module';
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    AnalyticsRoutingModule
-  ]
+  imports: [CommonModule, AnalyticsRoutingModule]
 })
 export class AnalyticsModule {}

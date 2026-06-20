@@ -9,9 +9,7 @@ export function boardItemMatchesSearch(item: BoardItem, rawTerm: string): boolea
 
   if (item.type === PlanItemType.LOT) {
     const data = item.data as PlanningItem;
-    const supplier = data.supplier
-      ? `${data.supplier.name ?? ''} ${data.supplier.lastname ?? ''}`.trim().toLowerCase()
-      : '';
+    const supplier = data.supplier ? `${data.supplier.name ?? ''} ${data.supplier.lastname ?? ''}`.trim().toLowerCase() : '';
     const haystack = [
       data.lotNumber,
       data.deliveryNumber?.toString(),
@@ -29,10 +27,7 @@ export function boardItemMatchesSearch(item: BoardItem, rawTerm: string): boolea
   }
 
   const data = item.data as GlobalLot;
-  return (
-    data.globalLotNumber.toLowerCase().includes(term) ||
-    data.childLotNumbers.some((lot) => lot.toLowerCase().includes(term))
-  );
+  return data.globalLotNumber.toLowerCase().includes(term) || data.childLotNumbers.some((lot) => lot.toLowerCase().includes(term));
 }
 
 @Pipe({

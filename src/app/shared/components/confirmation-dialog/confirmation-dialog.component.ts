@@ -1,24 +1,17 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogData, ConfirmationDialogResult, ConfirmationType } from '../../services/confirmation-dialog.service';
-import { Subscription, forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-confirmation-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    FormsModule,
-    TranslateModule
-  ],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, FormsModule, TranslateModule],
   templateUrl: './confirmation-dialog.component.html',
   styleUrls: ['./confirmation-dialog.component.scss']
 })
@@ -55,7 +48,7 @@ export class ConfirmationDialogComponent implements OnInit, OnDestroy {
       confirmText: this.translate.get(this.data.confirmText || 'STANDARD.CONFIRMATION.DEFAULT.CONFIRM'),
       cancelText: this.translate.get(this.data.cancelText || 'STANDARD.CONFIRMATION.DEFAULT.CANCEL'),
       destructiveWarning: this.translate.get('STANDARD.CONFIRMATION.DESTRUCTIVE_WARNING')
-    }).subscribe(res => {
+    }).subscribe((res) => {
       this.resolvedTitle = res.title;
       this.resolvedMessage = res.message;
       this.resolvedConfirmText = res.confirmText;

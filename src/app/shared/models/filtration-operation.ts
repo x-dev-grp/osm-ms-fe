@@ -28,9 +28,6 @@ export interface FiltrationOperation {
   // Note optionnelle (historique ou commentaire).
   note?: string | null;
 
-
-
-
   // Nouveaux champs pour la traçabilité
   sourceLotNumber?: string;
   targetLotNumber?: string;

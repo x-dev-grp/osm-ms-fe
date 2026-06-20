@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription, firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, Observable, of, Subscription } from 'rxjs';
 
 import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
@@ -178,11 +178,8 @@ export class ControleQualiteComponent implements OnInit, OnDestroy {
     this.deliveryService.getUnifiedDelivery(this.receptionId).subscribe({
       next: (response) => {
         this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
-        this.studioContext =
-          this.deliveryData?.deliveryType === 'OLIVE' ? 'RECEPTION_OLIVE' : 'RECEPTION_OIL';
-        this.isQualityControlDone =
-          !!this.deliveryData?.hasQualityControl ||
-          (this.deliveryData?.qualityControlResults?.length ?? 0) > 0;
+        this.studioContext = this.deliveryData?.deliveryType === 'OLIVE' ? 'RECEPTION_OLIVE' : 'RECEPTION_OIL';
+        this.isQualityControlDone = !!this.deliveryData?.hasQualityControl || (this.deliveryData?.qualityControlResults?.length ?? 0) > 0;
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -223,11 +220,7 @@ export class ControleQualiteComponent implements OnInit, OnDestroy {
 
   private updateCapacityState(unit: StorageUnitDto | null): void {
     this.availableCapacity = unit ? Number(unit.maxCapacity) - Number(unit.currentVolume ?? 0) : 0;
-    const incoming = Number(
-      this.oilFromOlive
-        ? (this.originalOliveReception?.oilQuantity ?? 0)
-        : (this.deliveryData?.poidsNet ?? 0)
-    );
+    const incoming = Number(this.oilFromOlive ? (this.originalOliveReception?.oilQuantity ?? 0) : (this.deliveryData?.poidsNet ?? 0));
     this.capacityError = !!unit && this.availableCapacity < incoming;
   }
 
@@ -243,9 +236,7 @@ export class ControleQualiteComponent implements OnInit, OnDestroy {
     };
 
     try {
-      const response = await firstValueFrom(
-        this.deliveryService.updateUnifiedDelivery(updatedDelivery as UnifiedDelivery)
-      );
+      const response = await firstValueFrom(this.deliveryService.updateUnifiedDelivery(updatedDelivery as UnifiedDelivery));
       if (response?.success) {
         this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
         return true;

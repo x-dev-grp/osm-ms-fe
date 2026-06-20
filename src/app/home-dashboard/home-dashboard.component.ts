@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -69,6 +69,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       this.attentionTotal = 0;
       this.loading = false;
       this.lastUpdated = new Date();
+
+      if (!this.quickLinks.length) {
+        this.auth.logout('no-access');
+      }
       return;
     }
 
@@ -137,10 +141,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       ids.push('conditioning');
     }
 
-    if (
-      this.auth.hasModule(OSMModule.HR) &&
-      this.auth.hasPermission(permissionKey(OSMModule.HR, HREntity.EMPLOYEE, Action.READ))
-    ) {
+    if (this.auth.hasModule(OSMModule.HR) && this.auth.hasPermission(permissionKey(OSMModule.HR, HREntity.EMPLOYEE, Action.READ))) {
       ids.push('hr');
     }
 

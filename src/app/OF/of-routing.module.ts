@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OFListComponent } from './components/of/of-list/of-list.component';
-import { OFDetailComponent } from "./components/of/of-detail/of-detail.component";
-import { OFFormComponent } from "./components/of/of-form/of-form.component";
-import { ControlPointDefinitionComponent } from "./components/QC/control-point-definition/control-point-definition.component";
-import { QualityControlEntryComponent } from "./components/QC/quality-control-entry/quality-control-entry.component";
-import { QualityHistoryComponent } from "./components/QC/quality-history/quality-history.component";
-import { OFProductionComponent } from "./components/of/of-production/of-production.component";
+import { OFDetailComponent } from './components/of/of-detail/of-detail.component';
+import { OFFormComponent } from './components/of/of-form/of-form.component';
+import { ControlPointDefinitionComponent } from './components/QC/control-point-definition/control-point-definition.component';
+import { QualityControlEntryComponent } from './components/QC/quality-control-entry/quality-control-entry.component';
+import { QualityHistoryComponent } from './components/QC/quality-history/quality-history.component';
+import { OFProductionComponent } from './components/of/of-production/of-production.component';
 
 const routes: Routes = [
   { path: '', component: OFListComponent },
@@ -23,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class OfRoutingModule { }
+export class OfRoutingModule {}

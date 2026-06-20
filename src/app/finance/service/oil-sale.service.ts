@@ -3,12 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { OilSaleDeliveryRequest } from '../oil-sales/oil-sale-delivery.request';
 import { environment } from '../../../environments/environment';
-import {
-  OilSale,
-} from '../models/oil-sale.model';
+import { OilSale } from '../models/oil-sale.model';
 import { ApiResponse } from '../../shared/models/api-response';
 import { OilSaleCreateRequest } from '../oil-sales/oil-sale-add/oil-sale-create.request';
-
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +35,6 @@ export class OilSaleService {
     return this.http.put<ApiResponse<OilSale>>(`${this.baseUrl}/${id}`, oilSale);
   }
 
-
-
   // Confirm oil sale (update status to CONFIRMED)
   confirmOilSale(id: string): Observable<ApiResponse<OilSale>> {
     return this.http.patch<ApiResponse<OilSale>>(`${this.baseUrl}/${id}/confirm`, {});
@@ -55,7 +50,7 @@ export class OilSaleService {
     return this.http.patch<ApiResponse<OilSale>>(`${this.baseUrl}/${id}/deliver`, delivery ?? {});
   }
 
-  processPayment(payload:any): Observable<ApiResponse<any>> {
+  processPayment(payload: any): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<void>>(`${this.baseUrl}/payment`, payload);
   }
 }

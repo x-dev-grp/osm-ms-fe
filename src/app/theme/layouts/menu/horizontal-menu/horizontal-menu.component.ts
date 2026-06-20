@@ -7,17 +7,11 @@ import { MenuCollapseComponent } from '../vertical-menu/menu-collapse/menu-colla
 import { MenuItemVerticalComponent } from '../vertical-menu/menu-item/menu-item.component';
 import { NavigationActiveService } from '../../../services/navigation-active.service';
 import { ThemeLayoutService } from '../../../services/theme-layout.service';
-import { RTL, LTR } from '../../../const';
+import { LTR, RTL } from '../../../const';
 
 @Component({
   selector: 'app-horizontal-menu',
-  imports: [
-    SharedModule,
-    RouterModule,
-    MenuGroupHorizontalComponent,
-    MenuCollapseComponent,
-    MenuItemVerticalComponent
-  ],
+  imports: [SharedModule, RouterModule, MenuGroupHorizontalComponent, MenuCollapseComponent, MenuItemVerticalComponent],
   templateUrl: './horizontal-menu.component.html',
   standalone: true,
   styleUrls: ['./horizontal-menu.component.scss']

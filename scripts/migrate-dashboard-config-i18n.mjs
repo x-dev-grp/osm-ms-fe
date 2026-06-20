@@ -1,16 +1,13 @@
 import ts from 'typescript';
 import { createHash } from 'node:crypto';
-import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
 const applyChanges = process.argv.includes('--apply');
 const appRoot = path.join(root, 'src', 'app');
 const localePaths = Object.fromEntries(
-  ['en', 'fr', 'ar'].map(language => [
-    language,
-    path.join(root, 'src', 'assets', 'i18n', `${language}.json`)
-  ])
+  ['en', 'fr', 'ar'].map((language) => [language, path.join(root, 'src', 'assets', 'i18n', `${language}.json`)])
 );
 
 function normalize(value) {
@@ -56,7 +53,7 @@ async function listConfigFiles(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
-      files.push(...await listConfigFiles(fullPath));
+      files.push(...(await listConfigFiles(fullPath)));
     } else if (entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.spec.ts')) {
       files.push(fullPath);
     }
@@ -96,26 +93,29 @@ for (const filePath of await listConfigFiles(appRoot)) {
 
   function visit(node) {
     if (ts.isObjectLiteralExpression(node)) {
-      const names = new Set(node.properties
-        .filter(ts.isPropertyAssignment)
-        .map(property => ts.isIdentifier(property.name) ? property.name.text : undefined));
+      const names = new Set(
+        node.properties.filter(ts.isPropertyAssignment).map((property) => (ts.isIdentifier(property.name) ? property.name.text : undefined))
+      );
       const isDashboard = names.has('fields') && (names.has('baseURL') || names.has('searchEndpoint'));
-      const isDashboardField = names.has('name')
-        && (names.has('attributeType') || names.has('fieldType'));
-      const isDashboardOption = ts.isArrayLiteralExpression(node.parent)
-        && ts.isPropertyAssignment(node.parent.parent)
-        && ts.isIdentifier(node.parent.parent.name)
-        && node.parent.parent.name.text === 'options';
+      const isDashboardField = names.has('name') && (names.has('attributeType') || names.has('fieldType'));
+      const isDashboardOption =
+        ts.isArrayLiteralExpression(node.parent) &&
+        ts.isPropertyAssignment(node.parent.parent) &&
+        ts.isIdentifier(node.parent.parent.name) &&
+        node.parent.parent.name.text === 'options';
       for (const property of node.properties) {
-        if (!ts.isPropertyAssignment(property)
-            || !ts.isIdentifier(property.name)
-            || !['title', 'label'].includes(property.name.text)
-            || !(ts.isStringLiteral(property.initializer)
-              || ts.isNoSubstitutionTemplateLiteral(property.initializer))) {
+        if (
+          !ts.isPropertyAssignment(property) ||
+          !ts.isIdentifier(property.name) ||
+          !['title', 'label'].includes(property.name.text) ||
+          !(ts.isStringLiteral(property.initializer) || ts.isNoSubstitutionTemplateLiteral(property.initializer))
+        ) {
           continue;
         }
-        if ((property.name.text === 'title' && !isDashboard)
-            || (property.name.text === 'label' && !isDashboardField && !isDashboardOption)) {
+        if (
+          (property.name.text === 'title' && !isDashboard) ||
+          (property.name.text === 'label' && !isDashboardField && !isDashboardOption)
+        ) {
           continue;
         }
         const pathName = `${property.name.text}TranslatePath`;
@@ -159,9 +159,15 @@ if (applyChanges) {
   }
 }
 
-console.log(JSON.stringify({
-  mode: applyChanges ? 'apply' : 'dry-run',
-  changedFiles: changedFiles.length,
-  replacements: replacementCount,
-  generatedKeys: generated.size
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      mode: applyChanges ? 'apply' : 'dry-run',
+      changedFiles: changedFiles.length,
+      replacements: replacementCount,
+      generatedKeys: generated.size
+    },
+    null,
+    2
+  )
+);

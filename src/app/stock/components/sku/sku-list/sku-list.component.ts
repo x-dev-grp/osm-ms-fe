@@ -1,14 +1,11 @@
-import { Component, ViewChild, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { FinalProduct, finalProductDisplayName } from '../../../models/final-product.model';
 import { FinalProductService } from '../../../services/final-product.service';
 import { ToastService } from '../../../../shared/services/toast.service';
-import {
-  ConfirmationDialogService,
-  ConfirmationType
-} from '../../../../shared/services/confirmation-dialog.service';
+import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
 import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { SKU_DASHBOARD_CONFIG } from './sku-dashboard.config';
@@ -61,33 +58,35 @@ export class SkuListComponent {
     const isCurrentlyActif = finalProduct.actif === true;
     const action = isCurrentlyActif ? 'desactiver' : 'activer';
 
-    this.confirmationDialog.confirm({
-      title: this.i18n.instant('STANDARD.CONFIRMATION.SIMPLE.TITLE'),
-      message: `Voulez-vous vraiment ${action} le produit "${finalProductDisplayName(finalProduct)}" ?`,
-      type: ConfirmationType.WARNING,
-      confirmText: isCurrentlyActif ? this.i18n.instant('AUTO.DESACTIVER') : this.i18n.instant('AUTO.ACTIVER'),
-      cancelText: this.i18n.instant('ADMIN.CANCEL'),
-      showIcon: true,
-      destructive: isCurrentlyActif
-    }).subscribe((result) => {
-      if (!result?.confirmed) {
-        return;
-      }
+    this.confirmationDialog
+      .confirm({
+        title: this.i18n.instant('STANDARD.CONFIRMATION.SIMPLE.TITLE'),
+        message: `Voulez-vous vraiment ${action} le produit "${finalProductDisplayName(finalProduct)}" ?`,
+        type: ConfirmationType.WARNING,
+        confirmText: isCurrentlyActif ? this.i18n.instant('AUTO.DESACTIVER') : this.i18n.instant('AUTO.ACTIVER'),
+        cancelText: this.i18n.instant('ADMIN.CANCEL'),
+        showIcon: true,
+        destructive: isCurrentlyActif
+      })
+      .subscribe((result) => {
+        if (!result?.confirmed) {
+          return;
+        }
 
-      const request = isCurrentlyActif
-        ? this.finalProductService.deactivateFinalProduct(finalProduct.id!)
-        : this.finalProductService.activateFinalProduct(finalProduct.id!);
+        const request = isCurrentlyActif
+          ? this.finalProductService.deactivateFinalProduct(finalProduct.id!)
+          : this.finalProductService.activateFinalProduct(finalProduct.id!);
 
-      request.subscribe({
-        next: () => {
-          this.dashboard?.refrechData();
-          this.toast.success('AUTO.PRODUIT_AVEC_SUCCES', {
-            value0: isCurrentlyActif ? 'AUTO.DESACTIVE' : 'ADMIN_DASHBOARD.HERO.ACTIVE'
-          });
-        },
-        error: (err) => console.error('Erreur changement statut produit:', err)
+        request.subscribe({
+          next: () => {
+            this.dashboard?.refrechData();
+            this.toast.success('AUTO.PRODUIT_AVEC_SUCCES', {
+              value0: isCurrentlyActif ? 'AUTO.DESACTIVE' : 'ADMIN_DASHBOARD.HERO.ACTIVE'
+            });
+          },
+          error: (err) => console.error('Erreur changement statut produit:', err)
+        });
       });
-    });
   }
 
   private deleteFinalProduct(finalProduct: FinalProduct): void {
@@ -95,21 +94,23 @@ export class SkuListComponent {
       return;
     }
 
-    this.confirmationDialog.confirmDelete(
-      finalProductDisplayName(finalProduct),
-      `Voulez-vous vraiment supprimer le produit "${finalProductDisplayName(finalProduct)}" ?`
-    ).subscribe((result) => {
-      if (!result?.confirmed) {
-        return;
-      }
+    this.confirmationDialog
+      .confirmDelete(
+        finalProductDisplayName(finalProduct),
+        `Voulez-vous vraiment supprimer le produit "${finalProductDisplayName(finalProduct)}" ?`
+      )
+      .subscribe((result) => {
+        if (!result?.confirmed) {
+          return;
+        }
 
-      this.finalProductService.deleteFinalProduct(finalProduct.id!).subscribe({
-        next: () => {
-          this.dashboard?.refrechData();
-          this.toast.success('AUTO.PRODUIT_SUPPRIME_AVEC_SUCCES');
-        },
-        error: (err) => console.error('Erreur suppression produit:', err)
+        this.finalProductService.deleteFinalProduct(finalProduct.id!).subscribe({
+          next: () => {
+            this.dashboard?.refrechData();
+            this.toast.success('AUTO.PRODUIT_SUPPRIME_AVEC_SUCCES');
+          },
+          error: (err) => console.error('Erreur suppression produit:', err)
+        });
       });
-    });
   }
 }

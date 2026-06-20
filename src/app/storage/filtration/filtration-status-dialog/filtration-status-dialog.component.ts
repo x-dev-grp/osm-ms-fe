@@ -6,23 +6,24 @@ import { switchMap } from 'rxjs';
 
 import { FiltrationApiService } from '../../../shared/services/filtration-api.service';
 import { FiltrationOperation } from '../../../shared/models/filtration-operation';
-import { FiltrationStatus, FILTRATION_STATUS_LABEL } from '../../../shared/models/filtration-status';
+import { FILTRATION_STATUS_LABEL, FiltrationStatus } from '../../../shared/models/filtration-status';
 import { ToastService } from '../../../shared/services/toast.service';
 import { extractHttpErrorMessage } from '../../../shared/utils/http-error.util';
-import { MatOption } from "@angular/material/core";
-import { MatFormField, MatHint, MatLabel } from "@angular/material/form-field";
-import { MatSelect } from "@angular/material/select";
-import { MatIcon } from "@angular/material/icon";
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
-import { MatInput } from "@angular/material/input";
-import { MatButton } from "@angular/material/button";
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filtration-status-dialog',
   templateUrl: './filtration-status-dialog.component.html',
   styleUrls: ['./filtration-status-dialog.component.scss'],
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatOption,
     MatFormField,
@@ -47,7 +48,7 @@ export class FiltrationStatusDialogComponent implements OnInit {
   form = this.fb.group({
     status: ['CREATED' as FiltrationStatus, Validators.required],
     note: [''],
-    volumeAfter: [null as number | null],
+    volumeAfter: [null as number | null]
   });
 
   constructor(
@@ -90,7 +91,7 @@ export class FiltrationStatusDialogComponent implements OnInit {
 
   ngOnInit() {
     // Ajouter les validateurs dynamiquement quand le statut change
-    this.form.get('status')?.valueChanges.subscribe(status => {
+    this.form.get('status')?.valueChanges.subscribe((status) => {
       const volumeAfterControl = this.form.get('volumeAfter');
 
       if (status === 'COMPLETED') {
@@ -138,7 +139,7 @@ export class FiltrationStatusDialogComponent implements OnInit {
     // Vérifier si le formulaire est valide
     if (this.form.invalid) {
       // Marquer tous les champs comme touchés pour afficher les erreurs
-      Object.keys(this.form.controls).forEach(key => {
+      Object.keys(this.form.controls).forEach((key) => {
         const control = this.form.get(key);
         control?.markAsTouched();
       });
@@ -168,7 +169,7 @@ export class FiltrationStatusDialogComponent implements OnInit {
     if (currentStatus === 'CREATED' && newStatus === 'IN_PROGRESS') {
       this.api.start(op.operationId).subscribe({
         next: () => this.ref.close(true),
-        error: (error) => this.handleError(error, 'Impossible de demarrer la filtration'),
+        error: (error) => this.handleError(error, 'Impossible de demarrer la filtration')
       });
       return;
     }
@@ -183,15 +184,20 @@ export class FiltrationStatusDialogComponent implements OnInit {
         return;
       }
 
-      this.api.start(op.operationId).pipe(
-        switchMap(() => this.api.complete(op.operationId, {
-          volumeAfter: Number(volumeAfter),
-          note: note || undefined,
-        }))
-      ).subscribe({
-        next: () => this.ref.close(true),
-        error: (error) => this.handleError(error, 'Impossible de terminer la filtration'),
-      });
+      this.api
+        .start(op.operationId)
+        .pipe(
+          switchMap(() =>
+            this.api.complete(op.operationId, {
+              volumeAfter: Number(volumeAfter),
+              note: note || undefined
+            })
+          )
+        )
+        .subscribe({
+          next: () => this.ref.close(true),
+          error: (error) => this.handleError(error, 'Impossible de terminer la filtration')
+        });
       return;
     }
 
@@ -205,13 +211,15 @@ export class FiltrationStatusDialogComponent implements OnInit {
         return;
       }
 
-      this.api.complete(op.operationId, {
-        volumeAfter: Number(volumeAfter),
-        note: note || undefined,
-      }).subscribe({
-        next: () => this.ref.close(true),
-        error: (error) => this.handleError(error, 'Impossible de terminer la filtration'),
-      });
+      this.api
+        .complete(op.operationId, {
+          volumeAfter: Number(volumeAfter),
+          note: note || undefined
+        })
+        .subscribe({
+          next: () => this.ref.close(true),
+          error: (error) => this.handleError(error, 'Impossible de terminer la filtration')
+        });
       return;
     }
 

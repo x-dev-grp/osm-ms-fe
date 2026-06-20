@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter } from 'rxjs/operators';
 import { ToastService } from './toast.service';
@@ -13,11 +13,9 @@ export class PwaUpdateService {
       return;
     }
 
-    this.swUpdate.versionUpdates
-      .pipe(filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY'))
-      .subscribe(() => {
-        this.toast.info('PWA.UPDATE_AVAILABLE');
-      });
+    this.swUpdate.versionUpdates.pipe(filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY')).subscribe(() => {
+      this.toast.info('PWA.UPDATE_AVAILABLE');
+    });
 
     this.swUpdate.unrecoverable.subscribe(() => {
       this.toast.error('PWA.UNRECOVERABLE_ERROR');

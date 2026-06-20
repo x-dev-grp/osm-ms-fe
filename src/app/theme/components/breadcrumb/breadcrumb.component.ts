@@ -1,13 +1,13 @@
 // Angular Import
 import { Component, inject, Input, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationEnd, Router, RouterModule, Event } from '@angular/router';
+import { Event, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 // project import
 import { NavigationItem } from '../../types/navigation';
 import { SharedModule } from 'src/app/shared/shared.module';
- import { osm_menus } from '../../../shared/osm_menu';
+import { osm_menus } from '../../../shared/osm_menu';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface titleType {

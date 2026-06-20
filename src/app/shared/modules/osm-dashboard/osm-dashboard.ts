@@ -1,15 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  effect,
-  inject,
-  input,
-  OnChanges,
-  OnInit,
-  output,
-  SimpleChanges
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, inject, input, OnChanges, OnInit, output, SimpleChanges } from '@angular/core';
 
 import { MatTableModule } from '@angular/material/table';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -33,7 +22,7 @@ import { ACTION_ICONS } from './models/actions';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { getValue, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SortByTranslatedPipe } from '../../pipes/sort-by-translated.pipe';
 
 @Component({
@@ -43,7 +32,8 @@ import { SortByTranslatedPipe } from '../../pipes/sort-by-translated.pipe';
   styleUrls: ['./osm-dashboard.scss'],
   standalone: true,
   providers: [DashboardStore],
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatButtonModule,
     MatTableModule,
@@ -131,7 +121,7 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   getSelectDataTableValue(value: string, fieldName: string): string {
     const field = this.config().fields.find((field) => field.name == fieldName);
     const option = field?.options?.find((option) => option.value == value);
-    return option?.labelTranslatePath||option?.label || option?.value;
+    return option?.labelTranslatePath || option?.label || option?.value;
   }
 
   redirectToFormPage() {

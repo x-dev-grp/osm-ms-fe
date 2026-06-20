@@ -49,16 +49,10 @@ export function countPackagedLabels(snapshot: Record<string, unknown> | null | u
   if (!byLot || typeof byLot !== 'object') {
     return 0;
   }
-  return Object.values(byLot as Record<string, unknown[]>).reduce(
-    (sum, labels) => sum + (Array.isArray(labels) ? labels.length : 0),
-    0
-  );
+  return Object.values(byLot as Record<string, unknown[]>).reduce((sum, labels) => sum + (Array.isArray(labels) ? labels.length : 0), 0);
 }
 
-export function eventChainFor(
-  traceabilityData: Record<string, unknown> | null | undefined,
-  ofId: string
-): TraceabilityEventChain | null {
+export function eventChainFor(traceabilityData: Record<string, unknown> | null | undefined, ofId: string): TraceabilityEventChain | null {
   const chains = traceabilityData?.['eventChains'];
   if (!Array.isArray(chains)) {
     return null;

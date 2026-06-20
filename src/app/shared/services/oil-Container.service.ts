@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
- import { ApiResponse } from '../models/api-response';
+import { ApiResponse } from '../models/api-response';
 import { OilContainer } from '../models/oil-container';
-import {QrCodeRequest, QrCodeResponse} from "../models/qr-models";
+import { QrCodeRequest, QrCodeResponse } from '../models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -30,21 +30,24 @@ export class OilContainerService {
   }
 
   // Update an existing oilContainer
-  updateOilContainer( oilContainer: OilContainer): Observable<ApiResponse<OilContainer>> {
+  updateOilContainer(oilContainer: OilContainer): Observable<ApiResponse<OilContainer>> {
     return this.http.put<ApiResponse<OilContainer>>(`${this.baseUrl}`, oilContainer);
   }
   generateQrCode(request: QrCodeRequest): Observable<QrCodeResponse> {
     return this.http.post<QrCodeResponse>(`${this.baseUrl}/generate`, request);
   }
 
-  purchase(containerId: string, payload: {
-    quantity: number;
-    unitPrice: number;
-    materielSupplierId: string;
-    vendor: string;
-    paymentMethod: string;
-    notes?: string;
-  }): Observable<ApiResponse<any>> {
+  purchase(
+    containerId: string,
+    payload: {
+      quantity: number;
+      unitPrice: number;
+      materielSupplierId: string;
+      vendor: string;
+      paymentMethod: string;
+      notes?: string;
+    }
+  ): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/${containerId}/purchase`, payload);
   }
 }

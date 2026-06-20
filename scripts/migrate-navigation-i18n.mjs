@@ -5,15 +5,9 @@ import path from 'node:path';
 
 const root = process.cwd();
 const applyChanges = process.argv.includes('--apply');
-const files = [
-  path.join(root, 'src', 'app', 'shared', 'osm_menu.ts'),
-  path.join(root, 'src', 'app', 'shared', 'admin_menu.ts')
-];
+const files = [path.join(root, 'src', 'app', 'shared', 'osm_menu.ts'), path.join(root, 'src', 'app', 'shared', 'admin_menu.ts')];
 const localePaths = Object.fromEntries(
-  ['en', 'fr', 'ar'].map(language => [
-    language,
-    path.join(root, 'src', 'assets', 'i18n', `${language}.json`)
-  ])
+  ['en', 'fr', 'ar'].map((language) => [language, path.join(root, 'src', 'assets', 'i18n', `${language}.json`)])
 );
 
 function normalize(value) {
@@ -87,16 +81,20 @@ for (const filePath of files) {
 
   function visit(node) {
     if (ts.isObjectLiteralExpression(node)) {
-      const properties = new Map(node.properties
-        .filter(ts.isPropertyAssignment)
-        .filter(property => ts.isIdentifier(property.name))
-        .map(property => [property.name.text, property]));
+      const properties = new Map(
+        node.properties
+          .filter(ts.isPropertyAssignment)
+          .filter((property) => ts.isIdentifier(property.name))
+          .map((property) => [property.name.text, property])
+      );
       const title = properties.get('title');
-      if (properties.has('type')
-          && title
-          && (ts.isStringLiteral(title.initializer) || ts.isNoSubstitutionTemplateLiteral(title.initializer))
-          && !/^[A-Z0-9_]+(?:\.[A-Z0-9_]+)+$/.test(title.initializer.text)
-          && !catalogKeys.has(title.initializer.text)) {
+      if (
+        properties.has('type') &&
+        title &&
+        (ts.isStringLiteral(title.initializer) || ts.isNoSubstitutionTemplateLiteral(title.initializer)) &&
+        !/^[A-Z0-9_]+(?:\.[A-Z0-9_]+)+$/.test(title.initializer.text) &&
+        !catalogKeys.has(title.initializer.text)
+      ) {
         const normalized = normalize(title.initializer.text);
         const key = reverseCatalog.get(normalized) ?? keyFor(normalized);
         if (!reverseCatalog.has(normalized)) {
@@ -133,8 +131,14 @@ if (applyChanges) {
   }
 }
 
-console.log(JSON.stringify({
-  mode: applyChanges ? 'apply' : 'dry-run',
-  replacements: replacementCount,
-  generatedKeys: generated.size
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      mode: applyChanges ? 'apply' : 'dry-run',
+      replacements: replacementCount,
+      generatedKeys: generated.size
+    },
+    null,
+    2
+  )
+);

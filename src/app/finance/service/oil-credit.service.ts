@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
- import { OilCredit } from '../models/OilCredit';
+import { OilCredit } from '../models/OilCredit';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../shared/models/api-response';
 
@@ -27,7 +27,6 @@ export class OilCreditService {
     return this.http.get<any>(`${this.baseUrl}/fetch/${id}`);
   }
 
-
   // Create a new OilCreditcc. The OilCreditcc payload may include qualityControlResults.
   createOilCredit(OilCredit: OilCredit): Observable<ApiResponse<OilCredit>> {
     return this.http.post<ApiResponse<OilCredit>>(this.baseUrl, OilCredit);
@@ -37,6 +36,4 @@ export class OilCreditService {
   updateOilCredit(OilCredit: OilCredit): Observable<ApiResponse<OilCredit>> {
     return this.http.put<ApiResponse<OilCredit>>(`${this.baseUrl}`, OilCredit);
   }
-
-
 }

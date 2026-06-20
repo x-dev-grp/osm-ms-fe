@@ -5,17 +5,18 @@ import { AdminAuthGuard } from '../interceptors/guards/admin-auth.guard';
 const routes: Routes = [
   {
     path: 'dashboard',
-    loadComponent: () => import('./administration-dashboard/administration-dashboard.component').then(m => m.AdministrationDashboardComponent),
+    loadComponent: () =>
+      import('./administration-dashboard/administration-dashboard.component').then((m) => m.AdministrationDashboardComponent),
     canActivate: [AdminAuthGuard]
   },
   {
     path: 'add-company-user',
-    loadComponent: () => import('./add-company-user/add-company-user.component').then(m => m.AddCompanyUserComponent),
+    loadComponent: () => import('./add-company-user/add-company-user.component').then((m) => m.AddCompanyUserComponent),
     canActivate: [AdminAuthGuard]
   },
   {
     path: 'osm-admins/add',
-    loadComponent: () => import('./add-osm-admin-user/add-osm-admin-user.component').then(m => m.AddOsmAdminUserComponent),
+    loadComponent: () => import('./add-osm-admin-user/add-osm-admin-user.component').then((m) => m.AddOsmAdminUserComponent),
     canActivate: [AdminAuthGuard]
   },
   {
@@ -35,4 +36,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AdministrationRoutingModule { }
+export class AdministrationRoutingModule {}

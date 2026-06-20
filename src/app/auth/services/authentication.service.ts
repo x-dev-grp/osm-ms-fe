@@ -1,8 +1,7 @@
-// angular import
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, Injector, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, Subject, EMPTY } from 'rxjs';
+import { EMPTY, Observable, Subject, switchMap } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 
 // project import
@@ -12,6 +11,11 @@ import { TokenService } from 'src/app/auth/services/tokenService.service';
 import { Role } from 'src/app/theme/types/role';
 import { UserService } from '../../settings/user-management/services/user.service';
 import { buildUserPhotoDataUrl } from '../../shared/utils/user-initials.util';
+import { NotificationService } from '../../shared/services/notification.service';
+import { PermissionService } from '../../settings/user-management/services/permission.service';
+import { CompanyProfileService } from '../../shared/services/company-profile.service';
+import { ChatService } from '../../shared/services/chat.service';
+import { ChatStompService } from '../../shared/services/chat-stomp.service';
 
 export interface SessionRefreshResponse {
   access_token: string;
@@ -25,7 +29,8 @@ export class AuthenticationService {
   private http = inject(HttpClient);
   private _tokenService = inject(TokenService);
   private userService = inject(UserService);
-  private readonly STORAGE_KEY = 'company_profile';
+  private permissionService = inject(PermissionService);
+  private readonly injector = inject(Injector);
   readonly currentUserSignal = signal<User | null>(null);
   readonly userPhotoPreviewSignal = signal<string | null>(null);
   private permissionsChangedSubject = new Subject<void>();
@@ -33,6 +38,8 @@ export class AuthenticationService {
   private sessionSyncStarted = false;
   private sessionRefreshInProgress = false;
   private bootstrapCompleted = false;
+  private sessionSyncIntervalId: ReturnType<typeof setInterval> | null = null;
+  private sessionVisibilityHandler: (() => void) | null = null;
 
   constructor() {
     // Session restore runs via APP_INITIALIZER (bootstrapSession).
@@ -63,7 +70,7 @@ export class AuthenticationService {
         return;
       }
 
-      if (!this.applyAccessToken(token, false)) {
+      if (!this.applyAccessToken(token, { notifyOnChange: false, reloadPhoto: true })) {
         this.restoreSessionWithRefresh(finishBootstrap);
         return;
       }
@@ -78,7 +85,6 @@ export class AuthenticationService {
   }
 
   public get currentUserValue(): User | null {
-    // Access the current user valueg from the signal
     return this.currentUserSignal();
   }
 
@@ -133,7 +139,13 @@ export class AuthenticationService {
       .subscribe();
   }
 
-  applyAccessToken(accessToken: string, notifyOnChange = true): boolean {
+  applyAccessToken(
+    accessToken: string,
+    options: { notifyOnChange?: boolean; reloadPhoto?: boolean } = {}
+  ): boolean {
+    const notifyOnChange = options.notifyOnChange ?? true;
+    const reloadPhoto = options.reloadPhoto ?? true;
+
     if (!accessToken) {
       return false;
     }
@@ -152,8 +164,14 @@ export class AuthenticationService {
     user.role = role;
     user.permissions = permissions;
     this.setCurrentUserValue = user;
-    this.loadUserPhoto();
+
+    if (reloadPhoto) {
+      this.loadUserPhoto();
+    }
+
     this.startSessionSync();
+    this.injector.get(ChatStompService).reconnect();
+    this.injector.get(ChatService).refreshUnreadCount();
 
     if (notifyOnChange) {
       const currentPermissions = this.normalizedPermissions().join('|');
@@ -170,14 +188,32 @@ export class AuthenticationService {
       return EMPTY;
     }
 
+    if (this._tokenService.isAccessTokenExpired()) {
+      const refreshToken = this._tokenService.getRefreshToken();
+      if (!refreshToken) {
+        return EMPTY;
+      }
+      return this.refreshToken(refreshToken).pipe(
+        switchMap((response) => {
+          if (!response?.['access_token']) {
+            return EMPTY;
+          }
+          return this.postRefreshSession();
+        })
+      );
+    }
+
+    return this.postRefreshSession();
+  }
+
+  private postRefreshSession(): Observable<SessionRefreshResponse> {
     this.sessionRefreshInProgress = true;
     return this.http
       .post<SessionRefreshResponse>(`${environment.apiUrl}/api/security/user/me/refresh-session`, {})
       .pipe(
         tap((response) => {
           if (response?.access_token) {
-            this.applyAccessToken(response.access_token);
-            this.permissionsChangedSubject.next();
+            this.applyAccessToken(response.access_token, { notifyOnChange: true, reloadPhoto: false });
           }
         }),
         catchError((error) => {
@@ -200,17 +236,30 @@ export class AuthenticationService {
     }
     this.sessionSyncStarted = true;
 
-    document.addEventListener('visibilitychange', () => {
+    this.sessionVisibilityHandler = () => {
       if (document.visibilityState === 'visible' && this._tokenService.getToken()) {
         this.refreshSessionSilently();
       }
-    });
+    };
+    document.addEventListener('visibilitychange', this.sessionVisibilityHandler);
 
-    window.setInterval(() => {
+    this.sessionSyncIntervalId = window.setInterval(() => {
       if (this._tokenService.getToken()) {
         this.refreshSessionSilently();
       }
     }, 5 * 60 * 1000);
+  }
+
+  private stopSessionSync(): void {
+    if (this.sessionSyncIntervalId !== null) {
+      clearInterval(this.sessionSyncIntervalId);
+      this.sessionSyncIntervalId = null;
+    }
+    if (this.sessionVisibilityHandler && typeof document !== 'undefined') {
+      document.removeEventListener('visibilitychange', this.sessionVisibilityHandler);
+      this.sessionVisibilityHandler = null;
+    }
+    this.sessionSyncStarted = false;
   }
 
   hasPermission(permission: string): boolean {
@@ -246,16 +295,11 @@ export class AuthenticationService {
     return user?.role === role || false;
   }
 
-  /**
-   * Checks if the user has any of the specified permissions
-   * @param permissions - An array of permission strings to check
-   * @returns Returns true if the user has at least one of the specified permissions, false otherwise
-   */
   hasAnyPermission(permissions: string[]): boolean {
-    return permissions.some((permission) => this.hasPermission(permission)); // Using Array.some() to check if at least one permission exists
+    return permissions.some((permission) => this.hasPermission(permission));
   }
   hasAnyModule(modules: string[]): boolean {
-    return modules.some((m) => this.hasModule(m)); // Using Array.some() to check if at least one permission exists
+    return modules.some((m) => this.hasModule(m));
   }
 
   hasAllPermissions(permissions: string[]): boolean {
@@ -276,17 +320,7 @@ export class AuthenticationService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'
     });
-    // Logging for debugging in production
-    console.log('[AuthService] Login request:', {
-      url: AppConfig.authentication.authorization,
-      payload: { ...payload, password: '***' }, // mask password
-      headers: headers.keys().reduce((acc, key) => ({ ...acc, [key]: headers.get(key) }), {})
-    });
     return this.http.post<Record<string, unknown>>(`${AppConfig.authentication.authorization}`, body.toString(), { headers }).pipe(
-      // Log the response for debugging
-      tap((response) => {
-        console.log('[AuthService] Login response:', response);
-      }),
       catchError((error) => {
         console.error('[AuthService] Login error:', error);
         throw error;
@@ -310,18 +344,22 @@ export class AuthenticationService {
           this._tokenService.setRefreshToken(refreshTokenValue);
         }
         if (accessToken) {
-          this.applyAccessToken(accessToken);
+          this.applyAccessToken(accessToken, { notifyOnChange: true, reloadPhoto: true });
         }
       })
     );
   }
 
   logout(queryParams?: string) {
+    this.stopSessionSync();
+    this.injector.get(NotificationService).stopPolling();
+    this.injector.get(ChatStompService).disconnect();
+    this.injector.get(ChatService).reset();
+    this.permissionService.clearCache();
+    this.injector.get(CompanyProfileService).clearCache();
     this._tokenService.clearTokens();
-    localStorage.removeItem(this.STORAGE_KEY);
     this.setCurrentUserValue = null;
     this.setUserPhotoPreview(null);
-    this.sessionSyncStarted = false;
     if (!queryParams) {
       this.router.navigate(['/auth/login']);
       return;

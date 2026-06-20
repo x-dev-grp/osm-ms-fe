@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
-import { MatFormField } from '@angular/material/form-field';
 import { SupplierComponent } from '../../shared/modules/supplierList/supplier.component';
 import { SharedModule } from '../../shared/shared.module';
 import { DecimalPipe, NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+
 export interface ChangeSupplierDto {
   /** Path param */
   storageId: string;
@@ -18,7 +18,7 @@ export interface ChangeSupplierDto {
   selector: 'app-assign-supplier',
   templateUrl: './assign-supplier.component.html',
   standalone: true,
-  imports: [TranslateModule, MatDialogContent, MatFormField, SupplierComponent, SharedModule, DecimalPipe, NgIf],
+  imports: [TranslateModule, MatDialogContent, SupplierComponent, SharedModule, DecimalPipe, NgIf],
   styleUrls: ['./assign-supplier.component.scss']
 })
 export class AssignSupplierComponent implements OnInit {

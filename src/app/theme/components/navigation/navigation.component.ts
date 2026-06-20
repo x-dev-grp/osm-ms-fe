@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit, effect, inject, input, viewChild } from '@angular/core';
+import { Component, effect, inject, input, OnInit, viewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 
@@ -7,7 +7,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { NavigationItem } from '../../types/navigation';
 import { MatDrawer, MatDrawerMode } from '@angular/material/sidenav';
 import { ThemeLayoutService } from '../../services/theme-layout.service';
-import { MIN_WIDTH_1025PX, MAX_WIDTH_1024PX } from 'src/app/theme/const';
+import { MAX_WIDTH_1024PX, MIN_WIDTH_1025PX } from 'src/app/theme/const';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { ComponentGroupComponent } from './group/group.component';

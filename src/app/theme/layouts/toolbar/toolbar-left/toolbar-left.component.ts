@@ -7,7 +7,7 @@ import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service'
 import { SharedModule } from 'src/app/shared/shared.module';
 
 // const import
-import { MIN_WIDTH_768PX, MAX_WIDTH_767PX, VERTICAL, HORIZONTAL, COMPACT } from 'src/app/theme/const';
+import { COMPACT, HORIZONTAL, MAX_WIDTH_767PX, MIN_WIDTH_768PX, VERTICAL } from 'src/app/theme/const';
 
 @Component({
   selector: 'app-nav-left',

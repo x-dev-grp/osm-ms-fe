@@ -24,7 +24,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
       color: 'secondary',
       icon: 'file_copy',
       disabled: {
-         value: false
+        value: false
       }
     }
   ],
@@ -40,8 +40,6 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
         {
           operation: SearchOperation.OR,
           searchs: [
-
-
             {
               operation: SearchOperation.AND,
               search: {
@@ -108,7 +106,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       valueAttributeType: AttributeType.enum,
       options: [
-        { label: 'Huile', value: 'OIL' , labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL'},
+        { label: 'Huile', value: 'OIL', labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL' },
         {
           label: 'Olive',
           labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE',
@@ -134,7 +132,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'price',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,
@@ -146,7 +144,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'unpaidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
@@ -158,7 +156,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'paidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant partiallment',
       labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
       attributeType: AttributeType.number,
@@ -197,7 +195,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'poidsNet',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Poids net (kg)',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
@@ -210,7 +208,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
 
     {
       name: 'oilQuantity',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Qté huile (KG)',
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
       attributeType: AttributeType.number,
@@ -236,10 +234,10 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
         { label: 'OC', value: 'OC', labelTranslatePath: 'OC' }
       ]
     },
-     {
+    {
       name: 'paid',
       label: 'Payé',
-      calculateTotal:true,
+      calculateTotal: true,
       labelTranslatePath: 'Payé',
       attributeType: AttributeType.boolean,
       exportable: true,

@@ -1,23 +1,21 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import {
-  FormsModule,
-  ReactiveFormsModule,
+  AbstractControl,
+  FormArray,
   FormBuilder,
   FormGroup,
-  FormArray,
-  Validators,
-  AbstractControl, ValidationErrors
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
 } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BonCommandeService } from '../../../services/bon-commande.service';
 import { ArticleService } from '../../../services/article.service';
 import { Article } from '../../../models/article.model';
-import { BonCommande, StatutBonCommande } from '../../../models/bon-commande.model';
-import { ApiResponse } from "../../../../shared/models/api-response";
-import { TranslateModule } from '@ngx-translate/core';
+import { StatutBonCommande } from '../../../models/bon-commande.model';
 
 @Component({
   selector: 'app-bc-form',
@@ -101,9 +99,8 @@ export class BcFormComponent implements OnInit {
     this.activeLigneIndex = index;
 
     if (term.length > 0) {
-      this.filteredArticles = this.articles.filter(article =>
-        article.nom.toLowerCase().includes(term) ||
-        (article.categorie && article.categorie.toLowerCase().includes(term))
+      this.filteredArticles = this.articles.filter(
+        (article) => article.nom.toLowerCase().includes(term) || (article.categorie && article.categorie.toLowerCase().includes(term))
       );
       this.showArticleDropdown = true;
     } else {
@@ -127,7 +124,7 @@ export class BcFormComponent implements OnInit {
   prepareFormData(): any {
     const formValue = this.bcForm.value;
     const bonCommande: any = {
-      dateReceptionPrevue: formValue.dateReceptionPrevue ? formValue.dateReceptionPrevue + "T00:00:00" : null,
+      dateReceptionPrevue: formValue.dateReceptionPrevue ? formValue.dateReceptionPrevue + 'T00:00:00' : null,
       lignes: formValue.lignes.map((ligne: any) => ({
         articleId: ligne.articleId,
         quantiteCommandee: ligne.quantiteCommandee,
@@ -196,7 +193,7 @@ export class BcFormComponent implements OnInit {
     return this.lignes.length;
   }
   private markFormGroupTouched(formGroup: FormGroup | FormArray) {
-    Object.keys(formGroup.controls).forEach(key => {
+    Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
       if (control instanceof FormGroup || control instanceof FormArray) {
         this.markFormGroupTouched(control);
@@ -206,9 +203,12 @@ export class BcFormComponent implements OnInit {
     });
   }
 
-  get dateReceptionTouched() { return this.bcForm.get('dateReceptionPrevue')?.touched; }
-  get dateReceptionErrors() { return this.bcForm.get('dateReceptionPrevue')?.errors; }
-
+  get dateReceptionTouched() {
+    return this.bcForm.get('dateReceptionPrevue')?.touched;
+  }
+  get dateReceptionErrors() {
+    return this.bcForm.get('dateReceptionPrevue')?.errors;
+  }
 
   futureDateValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null;

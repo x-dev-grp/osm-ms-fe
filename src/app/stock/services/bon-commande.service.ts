@@ -16,21 +16,15 @@ export class BonCommandeService {
   constructor(private http: HttpClient) {}
 
   getAllBonsCommande(): Observable<BonCommande[]> {
-    return this.http.get<ApiResponse<BonCommande>>(`${this.apiUrl}/fetchAll`).pipe(
-      map((response) => response?.data ?? [])
-    );
+    return this.http.get<ApiResponse<BonCommande>>(`${this.apiUrl}/fetchAll`).pipe(map((response) => response?.data ?? []));
   }
 
   getBonCommandeById(id: string): Observable<BonCommande> {
-    return this.http.get<ApiSingleResponse<BonCommande>>(`${this.apiUrl}/fetch/${id}`).pipe(
-      map((response) => response.data)
-    );
+    return this.http.get<ApiSingleResponse<BonCommande>>(`${this.apiUrl}/fetch/${id}`).pipe(map((response) => response.data));
   }
 
   createBonCommande(bonCommande: BonCommande): Observable<BonCommande> {
-    return this.http.post<ApiSingleResponse<BonCommande>>(this.apiUrl, bonCommande).pipe(
-      map((response) => response.data)
-    );
+    return this.http.post<ApiSingleResponse<BonCommande>>(this.apiUrl, bonCommande).pipe(map((response) => response.data));
   }
 
   validerBonCommande(id: string): Observable<ApiResponse<BonCommande>> {
@@ -42,9 +36,9 @@ export class BonCommandeService {
   }
 
   receptionnerCommande(id: string, lignes: { id: string; quantiteRecue: number }[]): Observable<BonCommande> {
-    return this.http.post<ApiResponse<BonCommande>>(`${this.apiUrl}/${id}/receptionner`, lignes).pipe(
-      map((response) => response?.data?.[0] as BonCommande)
-    );
+    return this.http
+      .post<ApiResponse<BonCommande>>(`${this.apiUrl}/${id}/receptionner`, lignes)
+      .pipe(map((response) => response?.data?.[0] as BonCommande));
   }
 
   generateQr(bonCommandeId: string): Observable<QrCodeInfo> {

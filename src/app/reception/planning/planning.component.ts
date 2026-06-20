@@ -7,7 +7,8 @@ import {
   ElementRef,
   HostListener,
   OnDestroy,
-  OnInit, TemplateRef,
+  OnInit,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
 import { CdkDragDrop, CdkDragEnter, CdkDragMove, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -45,10 +46,10 @@ import {
   PlanningItem,
   PlanningSaveRequest
 } from '../../shared/models/planningDTOS';
-import { FilterLotPipe, boardItemMatchesSearch } from '../../shared/pipes/FilterLotPipe';
+import { boardItemMatchesSearch, FilterLotPipe } from '../../shared/pipes/FilterLotPipe';
 import { ToastService } from '../../shared/services/toast.service';
 import { CardComponent } from '../../theme/components/card/card.component';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
 import { ApiResponse } from '../../shared/models/api-response';
 

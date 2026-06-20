@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, Input, input } from '@angular/core';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { getUserInitials } from 'src/app/shared/utils/user-initials.util';
 

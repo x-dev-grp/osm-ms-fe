@@ -58,8 +58,7 @@ let completed = 0;
 async function worker() {
   while (cursor < jobs.length) {
     const job = jobs[cursor++];
-    locales[job.language].AUTO[job.key] =
-      await translate(job.source, job.language);
+    locales[job.language].AUTO[job.key] = await translate(job.source, job.language);
     completed += 1;
     if (completed % 100 === 0) {
       console.log(`Translated ${completed}/${jobs.length}`);

@@ -1,6 +1,6 @@
 import { parseTemplate } from '@angular/compiler';
 import { createHash } from 'node:crypto';
-import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -11,18 +11,8 @@ const localePaths = {
   fr: path.join(root, 'src', 'assets', 'i18n', 'fr.json'),
   ar: path.join(root, 'src', 'assets', 'i18n', 'ar.json')
 };
-const translatableAttributes = new Set([
-  'aria-label',
-  'matTooltip',
-  'placeholder',
-  'title'
-]);
-const skippedElements = new Set([
-  'code',
-  'mat-icon',
-  'script',
-  'style'
-]);
+const translatableAttributes = new Set(['aria-label', 'matTooltip', 'placeholder', 'title']);
+const skippedElements = new Set(['code', 'mat-icon', 'script', 'style']);
 
 function flatten(value, prefix = '', output = new Map()) {
   for (const [key, child] of Object.entries(value)) {
@@ -45,10 +35,7 @@ function normalize(value) {
 
 function isVisibleText(value) {
   const normalized = normalize(value);
-  return normalized.length > 1
-    && /[\p{L}]/u.test(normalized)
-    && !normalized.includes('{{')
-    && !normalized.includes('}}');
+  return normalized.length > 1 && /[\p{L}]/u.test(normalized) && !normalized.includes('{{') && !normalized.includes('}}');
 }
 
 function keyFor(value) {
@@ -78,7 +65,7 @@ async function listHtmlFiles(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
-      files.push(...await listHtmlFiles(fullPath));
+      files.push(...(await listHtmlFiles(fullPath)));
     } else if (entry.isFile() && entry.name.endsWith('.html')) {
       files.push(fullPath);
     }
@@ -125,9 +112,7 @@ for (const filePath of await listHtmlFiles(appRoot)) {
 
   function visit(node, parentName = '') {
     const nodeName = node.name ?? parentName;
-    if (node.constructor.name.startsWith('Text')
-        && !skippedElements.has(parentName)
-        && isVisibleText(node.value)) {
+    if (node.constructor.name.startsWith('Text') && !skippedElements.has(parentName) && isVisibleText(node.value)) {
       const leading = node.value.match(/^\s*/)?.[0] ?? '';
       const trailing = node.value.match(/\s*$/)?.[0] ?? '';
       const key = resolveKey(node.value);
@@ -145,9 +130,7 @@ for (const filePath of await listHtmlFiles(appRoot)) {
           continue;
         }
         const key = resolveKey(attribute.value);
-        const bindingName = attribute.name === 'aria-label'
-          ? 'attr.aria-label'
-          : attribute.name;
+        const bindingName = attribute.name === 'aria-label' ? 'attr.aria-label' : attribute.name;
         replacements.push({
           start: attribute.sourceSpan.start.offset,
           end: attribute.sourceSpan.end.offset,
@@ -182,9 +165,7 @@ for (const filePath of await listHtmlFiles(appRoot)) {
 
   let updated = source;
   for (const replacement of replacements.sort((a, b) => b.start - a.start)) {
-    updated = updated.slice(0, replacement.start)
-      + replacement.value
-      + updated.slice(replacement.end);
+    updated = updated.slice(0, replacement.start) + replacement.value + updated.slice(replacement.end);
   }
 
   changedFiles.push(path.relative(root, filePath));
@@ -204,11 +185,17 @@ if (applyChanges) {
   }
 }
 
-console.log(JSON.stringify({
-  mode: applyChanges ? 'apply' : 'dry-run',
-  changedFiles: changedFiles.length,
-  textReplacements: replacementCount,
-  attributeReplacements: attributeCount,
-  generatedKeys: generated.size,
-  files: changedFiles
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      mode: applyChanges ? 'apply' : 'dry-run',
+      changedFiles: changedFiles.length,
+      textReplacements: replacementCount,
+      attributeReplacements: attributeCount,
+      generatedKeys: generated.size,
+      files: changedFiles
+    },
+    null,
+    2
+  )
+);

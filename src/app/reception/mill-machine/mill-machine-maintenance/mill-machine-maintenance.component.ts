@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,15 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
- import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { SharedModule } from '../../../shared/shared.module';
 import { MillMachine } from '../../../shared/models/millMachine';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
 import { ToastService } from '../../../shared/services/toast.service';
-import { ApiResponse } from '../../../shared/models/api-response';
-import { Mill } from '../../../shared/models/planningDTOS';
-import { TranslateModule } from '@ngx-translate/core';
 
 interface MaintenanceData {
   maintenanceType: string;
@@ -37,7 +33,8 @@ interface MaintenanceData {
   templateUrl: './mill-machine-maintenance.component.html',
   styleUrls: ['./mill-machine-maintenance.component.scss'],
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -115,7 +112,6 @@ export class MillMachineMaintenanceComponent implements OnInit {
             });
           }
           this.toast.success(response.message);
-
         } else {
           this.toast.error(response.message || 'AUTO.FAILED_TO_LOAD_MACHINE');
         }
@@ -177,6 +173,4 @@ export class MillMachineMaintenanceComponent implements OnInit {
   cancel(): void {
     this.router.navigate(['/reception/mill-machines']);
   }
-
-
 }

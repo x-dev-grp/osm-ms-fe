@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +15,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
-import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnement.model';
+import { Statue } from '../../../models/ligne-conditionnement.model';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AssignableUser, UserService } from '../../../../settings/user-management/services/user.service';
 import { Action, InventoryEntity, OSMModule } from '../../../../theme/types/permissions';
@@ -24,10 +24,10 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-ligne-form',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
-    RouterLink,
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
@@ -73,18 +73,21 @@ export class LigneFormComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.ligneForm = this.fb.group({
-      nom: ['', [Validators.required, Validators.minLength(3)]],
-      description: [''],
-      etat: [Statue.ACTIF, Validators.required],
-      vitesseNominale: [0, [Validators.min(0)]],
-      tempsPreparation: [0, [Validators.min(0)]],
-      tempsNettoyage: [0, [Validators.min(0)]],
-      responsable: [''],
-      dateDerniereMaintenance: [null],
-      dateProchaineMaintenance: [null],
-      notes: ['']
-    }, { validators: this.dateValidator });
+    this.ligneForm = this.fb.group(
+      {
+        nom: ['', [Validators.required, Validators.minLength(3)]],
+        description: [''],
+        etat: [Statue.ACTIF, Validators.required],
+        vitesseNominale: [0, [Validators.min(0)]],
+        tempsPreparation: [0, [Validators.min(0)]],
+        tempsNettoyage: [0, [Validators.min(0)]],
+        responsable: [''],
+        dateDerniereMaintenance: [null],
+        dateProchaineMaintenance: [null],
+        notes: ['']
+      },
+      { validators: this.dateValidator }
+    );
   }
 
   private loadLigne(id: string): void {
@@ -110,11 +113,7 @@ export class LigneFormComponent implements OnInit {
   private loadResponsables(): void {
     this.loadingResponsables.set(true);
 
-    this.userService.getUsersByPermission(
-      OSMModule.INVENTAIR,
-      InventoryEntity.LIGNECONDITIONNEMENT,
-      Action.READ
-    ).subscribe({
+    this.userService.getUsersByPermission(OSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ).subscribe({
       next: (users) => {
         this.responsables.set(users || []);
         this.ensureCurrentResponsableInList();

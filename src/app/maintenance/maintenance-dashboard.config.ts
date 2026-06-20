@@ -1,5 +1,5 @@
- import { SearchOperation } from '../shared/models/advanced-search/searchOperation';
- import { AttributeType, DashboardConfig, FieldType } from '../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../shared/models/advanced-search/searchOperation';
+import { AttributeType, DashboardConfig, FieldType } from '../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const MAINTENANCE_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'handyman',

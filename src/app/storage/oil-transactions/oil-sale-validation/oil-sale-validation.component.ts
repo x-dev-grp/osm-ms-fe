@@ -1,6 +1,6 @@
 // osm-ms-fe/src/app/finance/oil-sales/oil-sale-validation-dialog/oil-sale-validation-dialog.component.ts
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
 import { MatFormFieldModule } from '@angular/material/form-field';

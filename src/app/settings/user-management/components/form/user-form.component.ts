@@ -1,4 +1,4 @@
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AfterViewInit, Component, DestroyRef, inject, OnInit } from '@angular/core';
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
@@ -8,7 +8,6 @@ import { catchError, EMPTY, filter, Observable, of, switchMap, tap } from 'rxjs'
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { SearchResponse } from 'src/app/shared/models/advanced-search/searchResponse';
@@ -16,8 +15,6 @@ import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
 import { User } from 'src/app/theme/types/user';
 import { OptionsScrollDirective } from '../../../../shared/directives/options-scroll.directive';
 import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
-import { TranslateModule } from '@ngx-translate/core';
-
 
 @Component({
   selector: 'user-form',
@@ -47,8 +44,7 @@ export class UserFormComponent implements OnInit, AfterViewInit {
       search: {
         isDeleted: {
           equalValue: false
-        },
-
+        }
       }
     }
   };
@@ -70,8 +66,7 @@ export class UserFormComponent implements OnInit, AfterViewInit {
                 ...this.roleCriteria.searchData?.search,
                 roleName: {
                   likeValue: value
-                },
-
+                }
               }
             }
           };
@@ -163,7 +158,7 @@ export class UserFormComponent implements OnInit, AfterViewInit {
     return this._searchService.search(this.roleCriteria, url).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((response: SearchResponse) => {
-        const filteredData=response.data?.filter(role=>!["OSMADMIN","OSMUSER"].includes( role.roleName));
+        const filteredData = response.data?.filter((role) => !['OSMADMIN', 'OSMUSER'].includes(role.roleName));
         this.roles = scroll ? [...this.roles, ...filteredData] : filteredData;
       }),
       catchError((err) => {
@@ -179,9 +174,7 @@ export class UserFormComponent implements OnInit, AfterViewInit {
     }
     this.loading = true;
     const user = this.userForm.value;
-    (!this.updateMode ?
-      this._userService.addUser(user) :
-      this._userService.updateUser(user, this.user?.id))
+    (!this.updateMode ? this._userService.addUser(user) : this._userService.updateUser(user, this.user?.id))
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((response: any) => {
@@ -196,9 +189,9 @@ export class UserFormComponent implements OnInit, AfterViewInit {
           console.log(err);
           if ([504, 503].includes(err?.status)) {
             this.errorMessage = this.i18n.instant('LOGIN.SERVICE_UNAVAILABLE');
-          } else if(err.status==500){
+          } else if (err.status == 500) {
             this.errorMessage = this.i18n.instant('AUTO.INTERNAL_SERVER_ERROR');
-          }else{
+          } else {
             this.errorMessage = err?.error;
           }
           this.loading = false;

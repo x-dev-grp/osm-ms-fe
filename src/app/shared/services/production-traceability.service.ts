@@ -18,8 +18,6 @@ export class ProductionTraceabilityService {
   constructor(private readonly http: HttpClient) {}
 
   getGenealogy(anchorId: string): Observable<ProductionGenealogy> {
-    return this.http
-      .get<ApiResponse<ProductionGenealogy>>(`${this.baseUrl}/genealogy/${anchorId}`)
-      .pipe(map((response) => response.data));
+    return this.http.get<ApiResponse<ProductionGenealogy>>(`${this.baseUrl}/genealogy/${anchorId}`).pipe(map((response) => response.data));
   }
 }

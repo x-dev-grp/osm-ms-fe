@@ -62,12 +62,7 @@ export function findBestMatchingNavigationUrl(currentUrl: string, menuUrls: stri
   return bestMatch;
 }
 
-export function isNavigationUrlActive(
-  currentUrl: string,
-  menuUrl?: string,
-  exactMatch = false,
-  activeMenuUrl?: string | null
-): boolean {
+export function isNavigationUrlActive(currentUrl: string, menuUrl?: string, exactMatch = false, activeMenuUrl?: string | null): boolean {
   if (!menuUrl) {
     return false;
   }
@@ -86,11 +81,7 @@ export function isNavigationUrlActive(
   return urlMatchesCurrentRoute(normalizedCurrentUrl, normalizedMenuUrl);
 }
 
-export function isNavigationItemActive(
-  item: NavigationItem | undefined,
-  currentUrl: string,
-  activeMenuUrl?: string | null
-): boolean {
+export function isNavigationItemActive(item: NavigationItem | undefined, currentUrl: string, activeMenuUrl?: string | null): boolean {
   if (!item) {
     return false;
   }

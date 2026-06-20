@@ -405,7 +405,8 @@ export const BASE_DASHBOARD: DashboardConfig = {
           value: 'OC',
           labelTranslatePath: 'OC'
         }
-      ]    },
+      ]
+    },
     {
       name: 'trtDate',
       label: 'Date traitement',
@@ -509,7 +510,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
       filterAttribute: 'storageUnit.name'
-    },
+    }
   ],
 
   fileName: 'oil_receptions'

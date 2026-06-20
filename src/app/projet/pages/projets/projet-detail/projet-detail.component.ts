@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule, CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,23 +9,14 @@ import { ProjetService } from '../../../services/projet.service';
 import { ProjetDto } from '../../../models/TypeProduit';
 import { OFService } from '../../../../OF/services/OFService';
 import { OrdreFabrication } from '../../../../OF/models/of.model';
-import { ClientType } from "../../../models/client.model";
+import { ClientType } from '../../../models/client.model';
 import { ArticleService } from '../../../../stock/services/article.service';
 import { SKUService } from '../../../../stock/services/sku.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-projet-detail',
   standalone: true,
-  imports: [TranslateModule,
-    CommonModule,
-    CurrencyPipe,
-    DatePipe,
-    TitleCasePipe,
-    MatButtonModule,
-    MatIconModule,
-    RouterModule
-  ],
+  imports: [TranslateModule, CommonModule, CurrencyPipe, DatePipe, TitleCasePipe, MatButtonModule, MatIconModule, RouterModule],
   templateUrl: './projet-detail.component.html',
   styleUrls: ['./projet-detail.component.scss']
 })
@@ -48,7 +38,7 @@ export class ProjetDetailComponent implements OnInit {
 
   get allOfsFinished(): boolean {
     if (!this.ofs || this.ofs.length === 0) return false;
-    return this.ofs.every(of => of.statut === 'TERMINE' || of.statut === 'CLOTURE');
+    return this.ofs.every((of) => of.statut === 'TERMINE' || of.statut === 'CLOTURE');
   }
 
   get remainingOfQuantity(): number {
@@ -124,7 +114,7 @@ export class ProjetDetailComponent implements OnInit {
   private loadCatalogs(): void {
     this.articleService.getActiveArticles().subscribe({
       next: (articles) => {
-        articles.forEach(a => {
+        articles.forEach((a) => {
           if (a.id) {
             this.articlesMap[a.id] = a;
           }

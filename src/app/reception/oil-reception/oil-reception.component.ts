@@ -54,7 +54,8 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
 @Component({
   selector: 'app-oil-reception',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     MatButtonModule,
     MatTableModule,

@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../shared/models/api-response';
-import {Department} from "../model/department.model";
-
+import { Department } from '../model/department.model';
 
 @Injectable({
   providedIn: 'root'

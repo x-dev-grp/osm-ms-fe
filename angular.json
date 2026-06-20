@@ -122,6 +122,8 @@
           },
           "options": {
             "port": 4200,
+            "host": "0.0.0.0",
+            "disableHostCheck": true,
             "proxyConfig": "proxy.conf.json"
           },
           "defaultConfiguration": "development"

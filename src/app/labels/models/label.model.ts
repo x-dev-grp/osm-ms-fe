@@ -1,21 +1,12 @@
 import { QualityGrades } from '../../shared/models/quality-grades.enum';
 
-export type LabelContentStatus =
-  | 'DRAFT'
-  | 'VALIDATED'
-  | 'FINALIZED'
-  | 'EXPORTED_JSON';
+export type LabelContentStatus = 'DRAFT' | 'VALIDATED' | 'FINALIZED' | 'EXPORTED_JSON';
 
 export type LabelLanguage = 'FR' | 'EN' | 'AR';
 
 export type LabelCategory = 'UNIT' | 'COLIS' | 'PALLET';
 
-export type LabelClaimType =
-  | 'MADE_IN_TUNISIA'
-  | 'BIO'
-  | 'COLD_EXTRACTION'
-  | 'PRIVATE_LABEL'
-  | 'OTHER';
+export type LabelClaimType = 'MADE_IN_TUNISIA' | 'BIO' | 'COLD_EXTRACTION' | 'PRIVATE_LABEL' | 'OTHER';
 
 export interface LabelValidationIssueDto {
   field: string;

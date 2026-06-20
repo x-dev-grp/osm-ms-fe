@@ -172,7 +172,6 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     return ['var(--success-500)'];
   }
 
-
   get formattedTotalPaidAmount(): string {
     return this.totalPaidAmount.toFixed(2) + ' TND';
   }
@@ -180,8 +179,6 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   get formattedTotalUnpaidAmount(): string {
     return this.totalUnpaidAmount.toFixed(2) + ' TND';
   }
-
-
 
   ngOnInit(): void {
     this.refreshDailyMetricState();

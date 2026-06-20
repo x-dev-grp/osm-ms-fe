@@ -11,19 +11,12 @@ export function getCreatedDateTimestamp(value?: string | null): number {
   return Number.isNaN(time) ? 0 : time;
 }
 
-export function compareByCreatedDate(
-  a?: string | null,
-  b?: string | null,
-  direction: TableSortDirection = 'desc'
-): number {
+export function compareByCreatedDate(a?: string | null, b?: string | null, direction: TableSortDirection = 'desc'): number {
   const cmp = getCreatedDateTimestamp(a) - getCreatedDateTimestamp(b);
   return direction === 'asc' ? cmp : -cmp;
 }
 
-export function sortRowsByCreatedDate<T extends { createdDate?: string | null }>(
-  rows: T[],
-  direction: TableSortDirection = 'desc'
-): T[] {
+export function sortRowsByCreatedDate<T extends { createdDate?: string | null }>(rows: T[], direction: TableSortDirection = 'desc'): T[] {
   return [...rows].sort((a, b) => compareByCreatedDate(a.createdDate, b.createdDate, direction));
 }
 

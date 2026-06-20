@@ -1,4 +1,4 @@
-import {BomLine} from "./BomLine";
+import { BomLine } from './BomLine';
 
 export interface Bom {
   id?: string;

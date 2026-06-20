@@ -73,18 +73,12 @@ export const dashboardConfig: DashboardConfig = {
       defaultFilter: false,
       dataTable: true,
       exportable: true,
-      options:[
-        {label:"INTERNSHIP",
-         labelTranslatePath: 'AUTO.INTERNSHIP', value:"INTERNSHIP"},
-        {label:"CDI",
-         labelTranslatePath: 'AUTO.CDI', value:"CDI"},
-        {label:"CDD",
-         labelTranslatePath: 'AUTO.CDD', value:"CDD"},
-        {label:"TEMPORARY",
-         labelTranslatePath: 'AUTO.TEMPORARY', value:"TEMPORARY"},
-        {label:"STAGE",
-         labelTranslatePath: 'AUTO.STAGE', value:"STAGE"},
-
+      options: [
+        { label: 'INTERNSHIP', labelTranslatePath: 'AUTO.INTERNSHIP', value: 'INTERNSHIP' },
+        { label: 'CDI', labelTranslatePath: 'AUTO.CDI', value: 'CDI' },
+        { label: 'CDD', labelTranslatePath: 'AUTO.CDD', value: 'CDD' },
+        { label: 'TEMPORARY', labelTranslatePath: 'AUTO.TEMPORARY', value: 'TEMPORARY' },
+        { label: 'STAGE', labelTranslatePath: 'AUTO.STAGE', value: 'STAGE' }
       ]
     },
     {
@@ -99,10 +93,9 @@ export const dashboardConfig: DashboardConfig = {
       dataTable: true,
       exportable: true,
       options: [
-
-        {label: 'ACTIVE', value: 'ACTIVE', labelTranslatePath: 'CONTRAT.STATUS.ACTIVE'},
-        {label: 'EXPIRED', value: 'EXPIRED', labelTranslatePath: 'CONTRAT.STATUS.EXPIRED'},
-        {label: 'SUSPENDED', value: 'SUSPENDED', labelTranslatePath: 'CONTRAT.STATUS.SUSPENDED'}
+        { label: 'ACTIVE', value: 'ACTIVE', labelTranslatePath: 'CONTRAT.STATUS.ACTIVE' },
+        { label: 'EXPIRED', value: 'EXPIRED', labelTranslatePath: 'CONTRAT.STATUS.EXPIRED' },
+        { label: 'SUSPENDED', value: 'SUSPENDED', labelTranslatePath: 'CONTRAT.STATUS.SUSPENDED' }
       ]
     },
     {

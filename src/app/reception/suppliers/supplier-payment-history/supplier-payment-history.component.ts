@@ -21,8 +21,6 @@ import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { BankAccount } from '../../../finance/models/BankAccount';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { AdvancedSearchService } from '../../../shared/services/advanced-serach.service';
 import { SearchData } from '../../../shared/models/advanced-search/searchData';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -40,8 +38,6 @@ import { ConfirmationDialogResult, ConfirmationType } from '../../../shared/serv
 import {
   ConfirmationDialogComponent
 } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { MatButtonToggle } from '@angular/material/button-toggle';
-import { MatTooltip } from '@angular/material/tooltip';
 
 export interface PaymentDialogResult {
   ok: boolean; // true si succès
@@ -85,11 +81,7 @@ const oilQuantity = 'oilQuantity';
     MatNativeDateModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule,
-    MatCheckbox,
-    OsmDashboard,
-    MatButtonToggle,
-    MatTooltip
+    TranslateModule
   ],
   templateUrl: './supplier-payment-history.component.html',
   styleUrls: ['./supplier-payment-history.component.scss']
@@ -399,7 +391,7 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
       )
       .subscribe();
   }
-// Quick-set helpers for amount (bind to the buttons)
+  // Quick-set helpers for amount (bind to the buttons)
   setAmount(v: number | null | undefined) {
     const val = Math.max(0, Number(v || 0));
     this.paymentForm.get('amount')?.setValue(val);

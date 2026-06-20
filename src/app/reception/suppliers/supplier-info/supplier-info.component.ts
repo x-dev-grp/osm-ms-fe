@@ -1,11 +1,11 @@
 import {
-  Component,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  OnInit,
-  OnDestroy,
-  Optional,
+  Component,
   Inject,
+  OnDestroy,
+  OnInit,
+  Optional
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -19,22 +19,12 @@ import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { SupplierType } from '../../../shared/models/supplier-type';
 import { BaseType } from '../../../shared/models/base-type';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatDivider } from '@angular/material/divider';
 import { CardComponent } from '../../../theme/components/card/card.component';
 
 @Component({
   selector: 'app-supplier-info',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    TranslateModule,
-    MatDivider,
-    CardComponent
-  ],
+  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslateModule, CardComponent],
   templateUrl: './supplier-info.component.html',
   styleUrls: ['./supplier-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

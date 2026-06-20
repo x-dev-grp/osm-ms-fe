@@ -1,5 +1,5 @@
 /* confirm-dialog.component.ts */
-import {Component, Inject} from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -7,7 +7,7 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {MatButton} from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

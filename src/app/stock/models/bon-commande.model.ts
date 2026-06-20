@@ -1,4 +1,4 @@
-import { LigneBonCommande } from "./ligne-bon-commande.model";
+import { LigneBonCommande } from './ligne-bon-commande.model';
 
 export interface BonCommande {
   id?: string;

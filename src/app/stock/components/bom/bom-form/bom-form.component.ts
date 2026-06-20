@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { Article, UniteMesure, UniteMesureOption } from '../../../models/article.model';
-import { Bom } from "../../../models/Bom";
-import { FinalProduct, finalProductDisplayName } from "../../../models/final-product.model";
-import { BomService } from "../../../services/BomService";
-import { FinalProductService } from "../../../services/final-product.service";
+import { Bom } from '../../../models/Bom';
+import { FinalProduct, finalProductDisplayName } from '../../../models/final-product.model';
+import { BomService } from '../../../services/BomService';
+import { FinalProductService } from '../../../services/final-product.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
 import { TranslateModule } from '@ngx-translate/core';
-
 
 @Component({
   selector: 'app-bom-form',
@@ -40,12 +39,12 @@ export class BomFormComponent implements OnInit {
     private finalProductService: FinalProductService,
     private articleService: ArticleService,
     private toast: ToastService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
-    this.preselectedFinalProductId = this.route.snapshot.queryParamMap.get('finalProductId')
-      || this.route.snapshot.queryParamMap.get('productId');
+    this.preselectedFinalProductId =
+      this.route.snapshot.queryParamMap.get('finalProductId') || this.route.snapshot.queryParamMap.get('productId');
     this.loadFinalProducts();
     this.loadArticles();
 
@@ -132,12 +131,14 @@ export class BomFormComponent implements OnInit {
         });
         this.lines.clear();
         if (bom.lines && bom.lines.length > 0) {
-          bom.lines.forEach(line => {
-            this.lines.push(this.fb.group({
-              articleId: [line.articleId, Validators.required],
-              quantity: [line.quantity, [Validators.required, Validators.min(0.001)]],
-              unitOfMeasure: [line.unitOfMeasure || UniteMesure.UNITE, Validators.required]
-            }));
+          bom.lines.forEach((line) => {
+            this.lines.push(
+              this.fb.group({
+                articleId: [line.articleId, Validators.required],
+                quantity: [line.quantity, [Validators.required, Validators.min(0.001)]],
+                unitOfMeasure: [line.unitOfMeasure || UniteMesure.UNITE, Validators.required]
+              })
+            );
             this.ensureArticleInList(line.articleId, line.articleName);
           });
         } else {
@@ -152,7 +153,6 @@ export class BomFormComponent implements OnInit {
       }
     });
   }
-
 
   onSubmit(): void {
     if (this.lines.length === 0) {
@@ -206,9 +206,7 @@ export class BomFormComponent implements OnInit {
     const selectedArticleIds = this.lines.controls
       .map((control, idx) => (idx !== lineIndex ? control.get('articleId')?.value : null))
       .filter((id): id is string => !!id && id !== '');
-    return this.articles.filter(
-      (article) => article.id === currentId || !selectedArticleIds.includes(article.id!)
-    );
+    return this.articles.filter((article) => article.id === currentId || !selectedArticleIds.includes(article.id!));
   }
 
   onArticleChange(index: number): void {
@@ -247,7 +245,6 @@ export class BomFormComponent implements OnInit {
       }
     });
   }
-
 
   cancel(): void {
     this.router.navigate(['/stock/boms']);

@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule, DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +12,6 @@ import { EmplacementStock } from '../../../models/emplacement-stock.model';
 import { MouvementStock, TypeMouvement } from '../../../models/mouvement-stock.model';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { mergeStockIntoArticle, stockFromArticle } from '../../../utils/article-stock.util';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-article-detail',
@@ -106,10 +104,7 @@ export class ArticleDetailComponent implements OnInit {
     this.loadingMouvements = true;
     this.stockService.getMouvementsByArticle(this.article.id).subscribe({
       next: (mouvements) => {
-        this.mouvements = mouvements.sort(
-          (a, b) =>
-            new Date(b.dateMouvement ?? '').getTime() - new Date(a.dateMouvement ?? '').getTime()
-        );
+        this.mouvements = mouvements.sort((a, b) => new Date(b.dateMouvement ?? '').getTime() - new Date(a.dateMouvement ?? '').getTime());
         this.movementPage = 1;
         this.loadingMouvements = false;
       },
@@ -243,8 +238,10 @@ export class ArticleDetailComponent implements OnInit {
         this.emplacements = emplacements.filter(
           (emp) =>
             emp.actif !== false &&
-            (emp.disponible !== false && emp.disponible !== 'false' as any) &&
-            (!emp.categorieArticleStocke || String(emp.categorieArticleStocke).toUpperCase() === String(this.article.categorie).toUpperCase())
+            emp.disponible !== false &&
+            emp.disponible !== ('false' as any) &&
+            (!emp.categorieArticleStocke ||
+              String(emp.categorieArticleStocke).toUpperCase() === String(this.article.categorie).toUpperCase())
         );
         this.loadingEmplacements = false;
       },

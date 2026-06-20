@@ -1,18 +1,10 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  ChangeDetectorRef
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import Chart from 'chart.js/auto';
 
 import { StatistiqueService } from '../../../services/statistique.service';
 import { BonCommandeService } from '../../../services/bon-commande.service';
-import { ApiResponse } from '../../../../shared/models/api-response';
 import { BonCommande, StatutBonCommande } from '../../../models/bon-commande.model';
 import { StatistiquesStock } from '../../../models/statistiques.model';
 import { ArticleCritique, MouvementRecent } from '../../../models/stock-dashboard-payload.model';
@@ -30,7 +22,17 @@ interface DashboardLoadOptions {
 @Component({
   selector: 'app-stock-dashboard',
   templateUrl: './stock-dashboard.component.html',
-  imports: [TranslateModule, CommonModule, DatePipe, DecimalPipe, RouterLink, NgClass, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [
+    TranslateModule,
+    CommonModule,
+    DatePipe,
+    DecimalPipe,
+    RouterLink,
+    NgClass,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule
+  ],
   styleUrls: ['./stock-dashboard.component.scss']
 })
 export class StockDashboardComponent implements OnInit, OnDestroy {
@@ -82,8 +84,7 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Dashboard payload failed', err);
-        this.loadError =
-          'Impossible de joindre le service statistiques. Vérifiez que le service inventaire (osm-pack) est démarré.';
+        this.loadError = 'Impossible de joindre le service statistiques. Vérifiez que le service inventaire (osm-pack) est démarré.';
 
         if (!preserveContent) {
           this.stats = null;
@@ -135,9 +136,7 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
       return [];
     }
 
-    return bons
-      .filter((bon) => bon.status === StatutBonCommande.EN_ATTENTE)
-      .slice(0, 5);
+    return bons.filter((bon) => bon.status === StatutBonCommande.EN_ATTENTE).slice(0, 5);
   }
 
   private computeDerivedStats(): void {

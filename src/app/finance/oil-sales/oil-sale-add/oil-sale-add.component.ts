@@ -1,5 +1,13 @@
 import { Component, DestroyRef, inject, OnInit, output } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,8 +35,6 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AdvancedSearchService } from '../../../shared/services/advanced-serach.service';
 import { OilContainer } from '../../../shared/models/oil-container';
-import { OptionsScrollDirective } from '../../../shared/directives/options-scroll.directive';
-import { MatCheckbox } from '@angular/material/checkbox';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { ToastService } from '../../../shared/services/toast.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -56,8 +62,6 @@ import { mapOilSaleToCreateRequest, toLocalDateTimeString } from './oil-sale.map
     MatAutocomplete,
     MatAutocompleteTrigger,
     CardComponent,
-    OptionsScrollDirective,
-    MatCheckbox,
     MatSlideToggle
   ]
 })
@@ -189,9 +193,12 @@ export class OilSaleAddComponent implements OnInit {
     }));
 
     // Use form date or current date
-    const saleDateValue = formValue.saleDate instanceof Date
-      ? toLocalDateTimeString(formValue.saleDate)
-      : (formValue.saleDate ? toLocalDateTimeString(formValue.saleDate) : toLocalDateTimeString(new Date()));
+    const saleDateValue =
+      formValue.saleDate instanceof Date
+        ? toLocalDateTimeString(formValue.saleDate)
+        : formValue.saleDate
+          ? toLocalDateTimeString(formValue.saleDate)
+          : toLocalDateTimeString(new Date());
 
     if (this.isEditing && this.oilSaleId) {
       const updateDto: OilSale = {
@@ -428,7 +435,7 @@ export class OilSaleAddComponent implements OnInit {
   }
 
   private syncDeliveryAddressFromSupplier(supplier: SupplierType | null | undefined): void {
-    const hasAddress = !!(supplier?.address?.trim());
+    const hasAddress = !!supplier?.address?.trim();
     this.oilSaleForm.patchValue(
       {
         useClientAddress: hasAddress,

@@ -136,10 +136,77 @@
     "UPDATE_AVAILABLE": "A new version is available. Reload the app to update.",
     "UNRECOVERABLE_ERROR": "The app could not load correctly. Reloading..."
   },
+  "SIDEBAR": {
+    "BRAND_HOME": "Go to home",
+    "DEFAULT_COMPANY": "My company",
+    "PLATFORM": "OSM Platform"
+  },
+  "CHAT": {
+    "TITLE": "Messages",
+    "CENTER_TITLE": "Messages",
+    "UNREAD": "Unread",
+    "NEW_MESSAGE": "New message",
+    "BACK_TO_INBOX": "Back to inbox",
+    "SEARCH_CONTACTS": "Search colleagues",
+    "SEARCH_CONVERSATIONS": "Search conversations",
+    "NO_CONTACTS": "No colleagues available to message.",
+    "EMPTY_INBOX": "No conversations yet.",
+    "START_CHAT": "Start a conversation",
+    "NO_MESSAGES_YET": "No messages yet",
+    "SELECT_PROMPT": "Select a conversation or start a new message.",
+    "SAY_HELLO": "Send the first message to start the conversation.",
+    "TYPE_MESSAGE": "Write a message",
+    "SEND": "Send",
+    "LOADING": "Loading messages…",
+    "SEND_ERROR": "Could not send the message. Please try again.",
+    "VIEW_ALL": "Open messages"
+  },
   "NOTIFICATIONS": {
     "TITLE": "Notifications",
+    "CENTER_TITLE": "Notification center",
     "EMPTY": "No notifications yet.",
-    "MARK_ALL_READ": "Mark all read"
+    "MARK_ALL_READ": "Mark all read",
+    "MARK_READ": "Mark as read",
+    "VIEW_ALL": "View all",
+    "FILTER_ALL": "All",
+    "FILTER_UNREAD": "Unread",
+    "READ": "Read",
+    "UNREAD": "Unread",
+    "DETAILS": "Details",
+    "SELECT_PROMPT": "Select a notification to read its full content.",
+    "OPEN_ENTITY": "Open related record",
+    "ACTOR": "By {{name}}",
+    "PRIORITY_HIGH": "High priority",
+    "RULES": {
+      "OF_QC_BLOCKED": {
+        "TITLE": "Production order blocked",
+        "RECAP": "{{actor}} blocked OF {{entityLabel}} after a failed quality control."
+      },
+      "MAINTENANCEWORKORDER_CREATED": {
+        "TITLE": "Maintenance scheduled",
+        "RECAP": "{{actor}} created maintenance on {{entityLabel}} ({{maintenanceType}}, {{status}})."
+      },
+      "MAINTENANCEWORKORDER_EXPENSE_RECORDED": {
+        "TITLE": "Maintenance expense recorded",
+        "RECAP": "{{actor}} recorded {{totalCost}} TND maintenance cost on {{entityLabel}}. Invoice: {{invoiceRef}}."
+      },
+      "EXPENSE_CREATED": {
+        "TITLE": "New expense",
+        "RECAP": "{{actor}} created expense {{entityLabel}} for {{amount}} TND ({{category}})."
+      },
+      "UNIFIEDDELIVERY_CREATED": {
+        "TITLE": "New reception",
+        "RECAP": "{{actor}} registered reception {{entityLabel}} ({{deliveryType}})."
+      },
+      "UNIFIEDDELIVERY_QC_COMPLETED": {
+        "TITLE": "Quality control completed",
+        "RECAP": "{{actor}} completed quality control for reception {{entityLabel}} ({{deliveryType}}, {{status}})."
+      },
+      "UNIFIEDDELIVERY_CRUSHING_COMPLETED": {
+        "TITLE": "Crushing completed",
+        "RECAP": "{{actor}} completed crushing for lot {{entityLabel}} (oil: {{oilQuantity}} kg, yield: {{rendement}}%)."
+      }
+    }
   },
   "MAINTENANCE": {
     "SUBTITLE": "Track equipment maintenance, parts used, and linked expenses.",
@@ -1382,7 +1449,9 @@
   "Invoice": "Invoice",
   "Kanban": "Kanban",
   "LOGIN": {
+    "ACCOUNT_LOCKED": "Your account is locked. Contact an administrator.",
     "FORGOT_PASSWORD": "Forgot password?",
+    "NO_ACCESS": "No modules are available for your account. Contact an administrator if you need access.",
     "PASSWORD": "Password",
     "PASSWORDCONFIRM": "Confirm your new password",
     "PASSWORDNEW": "New password",
@@ -1681,9 +1750,6 @@
     "DASHBOARDS": {
       "TITLE": "Dashboards"
     }
-  },
-  "MESSAGES": {
-    "CONFIRM_RESET": "Are you sure you want to reset the form? All unsaved changes will be lost."
   },
   "MILL_MACHINE": {
     "ACTIONS": {

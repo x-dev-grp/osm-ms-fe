@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,21 +9,23 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { CardComponent } from '../../theme/components/card/card.component';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../shared/services/toast.service';
-import { QualityGrades } from '../../finance/models/oil-sale.model';
 
 // Adjust import path to your actual service/model locations
 
-export interface oilVariety { id?: string; name?: string; code?: string; }
-export type   status= 'AVAILABLE' | 'FULL' | 'FILLING' | 'MAINTENANCE' | 'IN_USE' | 'CLEANING' | 'RESERVED' | 'OUT_OF_SERVICE';
+export interface oilVariety {
+  id?: string;
+  name?: string;
+  code?: string;
+}
+export type status = 'AVAILABLE' | 'FULL' | 'FILLING' | 'MAINTENANCE' | 'IN_USE' | 'CLEANING' | 'RESERVED' | 'OUT_OF_SERVICE';
 
 @Component({
   selector: 'app-storage-units-board',

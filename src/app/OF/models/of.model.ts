@@ -1,4 +1,4 @@
-import {LigneOF} from "./LigneOF";
+import { LigneOF } from './LigneOF';
 
 export interface OrdreFabrication {
   id?: string;
@@ -33,7 +33,6 @@ export interface OrdreFabrication {
   motifNC?: string;
 }
 
-
 export enum StatutOF {
   PLANIFIE = 'PLANIFIE',
   EN_COURS = 'EN_COURS',
@@ -41,9 +40,9 @@ export enum StatutOF {
   TERMINE = 'TERMINE',
   CLOTURE = 'CLOTURE',
   EN_ATTENTE = 'EN_ATTENTE',
-ANNULE = 'ANNULE'
+  ANNULE = 'ANNULE'
 }
-export enum  QualityStatus {
+export enum QualityStatus {
   FREE = 'FREE',
-  BLOCKED = 'BLOCKED',
+  BLOCKED = 'BLOCKED'
 }

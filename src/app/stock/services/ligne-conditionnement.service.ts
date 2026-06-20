@@ -16,28 +16,20 @@ export class LigneConditionnementService {
   constructor(private http: HttpClient) {}
 
   getAllLignes(): Observable<LigneConditionnement[]> {
-    return this.http.get<ApiResponse<LigneConditionnement>>(`${this.apiUrl}/fetchAll`).pipe(
-      map((response) => response?.data ?? [])
-    );
+    return this.http.get<ApiResponse<LigneConditionnement>>(`${this.apiUrl}/fetchAll`).pipe(map((response) => response?.data ?? []));
   }
 
   getLigneById(id: string): Observable<LigneConditionnement> {
-    return this.http.get<ApiSingleResponse<LigneConditionnement>>(`${this.apiUrl}/fetch/${id}`).pipe(
-      map((response) => response.data)
-    );
+    return this.http.get<ApiSingleResponse<LigneConditionnement>>(`${this.apiUrl}/fetch/${id}`).pipe(map((response) => response.data));
   }
 
   createLigne(ligne: LigneConditionnement): Observable<LigneConditionnement> {
-    return this.http.post<ApiSingleResponse<LigneConditionnement>>(this.apiUrl, ligne).pipe(
-      map((response) => response.data)
-    );
+    return this.http.post<ApiSingleResponse<LigneConditionnement>>(this.apiUrl, ligne).pipe(map((response) => response.data));
   }
 
   updateLigne(id: string, ligne: LigneConditionnement): Observable<LigneConditionnement> {
     const payload = { ...ligne, id };
-    return this.http.put<ApiSingleResponse<LigneConditionnement>>(this.apiUrl, payload).pipe(
-      map((response) => response.data)
-    );
+    return this.http.put<ApiSingleResponse<LigneConditionnement>>(this.apiUrl, payload).pipe(map((response) => response.data));
   }
 
   deleteLigne(id: string): Observable<void> {

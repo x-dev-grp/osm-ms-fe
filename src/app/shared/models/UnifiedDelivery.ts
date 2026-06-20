@@ -1,11 +1,10 @@
-import {BaseType} from './base-type';
-import {OliveLotStatus} from './OliveLotStatus';
-import {SupplierType} from './supplier-type';
-import {StorageUnitDto} from './StorageUnitDto';
-import {QualityControlResultDto} from './QualityControlResultDto';
+import { BaseType } from './base-type';
+import { OliveLotStatus } from './OliveLotStatus';
+import { SupplierType } from './supplier-type';
+import { StorageUnitDto } from './StorageUnitDto';
+import { QualityControlResultDto } from './QualityControlResultDto';
 import { OperationType } from './operation-type.enum';
 import { Olive_Oil_Type } from './olive-type.enum';
-
 
 export class UnifiedDelivery {
   id!: string;
@@ -29,7 +28,7 @@ export class UnifiedDelivery {
   unpaidAmount?: number | null;
   oilType?: Olive_Oil_Type | null;
   trtDate?: Date | null;
-  operationType?: OperationType ;
+  operationType?: OperationType;
   oliveVariety?: BaseType | null;
   sackCount?: number | null;
   oliveType?: Olive_Oil_Type | null;
@@ -42,13 +41,10 @@ export class UnifiedDelivery {
   qualityControlResults?: QualityControlResultDto[] | null;
   hasQualityControl?: boolean;
   categoryOliveOil?: string;
-  lotOliveNumber?: string| null;
+  lotOliveNumber?: string | null;
 
   publicCode?: string | null;
   qrHex?: string | null;
   qrUrl?: string | null;
   qrImageBase64?: string | null;
 }
-
-
-

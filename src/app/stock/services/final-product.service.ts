@@ -2,10 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {
-  FinalProduct,
-  FinalProductType
-} from '../models/final-product.model';
+import { FinalProduct, FinalProductType } from '../models/final-product.model';
 import { environment } from '../../../environments/environment';
 import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
@@ -19,28 +16,28 @@ export class FinalProductService {
   constructor(private http: HttpClient) {}
 
   getAllFinalProducts(): Observable<FinalProduct[]> {
-    return this.http.get<ApiResponse<FinalProduct>>(`${this.apiUrl}/fetchAll`).pipe(
-      map((response) => (response?.data ?? []).map((finalProduct) => this.normalizeFinalProduct(finalProduct)))
-    );
+    return this.http
+      .get<ApiResponse<FinalProduct>>(`${this.apiUrl}/fetchAll`)
+      .pipe(map((response) => (response?.data ?? []).map((finalProduct) => this.normalizeFinalProduct(finalProduct))));
   }
 
   getFinalProductById(id: string): Observable<FinalProduct> {
-    return this.http.get<ApiSingleResponse<FinalProduct>>(`${this.apiUrl}/fetch/${id}`).pipe(
-      map((response) => this.normalizeFinalProduct(response.data))
-    );
+    return this.http
+      .get<ApiSingleResponse<FinalProduct>>(`${this.apiUrl}/fetch/${id}`)
+      .pipe(map((response) => this.normalizeFinalProduct(response.data)));
   }
 
   createFinalProduct(finalProduct: FinalProduct): Observable<FinalProduct> {
-    return this.http.post<ApiSingleResponse<FinalProduct>>(this.apiUrl, this.toPayload(finalProduct)).pipe(
-      map((response) => this.normalizeFinalProduct(response.data))
-    );
+    return this.http
+      .post<ApiSingleResponse<FinalProduct>>(this.apiUrl, this.toPayload(finalProduct))
+      .pipe(map((response) => this.normalizeFinalProduct(response.data)));
   }
 
   updateFinalProduct(id: string, finalProduct: FinalProduct): Observable<FinalProduct> {
     const payload = { ...this.toPayload(finalProduct), id };
-    return this.http.put<ApiSingleResponse<FinalProduct>>(this.apiUrl, payload).pipe(
-      map((response) => this.normalizeFinalProduct(response.data))
-    );
+    return this.http
+      .put<ApiSingleResponse<FinalProduct>>(this.apiUrl, payload)
+      .pipe(map((response) => this.normalizeFinalProduct(response.data)));
   }
 
   deleteFinalProduct(id: string): Observable<void> {
@@ -56,27 +53,23 @@ export class FinalProductService {
   }
 
   getActiveFinalProducts(): Observable<FinalProduct[]> {
-    return this.http.get<FinalProduct[]>(`${this.apiUrl}/actifs`).pipe(
-      map((finalProducts) => (finalProducts ?? []).map((finalProduct) => this.normalizeFinalProduct(finalProduct)))
-    );
+    return this.http
+      .get<FinalProduct[]>(`${this.apiUrl}/actifs`)
+      .pipe(map((finalProducts) => (finalProducts ?? []).map((finalProduct) => this.normalizeFinalProduct(finalProduct))));
   }
 
   getFinalProductsByType(type: FinalProductType): Observable<FinalProduct[]> {
-    return this.http.get<FinalProduct[]>(`${this.apiUrl}/type/${type}`).pipe(
-      map((finalProducts) => (finalProducts ?? []).map((finalProduct) => this.normalizeFinalProduct(finalProduct)))
-    );
+    return this.http
+      .get<FinalProduct[]>(`${this.apiUrl}/type/${type}`)
+      .pipe(map((finalProducts) => (finalProducts ?? []).map((finalProduct) => this.normalizeFinalProduct(finalProduct))));
   }
 
   getActiveFinalProductsByType(type: FinalProductType): Observable<FinalProduct[]> {
-    return this.getFinalProductsByType(type).pipe(
-      map((finalProducts) => finalProducts.filter((finalProduct) => finalProduct.actif))
-    );
+    return this.getFinalProductsByType(type).pipe(map((finalProducts) => finalProducts.filter((finalProduct) => finalProduct.actif)));
   }
 
   generateQr(finalProductId: string): Observable<QrCodeInfo> {
-    return this.http.get<QrCodeInfo>(
-      `${this.apiUrl}/qr/PRODUITFINAL/${finalProductId}`
-    );
+    return this.http.get<QrCodeInfo>(`${this.apiUrl}/qr/PRODUITFINAL/${finalProductId}`);
   }
 
   searchByCode(code: string): Observable<QrResolveResponse> {

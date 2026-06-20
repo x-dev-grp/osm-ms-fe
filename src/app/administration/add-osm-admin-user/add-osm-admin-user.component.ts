@@ -1,4 +1,4 @@
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField } from '@angular/material/form-field';
@@ -13,12 +13,12 @@ import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of, tap } from 'rxjs';
 import { AdminUserService } from '../services/admin-user.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-osm-admin-user',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     MatButton,
     MatError,
     MatFormField,

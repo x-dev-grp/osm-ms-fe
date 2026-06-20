@@ -54,10 +54,12 @@ export class DailyMetricDialogComponent implements OnInit {
   ngOnInit(): void {
     this.dailyMetric
       .getState(this.data.code)
-      .pipe(finalize(() => {
-        this.loading = false;
-        this.cdr.markForCheck();
-      }))
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        })
+      )
       .subscribe({
         next: (state) => {
           this.state = state;

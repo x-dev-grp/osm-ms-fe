@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { StatistiquesStock } from '../models/statistiques.model';
-import {
-  StockDashboardPayload,
-  ArticleCritique,
-  MouvementRecent
-} from '../models/stock-dashboard-payload.model';
+import { ArticleCritique, MouvementRecent, StockDashboardPayload } from '../models/stock-dashboard-payload.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -40,9 +36,7 @@ export class StatistiqueService {
 
   getMouvementsRecents(limit: number = 10): Observable<MouvementRecent[]> {
     return this.http
-      .get<MouvementRecent[] | { data: MouvementRecent[] }>(
-        `${this.apiUrl}/mouvements/recents?limit=${limit}`
-      )
+      .get<MouvementRecent[] | { data: MouvementRecent[] }>(`${this.apiUrl}/mouvements/recents?limit=${limit}`)
       .pipe(map((body) => this.unwrapList(body)));
   }
 

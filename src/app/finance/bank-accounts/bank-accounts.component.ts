@@ -12,8 +12,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { BankAccountService } from '../service/bankAccount.service';
-import { CompanyProfile } from '../../shared/models/CompanyProfile';
-import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { BANK_ACCOUNTS_DASHBOARD_CONFIG } from './bank-accounts-dashboard.config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { Router } from '@angular/router';
@@ -87,14 +86,11 @@ export class BankAccountsComponent implements OnInit {
         this.router.navigate(['/finance/banks', event.row.id, 'edit']);
         break;
 
-
       default:
         console.log('Unhandled action:', event.action, 'for row:', event.row);
         break;
     }
   }
-
-
 
   private loadBanks(): void {
     // Try to get banks with balances first, fallback to regular if not available
@@ -123,7 +119,4 @@ export class BankAccountsComponent implements OnInit {
       }
     });
   }
-
-
-
- }
+}

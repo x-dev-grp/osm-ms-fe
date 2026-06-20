@@ -108,8 +108,7 @@ export class GenericTypeDialogComponent implements OnInit {
   }
   close(result?: BaseType): void {
     if (this.ref) {
-       this.ref.close(result); // ← retire le `?? true`
+      this.ref.close(result); // ← retire le `?? true`
     }
   }
-
 }

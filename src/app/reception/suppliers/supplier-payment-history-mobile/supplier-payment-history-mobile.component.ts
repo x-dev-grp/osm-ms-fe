@@ -18,9 +18,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-supplier-payment-history-mobile',
@@ -46,10 +43,7 @@ import { MatTooltip } from '@angular/material/tooltip';
     MatNativeDateModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule,
-    MatCheckbox,
-    OsmDashboard,
-    MatTooltip
+    TranslateModule
   ],
   encapsulation: ViewEncapsulation.None
 })
@@ -84,8 +78,7 @@ export class SupplierPaymentHistoryMobileComponent extends SupplierPaymentHistor
     const pct = (this.paidSoFar / this.total) * 100;
     return Math.min(100, Math.max(0, Math.round(pct)));
   }
-  get summaryStatus():
-  | { label: string; icon: string; cls: 'ok'|'warn'|'bad' } {
+  get summaryStatus(): { label: string; icon: string; cls: 'ok' | 'warn' | 'bad' } {
     if (this.total <= 0) return { label: '—', icon: 'help', cls: 'warn' };
     if (this.remaining <= 0) return { label: 'Réglé', icon: 'check_circle', cls: 'ok' };
     if (this.paidSoFar > 0) return { label: 'Partiel', icon: 'hourglass_bottom', cls: 'warn' };
