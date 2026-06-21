@@ -1,5 +1,12 @@
 import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
 
+export interface ListContextConfig {
+  titleTranslatePath?: string;
+  hintTranslatePath?: string;
+  icon?: string;
+  variant?: 'default' | 'olive' | 'inventory';
+}
+
 export interface DashboardConfig {
   icon?: string | null;
   groupedActions?: boolean;
@@ -32,6 +39,8 @@ export interface DashboardConfig {
   hideActions?: boolean;
   /** Action triggered on row double-click. Defaults to READ, then READ_ARTICLE, then DETAIL. */
   doubleClickAction?: string;
+  /** Optional explanatory banner above the list. Set to false to hide. */
+  listContext?: ListContextConfig | false;
 }
 export interface Action {
   label: string;

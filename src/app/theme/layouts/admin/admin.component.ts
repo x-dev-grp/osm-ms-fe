@@ -4,7 +4,6 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDrawer, MatDrawerMode } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AbleProConfig } from 'src/app/app-config';
 import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NavBarComponent } from 'src/app/theme/layouts/toolbar/toolbar.component';
@@ -34,8 +33,6 @@ import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-config.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { PushNotificationService } from '../../../shared/services/push-notification.service';
-import { ChatService } from '../../../shared/services/chat.service';
-import { ChatStompService } from '../../../shared/services/chat-stomp.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -63,27 +60,22 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private themeConfig = inject(ThemeConfigService);
   private notificationService = inject(NotificationService);
   private pushNotificationService = inject(PushNotificationService);
-  private chatService = inject(ChatService);
-  private chatStompService = inject(ChatStompService);
   private router = inject(Router);
 // public props
   readonly sidebar = viewChild<MatDrawer>('sidebar');
   menus: Navigation[] = [];
   modeValue: MatDrawerMode = 'side';
-  direction: string = 'ltr';
+  direction: string = typeof localStorage !== 'undefined' && localStorage.getItem('app_language') === 'ar' ? RTL : LTR;
   currentApplicationVersion = environment.appVersion;
   currentLayout: string = 'vertical';
-  rtlMode: boolean = false;
+  rtlMode: boolean = typeof localStorage !== 'undefined' && localStorage.getItem('app_language') === 'ar';
   windowWidth: number = window.innerWidth;
   protected readonly osm_menus = osm_menus;
   private breakpointObserver = inject(BreakpointObserver);
   private themeService = inject(ThemeLayoutService);
-  private profile: CompanyProfile;
   private cdr: ChangeDetectorRef;
   private destroyRef = inject(DestroyRef);
 
-  // Constructor
-  private error: string;
   constructor() {
     effect(() => {
       this.updateThemeLayout(this.themeService.layout());
@@ -129,13 +121,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     if (this.authenticationService.currentUserValue) {
       this.notificationService.startPolling();
       void this.pushNotificationService.initAfterLogin();
-      this.chatStompService.connect();
-      this.chatService.refreshUnreadCount();
-      this.chatService.loadConversations().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }
 
     this.buildMenus();
-    this.authenticationService.refreshSessionSilently();
     this.authenticationService.permissionsChanged$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
@@ -158,67 +146,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  RoleBaseFilterMenu(menus: Navigation[], userRoles: string[], parentRoles: string[] = [Role.Admin]): Navigation[] {
-    return menus.map((item) => {
-      // If item doesn't have a specific role, inherit roles from parent
-      const itemRoles = item.role ? item.role : parentRoles;
-
-      // If item has children, recursively filter them, passing current item's roles as parentRoles
-      if (item.children) {
-        item.children = this.RoleBaseFilterMenu(item.children, userRoles, itemRoles);
-      }
-
-      return item; // Return the item whether it is visible or disabled
-    });
-  }
   ngAfterViewInit() {
     this.cdr.detectChanges();
   }
 
 
-  private applySavedTheme(): void {
-    // AbleProConfig has already been seeded from localStorage in your config component
-    // We simply read the static fields here:
-
-    // 1) Light/Dark/Auto
-    document.body.classList.remove('light','dark');
-    if (AbleProConfig.isDarkMode === 'light') document.body.classList.add('light');
-    if (AbleProConfig.isDarkMode === 'dark')  document.body.classList.add('dark');
-    // (auto you'd handle separately if desired)
-
-    // 2) Contrast
-    document.body.classList.toggle('gray-contrast', !AbleProConfig.theme_contrast);
-
-    // 3) Sidebar caption
-    document.body.classList.toggle('hide-caption', AbleProConfig.menu_caption);
-
-    // 4) RTL/LTR
-    this.rtlMode = AbleProConfig.isRtlLayout;
-    document.body.dir = this.rtlMode ? 'rtl' : 'ltr';
-
-    // 5) Primary color
-    const themes = [
-      'blue-theme','indigo-theme','purple-theme','pink-theme',
-      'red-theme','orange-theme','yellow-theme','green-theme',
-      'teal-theme','cyan-theme'
-    ];
-    document.body.classList.remove(...themes);
-    document.body.classList.add(AbleProConfig.theme_color);
-
-    // 6) Boxed vs full container
-    document.body.classList.toggle('boxed', AbleProConfig.isBox_container);
-
-    // 7) Menu layout
-    this.currentLayout = AbleProConfig.layout as string;
-  }
-
-  // ────────────────────────────────────
-  // EXISTING METHODS (UNCHANGED)
-  // ────────────────────────────────────
-
-  /**
-   * Loads company profile (name + logo) from cache then API.
-   */
   private loadCompanyProfile(): void {
     const currentUser = this.authenticationService.currentUserValue;
     if (currentUser?.role === Role.OsmAdmin) {
@@ -232,6 +164,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.applyCompanyProfile(cached);
     }
 
+    if (cached && this.companyProfileService.isProfileCacheFresh()) {
+      return;
+    }
+
     this.companyProfileService
       .getProfile()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -242,7 +178,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   private applyCompanyProfile(profile: CompanyProfile): void {
-    this.profile = profile;
     this.companyName = profile.legalName?.trim() || '';
     this.logoPreview = this.companyProfileService.getLogoDataUrlFromCache() ?? this.buildLogoUrl(profile);
     this.cdr.markForCheck();
@@ -259,20 +194,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       return `data:${profile.logoContentType};base64,${profile.logoData}`;
     }
     return profile.logoData;
-  }
-
-  /**
-   * Loads company profile and logo from API or cache
-   */
-  private loadCompanyProfileAndLogo(): void {
-    this.loadCompanyProfile();
-  }
-
-  /**
-   * @deprecated Use loadCompanyProfile()
-   */
-  private loadCompanyLogoFromCache(): void {
-    this.loadCompanyProfile();
   }
 
   /**

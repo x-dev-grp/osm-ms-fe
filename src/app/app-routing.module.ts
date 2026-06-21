@@ -14,12 +14,6 @@ import { receptionRoutes } from './reception/reception.routes';
 import { AdminComponent } from './theme/layouts/admin';
 
 const routes: Routes = [
-  // {
-  //   path: 'welcome',
-  //   loadComponent: () =>
-  //     import('./welcome/welcome.component').then(m => m.WelcomeComponent),
-  // },
-
   {
     path: '',
     component: AdminComponent,
@@ -56,11 +50,6 @@ const routes: Routes = [
         path: 'notifications',
         loadComponent: () =>
           import('./notifications/notification-center.component').then((m) => m.NotificationCenterComponent)
-      },
-      {
-        path: 'messages',
-        loadComponent: () =>
-          import('./messages/messages-center.component').then((m) => m.MessagesCenterComponent)
       },
 
       {

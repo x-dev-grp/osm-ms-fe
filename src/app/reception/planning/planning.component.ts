@@ -11,7 +11,16 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { CdkDragDrop, CdkDragEnter, CdkDragMove, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragEnter,
+  CdkDragMove,
+  CdkDropList,
+  DragDropModule,
+  moveItemInArray,
+  transferArrayItem
+} from '@angular/cdk/drag-drop';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
@@ -121,6 +130,14 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     planning: false,
     mills: false,
     deliveries: false
+  };
+  private static readonly BLOCKED_MILL_STATUSES = new Set(['MAINTENANCE', 'OUT_OF_SERVICE', 'INACTIVE']);
+  canEnterMillDropList = (drag: CdkDrag<BoardItem>, drop: CdkDropList<BoardItem[]>): boolean => {
+    if (drop.id === 'unassigned-list') {
+      return true;
+    }
+    const mill = this.millByDropId(drop.id);
+    return !mill || !this.isMillBlockedForPlanning(mill);
   };
    constructor(
     private deliveryService: UnifiedDeliveryService,
@@ -252,6 +269,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     /* 1 ─ just re-order inside same column ---------------------------------- */
     if (event.previousContainer === event.container) {
       moveItemInArray(destArray, event.previousIndex, event.currentIndex);
+      return;
+    }
+
+    if (destMill && this.isMillBlockedForPlanning(destMill)) {
+      this.toast.warning(this.getMillBlockedDropMessage(destMill));
       return;
     }
 
@@ -395,6 +417,10 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     const globalLotItem: BoardItem = { type: PlanItemType.GLOBAL_LOT, data: globalLot };
     if (millMachineId) {
       const mill = this.mills.find((m) => m.id === millMachineId)!;
+      if (this.isMillBlockedForPlanning(mill)) {
+        this.toast.warning(this.getMillBlockedDropMessage(mill));
+        return;
+      }
       mill.receptions.push(globalLotItem);
     } else {
       this.unassignedReceptions.push(globalLotItem);
@@ -687,8 +713,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error: (err) => {
         console.error('[SavePlan] Error saving planning:', err);
-        console.error('[SavePlan] Full error details:', JSON.stringify(err, null, 2));
-        this.toast.error('AUTO.FAILED_TO_SAVE_PLANNING_PLEASE_TRY_AGAIN');
+        const backendMessage = err?.error?.message ?? err?.error?.error ?? err?.message;
+        this.toast.error(backendMessage || 'AUTO.FAILED_TO_SAVE_PLANNING_PLEASE_TRY_AGAIN');
         this.isSaving = false;
         this.cdr.markForCheck();
       }
@@ -720,6 +746,47 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       return 'near-capacity';
     }
     return '';
+  }
+
+  getMillPanelClass(mill: Mill): string {
+    if (this.isMillBlockedForPlanning(mill)) {
+      return 'mill-blocked';
+    }
+    return this.getMillCapacityClass(mill);
+  }
+
+  isMillBlockedForPlanning(mill: Mill): boolean {
+    return this.getMillBlockedReasonKey(mill) != null;
+  }
+
+  getMillBlockedTooltip(mill: Mill): string {
+    const reasonKey = this.getMillBlockedReasonKey(mill);
+    if (!reasonKey) {
+      return '';
+    }
+    return this.translationservice.instant('RECEPTION.PLANNING.MILL_BLOCKED_TOOLTIP', {
+      mill: mill.name,
+      reason: this.translationservice.instant(reasonKey)
+    });
+  }
+
+  getMillBlockedDropMessage(mill: Mill): string {
+    const reasonKey = this.getMillBlockedReasonKey(mill) ?? 'RECEPTION.PLANNING.MILL_BLOCKED_GENERIC';
+    return this.translationservice.instant('RECEPTION.PLANNING.MILL_BLOCKED_DROP', {
+      mill: mill.name,
+      reason: this.translationservice.instant(reasonKey)
+    });
+  }
+
+  private getMillBlockedReasonKey(mill: Mill): string | null {
+    const status = (mill.operatingStatus ?? '').trim().toUpperCase();
+    if (!status || status === 'OPERATIONAL' || status === 'ACTIVE') {
+      return null;
+    }
+    if (PlanningComponent.BLOCKED_MILL_STATUSES.has(status)) {
+      return `RECEPTION.PLANNING.MILL_BLOCKED_${status}`;
+    }
+    return 'RECEPTION.PLANNING.MILL_BLOCKED_GENERIC';
   }
 
   getGlobalLotEarliestDate(globalLot: GlobalLot): Date | null {

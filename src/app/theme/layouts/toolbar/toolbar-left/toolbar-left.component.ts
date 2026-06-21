@@ -1,13 +1,7 @@
-// angular import
-import { Component, effect, inject, OnInit } from '@angular/core';
-import { BreakpointObserver } from '@angular/cdk/layout';
-
-// project import
+import { Component, effect, inject } from '@angular/core';
 import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service';
 import { SharedModule } from 'src/app/shared/shared.module';
-
-// const import
-import { COMPACT, HORIZONTAL, MAX_WIDTH_767PX, MIN_WIDTH_768PX, VERTICAL } from 'src/app/theme/const';
+import { COMPACT, HORIZONTAL, VERTICAL } from 'src/app/theme/const';
 
 @Component({
   selector: 'app-nav-left',
@@ -16,29 +10,14 @@ import { COMPACT, HORIZONTAL, MAX_WIDTH_767PX, MIN_WIDTH_768PX, VERTICAL } from 
   standalone: true,
   styleUrls: ['./toolbar-left.component.scss']
 })
-export class NavLeftComponent implements OnInit {
+export class NavLeftComponent {
   private themeService = inject(ThemeLayoutService);
-  private breakpointObserver = inject(BreakpointObserver);
 
-  mobileMedia: boolean;
+  showToggleMenu = true;
 
-  // public props
-  showToggleMenu: boolean = true;
-
-  // constructor
   constructor() {
     effect(() => {
       this.updateThemeLayout(this.themeService.layout());
-    });
-  }
-
-  ngOnInit() {
-    this.breakpointObserver.observe([MIN_WIDTH_768PX, MAX_WIDTH_767PX]).subscribe((result) => {
-      if (result.breakpoints[MAX_WIDTH_767PX]) {
-        this.mobileMedia = true;
-      } else if (result.breakpoints[MIN_WIDTH_768PX]) {
-        this.mobileMedia = false;
-      }
     });
   }
 
@@ -46,7 +25,7 @@ export class NavLeftComponent implements OnInit {
     if (layout === VERTICAL) {
       this.showToggleMenu = true;
     }
-    if (layout == HORIZONTAL) {
+    if (layout === HORIZONTAL) {
       this.showToggleMenu = false;
     }
     if (layout === COMPACT) {
@@ -54,7 +33,6 @@ export class NavLeftComponent implements OnInit {
     }
   }
 
-  // public method
   toggleMenu() {
     this.themeService.toggleSideDrawer();
   }

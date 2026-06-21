@@ -2,7 +2,7 @@ import { inject, Injectable, Injector, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, Subject, switchMap } from 'rxjs';
-import { catchError, finalize, tap } from 'rxjs/operators';
+import { catchError, finalize, shareReplay, tap } from 'rxjs/operators';
 
 // project import
 import { AppConfig, environment } from 'src/environments/environment';
@@ -14,8 +14,6 @@ import { buildUserPhotoDataUrl } from '../../shared/utils/user-initials.util';
 import { NotificationService } from '../../shared/services/notification.service';
 import { PermissionService } from '../../settings/user-management/services/permission.service';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
-import { ChatService } from '../../shared/services/chat.service';
-import { ChatStompService } from '../../shared/services/chat-stomp.service';
 
 export interface SessionRefreshResponse {
   access_token: string;
@@ -40,6 +38,14 @@ export class AuthenticationService {
   private bootstrapCompleted = false;
   private sessionSyncIntervalId: ReturnType<typeof setInterval> | null = null;
   private sessionVisibilityHandler: (() => void) | null = null;
+  private lastSessionRefreshAt = 0;
+  private photoRequestUserId: string | null = null;
+  private photoRequestInFlight = false;
+  private sessionRefreshRequest: Observable<SessionRefreshResponse> | null = null;
+  private lastDocumentHiddenAt = 0;
+  private static readonly SESSION_REFRESH_MIN_INTERVAL_MS = 2 * 60 * 1000;
+  private static readonly SESSION_REFRESH_FAILURE_BACKOFF_MS = 5 * 60 * 1000;
+  private static readonly SESSION_VISIBILITY_MIN_HIDDEN_MS = 30 * 1000;
 
   constructor() {
     // Session restore runs via APP_INITIALIZER (bootstrapSession).
@@ -103,12 +109,34 @@ export class AuthenticationService {
   loadUserPhoto(): void {
     if (!this._tokenService.getToken()) {
       this.setUserPhotoPreview(null);
+      this.photoRequestUserId = null;
       return;
     }
 
+    const userId = this.currentUserValue?.id ?? null;
+    if (!userId) {
+      return;
+    }
+
+    if (this.photoRequestInFlight && this.photoRequestUserId === userId) {
+      return;
+    }
+
+    if (this.photoRequestUserId === userId && this.userPhotoPreviewSignal()) {
+      return;
+    }
+
+    this.photoRequestUserId = userId;
+    this.photoRequestInFlight = true;
+
     this.userService
       .getMyPhoto()
-      .pipe(catchError(() => EMPTY))
+      .pipe(
+        catchError(() => EMPTY),
+        finalize(() => {
+          this.photoRequestInFlight = false;
+        })
+      )
       .subscribe((photo) => {
         this.setUserPhotoPreview(buildUserPhotoDataUrl(photo?.photoData, photo?.photoContentType));
       });
@@ -170,8 +198,6 @@ export class AuthenticationService {
     }
 
     this.startSessionSync();
-    this.injector.get(ChatStompService).reconnect();
-    this.injector.get(ChatService).refreshUnreadCount();
 
     if (notifyOnChange) {
       const currentPermissions = this.normalizedPermissions().join('|');
@@ -184,16 +210,31 @@ export class AuthenticationService {
   }
 
   refreshSession(): Observable<SessionRefreshResponse> {
-    if (this.sessionRefreshInProgress || !this._tokenService.getToken()) {
+    if (this.sessionRefreshRequest) {
+      return this.sessionRefreshRequest;
+    }
+
+    if (!this._tokenService.getToken()) {
       return EMPTY;
     }
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      return EMPTY;
+    }
+
+    const now = Date.now();
+    if (now - this.lastSessionRefreshAt < AuthenticationService.SESSION_REFRESH_MIN_INTERVAL_MS) {
+      return EMPTY;
+    }
+
+    let request$: Observable<SessionRefreshResponse>;
 
     if (this._tokenService.isAccessTokenExpired()) {
       const refreshToken = this._tokenService.getRefreshToken();
       if (!refreshToken) {
         return EMPTY;
       }
-      return this.refreshToken(refreshToken).pipe(
+      request$ = this.refreshToken(refreshToken).pipe(
         switchMap((response) => {
           if (!response?.['access_token']) {
             return EMPTY;
@@ -201,23 +242,43 @@ export class AuthenticationService {
           return this.postRefreshSession();
         })
       );
+    } else {
+      request$ = this.postRefreshSession();
     }
 
-    return this.postRefreshSession();
+    this.sessionRefreshRequest = request$.pipe(
+      shareReplay({ bufferSize: 1, refCount: true }),
+      finalize(() => {
+        this.sessionRefreshRequest = null;
+      })
+    );
+
+    return this.sessionRefreshRequest;
   }
 
   private postRefreshSession(): Observable<SessionRefreshResponse> {
     this.sessionRefreshInProgress = true;
     return this.http
-      .post<SessionRefreshResponse>(`${environment.apiUrl}/api/security/user/me/refresh-session`, {})
+      .post<SessionRefreshResponse>(
+        `${environment.apiUrl}/api/security/user/me/refresh-session`,
+        {},
+        { headers: { 'X-Skip-Toast': 'true' } }
+      )
       .pipe(
         tap((response) => {
           if (response?.access_token) {
+            this.lastSessionRefreshAt = Date.now();
             this.applyAccessToken(response.access_token, { notifyOnChange: true, reloadPhoto: false });
           }
         }),
         catchError((error) => {
-          console.warn('[AuthService] Session refresh failed:', error);
+          this.lastSessionRefreshAt =
+            Date.now() -
+            AuthenticationService.SESSION_REFRESH_MIN_INTERVAL_MS +
+            AuthenticationService.SESSION_REFRESH_FAILURE_BACKOFF_MS;
+          if (error?.status !== 0) {
+            console.warn('[AuthService] Session refresh failed:', error);
+          }
           return EMPTY;
         }),
         finalize(() => {
@@ -237,9 +298,21 @@ export class AuthenticationService {
     this.sessionSyncStarted = true;
 
     this.sessionVisibilityHandler = () => {
-      if (document.visibilityState === 'visible' && this._tokenService.getToken()) {
-        this.refreshSessionSilently();
+      if (document.visibilityState === 'hidden') {
+        this.lastDocumentHiddenAt = Date.now();
+        return;
       }
+
+      if (document.visibilityState !== 'visible' || !this._tokenService.getToken()) {
+        return;
+      }
+
+      const hiddenMs = Date.now() - this.lastDocumentHiddenAt;
+      if (hiddenMs < AuthenticationService.SESSION_VISIBILITY_MIN_HIDDEN_MS) {
+        return;
+      }
+
+      this.refreshSessionSilently();
     };
     document.addEventListener('visibilitychange', this.sessionVisibilityHandler);
 
@@ -247,7 +320,7 @@ export class AuthenticationService {
       if (this._tokenService.getToken()) {
         this.refreshSessionSilently();
       }
-    }, 5 * 60 * 1000);
+    }, 15 * 60 * 1000);
   }
 
   private stopSessionSync(): void {
@@ -353,13 +426,13 @@ export class AuthenticationService {
   logout(queryParams?: string) {
     this.stopSessionSync();
     this.injector.get(NotificationService).stopPolling();
-    this.injector.get(ChatStompService).disconnect();
-    this.injector.get(ChatService).reset();
     this.permissionService.clearCache();
     this.injector.get(CompanyProfileService).clearCache();
     this._tokenService.clearTokens();
     this.setCurrentUserValue = null;
     this.setUserPhotoPreview(null);
+    this.photoRequestUserId = null;
+    this.lastSessionRefreshAt = 0;
     if (!queryParams) {
       this.router.navigate(['/auth/login']);
       return;

@@ -41,4 +41,4 @@ docker run --rm -p 8080:8080 \
   osm-frontend:local
 ```
 
-The nginx template proxies `/api`, `/oauth2`, `/ws`, and `/actuator` to the backend.
+The nginx template proxies `/api`, `/oauth2`, and `/actuator` to the backend.

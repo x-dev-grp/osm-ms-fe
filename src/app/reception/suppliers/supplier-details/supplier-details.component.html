@@ -7,14 +7,6 @@
     <p>{{ 'AUTO.FOURNISSEUR_NON_TROUVE_AVEC_CE_ID' | translate }}</p>
   </div>
 } @else {
-  <div class="supplier-domain-banner supplier-domain-banner--olive-oil">
-    <mat-icon aria-hidden="true">agriculture</mat-icon>
-    <div class="supplier-domain-banner__text">
-      <strong>{{ 'SUPPLIER.DOMAIN.OLIVE_OIL_BADGE' | translate }}</strong>
-      <span>{{ 'SUPPLIER.DOMAIN.OLIVE_OIL_HINT' | translate }}</span>
-    </div>
-  </div>
-
   <nav class="page-tabs">
     <button class="page-tab-btn" [class.active]="activePageTab === 'operations'" (click)="loadPageTab('operations')">
       <mat-icon>history</mat-icon>

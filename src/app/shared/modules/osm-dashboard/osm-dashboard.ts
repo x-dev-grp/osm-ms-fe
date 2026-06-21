@@ -22,8 +22,9 @@ import { ACTION_ICONS } from './models/actions';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SortByTranslatedPipe } from '../../pipes/sort-by-translated.pipe';
+import { resolveListContext, translateHintWithFallback, translateWithFallback } from './models/list-context.util';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -62,6 +63,7 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   displayedColumns: string[] = [];
   actions: Map<string, string> = ACTION_ICONS;
   private cdr = inject(ChangeDetectorRef);
+  private translate = inject(TranslateService);
   private _confirmationDialog = inject(ConfirmationDialogService);
   private readonly _checked = 'checked';
   private readonly _delete = 'DELETE';
@@ -96,6 +98,31 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {}
+
+  listContext() {
+    return resolveListContext(this.config());
+  }
+
+  listContextTitle(): string {
+    const ctx = this.listContext();
+    if (!ctx) {
+      return '';
+    }
+    return translateWithFallback(
+      (key) => this.translate.instant(key),
+      ctx.titleTranslatePath,
+      'OSM_DASHBOARD.LIST_HINT.DEFAULT_TITLE',
+      ctx.titleFallback
+    );
+  }
+
+  listContextHint(): string {
+    const ctx = this.listContext();
+    if (!ctx) {
+      return '';
+    }
+    return translateHintWithFallback((key) => this.translate.instant(key), ctx.hintTranslatePath);
+  }
 
   sortChange(event: any) {
     // console.log(event);

@@ -8,10 +8,13 @@ import { TokenService } from '../auth/services/tokenService.service';
 import { AppConfig } from 'src/environments/environment';
 import { ToastService } from '../shared/services/toast.service';
 
+/** Empty string marks a failed refresh so queued requests can fail fast instead of hanging. */
+const REFRESH_FAILED = '';
+
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
   private refreshTokenInProgress = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
   private _snackBar = inject(ToastService);
   constructor() {}
   private _authService = inject(AuthenticationService);
@@ -56,36 +59,53 @@ export class ErrorInterceptor implements HttpInterceptor {
   handle401Error(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     if (this.refreshTokenInProgress) {
       return this.refreshTokenSubject.pipe(
-        filter((token): token is string => !!token),
+        filter((token): token is string => token !== null),
         take(1),
-        switchMap((token) => next.handle(this.addToken(req, token)))
+        switchMap((token) => {
+          if (token === REFRESH_FAILED) {
+            return throwError(() => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' }));
+          }
+          return next.handle(this.addToken(req, token));
+        })
       );
     }
 
     this.refreshTokenInProgress = true;
     this.refreshTokenSubject.next(null);
 
-    return this._authService.refreshToken(this._tokenService.getRefreshToken()).pipe(
+    const refreshToken = this._tokenService.getRefreshToken();
+    if (!refreshToken) {
+      this.refreshTokenInProgress = false;
+      this.refreshTokenSubject.next(REFRESH_FAILED);
+      this._authService.logout();
+      return throwError(() => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' }));
+    }
+
+    return this._authService.refreshToken(refreshToken).pipe(
       switchMap((response: Record<string, unknown>) => {
         const accessToken = response?.['access_token'] as string | undefined;
-        const refreshToken = response?.['refresh_token'] as string | undefined;
-        if (refreshToken) {
-          this._tokenService.setRefreshToken(refreshToken);
+        const refreshTokenValue = response?.['refresh_token'] as string | undefined;
+        if (!accessToken) {
+          this.refreshTokenSubject.next(REFRESH_FAILED);
+          this._authService.logout();
+          return throwError(() => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' }));
         }
-        if (accessToken) {
-          this._tokenService.setToken(accessToken);
-          this._authService.applyAccessToken(accessToken);
+        if (refreshTokenValue) {
+          this._tokenService.setRefreshToken(refreshTokenValue);
         }
-        this.refreshTokenSubject.next(accessToken ?? '');
-        return next.handle(this.addToken(req, accessToken ?? ''));
+        this._tokenService.setToken(accessToken);
+        this._authService.applyAccessToken(accessToken);
+        this.refreshTokenSubject.next(accessToken);
+        return next.handle(this.addToken(req, accessToken));
       }),
       catchError((e: HttpErrorResponse) => {
+        this.refreshTokenSubject.next(REFRESH_FAILED);
         if (![500, 501, 502, 503, 504].includes(e.status)) {
           this._authService.logout();
         } else {
           this._snackBar.error('Server error');
         }
-        return EMPTY;
+        return throwError(() => e);
       }),
       finalize(() => {
         this.refreshTokenInProgress = false;

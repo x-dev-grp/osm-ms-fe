@@ -597,6 +597,44 @@ mat-expansion-panel {
   background: color-mix(in srgb, var(--warning-500, #eab308) 18%, var(--surface-muted, var(--accent-100))) !important;
 }
 
+.mill-blocked ::ng-deep .mat-expansion-panel-header {
+  background: color-mix(in srgb, var(--warn-500, #ef4444) 14%, var(--surface-muted, var(--accent-100))) !important;
+}
+
+.mill-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mill-blocked-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--warn-500, #ef4444) 20%, transparent);
+  color: #9a3412;
+}
+
+.mill-blocked-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.mill-blocked-hint {
+  margin: 0.5rem 0.75rem 0;
+  padding: 0.45rem 0.65rem;
+  border-radius: $border-radius-sm;
+  font-size: 0.78rem;
+  color: #9a3412;
+  background: color-mix(in srgb, var(--warn-500, #ef4444) 12%, transparent);
+}
+
 mat-expansion-panel:not(:last-child) {
   margin-right: 0.5rem;
 }

@@ -1,4 +1,6 @@
-import { APP_INITIALIZER, enableProdMode, importProvidersFrom } from '@angular/core';
+import 'zone.js';
+
+import { APP_INITIALIZER, enableProdMode, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 
 import { environment } from './environments/environment';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -18,11 +20,13 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { CustomTranslateLoader } from './app/shared/custom-translate-loader';
 import { ThemeConfigService } from './app/shared/services/theme-config.service';
 import { PwaUpdateService } from './app/shared/services/pwa-update.service';
+import { LanguageService } from './app/shared/services/language.service';
 
-function initTheme(themeConfig: ThemeConfigService) {
-  return () => {
-    themeConfig.init();
-  };
+function initApp(languageService: LanguageService, themeConfig: ThemeConfigService) {
+  return () =>
+    languageService.initFromStorage().then(() => {
+      themeConfig.init();
+    });
 }
 
 function initAuth(authService: AuthenticationService) {
@@ -46,6 +50,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
     AuthenticationService,
     CookieService,
     TranslateService,
@@ -65,7 +70,7 @@ bootstrapApplication(AppComponent, {
     { provide: HTTP_INTERCEPTORS, useClass: ResponseMessageInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'fr' },
-    { provide: APP_INITIALIZER, useFactory: initTheme, deps: [ThemeConfigService], multi: true },
+    { provide: APP_INITIALIZER, useFactory: initApp, deps: [LanguageService, ThemeConfigService], multi: true },
     { provide: APP_INITIALIZER, useFactory: initAuth, deps: [AuthenticationService], multi: true },
     { provide: APP_INITIALIZER, useFactory: initPwa, deps: [PwaUpdateService], multi: true },
     [provideHttpClient(withInterceptorsFromDi())],

@@ -7,7 +7,8 @@ import { NotificationPageResponse, UnreadCountResponse, UserNotification } from 
 import { PushNotificationService } from './push-notification.service';
 import { NotificationTextService } from './notification-text.service';
 
-const POLL_INTERVAL_MS = 30_000;
+const POLL_INTERVAL_MS = 90_000;
+const REFRESH_DEBOUNCE_MS = 5_000;
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -24,6 +25,8 @@ export class NotificationService {
   private pollHandle: ReturnType<typeof setInterval> | null = null;
   private lastUnreadCount = 0;
   private pollingActive = false;
+  private refreshInFlight = false;
+  private lastRefreshAt = 0;
 
   startPolling(): void {
     if (this.pollingActive) {
@@ -46,27 +49,41 @@ export class NotificationService {
       return;
     }
 
+    const now = Date.now();
+    if (this.refreshInFlight || now - this.lastRefreshAt < REFRESH_DEBOUNCE_MS) {
+      return;
+    }
+
+    this.refreshInFlight = true;
+    this.lastRefreshAt = now;
     this.loading.set(true);
     this.http
       .get<UnreadCountResponse>(`${this.baseUrl}/unread-count`)
       .pipe(catchError(() => of({ success: false, count: 0 })))
-      .subscribe((response) => {
-        const count = response?.count ?? 0;
-        if (count > this.lastUnreadCount) {
-          this.loadNotifications(true).subscribe((items) => {
-            const latest = items[0];
-            if (latest) {
-              this.pushNotificationService.showNotification(
-                this.notificationTextService.getTitle(latest),
-                this.notificationTextService.getRecap(latest),
-                latest.webRoute || latest.payload?.['webRoute']
-              );
-            }
-          });
+      .subscribe({
+        next: (response) => {
+          const count = response?.count ?? 0;
+          if (count > this.lastUnreadCount) {
+            this.loadNotifications(true).subscribe((items) => {
+              const latest = items[0];
+              if (latest) {
+                this.pushNotificationService.showNotification(
+                  this.notificationTextService.getTitle(latest),
+                  this.notificationTextService.getRecap(latest),
+                  latest.webRoute || latest.payload?.['webRoute']
+                );
+              }
+            });
+          }
+          this.lastUnreadCount = count;
+          this.unreadCount.set(count);
+          this.loading.set(false);
+          this.refreshInFlight = false;
+        },
+        error: () => {
+          this.loading.set(false);
+          this.refreshInFlight = false;
         }
-        this.lastUnreadCount = count;
-        this.unreadCount.set(count);
-        this.loading.set(false);
       });
   }
 

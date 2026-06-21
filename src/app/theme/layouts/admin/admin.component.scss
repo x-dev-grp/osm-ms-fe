@@ -1,62 +1,119 @@
-.sidebar-brand {
+.app-container {
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 88px;
+  min-height: calc(100vh - 146px);
+
+  &--horizontal {
+    padding-top: 164px;
+  }
+
+  &.container {
+    @media (min-width: 1200px) {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 1400px) {
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+  }
+}
+
+::ng-deep.horizontal-navbar {
+  display: block;
+  height: 75px;
+}
+
+::ng-deep.horizontal-menu {
+  display: block;
+  height: 80px;
+  width: 100%;
+  z-index: 1024;
+  position: fixed;
+  top: 64px;
+  background: transparent;
+  backdrop-filter: blur(8px);
+
+  ::ng-deep.dark & {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)) !important;
+  }
+}
+
+::ng-deep {
+  @media only screen and (max-width: 1024px) {
+    .mat-drawer-content {
+      .app-container {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
+  }
+}
+
+.mat-drawer.pc-sidebar {
+  background: var(--accent-50) !important;
+  border-right: 1px solid color-mix(in srgb, var(--accent-400) 28%, transparent);
+}
+
+.sidebar-top {
   height: auto !important;
-  min-height: 72px;
-  padding: 16px 16px 12px 20px !important;
-  border-bottom: 1px solid color-mix(in srgb, var(--accent-400) 35%, transparent);
+  min-height: unset !important;
+  padding: 18px 20px 16px !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-400) 28%, transparent);
   background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--primary-500) 6%, var(--accent-50)) 0%,
-    var(--accent-50) 55%
+    180deg,
+    color-mix(in srgb, var(--primary-500) 4%, var(--accent-50)) 0%,
+    var(--accent-50) 100%
   );
 }
 
-.sidebar-brand__link {
+.sidebar-top__brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: 100%;
+  gap: 14px;
+  min-width: 0;
   text-decoration: none;
   color: inherit;
-  min-width: 0;
   border-radius: 12px;
   padding: 4px;
   transition: background-color 0.2s ease;
 
   &:hover {
-    background: color-mix(in srgb, var(--accent-300) 30%, transparent);
+    background: color-mix(in srgb, var(--accent-300) 28%, transparent);
   }
 }
 
-.sidebar-brand__logo-wrap {
+.sidebar-top__logo-wrap {
   flex-shrink: 0;
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 14px;
   background: #fff;
-  border: 1px solid color-mix(in srgb, var(--accent-400) 45%, transparent);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent-900) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-400) 35%, transparent);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--accent-900) 6%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   padding: 6px;
 }
 
-.sidebar-brand__logo {
+.sidebar-top__logo {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
 }
 
-.sidebar-brand__meta {
+.sidebar-top__meta {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
-.sidebar-brand__company {
+.sidebar-top__company {
   font-size: 0.9375rem;
   font-weight: 700;
   line-height: 1.25;
@@ -66,44 +123,36 @@
   text-overflow: ellipsis;
 }
 
-.sidebar-brand__platform {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--accent-600);
-}
-
-.sidebar-brand__version {
+.sidebar-top__version {
   align-self: flex-start;
-  margin-top: 4px;
-  padding: 2px 8px;
+  padding: 2px 10px;
   border-radius: 999px;
   font-size: 0.6875rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
   color: var(--primary-700);
-  background: color-mix(in srgb, var(--primary-500) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--primary-500) 22%, transparent);
+  background: color-mix(in srgb, var(--primary-500) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary-500) 18%, transparent);
 }
 
 :host-context(.compact) {
-  .sidebar-brand__meta {
+  .sidebar-top__meta {
     display: none;
   }
 
-  .sidebar-brand__logo-wrap {
-    width: 44px;
-    height: 44px;
+  .sidebar-top__logo-wrap {
+    width: 42px;
+    height: 42px;
   }
 }
 
 :host-context(.compact:hover) {
-  .sidebar-brand__meta {
+  .sidebar-top__meta {
     display: flex;
   }
 
-  .sidebar-brand__logo-wrap {
-    width: 52px;
-    height: 52px;
+  .sidebar-top__logo-wrap {
+    width: 48px;
+    height: 48px;
   }
 }

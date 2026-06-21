@@ -417,11 +417,19 @@ export class SupplierDetailsComponent implements OnInit {
     for (const op of Object.keys(this.dashboardConfigs) as OperationType[]) {
       const cfg = this.dashboardConfigs[op];
       const baseTitle = cfg.title ?? (cfg.titleTranslatePath ? this.translate.instant(cfg.titleTranslatePath) : '');
+      const originalTitlePath = cfg.titleTranslatePath;
+      const hintTranslatePath =
+        originalTitlePath && /^[A-Z0-9_]+(\.[A-Z0-9_]+)+$/i.test(originalTitlePath.trim())
+          ? `OSM_DASHBOARD.LIST_HINT.${originalTitlePath.replace(/\./g, '_')}`
+          : 'OSM_DASHBOARD.LIST_HINT.DEFAULT';
 
-      // Écrase simplement le title avec le suffixe fournisseur
       this.dashboardConfigs[op] = {
         ...cfg,
-        titleTranslatePath: `${baseTitle} — ${this.supplierDisplayName}`
+        titleTranslatePath: `${baseTitle} — ${this.supplierDisplayName}`,
+        listContext: {
+          ...(typeof cfg.listContext === 'object' ? cfg.listContext : {}),
+          hintTranslatePath
+        }
       };
     }
 

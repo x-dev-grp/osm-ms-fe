@@ -23,11 +23,5 @@
     "target": "http://localhost:8084",
     "secure": false,
     "changeOrigin": true
-  },
-  "/ws": {
-    "target": "http://localhost:8084",
-    "secure": false,
-    "changeOrigin": true,
-    "ws": true
   }
 }

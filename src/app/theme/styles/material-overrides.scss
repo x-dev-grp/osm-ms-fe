@@ -191,19 +191,7 @@ body {
   /*  @ mat expandable
   /* -------------------------------------------------------------------------- */
   .mat-expansion-panel {
-    &.chat_user_info-details {
-      box-shadow: none !important;
-      background-color: var(--accent-50);
-
-      .mat-expansion-panel-header {
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-
-      .mat-expansion-panel-body {
-        padding: 0px;
-      }
-    }
+    box-shadow: none !important;
   }
 
   /* -------------------------------------------------------------------------- */

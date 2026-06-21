@@ -1,5 +1,29 @@
 @import '../../../styles/theme-palette-colors.scss';
 
+:host {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.header-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.toolbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent-200) 45%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-400) 18%, transparent);
+}
+
 .notification-badge {
   position: absolute;
   top: 2px;
@@ -81,166 +105,227 @@
 }
 
 ::ng-deep.dropdown-user-profile {
-  min-width: 352px !important;
-  max-width: 100% !important;
-  max-height: 80vh !important; /* Dynamic max-height to prevent overflow */
-  overflow-y: auto; /* Fallback for scrollbar */
+  min-width: 300px !important;
+  max-width: min(360px, calc(100vw - 24px)) !important;
+  overflow: hidden !important;
+  border-radius: 16px !important;
+  border: 1px solid color-mix(in srgb, var(--accent-400) 24%, transparent) !important;
+  box-shadow: 0 12px 40px color-mix(in srgb, var(--accent-900) 10%, transparent) !important;
 
-  .user-title {
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    margin: 0px !important;
-  }
-
-  .user-name {
-    font-weight: 600 !important;
-    margin: 0px !important;
-  }
-
-  .dropdown-item {
-    display: flex;
-    padding: 10px 15px;
-    align-items: center;
-    border-radius: 8px;
-
-    &:hover,
-    &:focus {
-      color: var(--accent-900);
-      background: var(--accent-300);
-      border-color: var(--accent-300);
-    }
-
-    .pc-icon {
-      width: 18px;
-      height: 18px;
-    }
-
-    /* Ensure icons from settings menu (ti icons) align with svg icons */
-    i {
-      font-size: 18px;
-      margin-right: 10px;
-      width: 18px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-    }
-  }
-
-  .user-group {
-    .avatar {
-      width: 30px;
-      height: 30px;
-      font-size: 14px;
-    }
-  }
-
-  .user-logout {
-    &.mdc-button {
-      border-radius: 20px;
-    }
-  }
-
-  .user-followers {
-    margin: 16px 0px;
-    color: map-get($grey-theme, contrast, 500);
-  }
-
-  .upgrade-button {
-    background: map-get($yellow-theme, 500) !important;
-    color: map-get($grey-theme, contrast, 800) !important;
-
-    &.mdc-button {
-      border-radius: 20px;
-    }
-  }
-
-  /* Ensure scrollbar is styled and functional */
-  ng-scrollbar {
-    max-height: inherit; /* Inherit max-height from parent */
-    visibility: hover;
+  .mat-mdc-menu-content {
+    padding: 0 !important;
   }
 }
 
-::ng-deep.notification-status {
-  display: flex !important;
+.profile-menu {
+  display: flex;
   flex-direction: column;
-  position: fixed !important;
+  padding: 8px 0;
+}
 
-  .drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem;
+.profile-menu__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-400) 22%, transparent);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--accent-300) 24%, transparent);
+  }
+}
+
+.profile-menu__identity {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-menu__name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--accent-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-menu__email {
+  margin-top: 2px;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--accent-600);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-menu__section {
+  padding: 10px 10px 4px;
+}
+
+.profile-menu__label {
+  padding: 4px 10px 8px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-500);
+}
+
+.profile-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--accent-800);
+  text-decoration: none;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--accent-600);
   }
 
-  .sidNav-close {
-    &:hover,
-    &.active {
-      background: var(--primary-200);
-      border-radius: 8px;
+  span {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: color-mix(in srgb, var(--accent-300) 38%, transparent);
+    color: var(--accent-900);
+
+    mat-icon {
+      color: var(--primary-600);
     }
   }
 
-  .drawer-body {
-    padding: 0px 20px 20px;
-    flex-wrap: wrap;
+  &--active {
+    background: color-mix(in srgb, var(--primary-500) 8%, transparent);
+    color: var(--primary-700);
 
-    .badge-status {
-      padding: 0.15rem 0.55rem;
-      border-radius: 8px;
-    }
-
-    .skip-button {
-      .mdc-button {
-        @media (max-width: 576px) {
-          margin-bottom: 10px;
-        }
-      }
+    mat-icon {
+      color: var(--primary-600);
     }
   }
 }
 
-::ng-deep.user-account-card {
-  background-image: url('../../../../../assets/images/layout/img-profile-card.jpg');
+.profile-menu__check {
+  margin-inline-start: auto;
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  color: var(--primary-600) !important;
 }
 
-.dropdown-item {
-  i {
-    font-size: 18px;
-    margin-right: 10px;
+.profile-menu__badge {
+  margin-inline-start: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #e53935;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+}
+
+.profile-menu__footer {
+  padding: 10px 12px 12px;
+  margin-top: 4px;
+  border-top: 1px solid color-mix(in srgb, var(--accent-400) 22%, transparent);
+}
+
+.profile-menu__logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid color-mix(in srgb, #c62828 28%, transparent);
+  border-radius: 12px;
+  background: transparent;
+  color: #c62828;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: color-mix(in srgb, #c62828 8%, transparent);
+    border-color: color-mix(in srgb, #c62828 45%, transparent);
   }
 }
 
-.dropdown-header,
-.dropdown-body {
-  padding: 16px 20px;
+[dir='rtl'] {
+  .profile-menu__header {
+    flex-direction: row-reverse;
+  }
 
-  a {
-    &:hover {
-      text-decoration: underline;
-    }
+  .profile-menu__item {
+    flex-direction: row-reverse;
+    text-align: end;
+  }
+
+  .profile-menu__logout {
+    flex-direction: row-reverse;
   }
 }
 
 .global-search-wrapper {
   display: inline-flex;
   align-items: center;
-  margin-right: 8px;
+  margin-right: 12px;
 
   .global-search-field {
-    width: 280px;
-    margin-bottom: -1.25em;
+    width: 300px;
+    margin-bottom: 0;
 
     ::ng-deep {
+      .mat-mdc-form-field-flex {
+        align-items: center;
+      }
+
       .mat-mdc-form-field-subscript-wrapper {
         display: none;
       }
 
       .mat-mdc-text-field-wrapper {
-        background: color-mix(in srgb, var(--accent-300) 28%, transparent);
-        border-radius: 999px;
-        padding: 0 4px 0 14px;
-        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        background: color-mix(in srgb, var(--accent-100) 85%, transparent);
+        border: 1px solid color-mix(in srgb, var(--accent-400) 22%, transparent);
+        border-radius: 12px;
+        padding: 0 6px 0 14px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
       }
 
       .mdc-text-field--filled:not(.mdc-text-field--disabled) {
@@ -257,19 +342,23 @@
       }
 
       &:hover .mat-mdc-text-field-wrapper {
-        background: color-mix(in srgb, var(--accent-300) 42%, transparent);
+        background: color-mix(in srgb, var(--accent-100) 95%, transparent);
+        border-color: color-mix(in srgb, var(--accent-400) 35%, transparent);
       }
 
       &.mat-focused .mat-mdc-text-field-wrapper {
-        background: color-mix(in srgb, var(--accent-300) 48%, transparent);
-        box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-500) 28%, transparent);
+        background: #fff;
+        border-color: color-mix(in srgb, var(--primary-500) 35%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-500) 12%, transparent);
       }
 
       .mat-mdc-form-field-infix {
-        min-height: 40px;
+        min-height: 42px;
         padding-top: 8px;
         padding-bottom: 8px;
         width: auto;
+        display: flex;
+        align-items: center;
       }
 
       .mat-mdc-input-element {
@@ -283,12 +372,19 @@
 
       .mat-mdc-form-field-icon-suffix {
         padding: 0;
+        align-self: center;
 
         .mat-mdc-icon-button {
-          width: 34px;
-          height: 34px;
-          padding: 5px;
+          width: 36px;
+          height: 36px;
+          padding: 6px;
           color: var(--accent-600);
+
+          .mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
 
           &:hover:not([disabled]) {
             background: color-mix(in srgb, var(--accent-400) 35%, transparent);

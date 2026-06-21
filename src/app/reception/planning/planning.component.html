@@ -290,9 +290,17 @@
       <div #scrollContainer class="scrollable-columns">
         @for (mill of mills; track trackByMill($index,
           mill); let i = $index) {
-          <mat-expansion-panel expanded [class]="getMillCapacityClass(mill)">
+          <mat-expansion-panel expanded [class]="getMillPanelClass(mill)">
             <mat-expansion-panel-header class="sticky-header">
-              <mat-panel-title class="mill-title">{{ mill.name }}</mat-panel-title>
+              <mat-panel-title class="mill-title">
+                {{ mill.name }}
+                @if (isMillBlockedForPlanning(mill)) {
+                  <span class="mill-blocked-badge" [matTooltip]="getMillBlockedTooltip(mill)">
+                    <mat-icon class="mill-blocked-icon" aria-hidden="true">build</mat-icon>
+                    {{ 'RECEPTION.PLANNING.MILL_BLOCKED_BADGE' | translate }}
+                  </span>
+                }
+              </mat-panel-title>
               <mat-panel-description class="mill-capacity-label">
                 {{ getMillUsedCapacity(mill) | number:'1.0-0' }} / {{ mill.capacity ?? 1000 }} {{ 'PLANNING_KG' | translate }}
               </mat-panel-description>
@@ -304,10 +312,14 @@
               cdkDropList
               [cdkDropListData]="mill.receptions"
               [cdkDropListConnectedTo]="connectedDropLists"
+              [cdkDropListEnterPredicate]="canEnterMillDropList"
               (cdkDropListDropped)="drop($event)"
               (cdkDropListEntered)="onDropListEntered($event)"
               role="list"
             >
+              @if (isMillBlockedForPlanning(mill)) {
+                <p class="mill-blocked-hint">{{ getMillBlockedTooltip(mill) }}</p>
+              }
               @for (item of mill.receptions | filterLot:searchTerm; track trackByReception($index, item)) {
                 @if (item.type === LOT) {
                   @let data = item.data ;

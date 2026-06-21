@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 import { ThemeLayoutService } from '../../theme/services/theme-layout.service';
 import { LTR, RTL } from '../../theme/const';
 import { ThemeConfigService } from './theme-config.service';
@@ -12,30 +13,59 @@ export class LanguageService {
   private readonly themeConfig = inject(ThemeConfigService);
   private readonly notificationTextService = inject(NotificationTextService);
 
-  initFromStorage(): void {
-    const savedLang = localStorage.getItem('app_language');
-    if (savedLang) {
-      this.applyLanguage(savedLang, false);
-      return;
-    }
+  initFromStorage(): Promise<void> {
+    this.translate.addLangs(['en', 'fr', 'ar']);
+    this.translate.setDefaultLang('en');
 
-    const browserLang = this.translate.getBrowserLang();
-    const lang = browserLang?.match(/en|fr|ar/) ? browserLang! : 'en';
-    this.applyLanguage(lang, false);
+    const lang = this.resolveInitialLanguage();
+    return this.loadLanguage(lang, true);
   }
 
   applyLanguage(language: string, persist = true): void {
-    const normalized = ['en', 'fr', 'ar'].includes(language) ? language : 'en';
-    this.translate.use(normalized);
+    void this.loadLanguage(this.normalizeLanguage(language), persist);
+  }
 
-    if (persist) {
-      localStorage.setItem('app_language', normalized);
+  private resolveInitialLanguage(): string {
+    const savedLang = localStorage.getItem('app_language');
+    if (savedLang && this.isSupported(savedLang)) {
+      return savedLang;
     }
 
-    const isRtl = normalized === 'ar';
+    const browserLang = this.translate.getBrowserLang();
+    return browserLang?.match(/en|fr|ar/) ? browserLang! : 'en';
+  }
+
+  private normalizeLanguage(language: string): string {
+    return this.isSupported(language) ? language : 'en';
+  }
+
+  private isSupported(language: string): boolean {
+    return ['en', 'fr', 'ar'].includes(language);
+  }
+
+  private loadLanguage(language: string, persist: boolean): Promise<void> {
+    const normalized = this.normalizeLanguage(language);
+    const alreadyLoaded = !!this.translate.translations[normalized];
+
+    if (this.translate.currentLang === normalized && alreadyLoaded) {
+      this.syncLanguageSideEffects(normalized, persist);
+      return Promise.resolve();
+    }
+
+    return firstValueFrom(this.translate.use(normalized)).then(() => {
+      this.syncLanguageSideEffects(normalized, persist);
+    });
+  }
+
+  private syncLanguageSideEffects(language: string, persist: boolean): void {
+    if (persist) {
+      localStorage.setItem('app_language', language);
+    }
+
+    const isRtl = language === 'ar';
     this.themeLayout.directionChange.set(isRtl ? RTL : LTR);
     this.themeConfig.applyrtl(isRtl);
-    document.documentElement.lang = normalized;
+    document.documentElement.lang = language;
     this.notificationTextService.languageVersion.update((value) => value + 1);
   }
 }

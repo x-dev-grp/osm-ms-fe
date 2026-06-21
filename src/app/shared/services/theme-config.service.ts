@@ -56,27 +56,43 @@ export class ThemeConfigService {
   /** Load from LS (if any), override static defaults, and return a config */
   loadConfig(): ThemeConfig {
     const def: ThemeConfig = {
-      layoutType: AbleProConfig.isDarkMode as any,
+      layoutType: AbleProConfig.isDarkMode as ThemeConfig['layoutType'],
       contrast: AbleProConfig.theme_contrast,
       caption: AbleProConfig.menu_caption,
       rtlLayout: AbleProConfig.isRtlLayout,
       bodyColor: AbleProConfig.theme_color,
-      layout: AbleProConfig.layout as any,
+      layout: AbleProConfig.layout as ThemeConfig['layout'],
       boxLayouts: AbleProConfig.isBox_container
     };
 
     const json = localStorage.getItem(this.STORAGE_KEY);
-    if (!json) {
-      return def;
+    let cfg = def;
+    if (json) {
+      try {
+        const stored = JSON.parse(json) as Partial<ThemeConfig>;
+        cfg = { ...def, ...stored };
+      } catch {
+        console.warn('Invalid themeConfig in localStorage, using defaults');
+      }
     }
 
-    try {
-      const cfg = JSON.parse(json) as Partial<ThemeConfig>;
-      return { ...def, ...cfg };
-    } catch {
-      console.warn('Invalid themeConfig in localStorage, using defaults');
-      return def;
+    return this.syncRtlWithLanguage(cfg);
+  }
+
+  private syncRtlWithLanguage(cfg: ThemeConfig): ThemeConfig {
+    if (typeof localStorage === 'undefined') {
+      return cfg;
     }
+
+    const lang = localStorage.getItem('app_language');
+    if (lang === 'ar') {
+      return { ...cfg, rtlLayout: true };
+    }
+    if (lang === 'en' || lang === 'fr') {
+      return { ...cfg, rtlLayout: false };
+    }
+
+    return cfg;
   }
 
   /** Persist both to LS and to the static defaults */
@@ -104,6 +120,7 @@ export class ThemeConfigService {
 
     // 4) rtl
     document.documentElement.dir = cfg.rtlLayout ? 'rtl' : 'ltr';
+    document.body.classList.toggle('able-pro-rtl', cfg.rtlLayout);
 
     // 5) primary color
     document.body.classList.remove(...this.themeClasses);

@@ -5,8 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 // project import
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { LanguageService } from './shared/services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -20,15 +19,7 @@ export class AppComponent implements OnInit {
   isSpinnerVisible = true;
   mainUrl: string;
   private router = inject(Router);
-  private translate = inject(TranslateService);
-  private languageService = inject(LanguageService);
   private titleService = inject(Title);
-
-  constructor() {
-    this.translate.addLangs(['en', 'fr', 'ar']);
-    this.translate.setDefaultLang('en');
-    this.languageService.initFromStorage();
-  }
 
   ngOnInit() {
     this.router.events.subscribe(

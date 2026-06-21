@@ -10,6 +10,7 @@ import { extractHttpErrorMessage } from '../shared/utils/http-error.util';
 export class ResponseMessageInterceptor implements HttpInterceptor {
   private readonly toast = inject(ToastService);
   private readonly skipHeader = 'X-Skip-Toast';
+  private readonly silentUrls = ['/api/security/user/me/refresh-session'];
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (this.shouldSkip(request)) {
@@ -30,6 +31,14 @@ export class ResponseMessageInterceptor implements HttpInterceptor {
   }
 
   private shouldToastMutationError(request: HttpRequest<unknown>, error: HttpErrorResponse): boolean {
+    if (this.isSilentUrl(request.url)) {
+      return false;
+    }
+
+    if (error.status === 0) {
+      return false;
+    }
+
     if (request.method === 'GET' || request.method === 'HEAD' || request.method === 'OPTIONS') {
       return false;
     }
@@ -39,6 +48,10 @@ export class ResponseMessageInterceptor implements HttpInterceptor {
     }
 
     return true;
+  }
+
+  private isSilentUrl(url: string): boolean {
+    return this.silentUrls.some((silentUrl) => url.includes(silentUrl));
   }
 
   private shouldSkip(request: HttpRequest<unknown>): boolean {

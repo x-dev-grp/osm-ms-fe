@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, OnInit, output } from '@angular/core';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -20,7 +20,6 @@ import { UserAvatarComponent } from '../../../../shared/components/user-avatar/u
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { NotificationTextService } from '../../../../shared/services/notification-text.service';
 import { LanguageService } from '../../../../shared/services/language.service';
-import { ChatService } from '../../../../shared/services/chat.service';
 import { UserNotification } from '../../../../shared/models/notification.model';
 import { NotificationTextPipe } from '../../../../shared/pipes/notification-text.pipe';
 
@@ -45,18 +44,19 @@ import { NotificationTextPipe } from '../../../../shared/pipes/notification-text
   standalone: true,
   styleUrls: ['./toolbar-right.component.scss']
 })
-export class NavRightComponent implements OnInit {
+export class NavRightComponent {
   authenticationService = inject(AuthenticationService);
   private readonly notificationService = inject(NotificationService);
   readonly notificationTextService = inject(NotificationTextService);
-  private readonly chatService = inject(ChatService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly unreadCount = this.notificationService.unreadCount;
-  readonly messageUnreadCount = this.chatService.unreadCount;
   readonly notifications = this.notificationService.notifications;
 
-  readonly HeaderBlur = output();
+  get currentLang(): string {
+    return this.translate.currentLang || localStorage.getItem('app_language') || 'en';
+  }
+
   direction: string = 'ltr';
   searchCode = '';
   searching = false;
@@ -73,10 +73,6 @@ export class NavRightComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    // Notification polling is started from AdminComponent after login.
-  }
-
   openNotificationsMenu(): void {
     this.notificationService.loadNotifications(false).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
@@ -91,10 +87,6 @@ export class NavRightComponent implements OnInit {
 
   useLanguage(language: string) {
     this.languageService.applyLanguage(language);
-  }
-
-  headerBlur() {
-    this.HeaderBlur.emit();
   }
 
   logout() {

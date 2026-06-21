@@ -1,3 +1,62 @@
+.osm-list-context {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--primary-500) 18%, transparent);
+  background: color-mix(in srgb, var(--primary-500) 6%, var(--accent-50));
+
+  mat-icon {
+    color: var(--primary-700);
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+
+    strong {
+      font-size: 0.8125rem;
+      font-weight: 800;
+      color: var(--accent-900);
+      line-height: 1.35;
+    }
+
+    span {
+      font-size: 0.75rem;
+      color: var(--accent-600);
+      line-height: 1.45;
+    }
+  }
+
+  &--olive {
+    border-color: rgba(49, 95, 27, 0.18);
+    background: #f6faf1;
+
+    mat-icon {
+      color: #315f1b;
+    }
+
+    .osm-list-context__text strong {
+      color: #214212;
+    }
+
+    .osm-list-context__text span {
+      color: #687062;
+    }
+  }
+
+  &--inventory {
+    border-color: color-mix(in srgb, var(--primary-600) 20%, transparent);
+    background: color-mix(in srgb, var(--accent-200) 55%, var(--accent-50));
+  }
+}
+
 .total-count-badge {
   display: inline-flex;
   align-items: center;

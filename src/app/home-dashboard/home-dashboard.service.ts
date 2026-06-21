@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { forkJoin, map, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, defaultIfEmpty } from 'rxjs/operators';
 import { AdvancedSearchService } from '../shared/services/advanced-serach.service';
 import { SearchData } from '../shared/models/advanced-search/searchData';
 import { SearchOperation } from '../shared/models/advanced-search/searchOperation';
@@ -68,7 +68,8 @@ export class HomeDashboardService {
 
     return this.search.search(searchData, endpoint).pipe(
       map((res: SearchResponse) => Number(res?.total ?? 0)),
-      catchError(() => of(0))
+      catchError(() => of(0)),
+      defaultIfEmpty(0)
     );
   }
 
@@ -136,7 +137,12 @@ export class HomeDashboardService {
           { labelKey: 'HOME_DASHBOARD.METRICS.PENDING_PURCHASE_ORDERS', value: 0, attention: true },
           { labelKey: 'HOME_DASHBOARD.METRICS.TOTAL_ARTICLES', value: 0 }
         ])
-      )
+      ),
+      defaultIfEmpty([
+        { labelKey: 'HOME_DASHBOARD.METRICS.CRITICAL_ARTICLES', value: 0, attention: true },
+        { labelKey: 'HOME_DASHBOARD.METRICS.PENDING_PURCHASE_ORDERS', value: 0, attention: true },
+        { labelKey: 'HOME_DASHBOARD.METRICS.TOTAL_ARTICLES', value: 0 }
+      ])
     );
   }
 

@@ -11,24 +11,25 @@
   >
     <nav>
       <div class="navbar-wrapper">
-        <div class="m-header sidebar-brand">
-          <a routerLink="/welcome" class="sidebar-brand__link" [attr.aria-label]="'SIDEBAR.BRAND_HOME' | translate">
-            <div class="sidebar-brand__logo-wrap">
+        <div class="m-header sidebar-top">
+          <a routerLink="/welcome" class="sidebar-top__brand">
+            <div class="sidebar-top__logo-wrap">
               <img
-                class="sidebar-brand__logo"
+                class="sidebar-top__logo"
                 [src]="logoPreview || 'assets/OSM.svg'"
-                alt="Company logo"
+                alt="OSM Logo"
               />
             </div>
-            <div class="sidebar-brand__meta">
-              <span class="sidebar-brand__company">{{ companyName || ('SIDEBAR.DEFAULT_COMPANY' | translate) }}</span>
-              <span class="sidebar-brand__platform">{{ 'SIDEBAR.PLATFORM' | translate }}</span>
-              <span class="sidebar-brand__version">v{{ currentApplicationVersion }}</span>
+            <div class="sidebar-top__meta">
+              @if (companyName) {
+                <span class="sidebar-top__company">{{ companyName }}</span>
+              }
+              <span class="sidebar-top__version">v{{ currentApplicationVersion }}</span>
             </div>
           </a>
         </div>
         @if (currentLayout === 'vertical' || currentLayout === 'compact') {
-          <app-vertical-menu [menus]="menus" [companyName]="companyName" />
+          <app-vertical-menu [menus]="menus" />
         }
       </div>
     </nav>
@@ -58,4 +59,3 @@
     <app-footer></app-footer>
   </div>
 </mat-drawer-container>
-

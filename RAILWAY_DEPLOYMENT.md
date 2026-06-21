@@ -17,7 +17,7 @@ BACKEND_URL=https://<your-backend-service>.up.railway.app
 
 Nginx proxies:
 
-- `/api/`, `/oauth2/`, `/ws/`, `/.well-known/`, `/jwks`, `/actuator/`
+- `/api/`, `/oauth2/`, `/.well-known/`, `/jwks`, `/actuator/`
 
 Production Angular uses relative URLs (`environment.apiUrl = ''`), so the app works on any Railway frontend domain without rebuild.
 

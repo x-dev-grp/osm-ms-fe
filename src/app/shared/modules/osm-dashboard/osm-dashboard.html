@@ -1,4 +1,18 @@
 <div class="col-md-12">
+  @if (listContext(); as ctx) {
+    <div
+      class="osm-list-context"
+      [class.osm-list-context--olive]="ctx.variant === 'olive'"
+      [class.osm-list-context--inventory]="ctx.variant === 'inventory'"
+    >
+      <mat-icon aria-hidden="true">{{ ctx.icon }}</mat-icon>
+      <div class="osm-list-context__text">
+        <strong>{{ listContextTitle() }}</strong>
+        <span>{{ listContextHint() }}</span>
+      </div>
+    </div>
+  }
+
   <app-card [cardTitle]="config().titleTranslatePath ? (config()?.titleTranslatePath! |translate) :config().title"
             [icon]="config()?.icon" [showContent]="true"
             [showHeader]="true">
