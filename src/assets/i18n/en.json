@@ -12,6 +12,8 @@
   },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",
+    "ADD_COMPANY_CREATED": "Company and admin user created successfully.",
+    "ADD_COMPANY_INITIAL_PASSWORD": "Company created. Share these credentials with the admin — Username: {{username}}, Password: {{password}}",
     "ADD_OSM_ADMIN_BUTTON": "Add OSM Admin",
     "ADD_OSM_ADMIN_ROLE": "Role",
     "ADD_OSM_ADMIN_ROLE_VALUE": "OSM Admin",

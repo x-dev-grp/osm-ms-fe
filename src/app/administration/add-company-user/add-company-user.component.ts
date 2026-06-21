@@ -18,6 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of, tap } from 'rxjs';
 import { AddCompanyUserService } from '../../shared/services/add-company-user.service';
 import { CompanyUserDto } from '../../shared/models/company-user-dto';
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-add-company-user',
@@ -49,6 +50,7 @@ export class AddCompanyUserComponent {
   _router = inject(Router);
   _activatedRoute = inject(ActivatedRoute);
   _addCompanyUserService = inject(AddCompanyUserService);
+  private toast = inject(ToastService);
   updateMode: boolean = false;
   viewMode: boolean = false;
   loading: boolean = false;
@@ -106,9 +108,20 @@ export class AddCompanyUserComponent {
       .addCompanyWithUser(dto)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        tap(() => {
+        tap((response) => {
           this.errorMessage = '';
           this.loading = false;
+          const initialPassword = response?.companyUser?.initialPassword;
+          if (initialPassword) {
+            this.toast.success(
+              this.i18n.instant('ADMIN.ADD_COMPANY_INITIAL_PASSWORD', {
+                username: response?.companyUser?.username ?? '',
+                password: initialPassword
+              })
+            );
+          } else {
+            this.toast.success(this.i18n.instant('ADMIN.ADD_COMPANY_CREATED'));
+          }
           this._router.navigate(['/administration/dashboard/']);
         }),
         catchError((err: any) => {

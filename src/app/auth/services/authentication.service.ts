@@ -76,13 +76,11 @@ export class AuthenticationService {
         return;
       }
 
-      if (!this.applyAccessToken(token, { notifyOnChange: false, reloadPhoto: true })) {
-        this.restoreSessionWithRefresh(finishBootstrap);
-        return;
-      }
-
-      this.startSessionSync();
-      finishBootstrap();
+      this.applyAccessToken(token, { notifyOnChange: false, reloadPhoto: true });
+      this.refreshSession()
+        .pipe(finalize(() => finishBootstrap()))
+        .subscribe();
+      return;
     });
   }
 
@@ -169,10 +167,11 @@ export class AuthenticationService {
 
   applyAccessToken(
     accessToken: string,
-    options: { notifyOnChange?: boolean; reloadPhoto?: boolean } = {}
+    options: { notifyOnChange?: boolean; reloadPhoto?: boolean; authorities?: string[] } = {}
   ): boolean {
     const notifyOnChange = options.notifyOnChange ?? true;
     const reloadPhoto = options.reloadPhoto ?? true;
+    const explicitAuthorities = options.authorities;
 
     if (!accessToken) {
       return false;
@@ -187,10 +186,13 @@ export class AuthenticationService {
     }
 
     const role = decodedToken['role'] as string;
-    const permissions = decodedToken['authorities'];
-    const user: User = structuredClone(decodedToken['osmUser'] as User);
+    const osmUser = decodedToken['osmUser'] as User;
+    const user: User = structuredClone(osmUser);
     user.role = role;
-    user.permissions = permissions;
+    user.permissions =
+      explicitAuthorities ??
+      (decodedToken['authorities'] as string[] | undefined) ??
+      (this.currentUserValue?.id === user.id ? this.currentUserValue?.permissions : undefined);
     this.setCurrentUserValue = user;
 
     if (reloadPhoto) {
@@ -268,7 +270,11 @@ export class AuthenticationService {
         tap((response) => {
           if (response?.access_token) {
             this.lastSessionRefreshAt = Date.now();
-            this.applyAccessToken(response.access_token, { notifyOnChange: true, reloadPhoto: false });
+            this.applyAccessToken(response.access_token, {
+              notifyOnChange: true,
+              reloadPhoto: false,
+              authorities: response.authorities
+            });
           }
         }),
         catchError((error) => {
@@ -339,7 +345,7 @@ export class AuthenticationService {
     const user = this.currentUserValue;
     if (!user) return false;
 
-    if (user.role === Role.Admin) return true;
+    if (user.role === Role.Admin || user.role === Role.OsmAdmin) return true;
 
     const permissions = this.normalizedPermissions();
     return permissions.includes(permission.toUpperCase());
@@ -349,7 +355,7 @@ export class AuthenticationService {
     const user = this.currentUserValue;
     if (!user) return false;
 
-    if (user.role === Role.Admin) return true;
+    if (user.role === Role.Admin || user.role === Role.OsmAdmin) return true;
 
     const modulePrefix = `${module.toUpperCase()}:`;
     return this.normalizedPermissions().some((p) => p.startsWith(modulePrefix));

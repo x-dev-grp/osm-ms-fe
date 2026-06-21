@@ -12,6 +12,8 @@
   },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "إنشاء شركة ومستخدم إداري لها",
+    "ADD_COMPANY_CREATED": "تم إنشاء الشركة والمستخدم الإداري بنجاح.",
+    "ADD_COMPANY_INITIAL_PASSWORD": "تم إنشاء الشركة. شارك بيانات الدخول مع المسؤول — المستخدم: {{username}}، كلمة المرور: {{password}}",
     "ADD_OSM_ADMIN_BUTTON": "إضافة مسؤول OSM",
     "ADD_OSM_ADMIN_ROLE": "الدور",
     "ADD_OSM_ADMIN_ROLE_VALUE": "مسؤول OSM",

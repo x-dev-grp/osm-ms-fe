@@ -12,6 +12,8 @@
   },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
+    "ADD_COMPANY_CREATED": "Société et utilisateur admin créés avec succès.",
+    "ADD_COMPANY_INITIAL_PASSWORD": "Société créée. Communiquez ces identifiants à l'admin — Utilisateur : {{username}}, Mot de passe : {{password}}",
     "ADD_OSM_ADMIN_BUTTON": "Ajouter un admin OSM",
     "ADD_OSM_ADMIN_ROLE": "Rôle",
     "ADD_OSM_ADMIN_ROLE_VALUE": "Admin OSM",

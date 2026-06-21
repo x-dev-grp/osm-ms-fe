@@ -129,14 +129,20 @@ export class LoginComponent implements OnInit {
               rememberMe,
               this.form.get('username')?.value
             );
-            if (this.authenticationService.applyAccessToken(this.tokenService.getToken()!)) {
-              const role = this.authenticationService.currentUserValue?.role;
-              if (role === Role.OsmAdmin) {
-                this.router.navigate(['/administration/dashboard']);
-              } else {
-                this.router.navigate(['/welcome']);
+            this.authenticationService.applyAccessToken(accessToken, { reloadPhoto: false });
+            this.authenticationService.refreshSession().subscribe({
+              next: () => {
+                const role = this.authenticationService.currentUserValue?.role;
+                if (role === Role.OsmAdmin) {
+                  this.router.navigate(['/administration/dashboard']);
+                } else {
+                  this.router.navigate(['/welcome']);
+                }
+              },
+              error: () => {
+                this.errorMessage = { message: this.translateService.instant('LOGIN.UNEXPECTED_ERROR') };
               }
-            }
+            });
           }
         },
         error: () => {
