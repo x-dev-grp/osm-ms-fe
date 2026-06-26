@@ -182,7 +182,7 @@ export class AuthenticationService {
 
     const decodedToken = this._tokenService.decodeToken() as Record<string, unknown> | null;
     const tokenUser = decodedToken?.['oosmUser'] ?? decodedToken?.['osmUser'];
-    if (!tokenUser) {
+    if (!decodedToken || !tokenUser) {
       return false;
     }
 
