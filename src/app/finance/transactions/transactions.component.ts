@@ -12,9 +12,9 @@ import { resolveBillConditions, resolveBillDesignation } from '../utils/bill-lab
 import { FinancialTransaction } from '../models/financial-transaction.model';
 import { FinancialTransactionService } from '../service/financial-transaction.service';
 import { TRANSACTIONS_DASHBOARD_CONFIG } from './transactions-dashboard.config';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { SharedModule } from '../../shared/shared.module';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
@@ -25,7 +25,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule, SharedModule, OsmDashboard],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule, SharedModule, OosmDashboard],
   styleUrls: ['./transactions.component.scss']
 })
 export class TransactionsComponent implements OnInit, OnDestroy {

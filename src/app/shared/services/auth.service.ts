@@ -13,7 +13,7 @@ export interface UserDTO {
   langKey: string;
   activated: boolean;
 }
-export interface OSMUserOUTDTO {
+export interface OOSMUserOUTDTO {
   id: string; // UUID from backend
   // ... other backend fields if needed
 }
@@ -41,7 +41,7 @@ export class AuthService {
     const url = `${this.api}/user/auth/resetPassword`; // removed `/user`
     const params = new HttpParams().set('identifier', identifier);
 
-    return this.http.post<OSMUserOUTDTO>(url, null, { params });
+    return this.http.post<OOSMUserOUTDTO>(url, null, { params });
   }
   // 2) Validate the code
   validateResetCode(userId: string, code: string): Observable<void> {

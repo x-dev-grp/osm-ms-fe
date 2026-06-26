@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 
 /**
- * Extracts a user-facing message from OSM backend error payloads.
+ * Extracts a user-facing message from OOSM backend error payloads.
  * Supports GlobalExceptionHandler, ApiResponse, and plain string bodies.
  */
 export function extractHttpErrorMessage(

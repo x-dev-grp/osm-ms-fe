@@ -14,11 +14,11 @@
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
     "ADD_COMPANY_CREATED": "Société et utilisateur admin créés avec succès.",
     "ADD_COMPANY_INITIAL_PASSWORD": "Société créée. Communiquez ces identifiants à l'admin — Utilisateur : {{username}}, Mot de passe : {{password}}",
-    "ADD_OSM_ADMIN_BUTTON": "Ajouter un admin OSM",
-    "ADD_OSM_ADMIN_ROLE": "Rôle",
-    "ADD_OSM_ADMIN_ROLE_VALUE": "Admin OSM",
-    "ADD_OSM_ADMIN_SAVE": "Créer l'admin OSM",
-    "ADD_OSM_ADMIN_TITLE": "Créer un utilisateur admin OSM",
+    "ADD_OOSM_ADMIN_BUTTON": "Ajouter un admin OOSM",
+    "ADD_OOSM_ADMIN_ROLE": "Rôle",
+    "ADD_OOSM_ADMIN_ROLE_VALUE": "Admin OOSM",
+    "ADD_OOSM_ADMIN_SAVE": "Créer l'admin OOSM",
+    "ADD_OOSM_ADMIN_TITLE": "Créer un utilisateur admin OOSM",
     "CANCEL": "Annuler",
     "COMPANY_NAME": "Nom de la société",
     "COMPANY_NAME_REQUIRED": "Le nom de la société est requis.",
@@ -40,7 +40,7 @@
   },
   "ADMIN_DASHBOARD": {
     "ADD_COMPANY_LINK": "Créer un nouveau tenant et son utilisateur admin.",
-    "ADD_OSM_ADMIN_LINK": "Créer un nouveau compte administrateur de la plateforme.",
+    "ADD_OOSM_ADMIN_LINK": "Créer un nouveau compte administrateur de la plateforme.",
     "COMPANIES_LINK": "Parcourir et gérer tous les profils entreprise.",
     "HERO": {
       "ACTIVE": "actifs",
@@ -141,7 +141,7 @@
   "SIDEBAR": {
     "BRAND_HOME": "Aller à l'accueil",
     "DEFAULT_COMPANY": "Mon entreprise",
-    "PLATFORM": "Plateforme OSM"
+    "PLATFORM": "Plateforme OOSM"
   },
   "NOTIFICATIONS": {
     "TITLE": "Notifications",
@@ -1462,7 +1462,7 @@
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Ajouter société & utilisateur",
-      "ADD_OSM_ADMIN": "Ajouter admin OSM",
+      "ADD_OOSM_ADMIN": "Ajouter admin OOSM",
       "COMPANY_PROFILES": "Profils de société",
       "DASHBOARD": "Tableau de bord admin",
       "TITLE": "Administration",
@@ -2598,7 +2598,7 @@
       "OIL_QUALITY": "Contrôle Qualité Huile",
       "OIL_RECEPTION": "Réception Huile",
       "OLIVE_QUALITY": "Contrôle Qualité Olives",
-      "OSMUSER": "Utilisateur OSM",
+      "OOSMUSER": "Utilisateur OOSM",
       "PARAMETER": "Paramètre",
       "PAUSE": "Mettre en pause",
       "PAY": "Paier",
@@ -2724,7 +2724,7 @@
       "WASTE_TITLE": "Élimination et vente des déchets (grignon, margine, tourteau, etc.).",
       "EXPENSES_TITLE": "Charges d'exploitation et paiements sortants.",
       "BANK_ACCOUNTS_TITLE": "Comptes bancaires pour paiements et rapprochement financier.",
-      "ADMIN_USERS_TITLE": "Comptes administrateurs plateforme (périmètre OSM admin).",
+      "ADMIN_USERS_TITLE": "Comptes administrateurs plateforme (périmètre OOSM admin).",
       "BASE_TYPE_TITLE": "Types de référence génériques et données configurables.",
       "SUPPLIER_DETAILS_OIL_CREDIT_TOTAL": "Totaux et historique de crédit huile pour ce fournisseur.",
       "OSM_DASHBOARD_ACTIONS_OLIVE_QUALITY": "Résultats de contrôle qualité olive à examiner ou mettre à jour.",
@@ -4101,7 +4101,7 @@
       "START": "Démarrer une réception"
     },
     "DESCRIPTION": "Gérez réceptions, production, stocks et finances au même endroit.",
-    "HEADLINE": "Bienvenue sur OSM",
+    "HEADLINE": "Bienvenue sur OOSM",
     "LINKS": {
       "FINANCE": "Finance",
       "FINANCE_HINT": "Factures, paiements & rapports",
@@ -5171,7 +5171,7 @@
     "CHOOSE_FULL_OR_CONTAINER_LAYOUT": "Choisissez une disposition complète ou conteneur",
     "FULL_LAYOUT": "Mise en page complète",
     "CONTAINER_LAYOUT": "Disposition du conteneur",
-    "OSM_CRAFTED_WITH_BY_TEAM_XDEV": "OSM créé avec ♥ par l'équipe XDEV",
+    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "OOSM créé avec ♥ par l'équipe XDEV",
     "RECHERCHE_GLOBALE": "Recherche globale",
     "LANCER_LA_RECHERCHE_GLOBALE": "Démarrer la recherche globale",
     "MODE": "mode",
@@ -5694,7 +5694,7 @@
     "ERREUR_LORS_DE_LA_CREATION_DU_FOURNISSEUR": "Erreur lors de la création du fournisseur",
     "ERROR_LOADING_STORAGE_UNIT": "Erreur lors du chargement de l'unité de stockage.",
     "ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_STORAGE_UNIT": "Êtes-vous sûr de vouloir supprimer cette unité de stockage ?",
-    "OSM": "| OSM",
+    "OOSM": "| OOSM",
     "LA_QUANTITE_DEPASSE_LE_RESTE_A_PRODUIRE_DU_PROJET": "La quantité ({{value0}}) dépasse le reste du projet à produire ({{value1}} {{value2}})",
     "QUANTITE_DEPASSEE_MAXIMUM_AUTORISE": "Quantité dépassée. Maximum autorisé : {{value0}}.",
     "QUANTITE_DEPASSEE_MAXIMUM_RESTANT_PROJET": "Quantité dépassée. Projet restant maximum : {{value0}}.",
@@ -5915,7 +5915,7 @@
   },
   "HOME_DASHBOARD": {
     "TITLE": "Accueil",
-    "GREETING": "Bon retour sur OSM",
+    "GREETING": "Bon retour sur OOSM",
     "GREETING_NAMED": "Bon retour, {{name}}",
     "LOADING": "Chargement de votre vue d’ensemble…",
     "LOAD_ERROR": "Impossible de charger la vue d’ensemble.",

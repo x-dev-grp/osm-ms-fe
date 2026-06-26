@@ -8,5 +8,5 @@ export const AdminAuthGuard: CanActivateFn = () => {
   const authenticationService = inject(AuthenticationService);
   const user = authenticationService.currentUserValue;
 
-  return user?.role === Role.OsmAdmin ? true : router.createUrlTree(['/access-denied']);
+  return user?.role === Role.OosmAdmin ? true : router.createUrlTree(['/access-denied']);
 };

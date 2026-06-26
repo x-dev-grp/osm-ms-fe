@@ -7,7 +7,7 @@ import { Title } from '@angular/platform-browser';
 // project import
 import { NavigationItem } from '../../types/navigation';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { osm_menus } from '../../../shared/osm_menu';
+import { oosm_menus } from '../../../shared/oosm_menu';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface titleType {
@@ -43,7 +43,7 @@ export class BreadcrumbComponent {
 
   // constructor
   constructor(private translateservice: TranslateService,) {
-    this.navigations = osm_menus;
+    this.navigations = oosm_menus;
     this.ComponentNavigations = [];
     this.type = 'theme1';
     this.setBreadcrumb();
@@ -58,7 +58,7 @@ export class BreadcrumbComponent {
         this.navigationList = breadcrumbList;
         this.componentList = this.filterNavigation(this.ComponentNavigations, activeLink);
         const title = breadcrumbList[breadcrumbList.length - 1]?.title || 'Welcome';
-        this.titleService.setTitle(this.translateservice.instant(title)+ this.translateservice.instant('AUTO.OSM'));
+        this.titleService.setTitle(this.translateservice.instant(title)+ this.translateservice.instant('AUTO.OOSM'));
       }
     });
   }

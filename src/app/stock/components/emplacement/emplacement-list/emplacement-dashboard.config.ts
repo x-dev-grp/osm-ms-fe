@@ -1,5 +1,5 @@
 import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
-import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 
 export const EMPLACEMENT_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'place',

@@ -3,10 +3,10 @@ import { Role } from 'src/app/theme/types/role';
 
 export const admin_menus: Navigation[] = [
   {
-    id: 'osmAdminGroup',
+    id: 'oosmAdminGroup',
     title: 'MENU.ADMINISTRATION.TITLE',
     type: 'group',
-    role: [Role.OsmAdmin],
+    role: [Role.OosmAdmin],
     children: [
       {
         id: 'adminDashboard',
@@ -33,8 +33,8 @@ export const admin_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
-        id: 'addOsmAdmin',
-        title: 'MENU.ADMINISTRATION.ADD_OSM_ADMIN',
+        id: 'addOosmAdmin',
+        title: 'MENU.ADMINISTRATION.ADD_OOSM_ADMIN',
         type: 'item',
         url: '/administration/osm-admins/add',
         icon: 'admin_panel_settings',

@@ -1,7 +1,7 @@
-<div class="add-osm-admin-user-wrapper">
+<div class="add-oosm-admin-user-wrapper">
   <mat-card class="main-card">
     <mat-card-header>
-      <mat-card-title>{{ 'ADMIN.ADD_OSM_ADMIN_TITLE' | translate }}</mat-card-title>
+      <mat-card-title>{{ 'ADMIN.ADD_OOSM_ADMIN_TITLE' | translate }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="userForm">
@@ -67,8 +67,8 @@
             </div>
             <div class="col-md-6 col-lg-4 col-12">
               <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{ 'ADMIN.ADD_OSM_ADMIN_ROLE' | translate }}</mat-label>
-                <input matInput [value]="'ADMIN.ADD_OSM_ADMIN_ROLE_VALUE' | translate" readonly />
+                <mat-label>{{ 'ADMIN.ADD_OOSM_ADMIN_ROLE' | translate }}</mat-label>
+                <input matInput [value]="'ADMIN.ADD_OOSM_ADMIN_ROLE_VALUE' | translate" readonly />
               </mat-form-field>
             </div>
             <div class="col-md-6 col-lg-4 col-12 mt-3">
@@ -82,7 +82,7 @@
           <button (click)="cancel()" mat-stroked-button class="m-r-10">{{ 'ADMIN.CANCEL' | translate }}</button>
           <button [disabled]="userForm.invalid || loading" (click)="onSubmit()" mat-flat-button class="m-r-10" color="primary">
             <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
-            <span *ngIf="!loading">{{ 'ADMIN.ADD_OSM_ADMIN_SAVE' | translate }}</span>
+            <span *ngIf="!loading">{{ 'ADMIN.ADD_OOSM_ADMIN_SAVE' | translate }}</span>
           </button>
         </div>
       </form>

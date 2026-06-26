@@ -1,4 +1,4 @@
-import { AttributeType, DashboardConfig, FieldType } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from 'src/app/shared/modules/oosm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const companyProfileDashboardConfig: DashboardConfig = {

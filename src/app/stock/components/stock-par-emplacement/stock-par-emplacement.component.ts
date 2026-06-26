@@ -3,14 +3,14 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { Stock } from '../../models/stock.model';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { STOCK_PAR_EMPLACEMENT_DASHBOARD_CONFIG } from './stock-par-emplacement-dashboard.config';
 
 @Component({
   selector: 'app-stock-par-emplacement',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './stock-par-emplacement.component.html',
   styleUrls: ['./stock-par-emplacement.component.scss']
 })

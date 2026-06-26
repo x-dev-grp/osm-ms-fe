@@ -7,8 +7,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { AuditService } from '../../services/AuditService';
 import { AuditDto } from '../../models/AuditDto';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { AUDIT_DASHBOARD_CONFIG } from './audit-dashboard.config';
 
 interface AuditRow extends AuditDto {
@@ -19,12 +19,12 @@ interface AuditRow extends AuditDto {
 @Component({
   selector: 'app-audit',
   standalone: true,
-  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard],
+  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, OosmDashboard],
   templateUrl: './audit.component.html',
   styleUrls: ['./audit.component.scss']
 })
 export class AuditComponent implements OnInit {
-  @ViewChild('dashboard') dashboard?: OsmDashboard;
+  @ViewChild('dashboard') dashboard?: OosmDashboard;
 
   private readonly destroyRef = inject(DestroyRef);
   private filteredCountSubscribed = false;

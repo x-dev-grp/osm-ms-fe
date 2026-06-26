@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../../shared/modules/oosm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { CertificationService } from '../../services/certification.service';
 import { Certification } from '../../models/certification.model';
 import { CertificationFormComponent } from '../certification-form/certification-form.component';
@@ -13,14 +13,14 @@ import { CERTIFICATION_DASHBOARD_CONFIG } from './certification-dashboard.config
 @Component({
   selector: 'app-certification-list',
   standalone: true,
-  imports: [CommonModule, TranslateModule, MatDialogModule, OsmDashboard],
+  imports: [CommonModule, TranslateModule, MatDialogModule, OosmDashboard],
   templateUrl: './certification-list.component.html',
   styleUrls: ['./certification-list.component.scss']
 })
 export class CertificationListComponent {
   dashboardConfig: DashboardConfig = CERTIFICATION_DASHBOARD_CONFIG;
 
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   constructor(
     private certService: CertificationService,

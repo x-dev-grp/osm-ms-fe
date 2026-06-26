@@ -3,14 +3,14 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ExpeditionDto } from '../../../models/expedition.model';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { EXPEDITION_DASHBOARD_CONFIG } from './expedition-dashboard.config';
 
 @Component({
   selector: 'app-expedition-list',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './expedition-list.component.html',
   styleUrls: ['./expedition-list.component.scss']
 })

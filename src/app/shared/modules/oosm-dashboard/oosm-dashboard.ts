@@ -28,9 +28,9 @@ import { resolveListContext, translateHintWithFallback, translateWithFallback } 
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'osm-dashboard',
-  templateUrl: './osm-dashboard.html',
-  styleUrls: ['./osm-dashboard.scss'],
+  selector: 'oosm-dashboard',
+  templateUrl: './oosm-dashboard.html',
+  styleUrls: ['./oosm-dashboard.scss'],
   standalone: true,
   providers: [DashboardStore],
   imports: [
@@ -53,7 +53,7 @@ import { resolveListContext, translateHintWithFallback, translateWithFallback } 
     SortByTranslatedPipe
   ]
 })
-export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
+export class OosmDashboard implements OnInit, AfterViewInit, OnChanges {
   readonly _store = inject(DashboardStore);
   _router = inject(Router);
   _dialog = inject(MatDialog);

@@ -6,14 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { SharedModule } from '../../shared/shared.module';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { MAINTENANCE_DASHBOARD_CONFIG } from '../maintenance-dashboard.config';
 import { MaintenanceWorkOrder } from '../models/maintenance-work-order.model';
 
 @Component({
   selector: 'app-maintenance-list',
   standalone: true,
-  imports: [CommonModule, SharedModule, OsmDashboard, TranslateModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, SharedModule, OosmDashboard, TranslateModule, MatButtonModule, MatIconModule],
   templateUrl: './maintenance-list.component.html',
   styleUrl: './maintenance-list.component.scss'
 })

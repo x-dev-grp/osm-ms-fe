@@ -5,8 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { SharedModule } from '../../shared/shared.module';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { dashboardConfig } from './Oil-container-dashboard.config';
 import { Router } from '@angular/router';
 import { OilContainer } from '../../shared/models/oil-container';
@@ -21,13 +21,13 @@ import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-oil-container',
-  imports: [CommonModule, MatTableModule, MatIconModule, SharedModule, TranslateModule, OsmDashboard],
+  imports: [CommonModule, MatTableModule, MatIconModule, SharedModule, TranslateModule, OosmDashboard],
   templateUrl: './oil-container.component.html',
   standalone: true,
   styleUrl: './oil-container.component.scss'
 })
 export class OilContainerComponent {
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
   loading = false;
   dashboardConfig: DashboardConfig = dashboardConfig;
 

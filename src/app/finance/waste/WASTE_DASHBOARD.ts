@@ -1,5 +1,5 @@
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
-import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 
 export const WASTE_DASHBOARD: DashboardConfig = {
   icon: 'delete_sweep',

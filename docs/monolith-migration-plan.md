@@ -1,4 +1,4 @@
-# OSM Frontend Analysis and Monolith Migration Plan
+# OOSM Frontend Analysis and Monolith Migration Plan
 
 ## Executive Summary
 

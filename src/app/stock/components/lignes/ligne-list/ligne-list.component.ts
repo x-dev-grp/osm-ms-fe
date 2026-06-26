@@ -5,19 +5,19 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LigneConditionnement } from '../../../models/ligne-conditionnement.model';
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { LIGNE_DASHBOARD_CONFIG } from './ligne-dashboard.config';
 
 @Component({
   selector: 'app-ligne-list',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './ligne-list.component.html',
   styleUrls: ['./ligne-list.component.scss']
 })
 export class LigneListComponent {
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   dashboardConfig: DashboardConfig = LIGNE_DASHBOARD_CONFIG;
 

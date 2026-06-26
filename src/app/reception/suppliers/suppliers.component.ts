@@ -18,8 +18,8 @@ import { Router } from '@angular/router';
 import { SupplierType } from '../../shared/models/supplier-type';
 import { SupplierTypeService } from '../../shared/services/supplier.service';
 import { SUPPLIERS_DASHBOARD_CONFIG } from './suppliers-dashboard.config';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { MatCardModule } from '@angular/material/card';
 import { ToastService } from '../../shared/services/toast.service';
 import { Subscription } from 'rxjs';
@@ -42,7 +42,7 @@ import { SharedModule } from '../../shared/shared.module';
     MatSortModule,
     SharedModule,
     MatPaginatorModule,
-    OsmDashboard,
+    OosmDashboard,
     MatCardModule
   ],
   standalone: true,
@@ -52,7 +52,7 @@ export class SupplierComponent implements OnInit, OnDestroy {
   suppliers: SupplierType[] = [];
   message: string = '';
   supplierForm: FormGroup;
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
   editingRecordIndex: number = -1;
   formOpen: boolean = false;
   selectedSupplier: SupplierType | null = null;

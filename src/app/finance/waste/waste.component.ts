@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { WASTE_DASHBOARD } from './WASTE_DASHBOARD';
 import { Router } from '@angular/router';
 import { SupplierTypeService } from '../../shared/services/supplier.service';
@@ -13,7 +13,7 @@ import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-waste',
-  imports: [OsmDashboard],
+  imports: [OosmDashboard],
   standalone: true,
   templateUrl: './waste.component.html',
   styleUrl: './waste.component.scss'

@@ -3,20 +3,20 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 
-import { OsmDashboard } from 'src/app/shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from 'src/app/shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from 'src/app/shared/modules/oosm-dashboard/models/dashboard-config';
 import { Router } from '@angular/router';
 import { userDashboardConfig } from './userDashboardConfig';
 
 @Component({
   selector: 'app-application-config',
   standalone: true,
-  imports: [CommonModule, SharedModule, OsmDashboard],
+  imports: [CommonModule, SharedModule, OosmDashboard],
   templateUrl: './user-mangement.component.html',
   styleUrls: ['./user-mangement.component.scss']
 })
 export class UserManagementComponent implements OnInit {
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
   _router = inject(Router);
   dashboardConfig: DashboardConfig = userDashboardConfig;
   ngOnInit(): void {}

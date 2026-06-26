@@ -6,7 +6,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 // project import
 import { SharedModule } from 'src/app/shared/shared.module';
-import { AuthService, OSMUserOUTDTO } from 'src/app/shared/services/auth.service';
+import { AuthService, OOSMUserOUTDTO } from 'src/app/shared/services/auth.service';
 import { catchError, first, of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -59,7 +59,7 @@ export class ForgotPasswordComponent implements OnInit {
           : this.translateService.instant('FORGOT_PASSWORD.ERROR_MESSAGE');
         return of(null);
       })
-    ).subscribe((res: OSMUserOUTDTO | null) => {
+    ).subscribe((res: OOSMUserOUTDTO | null) => {
       if (!res) return;
 
       this.loading = false;
@@ -70,7 +70,7 @@ export class ForgotPasswordComponent implements OnInit {
         this.router.navigate(['/auth/reset', userId], { queryParams: { identifier } });
 
       } else {
-        // Fallback (shouldn’t happen if backend returns OSMUserOUTDTO)
+        // Fallback (shouldn’t happen if backend returns OOSMUserOUTDTO)
         this.successMessage = this.translateService.instant('FORGOT_PASSWORD.SUCCESS_MESSAGE');
       }
     });

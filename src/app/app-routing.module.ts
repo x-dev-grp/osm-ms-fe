@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 // CHANGE: permissions - import permission guards and enums
 import { AuthGuardChild } from './interceptors/guards/auth.guard';
 import { anyPermissionGuard, moduleGuard } from './interceptors/guards/permission.guard';
-import { Action, OSMModule, permissionKey, ProductionEntity, ReceptionEntity } from './theme/types/permissions';
+import { Action, OOSMModule, permissionKey, ProductionEntity, ReceptionEntity } from './theme/types/permissions';
 
 //Type
 import { Role } from './theme/types/role';
@@ -27,20 +27,20 @@ const routes: Routes = [
       {
         path: 'stock',
         loadChildren: () => import('./stock/stock.module').then(m => m.StockModule),
-        canActivate: [moduleGuard([OSMModule.INVENTAIR])]
+        canActivate: [moduleGuard([OOSMModule.INVENTAIR])]
       },
       { path: 'of',
         loadChildren: () => import('./OF/of.module').then(m => m.OfModule),
-        canActivate: [moduleGuard([OSMModule.CONDITIONING])] },
+        canActivate: [moduleGuard([OOSMModule.CONDITIONING])] },
       {
         path: 'labels',
         loadChildren: () => import('./labels/labels.module').then((m) => m.LabelsModule),
-        canActivate: [moduleGuard([OSMModule.CONDITIONING])]
+        canActivate: [moduleGuard([OOSMModule.CONDITIONING])]
       },
       {
         path: 'projets',
         loadChildren: () => import('./projet/projet.module').then((m) => m.ProjetModule),
-        canActivate: [moduleGuard([OSMModule.CONDITIONING])]
+        canActivate: [moduleGuard([OOSMModule.CONDITIONING])]
       },
       {
         path: 'welcome',
@@ -60,7 +60,7 @@ const routes: Routes = [
       {
         path: 'generic',
         loadComponent: () => import('./settings/generic-type/generic-type.component').then((c) => c.GenericTypeComponent), // CHANGE: permissions - require PRODUCTION:base_type:READ
-        canActivate: [anyPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
         data: { roles: [Role.Admin, Role.User] }
       },
 
@@ -68,14 +68,14 @@ const routes: Routes = [
         path: 'qcr',
         loadComponent: () =>
           import('./settings/quality-control-rule/quality-control-rule.component').then((c) => c.QualityControlRuleComponent), // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRULE:READ
-        canActivate: [anyPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRULE, Action.READ)])],
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRULE, Action.READ)])],
         data: { roles: [Role.Admin, Role.User] }
       },
 
       {
         path: 'storage',
         loadChildren: () => import('./storage/storage-routing.module').then((m) => m.StorageRoutingModule),
-        canActivate: [moduleGuard([OSMModule.PRODUCTION])],
+        canActivate: [moduleGuard([OOSMModule.PRODUCTION])],
         data: { roles: [Role.Admin, Role.User] }
       },
 
@@ -83,7 +83,7 @@ const routes: Routes = [
         path: 'fournisseur',
         loadComponent: () =>
           import('./reception/suppliers/supplier-details/supplier-details.component').then((c) => c.SupplierDetailsComponent), // CHANGE: permissions - require RECEPTION:SUPPLIER:READ
-        canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])],
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])],
         data: { roles: [Role.Admin, Role.User] }
       },
       {
@@ -94,7 +94,7 @@ const routes: Routes = [
 
       {
         path: 'reception',
-        canActivate: [moduleGuard([OSMModule.RECEPTION])],
+        canActivate: [moduleGuard([OOSMModule.RECEPTION])],
         children: receptionRoutes
       },
 
@@ -112,17 +112,17 @@ const routes: Routes = [
       {
         path: 'settings',
         loadChildren: () => import('./settings/settings.module').then((m) => m.SettingsModule),
-        canActivate: [moduleGuard([OSMModule.HABILITATION])]
+        canActivate: [moduleGuard([OOSMModule.HABILITATION])]
       },
       {
         path: 'hr',
         loadChildren: () => import('./hr/hr.module').then((m) => m.HrModule),
-        canActivate: [moduleGuard([OSMModule.HR])]
+        canActivate: [moduleGuard([OOSMModule.HR])]
       },
       {
         path: 'finance',
         loadChildren: () => import('./finance/finance-routing.module').then((m) => m.FinanceRoutingModule),
-        canActivate: [moduleGuard([OSMModule.FINANCE])]
+        canActivate: [moduleGuard([OOSMModule.FINANCE])]
       },
       {
         path: 'administration',
@@ -131,13 +131,13 @@ const routes: Routes = [
       {
         path: 'maintenance',
         loadChildren: () => import('./maintenance/maintenance-routing.module').then((m) => m.MaintenanceRoutingModule),
-        canActivate: [moduleGuard([OSMModule.PRODUCTION])]
+        canActivate: [moduleGuard([OOSMModule.PRODUCTION])]
       },
       {
         path: 'analytics',
         loadChildren: () =>
           import('./analytics/analytics.module').then(m => m.AnalyticsModule),
-        canActivate: [moduleGuard([OSMModule.CONDITIONING])]
+        canActivate: [moduleGuard([OOSMModule.CONDITIONING])]
       }
     ]
   },

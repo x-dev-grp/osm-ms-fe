@@ -158,7 +158,7 @@ export class UserFormComponent implements OnInit, AfterViewInit {
     return this._searchService.search(this.roleCriteria, url).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((response: SearchResponse) => {
-        const filteredData = response.data?.filter((role) => !['OSMADMIN', 'OSMUSER'].includes(role.roleName));
+        const filteredData = response.data?.filter((role) => role.roleName !== 'OOSMADMIN');
         this.roles = scroll ? [...this.roles, ...filteredData] : filteredData;
       }),
       catchError((err) => {

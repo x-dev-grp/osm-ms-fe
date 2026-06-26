@@ -133,7 +133,7 @@ export class LoginComponent implements OnInit {
             this.authenticationService.refreshSession().subscribe({
               next: () => {
                 const role = this.authenticationService.currentUserValue?.role;
-                if (role === Role.OsmAdmin) {
+                if (role === Role.OosmAdmin) {
                   this.router.navigate(['/administration/dashboard']);
                 } else {
                   this.router.navigate(['/welcome']);

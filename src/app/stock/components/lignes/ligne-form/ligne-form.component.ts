@@ -18,7 +18,7 @@ import { LigneConditionnementService } from '../../../services/ligne-conditionne
 import { Statue } from '../../../models/ligne-conditionnement.model';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AssignableUser, UserService } from '../../../../settings/user-management/services/user.service';
-import { Action, InventoryEntity, OSMModule } from '../../../../theme/types/permissions';
+import { Action, InventoryEntity, OOSMModule } from '../../../../theme/types/permissions';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -113,7 +113,7 @@ export class LigneFormComponent implements OnInit {
   private loadResponsables(): void {
     this.loadingResponsables.set(true);
 
-    this.userService.getUsersByPermission(OSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ).subscribe({
+    this.userService.getUsersByPermission(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ).subscribe({
       next: (users) => {
         this.responsables.set(users || []);
         this.ensureCurrentResponsableInList();

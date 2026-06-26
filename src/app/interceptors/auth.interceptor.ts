@@ -30,7 +30,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private getTenantIdFromToken(): string | null {
     const decoded = this.tokenService.decodeToken() as Record<string, unknown> | null;
-    return (decoded?.['osmUser'] as { tenantId?: string } | undefined)?.tenantId ?? null;
+    return ((decoded?.['oosmUser'] ?? decoded?.['osmUser']) as { tenantId?: string } | undefined)?.tenantId ?? null;
   }
 
   private isUrlExcluded(url: string): boolean {

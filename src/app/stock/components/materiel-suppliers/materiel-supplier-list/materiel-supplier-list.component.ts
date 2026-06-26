@@ -4,8 +4,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
 import { MaterielSupplier } from '../../../models/materiel-supplier.model';
 import { MaterielSupplierService } from '../../../services/materiel-supplier.service';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { MATERIEL_SUPPLIER_DASHBOARD_CONFIG } from './materiel-supplier-dashboard.config';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { ToastService } from '../../../../shared/services/toast.service';
@@ -13,12 +13,12 @@ import { ToastService } from '../../../../shared/services/toast.service';
 @Component({
   selector: 'app-materiel-supplier-list',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './materiel-supplier-list.component.html',
   styleUrls: ['./materiel-supplier-list.component.scss']
 })
 export class MaterielSupplierListComponent {
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   private readonly i18n = inject(TranslateService);
   private readonly confirmationDialog = inject(ConfirmationDialogService);

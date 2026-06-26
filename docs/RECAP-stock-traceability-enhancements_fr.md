@@ -1,4 +1,4 @@
-# OSM — Récapitulatif : stock, nomenclature, traçabilité et améliorations de l'interface utilisateur/UX
+# OOSM — Récapitulatif : stock, nomenclature, traçabilité et améliorations de l'interface utilisateur/UX
 
 **Date :** mai 2026  
 **Dépôts :** `osm-ms-fe` (Angulaire), `osmproject` (`osm-pack`, `osm-cond`)  
@@ -410,4 +410,4 @@ Ce document consolide le travail de la session agent sur le stock, la nomenclatu
 
 ---
 
-*Généré pour l'équipe OSM — gardez ce fichier à jour lors de l'ajout de fonctionnalités d'inventaire ou de traçabilité.*
+*Généré pour l'équipe OOSM — gardez ce fichier à jour lors de l'ajout de fonctionnalités d'inventaire ou de traçabilité.*

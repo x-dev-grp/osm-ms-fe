@@ -12,7 +12,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { MatDialog } from '@angular/material/dialog';
 
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 
 import { adminUserDashboardConfig } from './admin-user-dashboard.config';
 
@@ -29,7 +29,7 @@ import { AdminUserService } from '../services/admin-user.service';
 
   standalone: true,
 
-  imports: [CommonModule, TranslateModule, OsmDashboard, RouterLink, MatButtonModule, MatIconModule],
+  imports: [CommonModule, TranslateModule, OosmDashboard, RouterLink, MatButtonModule, MatIconModule],
 
   templateUrl: './admin-users.component.html',
 
@@ -38,7 +38,7 @@ import { AdminUserService } from '../services/admin-user.service';
 export class AdminUsersComponent {
   readonly dashboardConfig = adminUserDashboardConfig;
 
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   constructor(
     private adminUserService: AdminUserService,

@@ -7,7 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { OIL_CREDIT_DASHBOARD } from './osmDashConf/oil-credit-dashboard.config';
+import { OIL_CREDIT_DASHBOARD } from './oosmDashConf/oil-credit-dashboard.config';
 import { AdvancedSearchService } from '../../../shared/services/advanced-serach.service';
 import { SearchData } from '../../../shared/models/advanced-search/searchData';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -22,15 +22,15 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
   SupplierPaymentHistoryMobileComponent
 } from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { BASE_DASHBOARD } from './osmDashConf/base_dashboard.config';
-import { OLIVE_PURCHASE_DASHBOARD } from './osmDashConf/olive-purchase-dashboard.config';
-import { EXCHANGE_DASHBOARD } from './osmDashConf/exchange-dashboard.config';
-import { SIMPLE_RECEPTION_DASHBOARD } from './osmDashConf/simple-trt--dashboard.config';
-import { OIL_PURCHASE_DASHBOARD } from './osmDashConf/oil-purchase-dashboard.config';
-import { OIL_SALES_DASHBOARD_CONFIG } from './osmDashConf/oil-sales-dashboard.config';
-import { WASTE_DASHBOARD } from './osmDashConf/waste-sale-dashboard.config';
+import { OosmDashboard } from '../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../shared/modules/oosm-dashboard/models/dashboard-config';
+import { BASE_DASHBOARD } from './oosmDashConf/base_dashboard.config';
+import { OLIVE_PURCHASE_DASHBOARD } from './oosmDashConf/olive-purchase-dashboard.config';
+import { EXCHANGE_DASHBOARD } from './oosmDashConf/exchange-dashboard.config';
+import { SIMPLE_RECEPTION_DASHBOARD } from './oosmDashConf/simple-trt--dashboard.config';
+import { OIL_PURCHASE_DASHBOARD } from './oosmDashConf/oil-purchase-dashboard.config';
+import { OIL_SALES_DASHBOARD_CONFIG } from './oosmDashConf/oil-sales-dashboard.config';
+import { WASTE_DASHBOARD } from './oosmDashConf/waste-sale-dashboard.config';
 import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { SupplierType } from '../../../shared/models/supplier-type';
 import {
@@ -77,7 +77,7 @@ type OperationStats = Record<OperationType, { count: number; total: number } | u
   templateUrl: './supplier-details.component.html',
   styleUrls: ['./supplier-details.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard, TranslateModule]
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, OosmDashboard, TranslateModule]
 })
 export class SupplierDetailsComponent implements OnInit {
   destroyRef = inject(DestroyRef);
@@ -90,7 +90,7 @@ export class SupplierDetailsComponent implements OnInit {
   financeSummary: SupplierFinancialSummary | null = null;
   financeSummaryLoading = false;
   financeDashboardConfig?: DashboardConfig;
-  @ViewChild('financeDashboard') financeDashboard?: OsmDashboard;
+  @ViewChild('financeDashboard') financeDashboard?: OosmDashboard;
 
   operationCards: OperationCard[] = [
     {
@@ -143,7 +143,7 @@ export class SupplierDetailsComponent implements OnInit {
     OIL_CREDIT: undefined,
     WASTE: undefined
   };
-  @ViewChild('dashboardByOperation') dashboardByOperation!: OsmDashboard;
+  @ViewChild('dashboardByOperation') dashboardByOperation!: OosmDashboard;
   private baseDashboardConfigs: Record<OperationType, DashboardConfig> = {
     BASE: BASE_DASHBOARD,
     OLIVE_PURCHASE: OLIVE_PURCHASE_DASHBOARD,

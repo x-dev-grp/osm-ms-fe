@@ -13,7 +13,7 @@ import {
   FinanceEntity,
   HREntity,
   InventoryEntity,
-  OSMModule,
+  OOSMModule,
   permissionKey,
   ProductionEntity,
   ReceptionEntity
@@ -97,51 +97,51 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     const ids: HomeModuleId[] = [];
 
     if (
-      this.auth.hasModule(OSMModule.RECEPTION) &&
-      this.auth.hasPermission(permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ))
+      this.auth.hasModule(OOSMModule.RECEPTION) &&
+      this.auth.hasPermission(permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ))
     ) {
       ids.push('reception');
     }
 
     if (
-      this.auth.hasModule(OSMModule.FINANCE) &&
+      this.auth.hasModule(OOSMModule.FINANCE) &&
       this.auth.hasAnyPermission([
-        permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ),
-        permissionKey(OSMModule.FINANCE, FinanceEntity.EXPENSE, Action.READ),
-        permissionKey(OSMModule.FINANCE, FinanceEntity.OILSALE, Action.READ)
+        permissionKey(OOSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ),
+        permissionKey(OOSMModule.FINANCE, FinanceEntity.EXPENSE, Action.READ),
+        permissionKey(OOSMModule.FINANCE, FinanceEntity.OILSALE, Action.READ)
       ])
     ) {
       ids.push('finance');
     }
 
     if (
-      this.auth.hasModule(OSMModule.PRODUCTION) &&
+      this.auth.hasModule(OOSMModule.PRODUCTION) &&
       this.auth.hasAnyPermission([
-        permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ),
-        permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILTRANSACTION, Action.READ)
+        permissionKey(OOSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ),
+        permissionKey(OOSMModule.PRODUCTION, ProductionEntity.OILTRANSACTION, Action.READ)
       ])
     ) {
       ids.push('storage');
     }
 
     if (
-      this.auth.hasModule(OSMModule.INVENTAIR) &&
-      this.auth.hasPermission(permissionKey(OSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
+      this.auth.hasModule(OOSMModule.INVENTAIR) &&
+      this.auth.hasPermission(permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
     ) {
       ids.push('inventory');
     }
 
     if (
-      this.auth.hasModule(OSMModule.CONDITIONING) &&
+      this.auth.hasModule(OOSMModule.CONDITIONING) &&
       this.auth.hasAnyPermission([
-        permissionKey(OSMModule.CONDITIONING, ConditioningEntity.OF, Action.READ),
-        permissionKey(OSMModule.CONDITIONING, ConditioningEntity.PROJET, Action.READ)
+        permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.OF, Action.READ),
+        permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.PROJET, Action.READ)
       ])
     ) {
       ids.push('conditioning');
     }
 
-    if (this.auth.hasModule(OSMModule.HR) && this.auth.hasPermission(permissionKey(OSMModule.HR, HREntity.EMPLOYEE, Action.READ))) {
+    if (this.auth.hasModule(OOSMModule.HR) && this.auth.hasPermission(permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ))) {
       ids.push('hr');
     }
 
@@ -152,8 +152,8 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     const links: HomeQuickLink[] = [];
 
     if (
-      this.auth.hasModule(OSMModule.RECEPTION) &&
-      this.auth.hasPermission(permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ))
+      this.auth.hasModule(OOSMModule.RECEPTION) &&
+      this.auth.hasPermission(permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ))
     ) {
       links.push({
         titleKey: 'WELCOME.LINKS.RECEPTION',
@@ -164,7 +164,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (this.auth.hasModule(OSMModule.FINANCE)) {
+    if (this.auth.hasModule(OOSMModule.FINANCE)) {
       links.push({
         titleKey: 'WELCOME.LINKS.FINANCE',
         hintKey: 'WELCOME.LINKS.FINANCE_HINT',
@@ -175,8 +175,8 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     }
 
     if (
-      this.auth.hasModule(OSMModule.PRODUCTION) &&
-      this.auth.hasPermission(permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ))
+      this.auth.hasModule(OOSMModule.PRODUCTION) &&
+      this.auth.hasPermission(permissionKey(OOSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ))
     ) {
       links.push({
         titleKey: 'MENU.STORAGE.TITLE',
@@ -188,8 +188,8 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     }
 
     if (
-      this.auth.hasModule(OSMModule.INVENTAIR) &&
-      this.auth.hasPermission(permissionKey(OSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
+      this.auth.hasModule(OOSMModule.INVENTAIR) &&
+      this.auth.hasPermission(permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
     ) {
       links.push({
         titleKey: 'AUTO.STOCKS',
@@ -200,7 +200,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (this.auth.hasModule(OSMModule.HABILITATION)) {
+    if (this.auth.hasModule(OOSMModule.HABILITATION)) {
       links.push({
         titleKey: 'WELCOME.LINKS.SETTINGS',
         hintKey: 'WELCOME.LINKS.SETTINGS_HINT',

@@ -15,8 +15,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { QualityControlRule } from '../../shared/models/quality-control-rule';
 import { QualityControlRuleService } from '../../shared/services/quality-control-rule.service';
 import { ToastService } from '../../shared/services/toast.service';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { Router } from '@angular/router';
 import { QUALTITY_CONTROL_RULE_DASHBOARD } from './QUALTITY_CONTROL_RULE_DASHBOARD';
 
@@ -35,7 +35,7 @@ import { QUALTITY_CONTROL_RULE_DASHBOARD } from './QUALTITY_CONTROL_RULE_DASHBOA
     MatButtonModule,
     MatIconModule,
     SharedModule,
-    OsmDashboard
+    OosmDashboard
   ],
   templateUrl: './quality-control-rule.component.html',
   styleUrls: ['./quality-control-rule.component.scss'],

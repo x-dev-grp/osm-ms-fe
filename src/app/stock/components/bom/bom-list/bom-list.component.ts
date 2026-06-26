@@ -5,21 +5,21 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Bom } from '../../../models/Bom';
 import { BomService } from '../../../services/BomService';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { BOM_DASHBOARD_CONFIG } from './bom-dashboard.config';
 
 @Component({
   selector: 'app-bom-list',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './bom-list.component.html',
   styleUrls: ['./bom-list.component.scss']
 })
 export class BomListComponent {
   private readonly i18n = inject(TranslateService);
 
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   dashboardConfig: DashboardConfig = BOM_DASHBOARD_CONFIG;
 

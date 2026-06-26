@@ -6,21 +6,21 @@ import { FinalProduct, finalProductDisplayName } from '../../../models/final-pro
 import { FinalProductService } from '../../../services/final-product.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { SKU_DASHBOARD_CONFIG } from './sku-dashboard.config';
 
 @Component({
   selector: 'app-sku-list',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './sku-list.component.html',
   styleUrls: ['./sku-list.component.scss']
 })
 export class SkuListComponent {
   private readonly i18n = inject(TranslateService);
 
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   dashboardConfig: DashboardConfig = SKU_DASHBOARD_CONFIG;
 

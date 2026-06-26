@@ -16,7 +16,7 @@ const routes: Routes = [
   },
   {
     path: 'osm-admins/add',
-    loadComponent: () => import('./add-osm-admin-user/add-osm-admin-user.component').then((m) => m.AddOsmAdminUserComponent),
+    loadComponent: () => import('./add-oosm-admin-user/add-oosm-admin-user.component').then((m) => m.AddOosmAdminUserComponent),
     canActivate: [AdminAuthGuard]
   },
   {

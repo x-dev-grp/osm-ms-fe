@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { dashboardConfig } from './department-dashboard.config';
 import { Router } from '@angular/router';
 import { Department } from '../../model/department.model';
@@ -7,7 +7,7 @@ import { Department } from '../../model/department.model';
 @Component({
   selector: 'app-department',
   standalone: true,
-  imports: [OsmDashboard],
+  imports: [OosmDashboard],
   templateUrl: './department.component.html',
   styleUrls: ['./department.component.scss']
 })

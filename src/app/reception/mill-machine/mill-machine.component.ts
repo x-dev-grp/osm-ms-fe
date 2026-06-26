@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { SharedModule } from '../../shared/shared.module';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { MillMachine } from '../../shared/models/millMachine';
 import { MillMachineService } from '../../shared/services/mill-machine.service';
 import { ToastService } from '../../shared/services/toast.service';
@@ -32,7 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatCardModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard,
+    OosmDashboard,
     TranslateModule
   ]
 })

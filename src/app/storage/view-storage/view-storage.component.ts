@@ -10,9 +10,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
-import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { OilTransaction } from '../../shared/models/OilTransaction';
 import { ToastService } from '../../shared/services/toast.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -32,7 +32,7 @@ import { take } from 'rxjs/operators';
     MatTooltipModule,
     SharedModule,
     TranslateModule,
-    OsmDashboard
+    OosmDashboard
   ],
   templateUrl: './view-storage.component.html',
   styleUrls: ['./view-storage.component.scss']

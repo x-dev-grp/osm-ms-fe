@@ -4,19 +4,19 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { Article } from '../../../models/article.model';
 import { ArticleService } from '../../../services/article.service';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { ARTICLE_DASHBOARD_CONFIG } from './article-dashboard.config';
 
 @Component({
   selector: 'app-article-list',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './article-list.component.html',
   styleUrls: ['./article-list.component.scss']
 })
 export class ArticleListComponent {
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   dashboardConfig: DashboardConfig = ARTICLE_DASHBOARD_CONFIG;
 

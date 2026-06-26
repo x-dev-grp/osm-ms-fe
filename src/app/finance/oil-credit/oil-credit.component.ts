@@ -19,8 +19,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { CreditState, OilCredit, UnitType } from '../models/OilCredit';
 import { OilCreditService } from '../service/oil-credit.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
 import { ToastService } from '../../shared/services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -46,7 +46,7 @@ import { TranslateService } from '@ngx-translate/core';
     MatExpansionModule,
     MatSnackBarModule,
     SharedModule,
-    OsmDashboard
+    OosmDashboard
   ],
   templateUrl: './oil-credit.component.html',
   styleUrls: ['./oil-credit.component.scss']

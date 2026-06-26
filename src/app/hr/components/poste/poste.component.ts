@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { dashboardConfig } from './poste-dashboard.config';
 import { Router } from '@angular/router';
 import { Poste } from '../../model/poste.model';
 
 @Component({
   selector: 'app-poste',
-  imports: [OsmDashboard],
+  imports: [OosmDashboard],
   templateUrl: './poste.component.html',
   standalone: true,
   styleUrl: './poste.component.scss'

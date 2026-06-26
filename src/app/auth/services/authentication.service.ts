@@ -181,13 +181,14 @@ export class AuthenticationService {
     this._tokenService.setToken(accessToken);
 
     const decodedToken = this._tokenService.decodeToken() as Record<string, unknown> | null;
-    if (!decodedToken?.['osmUser']) {
+    const tokenUser = decodedToken?.['oosmUser'] ?? decodedToken?.['osmUser'];
+    if (!tokenUser) {
       return false;
     }
 
     const role = decodedToken['role'] as string;
-    const osmUser = decodedToken['osmUser'] as User;
-    const user: User = structuredClone(osmUser);
+    const oosmUser = tokenUser as User;
+    const user: User = structuredClone(oosmUser);
     user.role = role;
     user.permissions =
       explicitAuthorities ??
@@ -345,7 +346,7 @@ export class AuthenticationService {
     const user = this.currentUserValue;
     if (!user) return false;
 
-    if (user.role === Role.Admin || user.role === Role.OsmAdmin) return true;
+    if (user.role === Role.Admin || user.role === Role.OosmAdmin) return true;
 
     const permissions = this.normalizedPermissions();
     return permissions.includes(permission.toUpperCase());
@@ -355,7 +356,7 @@ export class AuthenticationService {
     const user = this.currentUserValue;
     if (!user) return false;
 
-    if (user.role === Role.Admin || user.role === Role.OsmAdmin) return true;
+    if (user.role === Role.Admin || user.role === Role.OosmAdmin) return true;
 
     const modulePrefix = `${module.toUpperCase()}:`;
     return this.normalizedPermissions().some((p) => p.startsWith(modulePrefix));

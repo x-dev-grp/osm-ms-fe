@@ -11,8 +11,8 @@ import { ActivatedRoute, Data, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
 
@@ -46,13 +46,13 @@ function setOpToLS(opKey?: string) {
     MatCardModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard
+    OosmDashboard
   ],
   templateUrl: './olive-reception.component.html',
   styleUrls: ['./olive-reception.component.scss']
 })
 export class OliveReceptionComponent implements OnInit, OnDestroy {
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
   @ViewChild('setPriceDialog') setPriceDialogTemplate!: TemplateRef<object>;
   formOpen = false;
   isEditing = false;

@@ -7,7 +7,7 @@
 // import { AuthGuardChild } from 'src/app/interceptors/guards/auth.guard';
 // import { allPermissionGuard } from 'src/app/interceptors/guards/permission.guard';
 // // CHANGE: permissions - use enums
-// import { OSMModule, ReceptionEntity, Action, permissionKey } from 'src/app/theme/types/permissions';
+// import { OOSMModule, ReceptionEntity, Action, permissionKey } from 'src/app/theme/types/permissions';
 //
 // const routes: Routes = [
 //   {
@@ -29,7 +29,7 @@
 //         loadComponent: () => import('./analytics/analytics.component').then((c) => c.AnalyticsComponent),
 //         data: { roles: [Role.Admin] },
 //         // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:DELETE
-//         canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.DELETE)])]
+//         canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.DELETE)])]
 //       },
 //       {
 //         path: 'finance',

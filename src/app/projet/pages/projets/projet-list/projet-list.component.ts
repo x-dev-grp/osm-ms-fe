@@ -7,8 +7,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjetService } from '../../../services/projet.service';
 import { ProjetDto } from '../../../models/TypeProduit';
 import { ProjetStatusDialogComponent, ProjetStatusDialogResult } from '../projet-status-dialog/projet-status-dialog.component';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { PROJET_DASHBOARD_CONFIG } from './projet-dashboard.config';
 
 type ProjetStatusFilter = 'ALL' | 'BROUILLON' | 'EN_COURS' | 'VALIDE' | 'ANNULE' | 'FAILED';
@@ -16,7 +16,7 @@ type ProjetStatusFilter = 'ALL' | 'BROUILLON' | 'EN_COURS' | 'VALIDE' | 'ANNULE'
 @Component({
   selector: 'app-projet-list',
   standalone: true,
-  imports: [TranslateModule, MatDialogModule, OsmDashboard],
+  imports: [TranslateModule, MatDialogModule, OosmDashboard],
   templateUrl: './projet-list.component.html',
   styleUrls: ['./projet-list.component.scss']
 })
@@ -27,7 +27,7 @@ export class ProjetListComponent {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
 
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   dashboardConfig: DashboardConfig = PROJET_DASHBOARD_CONFIG;
 

@@ -16,8 +16,8 @@ import { BaseType } from '../shared/models/base-type';
 import { StorageUnitDtoService } from '../shared/services/storage.service';
 import { GenericTypeService } from '../shared/services/generic-type.service';
 import { TypeCategory } from '../shared/models/type-category.enum';
-import { DashboardConfig } from '../shared/modules/osm-dashboard/models/dashboard-config';
-import { OsmDashboard } from '../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../shared/modules/oosm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../shared/modules/oosm-dashboard/oosm-dashboard';
 import { Router } from '@angular/router';
 import { UnifiedDelivery } from '../shared/models/UnifiedDelivery';
 import { dashboardConfig } from './storage_dash_config';
@@ -40,13 +40,13 @@ import { AssignSupplierComponent } from './assign-supplier/assign-supplier.compo
     ReactiveFormsModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard
+    OosmDashboard
   ],
   styleUrls: ['./storage.component.scss']
 })
 export class StorageUnitsComponent implements OnInit {
   private readonly i18n = inject(TranslateService);
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
   storageUnits: StorageUnitDto[] = [];
   oilTypes: BaseType[] = [];
   loading = false;

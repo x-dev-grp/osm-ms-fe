@@ -6,8 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { FiltrationApiService } from '../../shared/services/filtration-api.service';
 import { FiltrationOperation } from '../../shared/models/filtration-operation';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { FILTRATION_DASHBOARD_CONFIG } from './filtration-dashboard.config';
 import { FiltrationStatusDialogComponent } from './filtration-status-dialog/filtration-status-dialog.component';
 import { FiltrationDeleteDialogComponent } from './filtration-delete-dialog/filtration-delete-dialog.component';
@@ -15,14 +15,14 @@ import { FiltrationDeleteDialogComponent } from './filtration-delete-dialog/filt
 @Component({
   selector: 'app-filtration-list',
   standalone: true,
-  imports: [TranslateModule, MatDialogModule, OsmDashboard],
+  imports: [TranslateModule, MatDialogModule, OosmDashboard],
   templateUrl: './filtration-list.component.html',
   styleUrls: ['./filtration-list.component.scss']
 })
 export class FiltrationListComponent {
   dashboardConfig: DashboardConfig = FILTRATION_DASHBOARD_CONFIG;
 
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly api = inject(FiltrationApiService);

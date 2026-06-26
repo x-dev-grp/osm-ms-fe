@@ -6,19 +6,19 @@ import { EmplacementStock } from '../../../models/emplacement-stock.model';
 import { EmplacementStockService } from '../../../services/emplacement-stock.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { EMPLACEMENT_DASHBOARD_CONFIG } from './emplacement-dashboard.config';
 
 @Component({
   selector: 'app-emplacement-list',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './emplacement-list.component.html',
   styleUrls: ['./emplacement-list.component.scss']
 })
 export class EmplacementListComponent {
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   dashboardConfig: DashboardConfig = EMPLACEMENT_DASHBOARD_CONFIG;
   error: string | null = null;

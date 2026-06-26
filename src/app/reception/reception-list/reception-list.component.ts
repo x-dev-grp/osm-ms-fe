@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { LIST_RECEPTION_DASHBOARD } from './LIST_RECEPTION_DASHBOARD';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { OliveReceptionActionsService } from '../olive-reception/olive-reception-actions.service';
@@ -10,7 +10,7 @@ import { OilReceptionActionsService } from '../oil-reception/oil-reception-actio
 @Component({
   selector: 'app-reception-list',
   standalone: true,
-  imports: [CommonModule, OsmDashboard],
+  imports: [CommonModule, OosmDashboard],
   templateUrl: './reception-list.component.html'
 })
 export class ReceptionListComponent implements OnInit {

@@ -4,9 +4,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions-dashboard.config';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { SharedModule } from '../../shared/shared.module';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { OilTransaction, TransactionType } from '../../shared/models/OilTransaction';
 import { OilTransactionService } from '../../shared/services/OilTransactionService';
 import { MatDialog } from '@angular/material/dialog';
@@ -26,14 +26,14 @@ import { SearchOperation } from '../../shared/models/advanced-search/searchOpera
   standalone: true,
   templateUrl: './oil-transactions.component.html',
   styleUrls: ['./oil-transactions.component.scss'],
-  imports: [CommonModule, MatTableModule, MatIconModule, SharedModule, TranslateModule, OsmDashboard]
+  imports: [CommonModule, MatTableModule, MatIconModule, SharedModule, TranslateModule, OosmDashboard]
 })
 export class OilTransactionsComponent implements OnInit {
   dashboardConfig: DashboardConfig = OIL_TRANSACTIONS_DASHBOARD_CONFIG;
   oilTransactions: OilTransaction[] = [];
   storageUnits: StorageUnitDto[] = [];
   dataSource: MatTableDataSource<OilTransaction> = new MatTableDataSource(this.oilTransactions);
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
   transactionRequest: OilTransaction;
   private destroy$ = new Subject<void>();
   private oilSaleForm: any;

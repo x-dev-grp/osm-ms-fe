@@ -1,7 +1,7 @@
 // CHANGE: permissions - centralize permission enums and helpers
 // Entity enums are also generated in permissions.generated.ts (run: node oosm/scripts/sync-permissions.cjs)
 
-export enum OSMModule {
+export enum OOSMModule {
   HR = 'HR',
   RECEPTION = 'RECEPTION',
   PRODUCTION = 'PRODUCTION',
@@ -52,7 +52,7 @@ export enum HabilitationEntity {
   COMPANYPROFILE = 'COMPANYPROFILE',
   ROLE = 'ROLE',
   PERMISSION = 'PERMISSION',
-  OSMUSER = 'OSMUSER',
+  OOSMUSER = 'OOSMUSER',
 }
 
 export enum InventoryEntity {
@@ -135,7 +135,7 @@ export enum Action {
   TRANSFERER_STOCK = 'TRANSFERER_STOCK',
 }
 
-export function permissionKey(moduleName: OSMModule, entity: string, action: Action): string {
+export function permissionKey(moduleName: OOSMModule, entity: string, action: Action): string {
   return `${moduleName}:${entity}:${action}`;
 }
 

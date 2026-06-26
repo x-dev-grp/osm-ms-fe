@@ -56,7 +56,7 @@ export class PushNotificationService {
 
   registerDevice(playerId: string): void {
     const decoded = this.tokenService.decodeToken() as Record<string, unknown> | null;
-    const userId = (decoded?.['osmUser'] as { id?: string } | undefined)?.id;
+    const userId = ((decoded?.['oosmUser'] ?? decoded?.['osmUser']) as { id?: string } | undefined)?.id;
     if (!userId || !playerId) {
       return;
     }

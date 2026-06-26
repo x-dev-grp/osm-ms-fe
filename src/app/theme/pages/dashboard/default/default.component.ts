@@ -111,8 +111,8 @@ export class DefaultComponent implements OnInit {
   private fetchCompanyProfile(): void {
     const currentUser = this.authService.currentUserValue;
 
-    // Only fetch company profile for non-OsmAdmin users who have a tenantId
-    if (currentUser && currentUser.role !== Role.OsmAdmin && currentUser.tenantId) {
+    // Only fetch company profile for non-OosmAdmin users who have a tenantId
+    if (currentUser && currentUser.role !== Role.OosmAdmin && currentUser.tenantId) {
       console.log('[DefaultComponent] Fetching company profile for tenantId:', currentUser.tenantId);
 
       this.companyProfileService.getProfile().subscribe({
@@ -120,7 +120,7 @@ export class DefaultComponent implements OnInit {
         error: () => { console.log ('Unable to load profile');   }
       });
     } else {
-      console.log('[DefaultComponent] Skipping company profile fetch - user is OsmAdmin or has no tenantId');
+      console.log('[DefaultComponent] Skipping company profile fetch - user is OosmAdmin or has no tenantId');
     }
   }
 }

@@ -4,14 +4,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { LabelContentDto } from '../../models/label.model';
 import { LabelService } from '../../services/label.service';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { LABEL_DASHBOARD_CONFIG } from './label-dashboard.config';
 
 @Component({
   selector: 'app-label-list',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './label-list.component.html',
   styleUrls: ['./label-list.component.scss']
 })
@@ -20,7 +20,7 @@ export class LabelListComponent {
 
   dashboardConfig: DashboardConfig = LABEL_DASHBOARD_CONFIG;
 
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   constructor(
     private readonly labelService: LabelService,

@@ -1,4 +1,4 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const userDashboardConfig: DashboardConfig = {
@@ -101,7 +101,7 @@ export const userDashboardConfig: DashboardConfig = {
     {
       name: 'role',
       label: 'Role',
-      labelTranslatePath: 'ADMIN.ADD_OSM_ADMIN_ROLE',
+      labelTranslatePath: 'ADMIN.ADD_OOSM_ADMIN_ROLE',
       attributeType: AttributeType.object,
       fieldType: FieldType.autocomplete,
       sortable: true,

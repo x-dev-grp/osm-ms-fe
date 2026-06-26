@@ -19,7 +19,7 @@ import { ReceptionDashboardComponent } from './reception-dashboard/reception-das
 import { SupplierPaymentHistoryComponent } from './suppliers/supplier-payment-history/supplier-payment-history.component';
 import { allPermissionGuard, anyPermissionGuard, moduleGuard } from '../interceptors/guards/permission.guard';
 // CHANGE: permissions - use enums
-import { Action, OSMModule, permissionKey, ProductionEntity, ReceptionEntity } from 'src/app/theme/types/permissions';
+import { Action, OOSMModule, permissionKey, ProductionEntity, ReceptionEntity } from 'src/app/theme/types/permissions';
 import { OliveQCComponent } from './olive-qc/oliveQC.component';
 import { OperationType } from '../shared/models/operation-type.enum';
 import { SupplierInfoComponent } from './suppliers/supplier-info/supplier-info.component';
@@ -29,17 +29,17 @@ export const receptionRoutes: Routes = [
   {
     path: '',
     component: ReceptionDashboardComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
   },
   {
     path: 'dashboard',
     component: ReceptionDashboardComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
   },
   {
     path: 'reception-dashboard',
     component: ReceptionDashboardComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
   },
 
   /**
@@ -50,32 +50,32 @@ export const receptionRoutes: Routes = [
     path: 'reception-olive/exchange',
     component: OliveReceptionComponent,
     data: { op: 'EXCHANGE' },
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
   },
   {
     path: 'reception-olive/simple_reception',
     component: OliveReceptionComponent,
     data: { op: 'SIMPLE_RECEPTION' },
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
   },
   {
     path: 'reception-olive/base',
     component: OliveReceptionComponent,
     data: { op: 'BASE' },
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
   },
   {
     path: 'reception-olive/olive_purchase',
     component: OliveReceptionComponent,
     data: { op: 'OLIVE_PURCHASE' },
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
   },
 
   // Optional generic fallback: /reception-olive/:op  (EXCHANGE|SIMPLE_RECEPTION|BASE|OLIVE_PURCHASE)
   {
     path: 'reception-olive/:op',
     component: OliveReceptionComponent,
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
   },
 
   /**
@@ -86,155 +86,155 @@ export const receptionRoutes: Routes = [
     path: 'reception-olive/exchange/:id',
     component: OliveReceptionFormComponent,
     data: { op: OperationType.EXCHANGE },
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
   },
   {
     path: 'reception-olive/simple_reception/:id',
     component: OliveReceptionFormComponent,
     data: { op: OperationType.SIMPLE_RECEPTION },
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
   },
   {
     path: 'reception-olive/base/:id',
     component: OliveReceptionFormComponent,
     data: { op: OperationType.BASE },
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
   },
   {
     path: 'reception-olive/olive_purchase/:id',
     component: OliveReceptionFormComponent,
     data: { op: OperationType.OLIVE_PURCHASE },
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
   },
 
   // Backward-compatible legacy edit route: /reception-olive/:id (kept, but op won’t be in URL)
   {
     path: 'reception-olive/:id',
     component: OliveReceptionFormComponent,
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
   },
 
   // OIL RECEPTION (CREATE/UPDATE)
   {
     path: 'reception-huile',
     component: OilReceptionComponent,
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
   },
   {
     path: 'reception-huile/:id',
     component: OilReceptionFormComponent,
-    canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)])]
   },
 
   // SUPPLIERS
   {
     path: 'fournisseur',
     component: SupplierComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)])]
   },
   {
     path: 'fournisseur/new',
     component: SupplierAddComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)])]
   },
   {
     path: 'fournisseur/info/:id',
     component: SupplierInfoComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)])]
   },
   {
     path: 'fournisseur/details/:id',
     component: SupplierDetailsComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])]
   },
   {
     path: 'fournisseur/edit/:id',
     component: SupplierAddComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.UPDATE)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.UPDATE)])]
   },
   {
     path: 'fournisseur/payments/:id',
     component: SupplierPaymentHistoryComponent,
-    canActivate: [moduleGuard([OSMModule.FINANCE])]
+    canActivate: [moduleGuard([OOSMModule.FINANCE])]
   },
 
   // QUALITY CONTROL
   {
     path: 'oil_qc',
     component: OilQCComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
   },
   {
     path: 'olive_qc',
     component: OliveQCComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
   },
   {
     path: 'quality/:id',
     component: ControleQualiteComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
   },
   {
     path: 'quality/oilFromOlive/:idx',
     component: ControleQualiteComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
   },
 
   // RECEPTION DETAILS (READ)
   {
     path: 'reception-details/:id',
     component: DetailsReceptionComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
   },
 
   // PLANNING (PLANNING)
   {
     path: 'mill-schedules',
     component: PlanningComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)])]
   },
 
   // MILL MACHINES
   {
     path: 'mill-machines',
     component: MillMachineComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.READ)])]
   },
   {
     path: 'mill-machines/new',
     component: MillMachineAddComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.CREATE)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.CREATE)])]
   },
   {
     path: 'mill-machines/:id',
     component: MillMachineAddComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.UPDATE)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.UPDATE)])]
   },
   {
     path: 'mill-machines/view/:id',
     component: MillMachineViewComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.READ)])]
   },
   {
     path: 'mill-machines/maintenance/:id',
     component: MillMachineMaintenanceRedirectComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.MAINTENANCE)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.MAINTENANCE)])]
   },
 
   // RECEPTION LIST (READ)
   {
     path: 'reception-list',
     component: ReceptionListComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
   },
   {
     path: 'reception-list/:deliveryType',
     component: ReceptionListComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
   },
   {
     path: 'reception-list/:deliveryType/:operationType',
     component: ReceptionListComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
   }
 ];

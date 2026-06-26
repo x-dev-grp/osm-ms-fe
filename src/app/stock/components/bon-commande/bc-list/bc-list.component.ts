@@ -5,21 +5,21 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BonCommande } from '../../../models/bon-commande.model';
 import { BonCommandeService } from '../../../services/bon-commande.service';
 import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { BC_DASHBOARD_CONFIG } from './bc-dashboard.config';
 
 @Component({
   selector: 'app-bc-list',
   standalone: true,
-  imports: [TranslateModule, OsmDashboard],
+  imports: [TranslateModule, OosmDashboard],
   templateUrl: './bc-list.component.html',
   styleUrls: ['./bc-list.component.scss']
 })
 export class BcListComponent {
   private readonly i18n = inject(TranslateService);
 
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   dashboardConfig: DashboardConfig = BC_DASHBOARD_CONFIG;
   error: string | null = null;

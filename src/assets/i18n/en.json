@@ -14,11 +14,11 @@
     "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",
     "ADD_COMPANY_CREATED": "Company and admin user created successfully.",
     "ADD_COMPANY_INITIAL_PASSWORD": "Company created. Share these credentials with the admin — Username: {{username}}, Password: {{password}}",
-    "ADD_OSM_ADMIN_BUTTON": "Add OSM Admin",
-    "ADD_OSM_ADMIN_ROLE": "Role",
-    "ADD_OSM_ADMIN_ROLE_VALUE": "OSM Admin",
-    "ADD_OSM_ADMIN_SAVE": "Create OSM Admin",
-    "ADD_OSM_ADMIN_TITLE": "Create OSM Admin User",
+    "ADD_OOSM_ADMIN_BUTTON": "Add OOSM Admin",
+    "ADD_OOSM_ADMIN_ROLE": "Role",
+    "ADD_OOSM_ADMIN_ROLE_VALUE": "OOSM Admin",
+    "ADD_OOSM_ADMIN_SAVE": "Create OOSM Admin",
+    "ADD_OOSM_ADMIN_TITLE": "Create OOSM Admin User",
     "CANCEL": "Cancel",
     "COMPANY_NAME": "Company name",
     "COMPANY_NAME_REQUIRED": "Company name is requeird",
@@ -40,7 +40,7 @@
   },
   "ADMIN_DASHBOARD": {
     "ADD_COMPANY_LINK": "Create a new tenant and its admin user.",
-    "ADD_OSM_ADMIN_LINK": "Create a new platform administrator account.",
+    "ADD_OOSM_ADMIN_LINK": "Create a new platform administrator account.",
     "COMPANIES_LINK": "Browse and manage all company profiles.",
     "HERO": {
       "ACTIVE": "active",
@@ -141,7 +141,7 @@
   "SIDEBAR": {
     "BRAND_HOME": "Go to home",
     "DEFAULT_COMPANY": "My company",
-    "PLATFORM": "OSM Platform"
+    "PLATFORM": "OOSM Platform"
   },
   "NOTIFICATIONS": {
     "TITLE": "Notifications",
@@ -1470,7 +1470,7 @@
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Add Company & User",
-      "ADD_OSM_ADMIN": "Add OSM Admin",
+      "ADD_OOSM_ADMIN": "Add OOSM Admin",
       "COMPANY_PROFILES": "Company Profiles",
       "DASHBOARD": "Admin Dashboard",
       "TITLE": "Administration",
@@ -2606,7 +2606,7 @@
       "OIL_QUALITY": "Oil Quality Control",
       "OIL_RECEPTION": "Oil Reception",
       "OLIVE_QUALITY": "Olive Quality Control",
-      "OSMUSER": "OSM User",
+      "OOSMUSER": "OOSM User",
       "PARAMETER": "Parameter",
       "PAUSE": "Pause",
       "PAY": "Pay",
@@ -2731,7 +2731,7 @@
       "WASTE_TITLE": "Waste disposal and sales (pomace, margine, grignon, etc.).",
       "EXPENSES_TITLE": "Operating expenses and outgoing payments.",
       "BANK_ACCOUNTS_TITLE": "Bank accounts used for payments and financial reconciliation.",
-      "ADMIN_USERS_TITLE": "Platform administrator accounts (OSM admin scope).",
+      "ADMIN_USERS_TITLE": "Platform administrator accounts (OOSM admin scope).",
       "BASE_TYPE_TITLE": "Generic reference types and configurable base data.",
       "SUPPLIER_DETAILS_OIL_CREDIT_TOTAL": "Oil credit totals and history for this supplier.",
       "OSM_DASHBOARD_ACTIONS_OLIVE_QUALITY": "Olive quality control results pending review or update.",
@@ -4104,7 +4104,7 @@
   },
   "HOME_DASHBOARD": {
     "TITLE": "Home",
-    "GREETING": "Welcome back to OSM",
+    "GREETING": "Welcome back to OOSM",
     "GREETING_NAMED": "Welcome back, {{name}}",
     "LOADING": "Loading your overview…",
     "LOAD_ERROR": "Could not load the dashboard overview.",
@@ -4171,7 +4171,7 @@
       "START": "Start a Reception"
     },
     "DESCRIPTION": "Manage receptions, production, inventory and finance from one place.",
-    "HEADLINE": "Welcome to OSM",
+    "HEADLINE": "Welcome to OOSM",
     "LINKS": {
       "FINANCE": "Finance",
       "FINANCE_HINT": "Invoices, payments & reports",
@@ -5241,7 +5241,7 @@
     "CHOOSE_FULL_OR_CONTAINER_LAYOUT": "Choose Full or Container Layout",
     "FULL_LAYOUT": "Full Layout",
     "CONTAINER_LAYOUT": "Container Layout",
-    "OSM_CRAFTED_WITH_BY_TEAM_XDEV": "OSM crafted with ♥ by team XDEV",
+    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "OOSM crafted with ♥ by team XDEV",
     "RECHERCHE_GLOBALE": "Global search",
     "LANCER_LA_RECHERCHE_GLOBALE": "Start global search",
     "MODE": "mode",
@@ -5764,7 +5764,7 @@
     "ERREUR_LORS_DE_LA_CREATION_DU_FOURNISSEUR": "Error creating supplier",
     "ERROR_LOADING_STORAGE_UNIT": "Error loading storage unit.",
     "ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_STORAGE_UNIT": "Are you sure you want to delete this storage unit?",
-    "OSM": "| OSM",
+    "OOSM": "| OOSM",
     "LA_QUANTITE_DEPASSE_LE_RESTE_A_PRODUIRE_DU_PROJET": "The quantity ({{value0}}) exceeds the remainder of the project to be produced ({{value1}} {{value2}})",
     "QUANTITE_DEPASSEE_MAXIMUM_AUTORISE": "Quantity exceeded. Maximum allowed: {{value0}}.",
     "QUANTITE_DEPASSEE_MAXIMUM_RESTANT_PROJET": "Quantity exceeded. Maximum remaining project: {{value0}}.",

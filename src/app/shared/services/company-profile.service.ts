@@ -89,8 +89,8 @@ export class CompanyProfileService {
 
   private getTenantId(): string | null {
     const decoded = this.tokenService.decodeToken() as Record<string, unknown> | null;
-    const osmUser = decoded?.['osmUser'] as { tenantId?: string } | undefined;
-    return osmUser?.tenantId ?? null;
+    const oosmUser = (decoded?.['oosmUser'] ?? decoded?.['osmUser']) as { tenantId?: string } | undefined;
+    return oosmUser?.tenantId ?? null;
   }
 
   private fetchProfile(tenantId: string): Observable<CompanyProfile> {

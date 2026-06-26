@@ -6,17 +6,17 @@ import {
   FinanceEntity,
   HabilitationEntity,
   InventoryEntity,
-  OSMModule,
+  OOSMModule,
   permissionKey,
   ProductionEntity,
   ReceptionEntity
 } from 'src/app/theme/types/permissions';
 
 /**
- * Menu organized by OSM module and business logic.
+ * Menu organized by OOSM module and business logic.
  * Flow: Réception → Production huile → Conditionnement → Inventaire → Finance → Paramètres
  */
-export const osm_menus: Navigation[] = [
+export const oosm_menus: Navigation[] = [
   // ─── RÉCEPTION ─────────────────────────────────────────────────────────────
   {
     id: 'group-reception',
@@ -31,7 +31,7 @@ export const osm_menus: Navigation[] = [
         url: '/reception',
         icon: 'dashboard',
         breadcrumbs: false,
-        permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)]
+        permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)]
       },
       {
         id: 'collapse-reception-operations',
@@ -172,7 +172,7 @@ export const osm_menus: Navigation[] = [
             url: '/reception/mill-schedules',
             icon: 'schedule',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)]
+            permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)]
           }
         ]
       },
@@ -210,7 +210,7 @@ export const osm_menus: Navigation[] = [
         url: '/storage/storage_recap',
         icon: 'analytics',
         breadcrumbs: false,
-        permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)]
+        permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)]
       },
       {
         id: 'collapse-production-quality',
@@ -305,7 +305,7 @@ export const osm_menus: Navigation[] = [
             url: '/of',
             icon: 'factory',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.OF, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.OF, Action.READ)]
           },
           {
             id: 'item-conditioning-lines',
@@ -314,7 +314,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/lignes',
             icon: 'conveyor_belt',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ)]
           },
           {
             id: 'item-conditioning-labels',
@@ -323,7 +323,7 @@ export const osm_menus: Navigation[] = [
             url: '/labels',
             icon: 'label',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.LABELCONTENT, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.LABELCONTENT, Action.READ)]
           }
         ]
       },
@@ -340,7 +340,7 @@ export const osm_menus: Navigation[] = [
             url: '/projets',
             icon: 'folder_open',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.PROJET, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.PROJET, Action.READ)]
           },
           {
             id: 'item-projet-expeditions',
@@ -349,7 +349,7 @@ export const osm_menus: Navigation[] = [
             url: '/projets/expeditions',
             icon: 'route',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.EXPEDITION, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.EXPEDITION, Action.READ)]
           },
           {
             id: 'item-client-cond',
@@ -358,7 +358,7 @@ export const osm_menus: Navigation[] = [
             url: '/projets/clients',
             icon: 'groups',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.CLIENT, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.CLIENT, Action.READ)]
           }
         ]
       },
@@ -367,7 +367,7 @@ export const osm_menus: Navigation[] = [
         title: 'MENU.CONDITIONNEMENT.ANALYTICS',
         type: 'collapse',
         icon: 'insights',
-        permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ)],
+        permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ)],
         children: [
           {
             id: 'item-analytics-dashboard',
@@ -376,7 +376,7 @@ export const osm_menus: Navigation[] = [
             url: '/analytics/dashboard',
             icon: 'dashboard',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ)]
           },
           {
             id: 'item-analytics-of-yield',
@@ -385,7 +385,7 @@ export const osm_menus: Navigation[] = [
             url: '/analytics/of-yield',
             icon: 'speed',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
           },
           {
             id: 'item-analytics-quality',
@@ -394,7 +394,7 @@ export const osm_menus: Navigation[] = [
             url: '/analytics/quality',
             icon: 'fact_check',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
           },
           {
             id: 'item-analytics-bom-gap',
@@ -403,7 +403,7 @@ export const osm_menus: Navigation[] = [
             url: '/analytics/bom-gap',
             icon: 'difference',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
           },
           {
             id: 'item-analytics-filtration',
@@ -412,7 +412,7 @@ export const osm_menus: Navigation[] = [
             url: '/analytics/filtration',
             icon: 'filter_alt',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
           }
         ]
       }
@@ -433,7 +433,7 @@ export const osm_menus: Navigation[] = [
         url: '/stock/dashboard',
         icon: 'analytics',
         breadcrumbs: false,
-        permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
+        permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
       },
       {
         id: 'collapse-stock-catalog',
@@ -448,7 +448,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/articles',
             icon: 'category',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)]
           },
           {
             id: 'item-stocks-products',
@@ -457,7 +457,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/products',
             icon: 'inventory_2',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)]
           },
           {
             id: 'item-stocks-bom',
@@ -466,7 +466,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/boms',
             icon: 'receipt',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)]
           }
         ]
       },
@@ -483,7 +483,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/mouvements',
             icon: 'swap_horiz',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)]
           },
           {
             id: 'item-stocks-emplacements',
@@ -492,7 +492,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/emplacements',
             icon: 'grid_view',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.READ)]
           },
           {
             id: 'item-stocks-par-emplacement',
@@ -501,7 +501,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/par-emplacement',
             icon: 'view_list',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
           },
           {
             id: 'item-stocks-audit',
@@ -510,7 +510,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/audit',
             icon: 'history',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
           }
         ]
       },
@@ -527,7 +527,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/bons-commande',
             icon: 'description',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.READ)]
           },
           {
             id: 'item-stocks-fournisseurs',
@@ -536,7 +536,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/materiel-suppliers',
             icon: 'business',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.MATERIEL_SUPPLIER, Action.READ)]
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.MATERIEL_SUPPLIER, Action.READ)]
           }
         ]
       }
@@ -557,7 +557,7 @@ export const osm_menus: Navigation[] = [
         url: '/finance/dashboard',
         icon: 'show_chart',
         breadcrumbs: false,
-        permissions: [permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)]
+        permissions: [permissionKey(OOSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)]
       },
       {
         id: 'collapse-finance-treasury',
@@ -616,7 +616,7 @@ export const osm_menus: Navigation[] = [
             url: '/finance/oil-credit',
             icon: 'credit_score',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.READ)],
+            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.READ)],
             ressourcePermission: ProductionEntity.OILCREDIT
           },
           {
@@ -652,7 +652,7 @@ export const osm_menus: Navigation[] = [
             url: '/settings/general-config',
             icon: 'domain',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.HABILITATION, HabilitationEntity.COMPANYPROFILE, Action.READ)],
+            permissions: [permissionKey(OOSMModule.HABILITATION, HabilitationEntity.COMPANYPROFILE, Action.READ)],
             ressourcePermission: HabilitationEntity.COMPANYPROFILE
           },
           {
@@ -671,7 +671,7 @@ export const osm_menus: Navigation[] = [
             url: '/settings/generic',
             icon: 'list_alt',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)],
+            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)],
             ressourcePermission: ProductionEntity.base_type
           }
         ]
@@ -689,7 +689,7 @@ export const osm_menus: Navigation[] = [
             url: '/settings/quality-control',
             icon: 'rule',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRULE, Action.READ)],
+            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRULE, Action.READ)],
             ressourcePermission: ProductionEntity.QUALITYCONTROLRULE
           },
           {
@@ -699,7 +699,7 @@ export const osm_menus: Navigation[] = [
             url: '/labels/certifications',
             icon: 'verified_user',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.CERTIFICATION, Action.READ)],
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.CERTIFICATION, Action.READ)],
             ressourcePermission: ProductionEntity.CERTIFICATION
           },
           {
@@ -709,7 +709,7 @@ export const osm_menus: Navigation[] = [
             url: '/reception/mill-machines',
             icon: 'settings_input_component',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.READ)],
+            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.READ)],
             ressourcePermission: ProductionEntity.MILLMACHINE
           },
           {
@@ -719,7 +719,7 @@ export const osm_menus: Navigation[] = [
             url: '/maintenance',
             icon: 'handyman',
             breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)],
+            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)],
             ressourcePermission: ProductionEntity.MAINTENANCEWORKORDER
           }
         ]
@@ -737,7 +737,7 @@ export const osm_menus: Navigation[] = [
             url: '/settings/users',
             icon: 'person_outline',
             breadcrumbs: false,
-            ressourcePermission: HabilitationEntity.OSMUSER
+            ressourcePermission: HabilitationEntity.OOSMUSER
           },
           {
             id: 'item-settings-roles',

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardChild } from '../interceptors/guards/auth.guard';
 import { allPermissionGuard } from '../interceptors/guards/permission.guard';
-import { Action, OSMModule, permissionKey, ProductionEntity } from '../theme/types/permissions';
+import { Action, OOSMModule, permissionKey, ProductionEntity } from '../theme/types/permissions';
 
 const routes: Routes = [
   {
@@ -10,7 +10,7 @@ const routes: Routes = [
     loadComponent: () => import('./maintenance-list/maintenance-list.component').then((m) => m.MaintenanceListComponent),
     canActivate: [
       AuthGuardChild,
-      allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)])
+      allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)])
     ]
   },
   {
@@ -18,7 +18,7 @@ const routes: Routes = [
     loadComponent: () => import('./maintenance-form/maintenance-form.component').then((m) => m.MaintenanceFormComponent),
     canActivate: [
       AuthGuardChild,
-      allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.CREATE)])
+      allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.CREATE)])
     ]
   },
   {
@@ -26,7 +26,7 @@ const routes: Routes = [
     loadComponent: () => import('./maintenance-form/maintenance-form.component').then((m) => m.MaintenanceFormComponent),
     canActivate: [
       AuthGuardChild,
-      allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.UPDATE)])
+      allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.UPDATE)])
     ]
   },
   {
@@ -34,7 +34,7 @@ const routes: Routes = [
     loadComponent: () => import('./maintenance-form/maintenance-form.component').then((m) => m.MaintenanceFormComponent),
     canActivate: [
       AuthGuardChild,
-      allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)])
+      allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)])
     ]
   }
 ];

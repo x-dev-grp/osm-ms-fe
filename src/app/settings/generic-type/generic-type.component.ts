@@ -4,22 +4,22 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TypeCategory } from '../../shared/models/type-category.enum';
 import { BaseType } from '../../shared/models/base-type';
-import { DashboardConfig } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from 'src/app/shared/modules/oosm-dashboard/models/dashboard-config';
 import { BASE_TYPE } from './BASE_TYPE_DASHBOARD';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { GenericTypeDialogComponent } from './generic-type-dialog/generic-type-dialog.component';
 
 @Component({
   selector: 'app-generic-type',
   standalone: true,
-  imports: [CommonModule, OsmDashboard],
+  imports: [CommonModule, OosmDashboard],
   templateUrl: './generic-type.component.html',
   styleUrls: ['./generic-type.component.scss']
 })
 export class GenericTypeComponent {
   readonly dashboardConfig: DashboardConfig = BASE_TYPE;
 
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
 
   constructor(
     private router: Router,

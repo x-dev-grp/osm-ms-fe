@@ -1,4 +1,4 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { TransactionState, TransactionType } from '../../shared/models/OilTransaction';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 

@@ -15,7 +15,7 @@ import { catchError, of, tap } from 'rxjs';
 import { AdminUserService } from '../services/admin-user.service';
 
 @Component({
-  selector: 'app-add-osm-admin-user',
+  selector: 'app-add-oosm-admin-user',
   standalone: true,
   imports: [
     TranslateModule,
@@ -30,10 +30,10 @@ import { AdminUserService } from '../services/admin-user.service';
     ReactiveFormsModule,
     SharedModule
   ],
-  templateUrl: './add-osm-admin-user.component.html',
-  styleUrls: ['./add-osm-admin-user.component.scss']
+  templateUrl: './add-oosm-admin-user.component.html',
+  styleUrls: ['./add-oosm-admin-user.component.scss']
 })
-export class AddOsmAdminUserComponent implements OnInit {
+export class AddOosmAdminUserComponent implements OnInit {
   private readonly i18n = inject(TranslateService);
   readonly destroyRef = inject(DestroyRef);
   userForm!: FormGroup;
@@ -68,7 +68,7 @@ export class AddOsmAdminUserComponent implements OnInit {
 
     this.loading = true;
     this.adminUserService
-      .createOsmAdminUser(this.userForm.value)
+      .createOosmAdminUser(this.userForm.value)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap(() => {

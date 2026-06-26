@@ -1,5 +1,5 @@
 import { CreditState, UnitType } from '../../../../finance/models/OilCredit';
-import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
 
 export const OIL_CREDIT_DASHBOARD: DashboardConfig = {

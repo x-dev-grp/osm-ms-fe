@@ -2,12 +2,12 @@
   <div class="page-header">
     <button mat-flat-button color="primary" routerLink="/administration/osm-admins/add">
       <mat-icon>person_add</mat-icon>
-      <span>{{ 'ADMIN.ADD_OSM_ADMIN_BUTTON' | translate }}</span>
+      <span>{{ 'ADMIN.ADD_OOSM_ADMIN_BUTTON' | translate }}</span>
     </button>
   </div>
-  <osm-dashboard
+  <oosm-dashboard
     #dashboard
     (applyAction)="applyAction($event)"
     [config]="dashboardConfig">
-  </osm-dashboard>
+  </oosm-dashboard>
 </div>

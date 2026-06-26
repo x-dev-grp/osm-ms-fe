@@ -10,6 +10,6 @@ export const environment = {
 export const AppConfig = {
   authentication: {
     authorization: `${environment.apiAuth}/oauth2/token`,
-    client_id: 'osm-client'
+    client_id: 'oosm-client'
   }
 };

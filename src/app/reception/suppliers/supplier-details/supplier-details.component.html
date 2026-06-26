@@ -59,11 +59,11 @@
     </div>
 
     <div class="table-section">
-      <osm-dashboard
+      <oosm-dashboard
         #dashboardByOperation
         [config]="dashboardConfigs[activeOp]"
         (applyAction)="handlePaymentAction($event)">
-      </osm-dashboard>
+      </oosm-dashboard>
     </div>
   }
 
@@ -114,11 +114,11 @@
 
     @if (financeDashboardConfig) {
       <div class="table-section">
-        <osm-dashboard
+        <oosm-dashboard
           #financeDashboard
           [config]="financeDashboardConfig"
           (applyAction)="handleFinanceAction($event)">
-        </osm-dashboard>
+        </oosm-dashboard>
       </div>
     }
   }

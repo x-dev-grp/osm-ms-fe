@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 
 // project import
 import { ComponentNavigationComponent } from '../../components/navigation/navigation.component';
-import { osm_menus } from '../../../shared/osm_menu';
+import { oosm_menus } from '../../../shared/oosm_menu';
 
 @Component({
   selector: 'app-component',
@@ -13,5 +13,5 @@ import { osm_menus } from '../../../shared/osm_menu';
   imports: [ComponentNavigationComponent]
 })
 export class ComponentComponent {
-  protected readonly osm_menus = osm_menus;
+  protected readonly oosm_menus = oosm_menus;
 }

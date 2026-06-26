@@ -14,11 +14,11 @@
     "ADD_COMPANY_USER_TITLE": "إنشاء شركة ومستخدم إداري لها",
     "ADD_COMPANY_CREATED": "تم إنشاء الشركة والمستخدم الإداري بنجاح.",
     "ADD_COMPANY_INITIAL_PASSWORD": "تم إنشاء الشركة. شارك بيانات الدخول مع المسؤول — المستخدم: {{username}}، كلمة المرور: {{password}}",
-    "ADD_OSM_ADMIN_BUTTON": "إضافة مسؤول OSM",
-    "ADD_OSM_ADMIN_ROLE": "الدور",
-    "ADD_OSM_ADMIN_ROLE_VALUE": "مسؤول OSM",
-    "ADD_OSM_ADMIN_SAVE": "إنشاء مسؤول OSM",
-    "ADD_OSM_ADMIN_TITLE": "إنشاء مستخدم مسؤول OSM",
+    "ADD_OOSM_ADMIN_BUTTON": "إضافة مسؤول OOSM",
+    "ADD_OOSM_ADMIN_ROLE": "الدور",
+    "ADD_OOSM_ADMIN_ROLE_VALUE": "مسؤول OOSM",
+    "ADD_OOSM_ADMIN_SAVE": "إنشاء مسؤول OOSM",
+    "ADD_OOSM_ADMIN_TITLE": "إنشاء مستخدم مسؤول OOSM",
     "CANCEL": "إلغاء",
     "COMPANY_NAME": "اسم الشركة",
     "COMPANY_NAME_REQUIRED": "اسم الشركة مطلوب",
@@ -40,7 +40,7 @@
   },
   "ADMIN_DASHBOARD": {
     "ADD_COMPANY_LINK": "إنشاء مستأجر جديد ومستخدمه الإداري.",
-    "ADD_OSM_ADMIN_LINK": "إنشاء حساب مسؤول جديد للمنصة.",
+    "ADD_OOSM_ADMIN_LINK": "إنشاء حساب مسؤول جديد للمنصة.",
     "COMPANIES_LINK": "استعراض وإدارة جميع ملفات الشركات.",
     "HERO": {
       "ACTIVE": "نشط",
@@ -112,7 +112,7 @@
   "SIDEBAR": {
     "BRAND_HOME": "الذهاب إلى الصفحة الرئيسية",
     "DEFAULT_COMPANY": "شركتي",
-    "PLATFORM": "منصة OSM"
+    "PLATFORM": "منصة OOSM"
   },
   "NOTIFICATIONS": {
     "TITLE": "الإشعارات",
@@ -1399,7 +1399,7 @@
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "إضافة شركة ومستخدم",
-      "ADD_OSM_ADMIN": "إضافة مسؤول OSM",
+      "ADD_OOSM_ADMIN": "إضافة مسؤول OOSM",
       "COMPANY_PROFILES": "ملفات الشركات",
       "DASHBOARD": "لوحة تحكم الإدارة",
       "TITLE": "الإدارة",
@@ -2528,7 +2528,7 @@
       "OIL_QUALITY": "مراقبة جودة الزيت",
       "OIL_RECEPTION": "استقبال الزيت",
       "OLIVE_QUALITY": "مراقبة جودة الزيتون",
-      "OSMUSER": "مستخدم OSM",
+      "OOSMUSER": "مستخدم OOSM",
       "PARAMETER": "إعداد",
       "PAUSE": "إيقاف مؤقت",
       "PAY": "دفع",
@@ -4007,7 +4007,7 @@
   },
   "HOME_DASHBOARD": {
     "TITLE": "الرئيسية",
-    "GREETING": "مرحبًا بعودتك إلى OSM",
+    "GREETING": "مرحبًا بعودتك إلى OOSM",
     "GREETING_NAMED": "مرحبًا بعودتك، {{name}}",
     "LOADING": "جاري تحميل الملخص…",
     "LOAD_ERROR": "تعذر تحميل ملخص لوحة التحكم.",
@@ -4074,7 +4074,7 @@
       "START": "بدء عملية الاستلام"
     },
     "DESCRIPTION": "إدارة الاستلام والإنتاج والمخزون والمالية من مكان واحد.",
-    "HEADLINE": "مرحبًا بك في OSM",
+    "HEADLINE": "مرحبًا بك في OOSM",
     "LINKS": {
       "FINANCE": "المالية",
       "FINANCE_HINT": "الفواتير والمدفوعات والتقارير",
@@ -5140,7 +5140,7 @@
     "CHOOSE_FULL_OR_CONTAINER_LAYOUT": "اختر تخطيط كامل أو حاوية",
     "FULL_LAYOUT": "تخطيط كامل",
     "CONTAINER_LAYOUT": "تخطيط الحاوية",
-    "OSM_CRAFTED_WITH_BY_TEAM_XDEV": "تم تصميم OSM باستخدام ♥ بواسطة فريق XDEV",
+    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "تم تصميم OOSM باستخدام ♥ بواسطة فريق XDEV",
     "RECHERCHE_GLOBALE": "بحث عالمي",
     "LANCER_LA_RECHERCHE_GLOBALE": "ابدأ البحث العالمي",
     "MODE": "وضع",
@@ -5663,7 +5663,7 @@
     "ERREUR_LORS_DE_LA_CREATION_DU_FOURNISSEUR": "حدث خطأ أثناء إنشاء المورد",
     "ERROR_LOADING_STORAGE_UNIT": "حدث خطأ أثناء تحميل وحدة التخزين.",
     "ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_STORAGE_UNIT": "هل أنت متأكد أنك تريد حذف وحدة التخزين هذه؟",
-    "OSM": "| OSM",
+    "OOSM": "| OOSM",
     "LA_QUANTITE_DEPASSE_LE_RESTE_A_PRODUIRE_DU_PROJET": "الكمية ({{value0}}) تتجاوز باقي المشروع المراد إنتاجه ({{value1}} {{value2}})",
     "QUANTITE_DEPASSEE_MAXIMUM_AUTORISE": "تجاوزت الكمية. الحد الأقصى المسموح به: {{value0}}.",
     "QUANTITE_DEPASSEE_MAXIMUM_RESTANT_PROJET": "تجاوزت الكمية. الحد الأقصى للمشروع المتبقي: {{value0}}.",

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { dashboardConfig } from './Employee-dashboard.config';
 import { Router } from '@angular/router';
 import { Employee } from '../../model/employee-model';
@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-employee',
-  imports: [TranslateModule, OsmDashboard, MatCard, MatCardContent, MatIcon],
+  imports: [TranslateModule, OosmDashboard, MatCard, MatCardContent, MatIcon],
   templateUrl: './employee.component.html',
   standalone: true,
   styleUrl: './employee.component.scss'

@@ -12,9 +12,9 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { BankAccountService } from '../service/bankAccount.service';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { BANK_ACCOUNTS_DASHBOARD_CONFIG } from './bank-accounts-dashboard.config';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { Router } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 
@@ -35,7 +35,7 @@ import { ToastService } from '../../shared/services/toast.service';
     MatButtonModule,
     MatIconModule,
     SharedModule,
-    OsmDashboard
+    OosmDashboard
   ]
 })
 export class BankAccountsComponent implements OnInit {

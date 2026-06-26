@@ -10,7 +10,7 @@ export class AdminUserService {
 
   constructor(private http: HttpClient) {}
 
-  createOsmAdminUser(user: Partial<User>): Observable<User> {
+  createOosmAdminUser(user: Partial<User>): Observable<User> {
     return this.http.post<User>(`${this.baseUrl}/osm-admin`, user);
   }
 

@@ -17,8 +17,8 @@ import { Router } from '@angular/router';
 import { combineLatest, forkJoin, Subscription } from 'rxjs';
 
 import { SharedModule } from '../../shared/shared.module';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { BaseType } from '../../shared/models/base-type';
 import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
@@ -70,14 +70,14 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
     ReactiveFormsModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard
+    OosmDashboard
   ],
   templateUrl: './oil-reception.component.html',
   styleUrl: './oil-reception.component.scss'
 })
 export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('setPriceDialog') setPriceDialogTemplate!: TemplateRef<unknown>;
-  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('dashboard') dashboard!: OosmDashboard;
   @ViewChild('paymentDetailsDialog') paymentDetailsDialogTemplate!: TemplateRef<unknown>;
   paymentDetailsForm!: FormGroup;
 

@@ -7,13 +7,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MillMachine } from '../../../shared/models/millMachine';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
 import { ToastService } from '../../../shared/services/toast.service';
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { AdvancedSearchService } from '../../../shared/services/advanced-serach.service';
 import { MACHIN_RECEPTION_DASHBOARD } from './MACHIN_RECEPTION_DASHBOARD';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { SharedModule } from '../../../shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './mill-machine-view.component.html',
   styleUrls: ['./mill-machine-view.component.scss'],
   standalone: true,
-  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, SharedModule, OsmDashboard]
+  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, SharedModule, OosmDashboard]
 })
 export class MillMachineViewComponent implements OnInit {
   machine: MillMachine;

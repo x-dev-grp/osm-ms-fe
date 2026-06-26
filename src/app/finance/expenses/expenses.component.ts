@@ -8,9 +8,9 @@ import { Router } from '@angular/router';
 import { Expense } from '../models/expense.model';
 import { ExpenseService } from '../service/expense.service';
 import { EXPENSES_DASHBOARD_CONFIG } from './expenses-dashboard.config';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { SharedModule } from '../../shared/shared.module';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 
 @Component({
   selector: 'app-expenses',
@@ -21,7 +21,7 @@ import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashb
     MatButtonModule,
     MatIconModule,
     SharedModule,
-    OsmDashboard
+    OosmDashboard
   ],
   styleUrls: ['./expenses.component.scss']
 })

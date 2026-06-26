@@ -42,7 +42,7 @@ export enum FinanceEntity {
 
 export enum HabilitationEntity {
   COMPANYPROFILE = 'COMPANYPROFILE',
-  OSMUSER = 'OSMUSER',
+  OOSMUSER = 'OOSMUSER',
   PARAMETER = 'PARAMETER',
   PERMISSION = 'PERMISSION',
   ROLE = 'ROLE',

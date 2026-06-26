@@ -1,11 +1,11 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
 
-export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
+export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
   icon: 'list_alt',
   addNewItem: false,
-  title: 'Paiements en ddddd',
-  titleTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE',
+  title: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE',
+  titleTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE',
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   groupedActions: false,
@@ -47,10 +47,10 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
                   equalValue: false
                 },
                 operationType: {
-                  equalValue: 'OIL_PURCHASE'
+                  equalValue: 'OLIVE_PURCHASE'
                 },
                 status: {
-                  inValues: ['STOCK_READY', 'IN_STOCK']
+                  inValues: ['PROD_READY', 'COMPLETED']
                 }
               }
             }
@@ -127,6 +127,8 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.date,
       exportable: true,
       sortable: true,
+      defaultFilter: true,
+
       dataTable: false,
       filterable: true
     },
@@ -144,8 +146,8 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'unpaidAmount',
-      calculateTotal: true,
       label: 'Montant umpaié',
+      calculateTotal: true,
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -237,7 +239,6 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     {
       name: 'paid',
       label: 'Payé',
-      calculateTotal: true,
       labelTranslatePath: 'Payé',
       attributeType: AttributeType.boolean,
       exportable: true,

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { DocumentGenerationService } from '../../shared/services/document-generation.service';
 import { OliveQCDASHBOARD_olive } from './oliveQC.DASHBOARD_olive';
 
@@ -11,7 +11,7 @@ import { OliveQCDASHBOARD_olive } from './oliveQC.DASHBOARD_olive';
   selector: 'app-qc-deliveries-table',
   templateUrl: './oliveQC.component.html',
   standalone: true,
-  imports: [OsmDashboard],
+  imports: [OosmDashboard],
   providers: [DecimalPipe, DatePipe]
 })
 export class OliveQCComponent {

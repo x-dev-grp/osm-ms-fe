@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardChild } from '../interceptors/guards/auth.guard';
 import { allPermissionGuard } from 'src/app/interceptors/guards/permission.guard';
-import { Action, HabilitationEntity, OSMModule, permissionKey, ProductionEntity } from 'src/app/theme/types/permissions';
+import { Action, HabilitationEntity, OOSMModule, permissionKey, ProductionEntity } from 'src/app/theme/types/permissions';
 import { UserResolver } from './user-management/services/user.resolver';
 import { RoleResolver } from './user-management/services/role.resolver';
 import { qualityControlRoutes } from './quality-control-rule/qualityControlQualityRule.routes';
@@ -20,7 +20,7 @@ const routes: Routes = [
   },
   {
     path: 'configuration',
-    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, 'PARAMETER', Action.READ)])],
+    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.HABILITATION, 'PARAMETER', Action.READ)])],
     loadComponent: () => import('./application-config/application-config.component').then((c) => c.ApplicationConfigComponent)
   },
   {
@@ -29,24 +29,24 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
+        canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
         loadComponent: () => import('./generic-type/generic-type.component').then((c) => c.GenericTypeComponent)
       },
       {
         path: 'new',
-        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.CREATE)])],
+        canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.base_type, Action.CREATE)])],
         loadComponent: () =>
           import('./generic-type/generic-type-form/generic-type-form.component').then((c) => c.GenericTypeFormComponent)
       },
       {
         path: ':id/edit',
-        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.UPDATE)])],
+        canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.base_type, Action.UPDATE)])],
         loadComponent: () =>
           import('./generic-type/generic-type-form/generic-type-form.component').then((c) => c.GenericTypeFormComponent)
       },
       {
         path: ':id/view',
-        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
+        canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
         loadComponent: () =>
           import('./generic-type/generic-type-form/generic-type-form.component').then((c) => c.GenericTypeFormComponent)
       }
@@ -62,14 +62,14 @@ const routes: Routes = [
       },
       {
         path: 'dashboard',
-        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.OSMUSER, Action.READ)])],
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.HABILITATION, HabilitationEntity.OOSMUSER, Action.READ)])],
         loadComponent: () => import('./user-management/user-mangement.component').then((c) => c.UserManagementComponent)
       },
       {
         path: 'add',
         canActivate: [
           AuthGuardChild,
-          allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.OSMUSER, Action.CREATE)])
+          allPermissionGuard([permissionKey(OOSMModule.HABILITATION, HabilitationEntity.OOSMUSER, Action.CREATE)])
         ],
         loadComponent: () => import('./user-management/components/form/user-form.component').then((c) => c.UserFormComponent)
       },
@@ -77,7 +77,7 @@ const routes: Routes = [
         path: 'update/:id',
         canActivate: [
           AuthGuardChild,
-          allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.OSMUSER, Action.UPDATE)])
+          allPermissionGuard([permissionKey(OOSMModule.HABILITATION, HabilitationEntity.OOSMUSER, Action.UPDATE)])
         ],
         resolve: { user: UserResolver },
         data: {
@@ -87,7 +87,7 @@ const routes: Routes = [
       },
       {
         path: 'view/:id',
-        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.OSMUSER, Action.READ)])],
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.HABILITATION, HabilitationEntity.OOSMUSER, Action.READ)])],
         resolve: { user: UserResolver },
         data: {
           viewMode: true
@@ -106,18 +106,18 @@ const routes: Routes = [
       },
       {
         path: 'dashboard',
-        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.ROLE, Action.READ)])],
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.HABILITATION, HabilitationEntity.ROLE, Action.READ)])],
         loadComponent: () =>
           import('./user-management/components/role-dashboard/role-dashboard.component').then((c) => c.RoleDashboardComponent)
       },
       {
         path: 'add',
-        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.ROLE, Action.CREATE)])],
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.HABILITATION, HabilitationEntity.ROLE, Action.CREATE)])],
         loadComponent: () => import('./user-management/components/role-form/role-form.component').then((c) => c.RoleFormComponent)
       },
       {
         path: 'update/:id',
-        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.ROLE, Action.UPDATE)])],
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.HABILITATION, HabilitationEntity.ROLE, Action.UPDATE)])],
         resolve: { role: RoleResolver },
         data: {
           updateMode: true
@@ -126,7 +126,7 @@ const routes: Routes = [
       },
       {
         path: 'view/:id',
-        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.HABILITATION, HabilitationEntity.ROLE, Action.READ)])],
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.HABILITATION, HabilitationEntity.ROLE, Action.READ)])],
         resolve: { role: RoleResolver },
         data: {
           viewMode: true

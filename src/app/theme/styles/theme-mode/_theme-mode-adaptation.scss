@@ -79,7 +79,7 @@ body.dark {
   .quick-link-card,
   .panel-card,
   .supplier-form,
-  .add-osm-admin-user-wrapper .main-card,
+  .add-oosm-admin-user-wrapper .main-card,
   .loading-container,
   .error-state,
   .form-section,
@@ -228,14 +228,14 @@ body.dark {
     color: var(--text-primary);
   }
 
-  osm-dashboard,
+  oosm-dashboard,
   .filter-details {
     background: var(--surface-card);
     border-color: var(--border-subtle);
     color: var(--text-primary);
   }
 
-  osm-dashboard {
+  oosm-dashboard {
     .field-checkbox-container label::before {
       color: var(--text-primary);
     }

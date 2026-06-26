@@ -8,8 +8,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSortModule } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
+import { DashboardConfig } from '../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { OilQCDASHBOARD } from './oilQC.DASHBOARD';
 import { DocumentGenerationService } from '../../shared/services/document-generation.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
@@ -26,7 +26,7 @@ import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
     MatCardModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard
+    OosmDashboard
   ],
   templateUrl: './oilQC.component.html'
 })

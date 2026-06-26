@@ -1,4 +1,4 @@
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../../shared/modules/oosm-dashboard/models/dashboard-config';
 import { TRANSACTIONS_DASHBOARD_CONFIG } from '../../../finance/transactions/transactions-dashboard.config';
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 

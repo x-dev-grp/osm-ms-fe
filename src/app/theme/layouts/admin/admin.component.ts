@@ -25,7 +25,7 @@ import { environment } from 'src/environments/environment';
 //type
 import { Navigation } from 'src/app/theme/types/navigation';
 import { Role } from 'src/app/theme/types/role';
-import { osm_menus } from '../../../shared/osm_menu';
+import { oosm_menus } from '../../../shared/oosm_menu';
 import { admin_menus } from '../../../shared/admin_menu';
 import { filterMenuByPermissions } from '../../../shared/utils/menu-permission.filter';
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';
@@ -70,7 +70,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   currentLayout: string = 'vertical';
   rtlMode: boolean = typeof localStorage !== 'undefined' && localStorage.getItem('app_language') === 'ar';
   windowWidth: number = window.innerWidth;
-  protected readonly osm_menus = osm_menus;
+  protected readonly oosm_menus = oosm_menus;
   private breakpointObserver = inject(BreakpointObserver);
   private themeService = inject(ThemeLayoutService);
   private cdr: ChangeDetectorRef;
@@ -134,8 +134,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   private buildMenus(): void {
     const currentUser = this.authenticationService.currentUserValue;
-    const isAdminSection = currentUser?.role === Role.OsmAdmin;
-    this.menus = structuredClone(isAdminSection ? admin_menus : osm_menus);
+    const isAdminSection = currentUser?.role === Role.OosmAdmin;
+    this.menus = structuredClone(isAdminSection ? admin_menus : oosm_menus);
 
     if (!this.authenticationService.isAdmin()) {
       this.menus = filterMenuByPermissions(
@@ -153,7 +153,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   private loadCompanyProfile(): void {
     const currentUser = this.authenticationService.currentUserValue;
-    if (currentUser?.role === Role.OsmAdmin) {
+    if (currentUser?.role === Role.OosmAdmin) {
       this.logoPreview = null;
       this.companyName = '';
       return;
