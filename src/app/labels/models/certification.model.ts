@@ -3,7 +3,6 @@ export interface Certification {
   id?: string;
   tenantId?: string;
   isDeleted?: boolean;
-  externalId?: string;
   createdDate?: string;
   createdBy?: string;
   lastModifiedBy?: string;

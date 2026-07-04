@@ -1,0 +1,21 @@
+<div class="dashboard-shell hr-list-page" [ngClass]="meta ? 'hr-list-page--' + meta.themeKey : ''" *ngIf="meta && dashboardConfig">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr">
+        <mat-icon>{{ meta.icon }}</mat-icon>
+      </div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ meta.titleKey | translate }}</h2>
+        <p class="header-subtitle">{{ meta.subtitleKey | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" routerLink="/hr">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'HR.DASHBOARD.TITLE' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <oosm-dashboard [config]="dashboardConfig" (applyAction)="onRowAction($event)"></oosm-dashboard>
+</div>

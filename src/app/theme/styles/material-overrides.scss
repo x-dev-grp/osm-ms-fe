@@ -9,14 +9,14 @@ body {
   /*  @ mat drawer
   /* -------------------------------------------------------------------------- */
   .mat-drawer-container {
-    background-color: var(--accent-100) !important;
+    background-color: #ffffff !important;
     color: var(--accent-800) !important;
 
     .mat-drawer {
-      background-color: var(--accent-50) !important;
+      background-color: #ffffff !important;
 
       &.mat-drawer-side {
-        border-right: 1px dashed var(--accent-400) !important;
+        border-right: none !important;
       }
 
       .mat-drawer-inner-container {
@@ -31,11 +31,21 @@ body {
 
   &.theme-contrast {
     .mat-drawer-container {
-      background-color: color-mix(in srgb, var(--accent-100) 88%, transparent) !important;
+      background-color: #ffffff !important;
     }
 
     .mat-drawer {
-      background-color: color-mix(in srgb, var(--accent-50) 88%, transparent) !important;
+      background-color: #ffffff !important;
+    }
+
+    &.dark {
+      .mat-drawer-container {
+        background-color: #ffffff !important;
+      }
+
+      .mat-drawer {
+        background-color: #ffffff !important;
+      }
     }
   }
 
@@ -72,11 +82,11 @@ body {
       width: -webkit-fill-available !important;
 
       &.pc-header {
-        background: var(--accent-50) !important;
+        background: #ffffff !important;
 
         &.header-blur {
-          backdrop-filter: blur(7px) !important;
-          background: var(--accent-50) !important;
+          backdrop-filter: none !important;
+          background: #ffffff !important;
         }
       }
 
@@ -95,7 +105,15 @@ body {
   &.theme-contrast {
     .mat-toolbar {
       &.mat-toolbar-single-row {
-        background: color-mix(in srgb, var(--accent-50) 88%, transparent) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+      }
+    }
+
+    &.dark {
+      .mat-toolbar {
+        &.mat-toolbar-single-row {
+          background: #ffffff !important;
+        }
       }
     }
   }
@@ -111,7 +129,7 @@ body {
   /*  @ mat table
   /* -------------------------------------------------------------------------- */
   .mat-mdc-header-row {
-    background: var(--accent-100) !important;
+    background: #ffffff !important;
 
     .mdc-data-table__header-cell {
       font-weight: 700;
@@ -191,7 +209,19 @@ body {
   /*  @ mat expandable
   /* -------------------------------------------------------------------------- */
   .mat-expansion-panel {
-    box-shadow: none !important;
+    &.chat_user_info-details {
+      box-shadow: none !important;
+      background-color: var(--accent-50);
+
+      .mat-expansion-panel-header {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+
+      .mat-expansion-panel-body {
+        padding: 0px;
+      }
+    }
   }
 
   /* -------------------------------------------------------------------------- */
@@ -348,8 +378,7 @@ body {
     }
   }
 
-  .mat-mdc-tab-header.account-profile,
-  .account-profile-tab-group .mat-mdc-tab-header {
+  .mat-mdc-tab-header.account-profile {
     .mat-mdc-tab-link-container {
       flex-grow: inherit !important;
     }
@@ -359,13 +388,13 @@ body {
     z-index: 1035 !important;
   }
 
-    .invalid-feedback {
-      font-size: 0.65rem;
-      color: #e13636;
-      margin-top: 0;
-      font-size: medium;
-      display: block !important;
-    }
+  .invalid-feedback {
+    font-size: 0.65rem;
+    color: #e13636;
+    margin-top: 0;
+    font-size: medium;
+    display: block !important;
+  }
 }
 .mat-alert {
   background-color: #f8d7da;

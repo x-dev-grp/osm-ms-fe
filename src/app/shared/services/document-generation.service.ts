@@ -18,6 +18,7 @@ export class DocumentGenerationService {
   private readonly oilSaleBaseUrl = `${environment.apiUrl}/api/documents/oil-sales`;
   private readonly expeditionBaseUrl = `${environment.apiUrl}/api/documents/expeditions`;
   private readonly projectBaseUrl = `${environment.apiUrl}/api/documents/projects`;
+  private readonly hrBaseUrl = `${environment.apiUrl}/api/documents/hr`;
 
   constructor(private http: HttpClient) {}
 
@@ -71,6 +72,14 @@ export class DocumentGenerationService {
 
   downloadProjectTraceabilityPdf(projectId: string): void {
     this.downloadPdf(`${this.projectBaseUrl}/${projectId}/traceability`);
+  }
+
+  downloadContractPdf(contractId: string): void {
+    this.downloadPdf(`${this.hrBaseUrl}/contracts/${contractId}`);
+  }
+
+  downloadPayslipPdf(payslipId: string): void {
+    this.downloadPdf(`${environment.apiUrl}/api/hr/payslips/${payslipId}/pdf`);
   }
 
   private downloadPdf(url: string): void {

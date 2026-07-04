@@ -16,6 +16,27 @@
     </div>
   </div>
 
+  <div
+    *ngIf="wasteSale"
+    class="finance-related-links"
+    role="navigation"
+    [attr.aria-label]="'WASTE.RELATED_LINKS.TITLE' | translate">
+    <div class="finance-related-links__header">
+      <mat-icon aria-hidden="true">hub</mat-icon>
+      <span>{{ 'WASTE.RELATED_LINKS.TITLE' | translate }}</span>
+    </div>
+    <div class="finance-related-links__actions">
+      <button mat-stroked-button type="button" (click)="openFinancialTransactions()">
+        <mat-icon aria-hidden="true">account_balance_wallet</mat-icon>
+        <span>{{ 'WASTE.RELATED_LINKS.FINANCIAL_TRANSACTIONS' | translate }}</span>
+      </button>
+      <button *ngIf="wasteSale.supplier?.id" mat-stroked-button type="button" (click)="openSupplierFinance()">
+        <mat-icon aria-hidden="true">person</mat-icon>
+        <span>{{ 'WASTE.RELATED_LINKS.SUPPLIER_FINANCE' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
   <div class="waste-details" *ngIf="wasteSale">
     <!-- Section: Informations générales -->
     <app-card [cardTitle]="'Informations générales'" class="detail-section" icon="info">

@@ -1,0 +1,38 @@
+<section class="cash-register">
+  <p class="cash-register__hint">{{ 'ABIOOC.CASH_REGISTER.HINT' | translate }}</p>
+
+  @if (loading) {
+    <div class="cash-register__loading">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (summary) {
+    <div class="cash-register__summary">
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.INBOUND' | translate }}</span>
+          <span class="summary-value inbound">{{ summary.inbound | currency: 'TND' }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.OUTBOUND' | translate }}</span>
+          <span class="summary-value outbound">{{ summary.outbound | currency: 'TND' }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.NET' | translate }}</span>
+          <span class="summary-value">{{ summary.net | currency: 'TND' }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.MOVEMENTS' | translate }}</span>
+          <span class="summary-value">{{ summary.count }}</span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  <oosm-dashboard [config]="dashboardConfig"></oosm-dashboard>
+</section>

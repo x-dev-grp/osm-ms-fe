@@ -112,10 +112,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "osm:build:production"
+              "buildTarget": "oosm:build:production"
             },
             "development": {
-              "buildTarget": "osm:build:development"
+              "buildTarget": "oosm:build:development"
             }
           },
           "options": {
@@ -129,7 +129,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "osm:build"
+            "buildTarget": "oosm:build"
           }
         },
         "test": {

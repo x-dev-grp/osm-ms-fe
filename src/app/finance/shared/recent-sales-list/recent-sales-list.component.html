@@ -1,0 +1,48 @@
+<app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.RECENT_SALES' | translate" [padding]="0">
+  <ng-template #headerOptionsTemplate>
+    <a [matMenuTriggerFor]="menu" href="javascript:" class="avatar avatar-xs hover text-accent-500">
+      <i class="ti ti-dots-vertical f-18"></i>
+    </a>
+    <mat-menu #menu="matMenu">
+      <a mat-menu-item>{{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}</a>
+      <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</a>
+      <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</a>
+    </mat-menu>
+  </ng-template>
+  <ul class="list-group list-group-flush border-top-0">
+    @for (list of items(); track list.id || list.name) {
+      <li class="list-group-item">
+        <div class="flex align-item-center">
+          <div class="flex-shrink-0">
+            <div class="user-avatar border-50 wid-40 hie-40 bg-primary-50 text-primary-500 flex align-item-center justify-content-center">
+              <i class="ti ti-receipt f-18"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 m-x-10">
+            <div class="m-b-5 f-w-600">
+              {{ list.name }}
+              @if (list.invoiceRef) {
+                <span class="text-muted">- {{ list.invoiceRef }}</span>
+              }
+            </div>
+            <p class="m-b-0 text-primary-500">{{ list.amount }}</p>
+          </div>
+          <div class="flex-shrink-0">
+            <p class="text-muted m-b-0 mat-small">{{ list.dateLabel }}</p>
+          </div>
+        </div>
+      </li>
+    } @empty {
+      <li class="list-group-item text-muted text-center">
+        {{ 'MENU.FINANCE.DASHBOARD.NO_RECENT_SALES' | translate }}
+      </li>
+    }
+    <li class="list-group-item border-0">
+      <div class="grid">
+        <a mat-stroked-button color="accent" [routerLink]="viewAllRoute()">
+          {{ 'COMMON.VIEW_ALL' | translate }}
+        </a>
+      </div>
+    </li>
+  </ul>
+</app-card>

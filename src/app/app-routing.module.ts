@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 // CHANGE: permissions - import permission guards and enums
 import { AuthGuardChild } from './interceptors/guards/auth.guard';
 import { anyPermissionGuard, moduleGuard } from './interceptors/guards/permission.guard';
-import { Action, OOSMModule, permissionKey, ProductionEntity, ReceptionEntity } from './theme/types/permissions';
+import { Action, OOSMModule, permissionKey, ProductionEntity, ReceptionEntity, HREntity } from './theme/types/permissions';
 
 //Type
 import { Role } from './theme/types/role';
@@ -45,6 +45,10 @@ const routes: Routes = [
       {
         path: 'welcome',
         loadComponent: () => import('./home-dashboard/home-dashboard.component').then((m) => m.HomeDashboardComponent)
+      },
+      {
+        path: 'help',
+        loadComponent: () => import('./help/help.component').then((m) => m.HelpComponent)
       },
       {
         path: 'notifications',
@@ -115,11 +119,6 @@ const routes: Routes = [
         canActivate: [moduleGuard([OOSMModule.HABILITATION])]
       },
       {
-        path: 'hr',
-        loadChildren: () => import('./hr/hr.module').then((m) => m.HrModule),
-        canActivate: [moduleGuard([OOSMModule.HR])]
-      },
-      {
         path: 'finance',
         loadChildren: () => import('./finance/finance-routing.module').then((m) => m.FinanceRoutingModule),
         canActivate: [moduleGuard([OOSMModule.FINANCE])]
@@ -132,6 +131,23 @@ const routes: Routes = [
         path: 'maintenance',
         loadChildren: () => import('./maintenance/maintenance-routing.module').then((m) => m.MaintenanceRoutingModule),
         canActivate: [moduleGuard([OOSMModule.PRODUCTION])]
+      },
+      {
+        path: 'mill-equipment',
+        loadChildren: () =>
+          import('./mill-equipment/mill-equipment-routing.module').then((m) => m.MillEquipmentRoutingModule),
+        canActivate: [moduleGuard([OOSMModule.PRODUCTION])]
+      },
+      {
+        path: 'equipment-missions',
+        loadChildren: () =>
+          import('./equipment-missions/equipment-missions-routing.module').then((m) => m.EquipmentMissionsRoutingModule),
+        canActivate: [moduleGuard([OOSMModule.PRODUCTION])]
+      },
+      {
+        path: 'hr',
+        loadChildren: () => import('./hr/hr-routing.module').then((m) => m.HrRoutingModule),
+        canActivate: [moduleGuard([OOSMModule.HR])]
       },
       {
         path: 'analytics',

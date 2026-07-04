@@ -31,6 +31,7 @@ import { OilSaleActionsService } from '../../service/oil-sale-actions.service';
 import { ConfirmationDialogService, ConfirmationType } from '../../../shared/services/confirmation-dialog.service';
 
 import { filter, switchMap } from 'rxjs';
+import { buildTransactionsQueryParams } from '../../utils/finance-resource-links.util';
 
 @Component({
   selector: 'app-oil-sale-view',
@@ -289,10 +290,41 @@ export class OilSaleViewComponent implements OnInit {
     }
   }
 
+  onPreviewInvoice(): void {
+    if (this.oilSaleId && this.canDownloadInvoice()) {
+      this.router.navigate(['/finance/oil-sales', this.oilSaleId, 'invoice-preview']);
+    }
+  }
+
   onDownloadBonLivraison(): void {
     if (this.oilSaleId && this.canDownloadBonLivraison()) {
       this.documentGenerationService.downloadOilSaleBonLivraisonPdf(this.oilSaleId);
     }
+  }
+
+  openFinancialTransactions(): void {
+    if (!this.oilSaleId) {
+      return;
+    }
+    this.router.navigate(['/finance/transactions'], {
+      queryParams: buildTransactionsQueryParams({ externalTransactionId: this.oilSaleId })
+    });
+  }
+
+  openSupplierFinance(): void {
+    const supplierId = this.oilSale?.supplier?.id;
+    if (!supplierId) {
+      return;
+    }
+    this.router.navigate(['/reception/fournisseur/details', supplierId], { queryParams: { tab: 'finance' } });
+  }
+
+  openStorageUnit(): void {
+    const storageUnitId = this.oilSale?.storageUnit?.id;
+    if (!storageUnitId) {
+      return;
+    }
+    this.router.navigate(['/storage', storageUnitId, 'view']);
   }
 
   private loadOilSale(id: string): void {

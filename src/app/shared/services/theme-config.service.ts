@@ -21,6 +21,15 @@ export class ThemeConfigService {
   private readonly STORAGE_KEY = 'themeConfig';
   private autoModeMediaQuery?: MediaQueryList;
   private autoModeListener?: (event: MediaQueryListEvent) => void;
+  private readonly defaultConfig: ThemeConfig = {
+    layoutType: 'light',
+    contrast: false,
+    caption: false,
+    rtlLayout: false,
+    bodyColor: 'blue-theme',
+    layout: 'vertical',
+    boxLayouts: false
+  };
   private readonly themeClasses = [
     'blue-theme',
     'indigo-theme',
@@ -55,15 +64,7 @@ export class ThemeConfigService {
 
   /** Load from LS (if any), override static defaults, and return a config */
   loadConfig(): ThemeConfig {
-    const def: ThemeConfig = {
-      layoutType: AbleProConfig.isDarkMode as ThemeConfig['layoutType'],
-      contrast: AbleProConfig.theme_contrast,
-      caption: AbleProConfig.menu_caption,
-      rtlLayout: AbleProConfig.isRtlLayout,
-      bodyColor: AbleProConfig.theme_color,
-      layout: AbleProConfig.layout as ThemeConfig['layout'],
-      boxLayouts: AbleProConfig.isBox_container
-    };
+    const def = this.defaultConfig;
 
     const json = localStorage.getItem(this.STORAGE_KEY);
     let cfg = def;
@@ -76,7 +77,21 @@ export class ThemeConfigService {
       }
     }
 
-    return this.syncRtlWithLanguage(cfg);
+    return this.normalizeConfig(this.syncRtlWithLanguage(cfg));
+  }
+
+  resetConfig(): ThemeConfig {
+    const cfg = this.normalizeConfig(this.syncRtlWithLanguage(this.defaultConfig));
+    this.saveConfig(cfg);
+    this.applyConfig(cfg);
+    return cfg;
+  }
+
+  private normalizeConfig(cfg: ThemeConfig): ThemeConfig {
+    if (cfg.layout === 'horizontal' && cfg.rtlLayout) {
+      return { ...cfg, layout: 'vertical' };
+    }
+    return cfg;
   }
 
   private syncRtlWithLanguage(cfg: ThemeConfig): ThemeConfig {
@@ -117,6 +132,7 @@ export class ThemeConfigService {
 
     // 3) caption
     document.body.classList.toggle('hide-caption', cfg.caption);
+    document.querySelector('.pc-sidebar')?.classList.toggle('caption-hide', cfg.caption);
 
     // 4) rtl
     document.documentElement.dir = cfg.rtlLayout ? 'rtl' : 'ltr';
@@ -128,6 +144,7 @@ export class ThemeConfigService {
 
     // 6) boxed
     document.body.classList.toggle('boxed', cfg.boxLayouts);
+    document.querySelector('.app-container')?.classList.toggle('container', cfg.boxLayouts);
 
     // 7) menu layout class
     document.body.classList.remove('vertical', 'horizontal', 'compact');

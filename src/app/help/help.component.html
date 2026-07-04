@@ -1,0 +1,381 @@
+<div class="help-page">
+  <header class="help-page__header">
+    <mat-icon class="help-page__icon">menu_book</mat-icon>
+    <div class="help-page__header-text">
+      <h1>{{ 'USER_GUIDE.TITLE' | translate }}</h1>
+      @if (userDisplayName) {
+        <p class="help-page__welcome">{{ 'USER_GUIDE.WELCOME_USER' | translate: { name: userDisplayName } }}</p>
+      }
+      <p class="help-page__subtitle">{{ 'USER_GUIDE.INTRO' | translate }}</p>
+      <p class="help-page__slogan">{{ 'BRANDING.SLOGAN' | translate }}</p>
+      @if (roleLabelKey) {
+        <span class="help-page__role-badge">{{ roleLabelKey | translate }}</span>
+      }
+    </div>
+  </header>
+
+  <nav class="help-page__nav" aria-label="Help sections">
+    @for (item of navItems; track item.id) {
+      <button type="button" class="help-page__nav-chip" (click)="scrollTo(item.id)">
+        {{ item.labelKey | translate }}
+      </button>
+    }
+  </nav>
+
+  <section id="help-start" class="help-page__quick help-section">
+    <h2>{{ 'USER_GUIDE.QUICK_START.TITLE' | translate }}</h2>
+    <ol>
+      <li>{{ 'USER_GUIDE.QUICK_START.STEP1' | translate }}</li>
+      <li>{{ 'USER_GUIDE.QUICK_START.STEP2' | translate }}</li>
+      <li>{{ 'USER_GUIDE.QUICK_START.STEP3' | translate }}</li>
+      <li>{{ 'USER_GUIDE.QUICK_START.STEP4' | translate }}</li>
+      <li>{{ 'USER_GUIDE.QUICK_START.STEP5' | translate }}</li>
+    </ol>
+  </section>
+
+  <section id="help-flow" class="help-section">
+    <h2>{{ 'USER_GUIDE.FLOW.TITLE' | translate }}</h2>
+    <p class="help-section__lead">{{ 'USER_GUIDE.FLOW.SUBTITLE' | translate }}</p>
+    <div class="help-flow">
+      @for (step of flowSteps; track step.labelKey; let last = $last) {
+        <div class="help-flow__step">
+          <mat-icon>{{ step.icon }}</mat-icon>
+          <span>{{ step.labelKey | translate }}</span>
+        </div>
+        @if (!last) {
+          <mat-icon class="help-flow__arrow" aria-hidden="true">arrow_forward</mat-icon>
+        }
+      }
+    </div>
+  </section>
+
+  <section id="help-modules" class="help-section">
+    <h2>{{ 'USER_GUIDE.MODULES_TITLE' | translate }}</h2>
+    @if (!modules.length) {
+      <p class="help-empty">{{ 'USER_GUIDE.NO_MODULES' | translate }}</p>
+    } @else {
+      <div class="help-grid">
+        @for (mod of modules; track mod.id) {
+          <mat-card class="help-card" [ngClass]="mod.accentClass">
+            <mat-card-header>
+              <div mat-card-avatar class="help-card__avatar">
+                <mat-icon>{{ mod.icon }}</mat-icon>
+              </div>
+              <mat-card-title>{{ mod.titleKey | translate }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p>{{ mod.descKey | translate }}</p>
+              @if (tasksForModule(mod.id).length) {
+                <ul class="help-card__links">
+                  @for (task of tasksForModule(mod.id); track task.route) {
+                    <li>
+                      <a [routerLink]="task.route">{{ task.labelKey | translate }}</a>
+                    </li>
+                  }
+                </ul>
+              }
+            </mat-card-content>
+            <mat-card-actions>
+              <a mat-flat-button color="primary" [routerLink]="mod.route">
+                {{ 'USER_GUIDE.OPEN_MODULE' | translate }}
+              </a>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+    }
+
+    @if (visibleReceptionTypes.length) {
+      <div class="help-reception-types">
+        <h3>{{ 'USER_GUIDE.RECEPTION_TYPES.TITLE' | translate }}</h3>
+        <p class="help-section__lead">{{ 'USER_GUIDE.RECEPTION_TYPES.SUBTITLE' | translate }}</p>
+        <div class="help-reception-types__grid">
+          @for (op of visibleReceptionTypes; track op.route) {
+            <a class="help-reception-types__chip" [routerLink]="op.route">
+              {{ op.labelKey | translate }}
+            </a>
+          }
+          <a class="help-reception-types__chip help-reception-types__chip--oil" routerLink="/reception/reception-huile">
+            {{ 'USER_GUIDE.RECEPTION_TYPES.OIL' | translate }}
+          </a>
+        </div>
+      </div>
+    }
+  </section>
+
+  @if (canAccessHr()) {
+    <section id="help-hr" class="help-section help-hr-guide">
+      <h2>{{ 'USER_GUIDE.HR.GUIDE.TITLE' | translate }}</h2>
+      <p class="help-section__lead">{{ 'USER_GUIDE.HR.GUIDE.SUBTITLE' | translate }}</p>
+
+      <div class="help-hr-guide__grid">
+        <article class="help-hr-guide__panel">
+          <h3>{{ 'USER_GUIDE.HR.GUIDE.ACHIEVEMENTS_TITLE' | translate }}</h3>
+          <ul>
+            @for (key of hrAchievementKeys; track key) {
+              <li>{{ key | translate }}</li>
+            }
+          </ul>
+        </article>
+
+        <article class="help-hr-guide__panel">
+          <h3>{{ 'USER_GUIDE.HR.GUIDE.WORKFLOW_TITLE' | translate }}</h3>
+          <ol>
+            @for (key of hrWorkflowKeys; track key) {
+              <li>{{ key | translate }}</li>
+            }
+          </ol>
+        </article>
+      </div>
+
+      <div class="help-hr-guide__grid">
+        <article class="help-hr-guide__panel">
+          <h3>{{ 'USER_GUIDE.HR.GUIDE.PERMISSIONS_TITLE' | translate }}</h3>
+          <p>{{ 'USER_GUIDE.HR.GUIDE.PERMISSIONS_SUBTITLE' | translate }}</p>
+          <ul>
+            @for (key of hrPermissionEntityKeys; track key) {
+              <li>{{ key | translate }}</li>
+            }
+          </ul>
+        </article>
+
+        <article class="help-hr-guide__panel">
+          <h3>{{ 'USER_GUIDE.HR.GUIDE.ROLES_TITLE' | translate }}</h3>
+          <p>{{ 'USER_GUIDE.HR.GUIDE.ROLES_SUBTITLE' | translate }}</p>
+          <ul>
+            @for (key of hrRolePresetKeys; track key) {
+              <li>{{ key | translate }}</li>
+            }
+          </ul>
+        </article>
+      </div>
+
+      <h3>{{ 'USER_GUIDE.HR.GUIDE.LINKS_TITLE' | translate }}</h3>
+      <div class="help-hr-guide__links">
+        @for (link of hrGuideLinks; track link.route) {
+          <a class="help-hr-guide__link" [routerLink]="link.route">
+            <mat-icon>{{ link.icon }}</mat-icon>
+            <span>{{ link.labelKey | translate }}</span>
+          </a>
+        }
+      </div>
+
+      <mat-accordion class="help-hr-guide__accordion">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ 'USER_GUIDE.HR.GUIDE.EMPLOYEES_TITLE' | translate }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>{{ 'USER_GUIDE.HR.GUIDE.EMPLOYEES_BODY' | translate }}</p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ 'USER_GUIDE.HR.GUIDE.CONTRACTS_TITLE' | translate }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>{{ 'USER_GUIDE.HR.GUIDE.CONTRACTS_BODY' | translate }}</p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ 'USER_GUIDE.HR.GUIDE.PAYROLL_TITLE' | translate }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>{{ 'USER_GUIDE.HR.GUIDE.PAYROLL_BODY' | translate }}</p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ 'USER_GUIDE.HR.GUIDE.LEAVE_TITLE' | translate }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>{{ 'USER_GUIDE.HR.GUIDE.LEAVE_BODY' | translate }}</p>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <p class="help-hr-guide__note">{{ 'USER_GUIDE.HR.GUIDE.DOCS_HINT' | translate }}</p>
+      <a mat-stroked-button color="primary" routerLink="/hr">
+        <mat-icon>groups</mat-icon>
+        {{ 'USER_GUIDE.OPEN_MODULE' | translate }} — HR
+      </a>
+    </section>
+  }
+
+  @if (commonTasks.length) {
+    <section id="help-tasks" class="help-section">
+      <h2>{{ 'USER_GUIDE.COMMON_TASKS.TITLE' | translate }}</h2>
+      <p class="help-section__lead">{{ 'USER_GUIDE.COMMON_TASKS.SUBTITLE' | translate }}</p>
+      <div class="help-tasks-grid">
+        @for (task of commonTasks; track task.route) {
+          <a class="help-task-card" [routerLink]="task.route">
+            <mat-icon>{{ task.icon }}</mat-icon>
+            <div>
+              <strong>{{ task.labelKey | translate }}</strong>
+              <span>{{ task.hintKey | translate }}</span>
+            </div>
+            <mat-icon class="help-task-card__chevron">chevron_right</mat-icon>
+          </a>
+        }
+      </div>
+    </section>
+  }
+
+  <section id="help-workflows" class="help-section help-page__workflows">
+    <h2>{{ 'USER_GUIDE.WORKFLOWS.TITLE' | translate }}</h2>
+    <div class="help-workflow-cards">
+      <article class="help-workflow-card">
+        <mat-icon>spa</mat-icon>
+        <p>{{ 'USER_GUIDE.WORKFLOWS.RECEPTION' | translate }}</p>
+      </article>
+      <article class="help-workflow-card">
+        <mat-icon>water_drop</mat-icon>
+        <p>{{ 'USER_GUIDE.WORKFLOWS.STORAGE' | translate }}</p>
+      </article>
+      <article class="help-workflow-card">
+        <mat-icon>precision_manufacturing</mat-icon>
+        <p>{{ 'USER_GUIDE.WORKFLOWS.CONDITIONING' | translate }}</p>
+      </article>
+      <article class="help-workflow-card">
+        <mat-icon>account_balance_wallet</mat-icon>
+        <p>{{ 'USER_GUIDE.WORKFLOWS.FINANCE' | translate }}</p>
+      </article>
+      @if (canAccessHr()) {
+        <article class="help-workflow-card">
+          <mat-icon>groups</mat-icon>
+          <p>{{ 'USER_GUIDE.WORKFLOWS.HR' | translate }}</p>
+        </article>
+      }
+    </div>
+    <p class="help-workflows-note">{{ 'USER_GUIDE.WORKFLOWS.PERMISSIONS' | translate }}</p>
+  </section>
+
+  <section id="help-faq" class="help-section">
+    <h2>{{ 'USER_GUIDE.FAQ.TITLE' | translate }}</h2>
+    <mat-accordion class="help-faq">
+      @for (item of faqItems; track item.questionKey) {
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ item.questionKey | translate }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>{{ item.answerKey | translate }}</p>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  </section>
+
+  <section id="help-support" class="help-section help-page__support">
+    <h2>{{ 'SUPPORT.HELP_TITLE' | translate }}</h2>
+    <p class="help-section__lead">{{ 'SUPPORT.HELP_DESC' | translate }}</p>
+    <button mat-flat-button color="primary" type="button" (click)="openSupportTicket()">
+      <mat-icon>support_agent</mat-icon>
+      {{ 'SUPPORT.OPEN_TICKET' | translate }}
+    </button>
+    <ul class="help-support-tips">
+      <li>{{ 'SUPPORT.HELP_TIP1' | translate }}</li>
+      <li>{{ 'SUPPORT.HELP_TIP2' | translate }}</li>
+    </ul>
+
+    @if (canManageCompanyTickets) {
+      <div class="help-support-scope">
+        <button
+          mat-stroked-button
+          type="button"
+          [color]="ticketScope === 'mine' ? 'primary' : undefined"
+          (click)="setTicketScope('mine')"
+        >
+          {{ 'SUPPORT.MY_TICKETS' | translate }}
+        </button>
+        <button
+          mat-stroked-button
+          type="button"
+          [color]="ticketScope === 'tenant' ? 'primary' : undefined"
+          (click)="setTicketScope('tenant')"
+        >
+          {{ 'SUPPORT.COMPANY_TICKETS' | translate }}
+        </button>
+      </div>
+    } @else {
+      <h3 class="help-support-list__title">{{ 'SUPPORT.MY_TICKETS' | translate }}</h3>
+    }
+
+    @if (ticketsLoading) {
+      <p>{{ 'COMMON.LOADING' | translate }}</p>
+    } @else if (!myTickets.length) {
+      <p>{{ 'SUPPORT.NO_TICKETS' | translate }}</p>
+    } @else {
+      <div class="help-support-list">
+        @for (ticket of myTickets; track ticket.id) {
+          <mat-card class="help-support-ticket">
+            <mat-card-header>
+              <mat-card-title>{{ ticket.subject }}</mat-card-title>
+              <mat-card-subtitle>{{ ticket.createdDate | date: 'medium' }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-chip>{{ 'SUPPORT.STATUS.' + ticket.status | translate }}</mat-chip>
+              <span class="help-support-ticket__priority">{{ 'SUPPORT.PRIORITY.' + ticket.priority | translate }}</span>
+            </mat-card-content>
+            <mat-card-actions align="end">
+              <button mat-button type="button" (click)="viewTicket(ticket)">
+                {{ 'SUPPORT.VIEW_TICKET' | translate }}
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+    }
+  </section>
+
+  <section id="help-pdf" class="help-section help-page__pdf">
+    <h2>{{ 'USER_GUIDE.PDF_GUIDES.TITLE' | translate }}</h2>
+    <p class="help-section__lead">{{ 'USER_GUIDE.PDF_GUIDES.SUBTITLE' | translate }}</p>
+    <div class="help-pdf-grid">
+      @for (guide of pdfGuides; track guide.id) {
+        <mat-card class="help-pdf-card">
+          <mat-card-header>
+            <span class="help-pdf-card__flag" aria-hidden="true">{{ guide.flag }}</span>
+            <mat-card-title>{{ guide.titleKey | translate }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{ guide.descKey | translate }}</p>
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <a
+              mat-stroked-button
+              color="primary"
+              [href]="pdfAssetUrl(guide.fileName)"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <mat-icon>visibility</mat-icon>
+              {{ 'USER_GUIDE.PDF_GUIDES.VIEW' | translate }}
+            </a>
+            <a
+              mat-flat-button
+              color="primary"
+              [href]="pdfAssetUrl(guide.fileName)"
+              [download]="guide.fileName"
+            >
+              <mat-icon>download</mat-icon>
+              {{ 'USER_GUIDE.PDF_GUIDES.DOWNLOAD' | translate }}
+            </a>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+    <p class="help-pdf-note">{{ 'USER_GUIDE.PDF_GUIDES.NOTE' | translate }}</p>
+  </section>
+
+  <section id="help-tips" class="help-section help-page__tips">
+    <h2>{{ 'USER_GUIDE.TIPS.TITLE' | translate }}</h2>
+    <ul>
+      <li>{{ 'USER_GUIDE.TIPS.SEARCH' | translate }}</li>
+      <li>{{ 'USER_GUIDE.TIPS.LANGUAGE' | translate }}</li>
+      <li>{{ 'USER_GUIDE.TIPS.PERMISSIONS' | translate }}</li>
+      <li>{{ 'USER_GUIDE.TIPS.PDF' | translate }}</li>
+      <li>{{ 'USER_GUIDE.TIPS.NOTIFICATIONS' | translate }}</li>
+      <li>{{ 'USER_GUIDE.TIPS.LISTS' | translate }}</li>
+    </ul>
+  </section>
+
+  <footer class="help-page__footer">
+    <p>{{ 'USER_GUIDE.FULL_DOCS_HINT' | translate }}</p>
+    <div class="help-page__footer-actions">
+      <a mat-stroked-button routerLink="/welcome">{{ 'USER_GUIDE.BACK_HOME' | translate }}</a>
+      <a mat-button routerLink="/account/profile">{{ 'USER_GUIDE.MY_ACCOUNT' | translate }}</a>
+    </div>
+  </footer>
+</div>

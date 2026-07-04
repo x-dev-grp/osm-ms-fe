@@ -24,6 +24,8 @@ RUN npm ci $NPM_CI_FLAGS
 
 # 2. Copy source and build
 COPY . .
+RUN V=$(tr -d '\r\n' < VERSION) && P=$(node -p "require('./package.json').version") && \
+    test "$V" = "$P" || (echo "VERSION ($V) != package.json ($P)" && exit 1)
 # Pass Angular flags after "--"
 RUN npm run build -- -c=${NG_CONFIG} --base-href=${BASE_HREF} --deploy-url=${DEPLOY_URL}
 
@@ -31,6 +33,9 @@ RUN npm run build -- -c=${NG_CONFIG} --base-href=${BASE_HREF} --deploy-url=${DEP
 # 2) RUNTIME STAGE (Nginx)
 ##############################
 FROM nginx:1.27-alpine AS runtime
+
+ARG APP_VERSION=unknown
+LABEL org.opencontainers.image.version="${APP_VERSION}"
 
 # Remove default welcome page
 RUN rm -rf /usr/share/nginx/html/*

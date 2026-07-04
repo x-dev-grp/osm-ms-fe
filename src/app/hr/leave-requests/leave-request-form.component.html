@@ -1,0 +1,80 @@
+<div class="dashboard-shell hr-form-page hr-form-page--leave">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>event_busy</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'HR.PAGE.LEAVE.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.LEAVE_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()"><mat-icon>arrow_back</mat-icon><span class="ms-1">{{ 'COMMON.BACK' | translate }}</span></button>
+    </div>
+  </div>
+  @if (loading) { <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div> }
+  @else {
+    <app-card [icon]="'event_busy'" [cardTitle]="'HR.PAGE.LEAVE.TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.LEAVES.FIELDS.EMPLOYEE' | translate }}</mat-label>
+            <mat-select formControlName="employeeId" required>
+              @for (employee of employees; track employee.id) {
+                <mat-option [value]="employee.id">{{ employeeLabel(employee) }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.LEAVES.FIELDS.TYPE' | translate }}</mat-label>
+            <mat-select formControlName="leaveType">
+              @for (type of leaveTypes; track type) {
+                <mat-option [value]="type">{{ 'HR.LEAVES.TYPE.' + type | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.LEAVES.FIELDS.START_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startDate" />
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.LEAVES.FIELDS.END_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="endDate" />
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>{{ 'HR.LEAVES.FIELDS.DURATION' | translate }}</mat-label><input matInput type="number" formControlName="durationDays" /></mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.LEAVES.FIELDS.STATUS' | translate }}</mat-label>
+            <mat-select formControlName="status">
+              @for (status of statuses; track status) {
+                <mat-option [value]="status">{{ 'HR.LEAVES.STATUS.' + status | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        @if (canReviewLeave()) {
+          <div class="form-actions">
+            @if (canRejectLeave()) {
+              <button mat-stroked-button type="button" color="warn" [disabled]="actionLoading" (click)="reject()">
+                {{ 'HR.LEAVES.ACTIONS.REJECT' | translate }}
+              </button>
+            }
+            @if (canApproveLeave()) {
+              <button mat-flat-button color="primary" type="button" [disabled]="actionLoading" (click)="approve()">
+                {{ 'HR.LEAVES.ACTIONS.APPROVE' | translate }}
+              </button>
+            }
+          </div>
+        }
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

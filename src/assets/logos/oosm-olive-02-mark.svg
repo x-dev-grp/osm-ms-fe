@@ -1,0 +1,11 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OOSM">
+  <defs>
+    <linearGradient id="m2o" x1="12" y1="8" x2="36" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5D76E"/>
+      <stop offset="1" stop-color="#B8860B"/>
+    </linearGradient>
+  </defs>
+  <circle cx="24" cy="24" r="22" fill="#2F4F2F"/>
+  <path d="M24 10c0 0-6 8-6 14a6 6 0 0 0 12 0c0-6-6-14-6-14Z" fill="url(#m2o)"/>
+  <ellipse cx="22" cy="18" rx="2" ry="3" fill="#FFF" opacity="0.3"/>
+</svg>

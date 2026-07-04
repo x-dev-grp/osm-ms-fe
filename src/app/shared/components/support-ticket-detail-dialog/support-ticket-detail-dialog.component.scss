@@ -1,0 +1,48 @@
+.support-ticket-detail {
+  min-width: min(560px, 92vw);
+}
+
+.support-ticket-detail__meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+  margin: 0 0 16px;
+
+  dt {
+    margin: 0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-700, #5a6340);
+  }
+
+  dd {
+    margin: 4px 0 0;
+    font-weight: 600;
+  }
+}
+
+.support-ticket-detail__full {
+  grid-column: 1 / -1;
+}
+
+.support-ticket-detail__description {
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
+.support-ticket-detail__form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.support-ticket-detail__error {
+  color: #b3261e;
+  margin: 8px 0 0;
+}
+
+.w-100 {
+  width: 100%;
+}

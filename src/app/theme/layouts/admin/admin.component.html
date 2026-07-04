@@ -16,13 +16,15 @@
             <div class="sidebar-top__logo-wrap">
               <img
                 class="sidebar-top__logo"
-                [src]="logoPreview || 'assets/OOSM-mark.svg'"
+                [src]="logoPreview || defaultLogoMark"
                 alt="OOSM Logo"
               />
             </div>
             <div class="sidebar-top__meta">
               @if (companyName) {
                 <span class="sidebar-top__company">{{ companyName }}</span>
+              } @else {
+                <span class="sidebar-top__slogan">{{ 'BRANDING.SLOGAN' | translate }}</span>
               }
               <span class="sidebar-top__version">v{{ currentApplicationVersion }}</span>
             </div>

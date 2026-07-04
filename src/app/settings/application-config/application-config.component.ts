@@ -85,10 +85,8 @@ export class ApplicationConfigComponent implements OnInit {
   }
 
   resetLayout(): void {
-    localStorage.removeItem('themeConfig');
-    const cfg = this.themeConfig.loadConfig();
+    const cfg = this.themeConfig.resetConfig();
     this.syncState(cfg);
-    this.themeConfig.applyConfig(cfg);
   }
 
   private loadFromService(): void {

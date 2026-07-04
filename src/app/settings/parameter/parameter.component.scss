@@ -1,147 +1,221 @@
 :host {
   display: block;
-  padding: 24px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  margin: 0 auto;
 }
 
-form {
+.parameter-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
 }
 
-mat-form-field.category-filter {
-  width: 300px;
-  margin-bottom: 16px;
+.parameter-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--accent-600);
+  font-size: 0.875rem;
 }
 
-table {
-  width: 100%;
-  background: #fff;
+.parameter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+.parameter-card {
+  border: 1px solid var(--accent-300);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-collapse: separate;
-  border-spacing: 0;
+  background: #fff;
+  min-width: 0;
 
-  th.mat-header-cell {
-    background: #f5f7f9;
-    color: #333;
-    font-weight: 600;
-    padding: 16px 12px;
-    font-size: 14px;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
-  }
-
-  td.mat-cell {
-    vertical-align: middle;
-    padding: 12px;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 13px;
-    color: #444;
-  }
-
-  td.mat-cell input,
-  td.mat-cell mat-slide-toggle {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  button[mat-icon-button] {
-    margin-left: 12px;
-    color: #666;
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: #1976d2;
-    }
-
-    &.save-button {
-      color: #2e7d32;
-    }
-
-    &.delete-button {
-      color: #d32f2f;
-    }
+  .dark & {
+    background: var(--accent-50);
   }
 }
 
-.header-row {
-  background-color: #eceff1;
-}
-
-.value-cell {
+.parameter-card-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--accent-200);
+  background: color-mix(in srgb, var(--accent-200) 55%, transparent);
+}
 
-  &.error {
-    border-left: 3px solid #d32f2f;
-    background-color: #fff5f5;
-  }
+.parameter-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.parameter-code {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--accent-900);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.parameter-type {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary-500) 12%, transparent);
+  color: var(--primary-600);
+}
+
+.parameter-save-btn {
+  flex-shrink: 0;
+}
+
+.parameter-description {
+  margin: 0;
+  padding: 6px 12px 0;
+  color: var(--accent-700);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.parameter-value-area {
+  padding: 8px 12px 12px;
 }
 
 .value-field {
   width: 100%;
-  min-width: 200px;
-  max-width: 300px;
+}
 
-  &.error mat-form-field {
-    .mat-form-field-wrapper {
-      border: 1px solid #d32f2f;
-      border-radius: 4px;
-    }
+.compact-field {
+  ::ng-deep .mat-mdc-form-field-infix {
+    min-height: 40px;
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 }
 
-.string-field {
-  max-width: 460px;
+.daily-metric-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.empty-state-cell {
-  padding: 1rem;
-  text-align: center;
-  color: #77796e;
+.history-panel {
+  border: 1px solid var(--accent-200);
+  border-radius: 6px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--accent-100) 40%, transparent);
 }
 
-@media screen and (max-width: 768px) {
-  :host {
-    padding: 16px;
-  }
+.history-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--accent-200);
+  background: color-mix(in srgb, var(--accent-200) 45%, transparent);
+}
 
-  mat-form-field.category-filter {
-    width: 100%;
-  }
+.history-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-700);
+  white-space: nowrap;
+}
 
-  .value-cell {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
+.history-search {
+  flex: 1;
+  min-width: 0;
+  max-width: 160px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--accent-300);
+  border-radius: 4px;
+  font-size: 11px;
+  background: #fff;
+  color: var(--accent-900);
 
-  .value-field {
-    width: 100%;
-    max-width: none;
-  }
-
-  button[mat-icon-button] {
-    align-self: flex-end;
-  }
-
-  th.mat-header-cell,
-  td.mat-cell {
-    padding: 8px;
-    font-size: 12px;
+  &:focus {
+    outline: none;
+    border-color: var(--primary-400);
   }
 }
 
-@media screen and (max-width: 480px) {
-  table {
-    display: block;
-    overflow-x: auto;
+.history-table-wrap {
+  max-height: calc(28px * 5 + 26px);
+  overflow-y: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  table-layout: fixed;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 4px 8px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--accent-700);
+    background: color-mix(in srgb, var(--accent-200) 70%, #fff);
+    border-bottom: 1px solid var(--accent-200);
+  }
+
+  tbody td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--accent-100);
+    color: var(--accent-800);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody td:last-child {
+    text-align: right;
+    font-weight: 600;
+    color: var(--primary-600);
+    width: 56px;
+  }
+
+  .history-empty {
+    text-align: center;
+    color: var(--accent-600);
+    font-style: italic;
+    padding: 10px 8px;
+  }
+}
+
+@media (max-width: 992px) {
+  .parameter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .parameter-grid {
+    padding: 12px;
+  }
+
+  .history-search {
+    max-width: none;
   }
 }

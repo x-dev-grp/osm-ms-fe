@@ -1,0 +1,50 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuardChild } from '../interceptors/guards/auth.guard';
+import { allPermissionGuard } from '../interceptors/guards/permission.guard';
+import { Action, OOSMModule, permissionKey, ProductionEntity } from '../theme/types/permissions';
+
+const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+      import('../maintenance/equipment/equipment-list.component').then((m) => m.EquipmentListComponent),
+    canActivate: [
+      AuthGuardChild,
+      allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLEQUIPMENT, Action.READ)])
+    ]
+  },
+  {
+    path: 'new',
+    loadComponent: () =>
+      import('../maintenance/equipment/equipment-form.component').then((m) => m.EquipmentFormComponent),
+    canActivate: [
+      AuthGuardChild,
+      allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLEQUIPMENT, Action.CREATE)])
+    ]
+  },
+  {
+    path: ':id/edit',
+    loadComponent: () =>
+      import('../maintenance/equipment/equipment-form.component').then((m) => m.EquipmentFormComponent),
+    canActivate: [
+      AuthGuardChild,
+      allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLEQUIPMENT, Action.UPDATE)])
+    ]
+  },
+  {
+    path: ':id/view',
+    loadComponent: () =>
+      import('../maintenance/equipment/equipment-form.component').then((m) => m.EquipmentFormComponent),
+    canActivate: [
+      AuthGuardChild,
+      allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLEQUIPMENT, Action.READ)])
+    ]
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class MillEquipmentRoutingModule {}

@@ -1,0 +1,98 @@
+<div class="dashboard-shell hr-form-page hr-form-page--payslips">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>receipt_long</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'HR.PAYSLIPS.DETAIL_TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'HR.PAYSLIPS.SECTION.AMOUNTS' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      @if (canDownloadPdf()) {
+        <button mat-stroked-button type="button" (click)="downloadPdf()">
+          <mat-icon>print</mat-icon>
+          <span class="ms-1">{{ 'HR.PAYSLIPS.DOWNLOAD_PDF' | translate }}</span>
+        </button>
+      }
+      <button mat-stroked-button type="button" (click)="cancel()"><mat-icon>arrow_back</mat-icon><span class="ms-1">{{ 'COMMON.BACK' | translate }}</span></button>
+    </div>
+  </div>
+  @if (loading) { <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div> }
+  @else {
+    <app-card [icon]="'receipt_long'" [cardTitle]="'HR.PAYSLIPS.LIST_TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYROLL.FIELDS.YEAR' | translate }}</mat-label>
+            <mat-select formControlName="payrollPeriodId" required>
+              @for (period of payrollPeriods; track period.id) {
+                <mat-option [value]="period.id">{{ periodLabel(period) }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.EMPLOYEE' | translate }}</mat-label>
+            <mat-select formControlName="employeeId" required>
+              @for (employee of employees; track employee.id) {
+                <mat-option [value]="employee.id">{{ employeeLabel(employee) }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.BASE_SALARY' | translate }}</mat-label>
+            <input matInput type="number" formControlName="baseSalary" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.BONUSES' | translate }}</mat-label>
+            <input matInput type="number" formControlName="bonuses" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.GROSS_SALARY' | translate }}</mat-label>
+            <input matInput type="number" formControlName="grossSalary" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.NET_SALARY' | translate }}</mat-label>
+            <input matInput type="number" formControlName="netSalary" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.CNSS_EMPLOYEE' | translate }}</mat-label>
+            <input matInput type="number" formControlName="cnssEmployee" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.CNSS_EMPLOYER' | translate }}</mat-label>
+            <input matInput type="number" formControlName="cnssEmployer" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.IRPP' | translate }}</mat-label>
+            <input matInput type="number" formControlName="irpp" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.CSS' | translate }}</mat-label>
+            <input matInput type="number" formControlName="css" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.PAYMENT_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="paymentPicker" formControlName="paymentDate" />
+            <mat-datepicker-toggle matSuffix [for]="paymentPicker"></mat-datepicker-toggle>
+            <mat-datepicker #paymentPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.PAYSLIPS.FIELDS.STATUS' | translate }}</mat-label>
+            <mat-select formControlName="status">
+              @for (status of statuses; track status) {
+                <mat-option [value]="status">{{ 'HR.PAYSLIPS.STATUS.' + status | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-checkbox formControlName="paid">{{ 'HR.PAYSLIPS.STATUS.PAID' | translate }}</mat-checkbox>
+        </div>
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

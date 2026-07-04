@@ -347,7 +347,8 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   private buildDashboardConfigFromQueryParams(): DashboardConfig {
     const lotNumber = this.route.snapshot.queryParamMap.get('lotNumber');
-    if (!lotNumber) {
+    const externalTransactionId = this.route.snapshot.queryParamMap.get('externalTransactionId');
+    if (!lotNumber && !externalTransactionId) {
       return TRANSACTIONS_DASHBOARD_CONFIG;
     }
 
@@ -360,7 +361,8 @@ export class TransactionsComponent implements OnInit, OnDestroy {
         searchs: [],
         search: {
           ...(config.defaultSearchData?.searchData?.search ?? {}),
-          lotNumber: { equalValue: lotNumber }
+          ...(lotNumber ? { lotNumber: { equalValue: lotNumber } } : {}),
+          ...(externalTransactionId ? { externalTransactionId: { equalValue: externalTransactionId } } : {})
         }
       }
     };

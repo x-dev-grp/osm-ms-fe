@@ -10,6 +10,7 @@ import { AuthService, OOSMUserOUTDTO } from 'src/app/shared/services/auth.servic
 import { catchError, first, of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { APP_LOGO_FULL } from '../../shared/config/logo.config';
 
 @Component({
   selector: 'app-forgot-password',
@@ -19,6 +20,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrls: ['../authentication.scss']
 })
 export class ForgotPasswordComponent implements OnInit {
+  readonly appLogoFull = APP_LOGO_FULL;
   loading = false;
   form: FormGroup;
   successMessage: string = '';

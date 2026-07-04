@@ -17,7 +17,6 @@ export interface LabelValidationIssueDto {
 export interface LabelSourceSnapshotDto {
   id?: string;
   isDeleted?: boolean;
-  externalId?: string;
   sourceType: string;
   sourceId?: string;
   sourceBusinessKey?: string;
@@ -27,7 +26,6 @@ export interface LabelSourceSnapshotDto {
 export interface LabelContentDto {
   id?: string;
   isDeleted?: boolean;
-  externalId?: string;
   actions?: string[];
 
   lotId?: string;

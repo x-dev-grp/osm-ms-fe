@@ -1,0 +1,42 @@
+<div class="dashboard-shell hr-form-page hr-form-page--postes">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>badge</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'HR.PAGE.POSITIONS.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.POSITION_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <app-card [icon]="'badge'" [cardTitle]="'HR.PAGE.POSITIONS.TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'POSTE.NAME' | translate }}</mat-label>
+            <input matInput formControlName="title" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>{{ 'POSTE.DESCRIPTION' | translate }}</mat-label>
+            <textarea matInput rows="3" formControlName="description"></textarea>
+          </mat-form-field>
+        </div>
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

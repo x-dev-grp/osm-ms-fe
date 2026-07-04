@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -21,6 +21,17 @@ import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EarningChartComponent } from '../../theme/pages/apex-chart/earning-chart/earning-chart.component';
+import {
+  FinanceOverviewChartComponent,
+  FinanceOverviewWidget
+} from '../shared/finance-overview-chart/finance-overview-chart.component';
+import { FinanceStatusTile, FinanceStatusTilesComponent } from '../shared/finance-status-tiles/finance-status-tiles.component';
+import { RecentSaleItem, RecentSalesListComponent } from '../shared/recent-sales-list/recent-sales-list.component';
+import {
+  ExpenseBreakdownChartComponent,
+  ExpenseBreakdownLegendItem
+} from '../shared/expense-breakdown-chart/expense-breakdown-chart.component';
+import { OilSale } from '../models/oil-sale.model';
 
 import { BankAccountService } from '../service/bankAccount.service';
 import { ExpenseService } from '../service/expense.service';
@@ -115,6 +126,7 @@ interface TransactionsSummary {
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     MatCardModule,
     MatProgressBarModule,
     MatTabsModule,
@@ -129,6 +141,10 @@ interface TransactionsSummary {
     MatNativeDateModule,
     FormsModule,
     EarningChartComponent,
+    FinanceOverviewChartComponent,
+    FinanceStatusTilesComponent,
+    RecentSalesListComponent,
+    ExpenseBreakdownChartComponent,
     CardComponent,
     NgApexchartsModule,
     SharedModule,
@@ -188,6 +204,19 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
   // Recent data
   recentTransactions: FinancialTransaction[] = [];
+  recentOilSales: OilSale[] = [];
+
+  // Able Pro overview widgets
+  statusTiles: FinanceStatusTile[] = [];
+  overviewWidgets: FinanceOverviewWidget[] = [];
+  overviewCategories: string[] = [];
+  overviewColumnSeries: number[] = [];
+  overviewLineSeries: number[] = [];
+  recentSaleItems: RecentSaleItem[] = [];
+  expenseBreakdownSeries: number[] = [];
+  expenseBreakdownLabels: string[] = [];
+  expenseBreakdownLegend: ExpenseBreakdownLegendItem[] = [];
+  recentActivityItems: Array<{ title: string; date: string; icon: string; background: string }> = [];
 
   // KPIs
   totalPaid = 0;
@@ -425,6 +454,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
           // Load actual transaction data for charts
           this.loadActualTransactionData();
+          this.loadRecentOilSales();
 
           this.applyFiltersAndRebuild();
         },
@@ -511,6 +541,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
     // KPIs + main charts
     this.prepareStatsAndCharts();
+    this.buildAbleProOverview();
   }
 
   // Chart size updater
@@ -1397,6 +1428,146 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     );
   }
 
+  private loadRecentOilSales(): void {
+    this.oilSaleService
+      .getAllOilSales()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            const sales = this.filterDataByDateRange(response.data, 'saleDate');
+            this.recentOilSales = [...sales]
+              .sort((a, b) => new Date(b.saleDate).getTime() - new Date(a.saleDate).getTime())
+              .slice(0, 5);
+            this.buildAbleProOverview();
+          }
+        },
+        error: () => {
+          this.recentOilSales = [];
+        }
+      });
+  }
+
+  private buildAbleProOverview(): void {
+    if (!this.financeSummary) {
+      return;
+    }
+
+    const summary = this.financeSummary;
+    const t = (key: string) => this.translate.instant(key);
+
+    this.statusTiles = [
+      { title: t('MENU.FINANCE.TRANSACTIONS'), icon: 'ti-file-invoice', background: 'bg-primary-500', route: '/finance/transactions' },
+      { title: t('MENU.FINANCE.EXPENSES'), icon: 'ti-report-money', background: 'bg-cyan-500', route: '/finance/expenses' },
+      { title: t('MENU.FINANCE.DASHBOARD.CHART_LABELS.PAID'), icon: 'ti-circle-check', background: 'bg-success-500', route: '/finance/oil-sales' },
+      { title: t('MENU.FINANCE.DASHBOARD.CHART_LABELS.PENDING'), icon: 'ti-clock', background: 'bg-warning-500', route: '/finance/expenses' },
+      { title: t('MENU.FINANCE.OIL_SALES'), icon: 'ti-shopping-cart', background: 'bg-warn-500', route: '/finance/oil-sales' },
+      { title: t('MENU.FINANCE.DASHBOARD.KPIS.NET_FLOW'), icon: 'ti-arrows-exchange', background: 'bg-primary-500', route: '/finance/transactions' }
+    ];
+
+    this.overviewWidgets = [
+      {
+        title: t('MENU.FINANCE.DASHBOARD.KPIS.TOTAL_TRANSACTIONS'),
+        count: String(summary.transactions.totalTransactions),
+        subLabel: t('MENU.FINANCE.TRANSACTIONS')
+      },
+      {
+        title: t('MENU.FINANCE.DASHBOARD.KPIS.TOTAL_PAID'),
+        count: `${this.totalPaid.toFixed(2)} TND`,
+        subLabel: t('MENU.FINANCE.DASHBOARD.CHART_LABELS.PAID')
+      },
+      {
+        title: t('MENU.FINANCE.DASHBOARD.KPIS.PENDING_EXPENSES'),
+        count: `${summary.expenses.pending.toFixed(2)} TND`,
+        subLabel: t('MENU.FINANCE.EXPENSES')
+      },
+      {
+        title: t('MENU.FINANCE.DASHBOARD.KPIS.TOTAL_UNPAID'),
+        count: `${this.totalUnpaid.toFixed(2)} TND`,
+        subLabel: t('MENU.FINANCE.OIL_SALES')
+      }
+    ];
+
+    const trend = this.buildTransactionTrendBuckets(7);
+    this.overviewCategories = trend.categories;
+    this.overviewColumnSeries = trend.counts;
+    this.overviewLineSeries = trend.amounts;
+
+    this.recentSaleItems = this.recentOilSales.map((sale) => ({
+      id: sale.id,
+      name: this.getSupplierLabel(sale),
+      amount: `${(sale.totalAmount ?? 0).toFixed(2)} ${sale.currency || 'TND'}`,
+      dateLabel: sale.saleDate ? new Date(sale.saleDate).toLocaleDateString() : '',
+      invoiceRef: sale.invoiceNumber
+    }));
+
+    const paidExpenses = Math.round(summary.expenses.paid);
+    const pendingExpenses = Math.round(summary.expenses.pending);
+    const oilUnpaid = Math.round(summary.oilSales.unpaidAmount);
+    const wasteUnpaid = Math.round(summary.wasteSales.unpaidAmount);
+
+    this.expenseBreakdownSeries = [pendingExpenses, paidExpenses, oilUnpaid, wasteUnpaid];
+    this.expenseBreakdownLabels = [
+      t('MENU.FINANCE.DASHBOARD.CHART_LABELS.PENDING'),
+      t('MENU.FINANCE.DASHBOARD.CHART_LABELS.PAID'),
+      t('MENU.FINANCE.OIL_SALES'),
+      t('MENU.FINANCE.WASTE_SALES')
+    ];
+    this.expenseBreakdownLegend = [
+      { title: t('MENU.FINANCE.DASHBOARD.CHART_LABELS.PENDING'), value: `${pendingExpenses} TND`, color: 'text-warning-500' },
+      { title: t('MENU.FINANCE.DASHBOARD.CHART_LABELS.PAID'), value: `${paidExpenses} TND`, color: 'text-success-500' },
+      { title: t('MENU.FINANCE.OIL_SALES'), value: `${oilUnpaid} TND`, color: 'text-warn-500' },
+      { title: t('MENU.FINANCE.WASTE_SALES'), value: `${wasteUnpaid} TND`, color: 'text-primary-500' }
+    ];
+
+    this.recentActivityItems = this.allTransactions.slice(0, 5).map((tx) => ({
+      title: `${t('MENU.FINANCE.TRANSACTIONS')} · ${parseTransactionAmount(tx.amount).toFixed(2)} TND`,
+      date: tx.transactionDate ? new Date(tx.transactionDate).toLocaleDateString() : '',
+      icon: tx.direction === TransactionDirection.INBOUND ? 'arrow-down-left' : 'arrow-up-right',
+      background:
+        tx.direction === TransactionDirection.INBOUND ? 'bg-success-50 text-success-500' : 'bg-primary-50 text-primary-500'
+    }));
+  }
+
+  private buildTransactionTrendBuckets(bucketCount: number): { categories: string[]; counts: number[]; amounts: number[] } {
+    const categories: string[] = [];
+    const counts = new Array(bucketCount).fill(0);
+    const amounts = new Array(bucketCount).fill(0);
+
+    const end = this.rangeEnd ?? new Date();
+    for (let i = bucketCount - 1; i >= 0; i--) {
+      const day = new Date(end);
+      day.setDate(end.getDate() - (bucketCount - 1 - i));
+      categories.push(day.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
+    }
+
+    this.allTransactions.forEach((tx) => {
+      const txDate = tx.transactionDate ? this.stripTime(new Date(tx.transactionDate)) : null;
+      if (!txDate) {
+        return;
+      }
+      for (let i = 0; i < bucketCount; i++) {
+        const bucketDay = new Date(end);
+        bucketDay.setDate(end.getDate() - (bucketCount - 1 - i));
+        const bucketDate = this.stripTime(bucketDay);
+        if (txDate.getTime() === bucketDate.getTime()) {
+          counts[i] += 1;
+          amounts[i] += parseTransactionAmount(tx.amount);
+        }
+      }
+    });
+
+    return { categories, counts, amounts: amounts.map((v) => Math.round(v)) };
+  }
+
+  private getSupplierLabel(sale: OilSale): string {
+    const supplier = sale.supplier;
+    if (!supplier) {
+      return this.translate.instant('OIL_SALES.FIELDS.SUPPLIER');
+    }
+    return supplier.fullName || [supplier.name, supplier.lastname].filter(Boolean).join(' ').trim() || supplier.name;
+  }
+
   private loadActualTransactionData(): void {
     // Load actual financial transactions for detailed charts
     this.transactionService
@@ -1409,6 +1580,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
             console.log('Loaded actual transactions:', this.allTransactions.length);
             // Re-render charts with real transaction data
             this.updateChartsWithRealData();
+            this.buildAbleProOverview();
           }
         },
         error: (error) => {
@@ -1429,6 +1601,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
             console.log('Loaded actual expenses:', this.expenses.length);
             // Re-render charts with real expense data
             this.updateChartsWithRealData();
+            this.buildAbleProOverview();
           }
         },
         error: (error) => {

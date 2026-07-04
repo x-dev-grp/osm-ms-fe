@@ -15,6 +15,7 @@ import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { TUNISIA_VAT_STANDARD_RATE } from '../../../shared/constants/tunisia-vat.constants';
 import { HttpErrorResponse } from '@angular/common/http';
 import { resolveBillConditions, resolveBillDesignation } from '../../utils/bill-labels.util';
+import { FinanceResourceLink, resolveFinanceResourceLinks } from '../../utils/finance-resource-links.util';
 
 @Component({
   selector: 'app-transaction-view',
@@ -185,25 +186,18 @@ export class TransactionViewComponent implements OnInit {
     return parts.join(' · ') || '—';
   }
 
+  get resourceLinks(): FinanceResourceLink[] {
+    return resolveFinanceResourceLinks(this.transaction);
+  }
+
   hasReferences(): boolean {
     return !!(
+      this.resourceLinks.length ||
       this.transaction?.lotNumber ||
       this.transaction?.invoiceReference ||
       this.transaction?.receiptReference ||
-      this.transaction?.externalTransactionId ||
-      this.isLinkedOilSale()
+      this.transaction?.externalTransactionId
     );
-  }
-
-  isLinkedOilSale(): boolean {
-    return this.transaction?.resourceName === 'OILSALE' && !!this.transaction?.externalTransactionId;
-  }
-
-  getOilSaleViewLink(): string[] | null {
-    if (!this.isLinkedOilSale() || !this.transaction?.externalTransactionId) {
-      return null;
-    }
-    return ['/finance/oil-sales', this.transaction.externalTransactionId, 'view'];
   }
 
   hasParties(): boolean {

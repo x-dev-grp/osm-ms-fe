@@ -59,11 +59,61 @@
     </div>
 
     <div class="table-section">
+      @if (activeOp === 'BASE') {
+        <section class="base-ledger-overview">
+          <h4 class="base-ledger-title">{{ 'ABIOOC.BASE_LEDGER.TITLE' | translate }}</h4>
+          <p class="base-ledger-hint">{{ 'ABIOOC.BASE_LEDGER.HINT' | translate }}</p>
+          @if (baseLedgerLoading) {
+            <div class="finance-loading">
+              <mat-spinner diameter="32"></mat-spinner>
+            </div>
+          } @else if (baseLedgerSummary) {
+            <div class="finance-summary-grid">
+              <mat-card class="summary-card">
+                <mat-card-content>
+                  <span class="summary-label">{{ 'ABIOOC.BASE_LEDGER.OLIVE_KG' | translate }}</span>
+                  <span class="summary-value">{{ baseLedgerSummary.oliveKg | number: '1.0-2' }} kg</span>
+                  <span class="summary-meta">{{ baseLedgerSummary.deliveryCount }} {{ 'SUPPLIER.DETAILS.COUNT' | translate }}</span>
+                </mat-card-content>
+              </mat-card>
+              <mat-card class="summary-card">
+                <mat-card-content>
+                  <span class="summary-label">{{ 'ABIOOC.BASE_LEDGER.OIL_L' | translate }}</span>
+                  <span class="summary-value">{{ baseLedgerSummary.oilLiters | number: '1.0-2' }} L</span>
+                </mat-card-content>
+              </mat-card>
+              <mat-card class="summary-card">
+                <mat-card-content>
+                  <span class="summary-label">{{ 'SUPPLIER.FINANCE.PAID' | translate }}</span>
+                  <span class="summary-value paid">{{ baseLedgerSummary.paidAmount | currency: 'TND' }}</span>
+                </mat-card-content>
+              </mat-card>
+              <mat-card class="summary-card">
+                <mat-card-content>
+                  <span class="summary-label">{{ 'SUPPLIER.FINANCE.UNPAID' | translate }}</span>
+                  <span class="summary-value unpaid">{{ baseLedgerSummary.unpaidAmount | currency: 'TND' }}</span>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          }
+        </section>
+      }
+
       <oosm-dashboard
         #dashboardByOperation
         [config]="dashboardConfigs[activeOp]"
         (applyAction)="handlePaymentAction($event)">
       </oosm-dashboard>
+
+      @if (activeOp === 'BASE' && basePaymentLedgerConfig) {
+        <div class="base-payment-ledger">
+          <oosm-dashboard
+            #basePaymentLedger
+            [config]="basePaymentLedgerConfig"
+            (applyAction)="handleBasePaymentLedgerAction($event)">
+          </oosm-dashboard>
+        </div>
+      }
     </div>
   }
 

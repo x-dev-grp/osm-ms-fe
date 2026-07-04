@@ -132,6 +132,12 @@ const routes: Routes = [
     loadComponent: () => import('./oil-sales/oil-sale-view/oil-sale-view.component').then((m) => m.OilSaleViewComponent),
     canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.FINANCE, FinanceEntity.OILSALE, Action.READ)])]
   },
+  {
+    path: 'oil-sales/:id/invoice-preview',
+    loadComponent: () =>
+      import('./oil-sales/oil-sale-invoice-preview/oil-sale-invoice-preview.component').then((m) => m.OilSaleInvoicePreviewComponent),
+    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.FINANCE, FinanceEntity.OILSALE, Action.READ)])]
+  },
 
   // NOTE: permissions - Waste is not mapped in seed; keeping AuthGuard only
   { path: 'waste-sales', component: WasteComponent, canActivate: [AuthGuardChild] },
@@ -149,6 +155,16 @@ const routes: Routes = [
     path: 'waste-sales/:id/view',
     loadComponent: () => import('./waste/waste-view/waste-view.component').then((m) => m.WasteViewComponent),
     canActivate: [AuthGuardChild]
+  },
+  {
+    path: 'cash-register',
+    loadComponent: () => import('./cash-register/cash-register.component').then((m) => m.CashRegisterComponent),
+    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)])]
+  },
+  {
+    path: 'season-recap',
+    loadComponent: () => import('./season-recap/season-recap.component').then((m) => m.SeasonRecapComponent),
+    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)])]
   }
 ];
 

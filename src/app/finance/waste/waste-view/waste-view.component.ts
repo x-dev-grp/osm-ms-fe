@@ -10,6 +10,7 @@ import { WasteSale } from '../../models/Waste.model';
 import { WasteSaleService } from '../../service/wasteSale.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { buildTransactionsQueryParams } from '../../utils/finance-resource-links.util';
 
 @Component({
   selector: 'app-waste-view',
@@ -47,6 +48,20 @@ export class WasteViewComponent implements OnInit {
 
   onEdit(): void {
     this.router.navigate(['/finance/waste-sales', this.wasteId, 'edit']);
+  }
+
+  openFinancialTransactions(): void {
+    this.router.navigate(['/finance/transactions'], {
+      queryParams: buildTransactionsQueryParams({ externalTransactionId: this.wasteId })
+    });
+  }
+
+  openSupplierFinance(): void {
+    const supplierId = this.wasteSale?.supplier?.id;
+    if (!supplierId) {
+      return;
+    }
+    this.router.navigate(['/reception/fournisseur/details', supplierId], { queryParams: { tab: 'finance' } });
   }
 
   getWasteTypeDisplay(type: string): string {

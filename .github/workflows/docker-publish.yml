@@ -2,7 +2,7 @@ name: Frontend Docker Publish
 
 on:
   push:
-    branches: [main, release]
+    branches: [main, release, pfe-v2-final]
     tags: ['v*']
   workflow_dispatch:
 
@@ -36,13 +36,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Read VERSION
+        id: version
+        run: echo "semver=$(tr -d '\r\n' < VERSION)" >> "$GITHUB_OUTPUT"
+
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=release-latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' }}
+            type=raw,value=release-latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' || github.ref == 'refs/heads/pfe-v2-final' }}
+            type=raw,value=${{ steps.version.outputs.semver }},enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' || github.ref == 'refs/heads/pfe-v2-final' || startsWith(github.ref, 'refs/tags/v') }}
+            type=semver,pattern={{version}},enable=${{ startsWith(github.ref, 'refs/tags/v') }}
             type=sha,prefix=sha-
             type=ref,event=tag
 
@@ -59,5 +65,6 @@ jobs:
             NG_CONFIG=production
             BASE_HREF=/
             DEPLOY_URL=/
+            APP_VERSION=${{ steps.version.outputs.semver }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

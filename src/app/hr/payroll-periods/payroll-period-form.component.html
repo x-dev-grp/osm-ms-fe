@@ -1,0 +1,144 @@
+<div class="dashboard-shell hr-form-page hr-form-page--payroll">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>calendar_month</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">
+          @if (readOnly && period) {
+            {{ periodTitle() }}
+          } @else {
+            {{ 'HR.PAGE.PAYROLL.TITLE' | translate }}
+          }
+        </h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.PAYROLL_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    @if (readOnly && period) {
+      <div class="summary-grid">
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'HR.PAYROLL.FIELDS.STATUS' | translate }}</span>
+            <span class="summary-value">{{ 'HR.PAYROLL.STATUS.' + period.status | translate }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'HR.PAYROLL.FIELDS.START_DATE' | translate }}</span>
+            <span class="summary-value">{{ period.periodStart | date:'yyyy-MM-dd' }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'HR.PAYROLL.FIELDS.END_DATE' | translate }}</span>
+            <span class="summary-value">{{ period.periodEnd | date:'yyyy-MM-dd' }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'HR.PAYROLL.PROFILE.TAB_PAYSLIPS' | translate }}</span>
+            <span class="summary-value">{{ period.payslips?.length ?? 0 }}</span>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <nav class="page-tabs">
+        <button class="page-tab-btn" [class.active]="activePageTab === 'period'" (click)="loadPageTab('period')">
+          <mat-icon>calendar_month</mat-icon>
+          {{ 'HR.PAYROLL.PROFILE.TAB_PERIOD' | translate }}
+        </button>
+        <button class="page-tab-btn" [class.active]="activePageTab === 'payslips'" (click)="loadPageTab('payslips')">
+          <mat-icon>receipt_long</mat-icon>
+          {{ 'HR.PAYROLL.PROFILE.TAB_PAYSLIPS' | translate }}
+        </button>
+      </nav>
+    }
+
+    @if (!readOnly || activePageTab === 'period') {
+      <app-card [icon]="'calendar_month'" [cardTitle]="'HR.PAGE.PAYROLL.TITLE' | translate">
+        <form [formGroup]="form" (ngSubmit)="save()">
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'HR.PAYROLL.FIELDS.YEAR' | translate }}</mat-label>
+              <input matInput type="number" formControlName="year" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'HR.PAYROLL.FIELDS.MONTH' | translate }}</mat-label>
+              <input matInput type="number" formControlName="month" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'HR.PAYROLL.FIELDS.START_DATE' | translate }}</mat-label>
+              <input matInput [matDatepicker]="startPicker" formControlName="periodStart" />
+              <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'HR.PAYROLL.FIELDS.END_DATE' | translate }}</mat-label>
+              <input matInput [matDatepicker]="endPicker" formControlName="periodEnd" />
+              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'HR.PAYROLL.FIELDS.STATUS' | translate }}</mat-label>
+              <mat-select formControlName="status">
+                @for (status of statuses; track status) {
+                  <mat-option [value]="status">{{ 'HR.PAYROLL.STATUS.' + status | translate }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          @if (!readOnly) {
+            <div class="form-actions">
+              <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+              <button mat-flat-button color="primary" type="submit" [disabled]="saving">
+                {{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}
+              </button>
+            </div>
+          }
+        </form>
+      </app-card>
+    }
+
+    @if (readOnly && period && activePageTab === 'payslips') {
+      <app-card [icon]="'receipt_long'" [cardTitle]="'HR.PAYROLL.PROFILE.TAB_PAYSLIPS' | translate">
+        <div class="tab-toolbar">
+          @if (canGeneratePayslips()) {
+            <button mat-stroked-button type="button" [disabled]="generating" (click)="generatePayslips()">
+              <mat-icon>play_circle</mat-icon>
+              {{ 'HR.PAYROLL.PROFILE.GENERATE_PAYSLIPS' | translate }}
+            </button>
+          }
+          @if (canAdvanceStatus()) {
+            <button mat-flat-button color="primary" type="button" [disabled]="advancing" (click)="advanceStatus()">
+              {{ 'HR.PAYROLL.PROFILE.ADVANCE_STATUS' | translate }}: {{ 'HR.PAYROLL.STATUS.' + nextStatus() | translate }}
+            </button>
+          }
+        </div>
+        @if (period.payslips?.length) {
+          <div class="relation-table">
+            @for (payslip of period.payslips; track trackById($index, payslip)) {
+              <a class="relation-row payslip-row" [routerLink]="['/hr/payslips', payslip.id, 'view']">
+                <span>{{ payslip.employee?.firstName }} {{ payslip.employee?.lastName }}</span>
+                <span>{{ payslip.grossSalary | number:'1.0-2' }}</span>
+                <span>{{ payslip.netSalary | number:'1.0-2' }}</span>
+                <span>{{ 'HR.PAYSLIPS.STATUS.' + payslip.status | translate }}</span>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="empty-tab">{{ 'HR.PAYROLL.PROFILE.NO_PAYSLIPS' | translate }}</p>
+        }
+      </app-card>
+    }
+  }
+</div>

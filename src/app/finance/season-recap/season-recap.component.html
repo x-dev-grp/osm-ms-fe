@@ -1,0 +1,65 @@
+<section class="season-recap">
+  <p class="season-recap__hint">{{ 'ABIOOC.SEASON_RECAP.HINT' | translate }}</p>
+
+  @if (loading) {
+    <div class="season-recap__loading">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (summary) {
+    <div class="season-recap__grid">
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.DELIVERIES' | translate }}</span>
+          <span class="summary-value">{{ summary.deliveryCount }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.OLIVE_KG' | translate }}</span>
+          <span class="summary-value">{{ summary.oliveKg | number: '1.0-2' }} kg</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.OIL_L' | translate }}</span>
+          <span class="summary-value">{{ summary.oilLiters | number: '1.0-2' }} L</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.DELIVERY_PAID' | translate }}</span>
+          <span class="summary-value paid">{{ summary.deliveryPaid | currency: 'TND' }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.DELIVERY_UNPAID' | translate }}</span>
+          <span class="summary-value unpaid">{{ summary.deliveryUnpaid | currency: 'TND' }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.OIL_SALES' | translate }}</span>
+          <span class="summary-value">{{ summary.oilSalesTotal | currency: 'TND' }}</span>
+          <span class="summary-meta">{{ summary.oilSalesCount }} {{ 'ABIOOC.SEASON_RECAP.SALES' | translate }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.EXPENSES' | translate }}</span>
+          <span class="summary-value outbound">{{ summary.expensesTotal | currency: 'TND' }}</span>
+          <span class="summary-meta">{{ summary.expensesCount }} {{ 'ABIOOC.SEASON_RECAP.ITEMS' | translate }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.CASH_NET' | translate }}</span>
+          <span class="summary-value">{{ summary.cashInbound - summary.cashOutbound | currency: 'TND' }}</span>
+          <span class="summary-meta">
+            +{{ summary.cashInbound | currency: 'TND' }} / −{{ summary.cashOutbound | currency: 'TND' }}
+          </span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</section>

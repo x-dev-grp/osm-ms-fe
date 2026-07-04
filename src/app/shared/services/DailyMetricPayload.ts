@@ -32,6 +32,10 @@ export function normalizeMetricValue(value: unknown): number {
   return Number.isFinite(numeric) ? numeric : 0;
 }
 
+export function parseDailyMetricPayload(raw?: string | null): DailyMetricPayload {
+  return parsePayload(raw);
+}
+
 function parsePayload(raw?: string | null): DailyMetricPayload {
   if (!raw?.trim()) {
     return { current: 0, history: [] };

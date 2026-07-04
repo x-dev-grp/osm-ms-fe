@@ -1,95 +1,131 @@
-<form [formGroup]="paramForm">
-<!--  <mat-form-field appearance="outline" class="category-filter">-->
-<!--    <mat-label>Category</mat-label>-->
-<!--    <mat-select (ngModelChange)="filtered" [(ngModel)]="selectedCategory" formControlName="category">-->
-<!--      <mat-option value="">All</mat-option>-->
-<!--      <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</mat-option>-->
-<!--    </mat-select>-->
-<!--  </mat-form-field>-->
+<form [formGroup]="paramForm" class="parameter-form">
+  <div *ngIf="filtered.length === 0" class="parameter-empty">
+    {{ 'AUTO.AUCUN_PARAMETRE_TROUVE_POUR_CETTE_CONFIGURATION' | translate }}
+  </div>
 
-  <table [dataSource]="filtered" class="mat-elevation-z2" mat-table>
-    <!-- Code Column -->
-    <ng-container matColumnDef="code">
-      <th *matHeaderCellDef mat-header-cell>{{ 'AUTO.CODE' | translate }}</th>
-      <td *matCellDef="let param" mat-cell>{{ param.code }}</td>
-    </ng-container>
-
-    <!-- Value Column -->
-    <ng-container matColumnDef="value">
-      <th *matHeaderCellDef mat-header-cell>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</th>
-      <td *matCellDef="let param" class="value-cell" mat-cell>
-        <ng-container [ngSwitch]="getParameterType(param)">
-          <mat-form-field *ngSwitchCase="'DOUBLE'" appearance="outline" class="value-field">
-            <input step="0.01" [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="number">
-            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-
-              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field *ngSwitchCase="'INTEGER'" appearance="outline" class="value-field">
-            <input step="1" [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="number">
-            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-
-              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="value-field string-field">
-            <textarea [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required rows="4"></textarea>
-            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-
-              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field *ngSwitchCase="'DATE'" appearance="outline" class="value-field">
-            <input [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="date">
-            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-
-              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
-            </mat-error>
-          </mat-form-field>
-
-          <mat-slide-toggle *ngSwitchCase="'BOOLEAN'" [(ngModel)]="param.value"
-                            [formControlName]="'param_' + param.code"
-          >
-          </mat-slide-toggle>
-
-          <mat-form-field *ngSwitchDefault appearance="outline" class="value-field">
-            <input [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="text">
-            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-
-              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
-            </mat-error>
-          </mat-form-field>
-        </ng-container>
-      </td>
-    </ng-container>
-
-    <!-- Description Column -->
-    <ng-container matColumnDef="description">
-      <th *matHeaderCellDef mat-header-cell>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</th>
-      <td *matCellDef="let param" mat-cell>{{ param.description }}</td>
-    </ng-container>
-
-    <!-- Actions Column -->
-    <ng-container matColumnDef="action">
-      <th *matHeaderCellDef mat-header-cell></th>
-      <td *matCellDef="let param" mat-cell>
-        <button (click)="save(param)" [disabled]="param.dirty || param.invalid" [attr.aria-label]="'AUTO.SAVE_PARAMETER' | translate"
-                class="save-button" mat-icon-button>
-          <mat-icon>save</mat-icon>
+  <div class="parameter-grid" *ngIf="filtered.length > 0">
+    <article class="parameter-card" *ngFor="let param of filtered">
+      <header class="parameter-card-header">
+        <div class="parameter-card-title">
+          <span class="parameter-code">{{ param.code }}</span>
+          <span class="parameter-type">{{ getParameterType(param) }}</span>
+        </div>
+        <button
+          type="button"
+          mat-icon-button
+          color="primary"
+          class="parameter-save-btn"
+          (click)="save(param)"
+          [disabled]="isSaveDisabled(param)"
+          [matTooltip]="'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate"
+        >
+          <i class="ti ti-device-floppy"></i>
         </button>
-      </td>
-    </ng-container>
+      </header>
 
-    <tr *matHeaderRowDef="displayedColumns" class="header-row" mat-header-row></tr>
-    <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
-    <tr *ngIf="filtered.length === 0">
-      <td [attr.colspan]="displayedColumns.length" class="empty-state-cell">
+      <p class="parameter-description" *ngIf="param.description" [matTooltip]="param.description">{{ param.description }}</p>
 
-        {{ 'AUTO.AUCUN_PARAMETRE_TROUVE_POUR_CETTE_CONFIGURATION' | translate }}
-      </td>
-    </tr>
-  </table>
+      <div class="parameter-value-area">
+        <ng-container *ngIf="isDailyMetricParam(param); else standardValue">
+          <div class="daily-metric-editor">
+            <mat-form-field appearance="outline" class="value-field compact-field" subscriptSizing="dynamic">
+              <mat-label>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</mat-label>
+              <input
+                step="0.001"
+                [formControlName]="'param_' + param.code"
+                matInput
+                required
+                type="number"
+                min="0"
+              />
+              <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+                {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <div class="history-panel" *ngIf="getDailyMetricPayload(param).history.length">
+              <div class="history-panel-head">
+                <span class="history-label">{{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.HISTORY' | translate }}</span>
+                <input
+                  type="search"
+                  class="history-search"
+                  [value]="getHistorySearch(param.code)"
+                  (input)="onHistorySearch(param.code, $any($event.target).value)"
+                  [placeholder]="'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.HISTORY_SEARCH' | translate"
+                />
+              </div>
+
+              <div class="history-table-wrap">
+                <table class="history-table">
+                  <thead>
+                    <tr>
+                      <th>{{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.HISTORY_DATE' | translate }}</th>
+                      <th>{{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.HISTORY_VALUE' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let entry of getFilteredHistory(param)">
+                      <td>{{ entry[0] }}</td>
+                      <td>{{ entry[1] | number:'1.2-3' }}</td>
+                    </tr>
+                    <tr *ngIf="getFilteredHistory(param).length === 0">
+                      <td colspan="2" class="history-empty">
+                        {{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.HISTORY_NO_MATCH' | translate }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #standardValue>
+          <ng-container [ngSwitch]="getParameterType(param)">
+            <mat-form-field *ngSwitchCase="'DOUBLE'" appearance="outline" class="value-field compact-field" subscriptSizing="dynamic">
+              <mat-label>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</mat-label>
+              <input step="0.01" [formControlName]="'param_' + param.code" matInput required type="number" />
+              <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+                {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngSwitchCase="'INTEGER'" appearance="outline" class="value-field compact-field" subscriptSizing="dynamic">
+              <mat-label>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</mat-label>
+              <input step="1" [formControlName]="'param_' + param.code" matInput required type="number" />
+              <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+                {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="value-field compact-field string-field" subscriptSizing="dynamic">
+              <mat-label>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</mat-label>
+              <textarea [formControlName]="'param_' + param.code" matInput required rows="2"></textarea>
+              <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+                {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngSwitchCase="'DATE'" appearance="outline" class="value-field compact-field" subscriptSizing="dynamic">
+              <mat-label>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</mat-label>
+              <input [formControlName]="'param_' + param.code" matInput required type="date" />
+              <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+                {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-slide-toggle *ngSwitchCase="'BOOLEAN'" [formControlName]="'param_' + param.code"></mat-slide-toggle>
+
+            <mat-form-field *ngSwitchDefault appearance="outline" class="value-field compact-field" subscriptSizing="dynamic">
+              <mat-label>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</mat-label>
+              <input [formControlName]="'param_' + param.code" matInput required type="text" />
+              <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+                {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
+              </mat-error>
+            </mat-form-field>
+          </ng-container>
+        </ng-template>
+      </div>
+    </article>
+  </div>
 </form>

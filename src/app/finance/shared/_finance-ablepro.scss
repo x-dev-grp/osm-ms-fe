@@ -1,0 +1,22 @@
+.overview-widget-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+.status-tile-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.finance-ablepro-overview {
+  .status-tile-body,
+  .status-tile-link {
+    display: block;
+  }
+}

@@ -218,6 +218,65 @@
   <p>{{ 'DASHBOARD.LOADING.TEXT' | translate }}</p>
 </div>
 
+<!-- ===================== Able Pro Overview (invoice dashboard pattern) ===================== -->
+<div *ngIf="!loading && financeSummary" class="row g-3 finance-ablepro-overview m-b-3">
+  <div class="col-lg-9">
+    <app-finance-overview-chart
+      [widgets]="overviewWidgets"
+      [categories]="overviewCategories"
+      [columnSeries]="overviewColumnSeries"
+      [lineSeries]="overviewLineSeries"
+      [columnLabel]="'MENU.FINANCE.DASHBOARD.OVERVIEW.COUNT' | translate"
+      [lineLabel]="'MENU.FINANCE.DASHBOARD.OVERVIEW.AMOUNT' | translate"
+    />
+  </div>
+  <div class="col-lg-3">
+    <app-finance-status-tiles [tiles]="statusTiles" />
+  </div>
+  <div class="col-xl-4 col-md-6">
+    <app-recent-sales-list [items]="recentSaleItems" />
+  </div>
+  <div class="col-xl-4 col-md-6">
+    <app-expense-breakdown-chart
+      [series]="expenseBreakdownSeries"
+      [labels]="expenseBreakdownLabels"
+      [legendItems]="expenseBreakdownLegend"
+    />
+  </div>
+  <div class="col-xl-4 col-md-6">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.RECENT_ACTIVITY' | translate" [padding]="0">
+      <ul class="list-group list-group-flush">
+        @for (item of recentActivityItems; track $index) {
+          <li class="list-group-item">
+            <div class="flex align-item-center">
+              <div class="flex-shrink-0">
+                <div class="avatar avatar-s {{ item.background }} border-50">
+                  <i class="f-22 ti ti-{{ item.icon }}"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 m-l-15 m-r-10">
+                <div class="m-b-5 f-w-600">{{ item.title }}</div>
+                <p class="m-b-0 text-muted mat-small">{{ item.date }}</p>
+              </div>
+            </div>
+          </li>
+        } @empty {
+          <li class="list-group-item text-muted text-center">
+            {{ 'MENU.FINANCE.DASHBOARD.NO_RECENT_ACTIVITY' | translate }}
+          </li>
+        }
+        <li class="list-group-item">
+          <div class="grid">
+            <a mat-stroked-button color="accent" routerLink="/finance/transactions">
+              {{ 'COMMON.VIEW_ALL' | translate }}
+            </a>
+          </div>
+        </li>
+      </ul>
+    </app-card>
+  </div>
+</div>
+
 <!-- ===================== KPI Row ===================== -->
 <div *ngIf="!loading && financeSummary" class="dashboard-kpis row g-3">
   <!-- Total Transactions -->

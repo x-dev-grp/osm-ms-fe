@@ -116,24 +116,25 @@
             <span class="value">{{ transaction.receiptReference }}</span>
           </div>
 
-          <div class="info-row" *ngIf="transaction.externalTransactionId && !isLinkedOilSale()">
+          <div class="info-row" *ngIf="transaction.externalTransactionId && !resourceLinks.length">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.EXTERNAL_ID' | translate }}</span>
             <span class="value mono">{{ transaction.externalTransactionId }}</span>
           </div>
 
-          <div class="info-row" *ngIf="isLinkedOilSale()">
-            <span class="label">{{ 'TRANSACTIONS.FIELDS.OIL_SALE_LINK' | translate }}</span>
-            <span class="value">
-              <a *ngIf="getOilSaleViewLink() as link" [routerLink]="link" class="oil-sale-link">
-                {{ transaction.invoiceReference || transaction.externalTransactionId }}
-              </a>
-            </span>
-          </div>
-
-          <div class="info-row info-row--hint" *ngIf="isLinkedOilSale()">
-            <span class="label"></span>
-            <span class="value muted">{{ 'TRANSACTIONS.FIELDS.LINKED_OIL_SALE_HINT' | translate }}</span>
-          </div>
+          <ng-container *ngFor="let link of resourceLinks">
+            <div class="info-row">
+              <span class="label">{{ link.labelKey | translate }}</span>
+              <span class="value">
+                <a [routerLink]="link.route" [queryParams]="link.queryParams" class="resource-link">
+                  {{ link.displayText }}
+                </a>
+              </span>
+            </div>
+            <div class="info-row info-row--hint" *ngIf="link.hintKey">
+              <span class="label"></span>
+              <span class="value muted">{{ link.hintKey | translate }}</span>
+            </div>
+          </ng-container>
         </section>
 
         <section class="info-card" *ngIf="hasPaymentDetails()">

@@ -2,7 +2,7 @@ name: Deploy to Railway (testing)
 
 on:
   push:
-    branches: [develop, testing]
+    branches: [develop, testing, pfe-v2-final]
   workflow_dispatch:
 
 concurrency:
@@ -17,6 +17,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate VERSION file
+        run: test -f VERSION && grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+' VERSION
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli@latest

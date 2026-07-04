@@ -23,6 +23,25 @@
   </div>
 
   <div class="toolbar-actions">
+    <a
+      mat-icon-button
+      class="header-item pc-head-link"
+      routerLink="/help"
+      [attr.aria-label]="'USER_GUIDE.TITLE' | translate"
+    >
+      <mat-icon>help_outline</mat-icon>
+    </a>
+
+    <button
+      mat-icon-button
+      type="button"
+      class="header-item pc-head-link"
+      [attr.aria-label]="'SUPPORT.OPEN_TICKET' | translate"
+      (click)="openSupportTicket()"
+    >
+      <mat-icon>support_agent</mat-icon>
+    </button>
+
     <button
       [matMenuTriggerFor]="notificationsMenu"
       class="header-item"
@@ -114,6 +133,10 @@
             <span class="profile-menu__badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
           }
         </a>
+        <button type="button" class="profile-menu__item" (click)="openSupportTicket()">
+          <mat-icon>support_agent</mat-icon>
+          <span>{{ 'SUPPORT.OPEN_TICKET' | translate }}</span>
+        </button>
         <a [routerLink]="['/settings/general-config']" class="profile-menu__item">
           <mat-icon>settings</mat-icon>
           <span>{{ 'MENU.SETTINGS.GENERAL_CONFIG' | translate }}</span>

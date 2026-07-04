@@ -38,7 +38,17 @@ import {
   SupplierFinancialSummary
 } from '../../../finance/service/financial-transaction.service';
 import { buildSupplierTransactionsDashboard } from './supplier-transactions-dashboard.config';
+import { buildSupplierBasePaymentLedger } from './supplier-base-payment-ledger.config';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 import { catchError, tap } from 'rxjs/operators';
+
+interface SupplierBaseLedgerSummary {
+  oliveKg: number;
+  oilLiters: number;
+  paidAmount: number;
+  unpaidAmount: number;
+  deliveryCount: number;
+}
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
@@ -90,7 +100,11 @@ export class SupplierDetailsComponent implements OnInit {
   financeSummary: SupplierFinancialSummary | null = null;
   financeSummaryLoading = false;
   financeDashboardConfig?: DashboardConfig;
+  basePaymentLedgerConfig?: DashboardConfig;
+  baseLedgerSummary: SupplierBaseLedgerSummary | null = null;
+  baseLedgerLoading = false;
   @ViewChild('financeDashboard') financeDashboard?: OosmDashboard;
+  @ViewChild('basePaymentLedger') basePaymentLedger?: OosmDashboard;
 
   operationCards: OperationCard[] = [
     {
@@ -225,6 +239,10 @@ export class SupplierDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id');
+    const initialTab = this.route.snapshot.queryParamMap.get('tab');
+    if (initialTab === 'finance' || initialTab === 'profile' || initialTab === 'operations') {
+      this.activePageTab = initialTab;
+    }
 
     const state = history.state || {};
     const fromState: SupplierType | null =
@@ -241,6 +259,7 @@ export class SupplierDetailsComponent implements OnInit {
 
     if (this.supplierId) {
       this.financeDashboardConfig = buildSupplierTransactionsDashboard(this.supplierId);
+      this.basePaymentLedgerConfig = buildSupplierBasePaymentLedger(this.supplierId);
       this.dashboardConfigs = {
         BASE: this.withSupplierFilter(this.baseDashboardConfigs['BASE'], this.supplierId, false),
         OLIVE_PURCHASE: this.withSupplierFilter(this.baseDashboardConfigs['OLIVE_PURCHASE'], this.supplierId, false),
@@ -257,7 +276,13 @@ export class SupplierDetailsComponent implements OnInit {
 
       this.countAllOperations();
       this.loadOperation(this.activeOp);
+      if (this.activeOp === 'BASE') {
+        this.loadBaseLedgerSummary();
+      }
       this.dashboardByOperation.refrechData();
+      if (this.activePageTab === 'finance') {
+        this.loadFinanceSummary();
+      }
     }
   }
 
@@ -349,6 +374,7 @@ export class SupplierDetailsComponent implements OnInit {
         onRefresh: () => {
           this.countAllOperations();
           this.dashboardByOperation.refrechData();
+          this.refreshBaseTab();
         }
       });
       return;
@@ -398,6 +424,7 @@ export class SupplierDetailsComponent implements OnInit {
             this.toast.success(result.message || 'AUTO.PAIEMENT_REUSSI');
             this.countAllOperations();
             this.dashboardByOperation.refrechData();
+            this.refreshBaseTab();
           } else if (result) {
             this.toast.error(result.message || 'AUTO.ECHEC_DU_PAIEMENT');
           }
@@ -409,6 +436,86 @@ export class SupplierDetailsComponent implements OnInit {
   loadOperation(type: OperationType) {
     this.activeOp = type;
     this.dashboardByOperation.refrechData();
+    if (type === 'BASE') {
+      this.loadBaseLedgerSummary();
+      this.basePaymentLedger?.refrechData();
+    }
+  }
+
+  handleBasePaymentLedgerAction(event: { row: { id?: string }; action: string }): void {
+    this.handleFinanceAction(event);
+  }
+
+  private loadBaseLedgerSummary(): void {
+    if (!this.supplierId) return;
+    this.baseLedgerLoading = true;
+    const search: SearchData = {
+      page: 0,
+      size: 500,
+      sort: 'deliveryDate',
+      order: 'DESC',
+      searchData: {
+        operation: SearchOperation.AND,
+        search: {
+          isDeleted: { equalValue: false },
+          'supplier.id': { equalValue: this.supplierId },
+          operationType: { equalValue: 'BASE' },
+          status: {
+            inValues: [
+              'WAITING',
+              'NEW',
+              'OLIVE_CONTROLLED',
+              'PROD_READY',
+              'IN_PROGRESS',
+              'COMPLETED',
+              'OIL_CONTROLLED',
+              'IN_STOCK',
+              'STOCK_READY',
+              'REFUSED',
+              'WAITING_FOR_PAYMENT_DETAILS'
+            ]
+          }
+        }
+      }
+    };
+
+    this.searchService
+      .search(search, 'production/deliveries')
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res: any) => {
+          const rows = res?.data ?? [];
+          let oliveKg = 0;
+          let oilLiters = 0;
+          let paidAmount = 0;
+          let unpaidAmount = 0;
+          for (const row of rows) {
+            oliveKg += Number(row?.poidsNet ?? 0);
+            oilLiters += Number(row?.oilQuantity ?? 0);
+            paidAmount += Number(row?.paidAmount ?? 0);
+            unpaidAmount += Number(row?.unpaidAmount ?? 0);
+          }
+          this.baseLedgerSummary = {
+            oliveKg,
+            oilLiters,
+            paidAmount,
+            unpaidAmount,
+            deliveryCount: res?.total ?? rows.length
+          };
+          this.baseLedgerLoading = false;
+        }),
+        catchError(() => {
+          this.baseLedgerLoading = false;
+          return of(null);
+        })
+      )
+      .subscribe();
+  }
+
+  private refreshBaseTab(): void {
+    if (this.activeOp !== 'BASE') return;
+    this.loadBaseLedgerSummary();
+    this.basePaymentLedger?.refrechData();
   }
 
   private appendSupplierNameToTitles(): void {

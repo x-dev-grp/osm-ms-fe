@@ -1,0 +1,119 @@
+<div class="dashboard-shell admin-permission-catalog">
+  <div class="page-header sticky-actions page-header--admin">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--admin">
+        <mat-icon>security</mat-icon>
+      </div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'ADMIN_PERMISSION_CATALOG.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'ADMIN_PERMISSION_CATALOG.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" routerLink="/administration/dashboard">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'ADMIN_PERMISSION_CATALOG.BACK' | translate }}</span>
+      </button>
+      <button mat-stroked-button color="primary" type="button" (click)="loadStatus()" [disabled]="loading || syncing">
+        <mat-icon [class.spinning]="loading">refresh</mat-icon>
+        <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner diameter="56"></mat-spinner>
+      <p>{{ 'ADMIN_PERMISSION_CATALOG.LOADING' | translate }}</p>
+    </div>
+  } @else if (loadError) {
+    <div class="error-state">
+      <mat-icon>cloud_off</mat-icon>
+      <p>{{ 'ADMIN_PERMISSION_CATALOG.LOAD_ERROR' | translate }}</p>
+      <button mat-flat-button color="primary" type="button" (click)="loadStatus()">{{ 'COMMON.REFRESH' | translate }}</button>
+    </div>
+  } @else if (status) {
+    <section class="dashboard-section">
+      <div class="section-heading">
+        <mat-icon>inventory_2</mat-icon>
+        <h3>{{ 'ADMIN_PERMISSION_CATALOG.SECTIONS.STATUS' | translate }}</h3>
+      </div>
+      <div class="admin-kpi-grid admin-kpi-grid--3">
+        <div class="metric-card metric-card--primary">
+          <div class="metric-card__top">
+            <mat-icon>description</mat-icon>
+            <span>{{ 'ADMIN_PERMISSION_CATALOG.KPIS.SPEC_VERSION' | translate }}</span>
+          </div>
+          <div class="metric-card__value">v{{ status.specVersion }}</div>
+          <div class="metric-card__meta">{{ status.specSource }}</div>
+        </div>
+        <div class="metric-card metric-card--info">
+          <div class="metric-card__top">
+            <mat-icon>category</mat-icon>
+            <span>{{ 'ADMIN_PERMISSION_CATALOG.KPIS.ENTITIES' | translate }}</span>
+          </div>
+          <div class="metric-card__value">{{ status.specEntityCount }}</div>
+          <div class="metric-card__meta">
+            {{ status.specProfileCount }} {{ 'ADMIN_PERMISSION_CATALOG.KPIS.PROFILES' | translate }}
+          </div>
+        </div>
+        <div class="metric-card metric-card--success">
+          <div class="metric-card__top">
+            <mat-icon>verified_user</mat-icon>
+            <span>{{ 'ADMIN_PERMISSION_CATALOG.KPIS.DB_PERMISSIONS' | translate }}</span>
+          </div>
+          <div class="metric-card__value">{{ status.dbActivePermissionCount }}</div>
+          <div class="metric-card__meta">
+            / {{ status.expectedPermissionCount }} {{ 'ADMIN_PERMISSION_CATALOG.KPIS.EXPECTED' | translate }}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <app-card [icon]="'sync'" [cardTitle]="'ADMIN_PERMISSION_CATALOG.SECTIONS.SYNC' | translate" [showContent]="true">
+        <p class="catalog-note">{{ 'ADMIN_PERMISSION_CATALOG.SYNC_HINT' | translate }}</p>
+        <ul class="catalog-operations">
+          <li>{{ 'ADMIN_PERMISSION_CATALOG.OPS.CREATE' | translate }}</li>
+          <li>{{ 'ADMIN_PERMISSION_CATALOG.OPS.REACTIVATE' | translate }}</li>
+          <li>{{ 'ADMIN_PERMISSION_CATALOG.OPS.LEGACY' | translate }}</li>
+          <li>{{ 'ADMIN_PERMISSION_CATALOG.OPS.MIRRORS' | translate }}</li>
+        </ul>
+        <div class="catalog-flags">
+          <span class="status-pill" [class.active]="status.syncOnStartup">
+            {{ 'ADMIN_PERMISSION_CATALOG.STARTUP_SYNC' | translate }}:
+            {{ (status.syncOnStartup ? 'COMMON.YES' : 'COMMON.NO') | translate }}
+          </span>
+          @if (catalogGap() > 0) {
+            <span class="status-pill warn">
+              {{ 'ADMIN_PERMISSION_CATALOG.GAP' | translate }}: {{ catalogGap() }}
+            </span>
+          }
+        </div>
+        <div class="catalog-actions">
+          <button mat-flat-button color="primary" type="button" (click)="syncCatalog()" [disabled]="syncing">
+            @if (syncing) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <mat-icon>sync</mat-icon>
+            }
+            <span class="ms-1">{{ 'ADMIN_PERMISSION_CATALOG.SYNC_BUTTON' | translate }}</span>
+          </button>
+        </div>
+      </app-card>
+    </section>
+
+    @if (lastSyncResult?.success) {
+      <section class="dashboard-section">
+        <app-card [icon]="'task_alt'" [cardTitle]="'ADMIN_PERMISSION_CATALOG.SECTIONS.LAST_RESULT' | translate" [showContent]="true">
+          <div class="sync-result-grid">
+            <div><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.CREATED' | translate }}</strong> {{ lastSyncResult?.created ?? 0 }}</div>
+            <div><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.EXISTING' | translate }}</strong> {{ lastSyncResult?.existing ?? 0 }}</div>
+            <div><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.LEGACY' | translate }}</strong> {{ lastSyncResult?.legacyMerged ?? 0 }}</div>
+            <div><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.MIRRORS' | translate }}</strong> {{ lastSyncResult?.mirrorGrants ?? 0 }}</div>
+          </div>
+        </app-card>
+      </section>
+    }
+  }
+</div>

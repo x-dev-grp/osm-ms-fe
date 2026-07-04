@@ -128,7 +128,7 @@ export class SupplierTypeService {
   /**
    * Shape the payload for Finance.
    * - Remove primary key `id` (Finance owns its PK).
-   * - Keep a cross-ref if present (externalId / prodId).
+   * - Keep a cross-ref if present (prodId).
    * - Strip audit/immutable fields.
    * - Optionally reduce nested relations to `{ id }` only.
    */

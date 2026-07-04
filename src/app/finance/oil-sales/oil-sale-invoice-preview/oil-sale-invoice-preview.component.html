@@ -1,0 +1,126 @@
+<div class="invoice-preview-page">
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  @if (!loading && oilSale) {
+    <div class="page-actions m-b-15">
+      <button mat-stroked-button type="button" (click)="onBack()">
+        <i class="ti ti-arrow-left m-r-5"></i>
+        {{ 'COMMON.BACK' | translate }}
+      </button>
+      <div class="action-group">
+        @if (canDownloadPdf()) {
+          <button mat-stroked-button type="button" (click)="onDownloadPdf()">
+            <i class="ti ti-download m-r-5"></i>
+            {{ 'OSM_DASHBOARD.ACTIONS.GEN_INVOICE' | translate }}
+          </button>
+        }
+        <button mat-flat-button color="primary" type="button" [useExistingCss]="true" printSectionId="print-section" ngxPrint>
+          <i class="ti ti-printer m-r-5"></i>
+          {{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.PRINT' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <app-card [showHeader]="false">
+      <div class="row g-3" id="print-section">
+        <div class="col-12">
+          <div class="row align-item-center g-3">
+            <div class="col-sm-6">
+              <div class="flex align-item-center m-b-10">
+                <img [src]="logoUrl || 'assets/images/logo-dark.svg'" class="img-fluid invoice-logo" alt="logo" />
+                <span class="user-status m-l-10" [ngClass]="statusClass">{{ paymentStatusLabel }}</span>
+              </div>
+              <p class="m-b-0 f-w-600">{{ invoiceNumber }}</p>
+            </div>
+            <div class="col-sm-6 invoice-date">
+              <div class="f-w-600">
+                {{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.DATE' | translate }}
+                <span class="text-muted f-w-400">{{ oilSale.saleDate | date:'mediumDate' }}</span>
+              </div>
+              @if (oilSale.deliveryDate) {
+                <div class="f-w-600">
+                  {{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.DUE_DATE' | translate }}
+                  <span class="text-muted f-w-400">{{ oilSale.deliveryDate | date:'mediumDate' }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        @for (block of addressBlocks; track block.type) {
+          <div class="col-sm-6">
+            <div class="border border-8 p-15">
+              <div class="f-w-600">{{ block.type }}:</div>
+              <div class="f-w-600 f-16">{{ block.name }}</div>
+              <p class="m-b-0">{{ block.street }}</p>
+              <p class="m-b-0">{{ block.phone }}</p>
+              <p class="m-b-0">{{ block.email }}</p>
+            </div>
+          </div>
+        }
+
+        <div class="col-12">
+          <div class="table-responsive">
+            <table mat-table [dataSource]="lineRows" class="mat-elevation-z8 invoice-table">
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+              </ng-container>
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>{{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.NAME' | translate }}</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+              </ng-container>
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>{{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.DESCRIPTION' | translate }}</th>
+                <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+              </ng-container>
+              <ng-container matColumnDef="qty">
+                <th mat-header-cell *matHeaderCellDef class="text-end">{{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.QTY' | translate }}</th>
+                <td mat-cell *matCellDef="let element" class="text-end">{{ element.qty | number:'1.2-2' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef class="text-end">{{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.PRICE' | translate }}</th>
+                <td mat-cell *matCellDef="let element" class="text-end">{{ element.price | number:'1.3-3' }} {{ oilSale.currency }}</td>
+              </ng-container>
+              <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef class="text-end">{{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.TOTAL' | translate }}</th>
+                <td mat-cell *matCellDef="let element" class="text-end">
+                  {{ lineTotal(element) | number:'1.3-3' }} {{ oilSale.currency }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="invoice-total">
+            <div class="row">
+              <div class="col-6"><p class="text-muted m-b-5 text-start">{{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.SUBTOTAL' | translate }}:</p></div>
+              <div class="col-6"><p class="m-b-5 text-end">{{ subTotal | number:'1.3-3' }} {{ oilSale.currency }}</p></div>
+              <div class="col-6"><p class="text-muted m-b-5 text-start">{{ 'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_PAID' | translate }}:</p></div>
+              <div class="col-6"><p class="m-b-5 text-end text-success">{{ paidAmount | number:'1.3-3' }} {{ oilSale.currency }}</p></div>
+              <div class="col-6"><p class="text-muted m-b-5 text-start">{{ 'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_UNPAID' | translate }}:</p></div>
+              <div class="col-6"><p class="m-b-5 text-end text-warning">{{ unpaidAmount | number:'1.3-3' }} {{ oilSale.currency }}</p></div>
+              <div class="col-6"><p class="f-w-600 m-b-5 text-start">{{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.GRAND_TOTAL' | translate }}:</p></div>
+              <div class="col-6"><p class="f-w-600 m-b-5 text-end">{{ grandTotal | number:'1.3-3' }} {{ oilSale.currency }}</p></div>
+            </div>
+          </div>
+        </div>
+
+        @if (oilSale.description || oilSale.deliveryNotes) {
+          <div class="col-12">
+            <div class="f-w-500">{{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.NOTE' | translate }}</div>
+            <p class="m-b-0">{{ oilSale.description || oilSale.deliveryNotes }}</p>
+          </div>
+        }
+      </div>
+    </app-card>
+  }
+</div>

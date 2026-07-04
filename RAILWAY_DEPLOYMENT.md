@@ -46,6 +46,8 @@ Secrets (environment **`railway-test`**):
 
 See [`.env.railway.example`](.env.railway.example).
 
+Support tickets are built into OOSM — no third-party keys required. See [docs/technical/support-tickets.md](../docs/technical/support-tickets.md).
+
 ## Local build check
 
 ```bash

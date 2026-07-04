@@ -10,6 +10,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
+import { APP_LOGO_FULL } from '../../shared/config/logo.config';
 
 @Component({
   selector: 'app-reset-confirm',
@@ -31,6 +32,7 @@ import { MatButton } from '@angular/material/button';
   styleUrls: ['../authentication.scss']
 })
 export class ResetConfirmComponent implements OnInit {
+  readonly appLogoFull = APP_LOGO_FULL;
   private readonly i18n = inject(TranslateService);
   phase: 'code' | 'password' | 'done' = 'code';
   loading = false;

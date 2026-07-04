@@ -1,142 +1,94 @@
 <app-card [cardTitle]="'GENERAL_CONFIG_UI.CONFIGURATIONS' | translate" [showHeader]="true">
-  <mat-tab-group (selectedTabChange)="onTabChange($event)">
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.TAB_TITLE' | translate }}">
-      <app-company-profile></app-company-profile>
-    </mat-tab>
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.PRODUCTION_TAB' | translate }}">
-      <!-- Production Config Section -->
-      <form [formGroup]="productionConfigForm" (ngSubmit)="onSaveProductionConfig()" class="form-section">
-        <div class="row">
-          <div class="col-12">
-            <h3 class="mb-3">{{ 'AUTO.CAMPAGNE_AGRICOLE' | translate }}</h3>
-          </div>
-          <div class="col-md-4">
-            <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>{{ 'AUTO.DATE_DEBUT_CAMPAGNE' | translate }}</mat-label>
-              <input
-                matInput
-                [matDatepicker]="campaignStartPicker"
-                formControlName="campaignStartDate"
-                [disabled]="!productionConfigFormEnabled"
-              />
-              <mat-datepicker-toggle matSuffix [for]="campaignStartPicker" [disabled]="!productionConfigFormEnabled"></mat-datepicker-toggle>
-              <mat-datepicker #campaignStartPicker></mat-datepicker>
-            </mat-form-field>
-          </div>
-          <div class="col-md-3">
-            <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>{{ 'AUTO.HEURE_DEBUT_CAMPAGNE' | translate }}</mat-label>
-              <input
-                matInput
-                type="time"
-                step="60"
-                formControlName="campaignStartTime"
-                [disabled]="!productionConfigFormEnabled"
-              />
-            </mat-form-field>
-          </div>
-          <div class="col-md-5 d-flex flex-column justify-content-center mb-3">
-            <p class="text-muted small mb-2" *ngIf="campaignEndDisplay">
-              {{ 'AUTO.DATE_FIN_CAMPAGNE' | translate }} <strong>{{ campaignEndDisplay }}</strong>
-            </p>
-            <button
-              mat-stroked-button
-              color="primary"
-              type="button"
-              (click)="markCampaignEndDate()"
-              [disabled]="!productionConfigFormEnabled"
-            >
-              <mat-icon>event_available</mat-icon>
-              <span>{{ 'AUTO.MARQUER_DATE_FIN' | translate }}</span>
-            </button>
-          </div>
-          <div class="col-12">
-            <p class="text-muted small mb-3">
 
-              {{ 'AUTO.CAMPAGNE_COURANTE_CALCULEE' | translate }} <strong>{{ campaignPreview }}</strong>
-            </p>
-          </div>
-        </div>
-        <div class="actions">
-          <button mat-flat-button color="primary" type="submit" [disabled]="productionConfigForm.invalid || !productionConfigFormEnabled">
-            <mat-icon>save</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="warn" type="button" (click)="onResetProductionConfig()" [disabled]="!productionConfigFormEnabled">
-            <mat-icon>undo</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="accent" type="button" (click)="enableProductionConfigForm()" *ngIf="!productionConfigFormEnabled">
-            <mat-icon>edit</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}</span>
-          </button>
-        </div>
-      </form>
-      <app-parameter [categoryFilter]="'PRODUCTION'"></app-parameter>
-     </mat-tab>
+  <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="onTabChange($event)">
+
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.TAB_TITLE' | translate }}">
+
+      <div class="company-config-tab">
+
+        <app-company-profile></app-company-profile>
+
+      </div>
+
+    </mat-tab>
+
+
+
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.PRODUCTION_TAB' | translate }}">
+
+      <div class="production-config-tab">
+
+        <app-production-config></app-production-config>
+
+      </div>
+
+    </mat-tab>
+
+
+
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.FINANCE_TAB' | translate }}">
-      <!-- Finance Config Section -->
-      <form [formGroup]="financeConfigForm" (ngSubmit)="onSaveFinanceConfig()" class="form-section">
-        <mat-form-field appearance="outline" class="w-100 mb-3">
-          <mat-label>{{ 'AUTO.MILLING_PRICE_PER_KG' | translate }}</mat-label>
-          <input matInput formControlName="millingPricePerKg" type="number" min="0" step="0.01" />
-        </mat-form-field>
-        <div class="actions">
-          <button mat-flat-button color="primary" type="submit" [disabled]="financeConfigForm.invalid || !financeConfigFormEnabled">
-            <mat-icon>save</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="warn" type="button" (click)="onResetFinanceConfig()" [disabled]="!financeConfigFormEnabled">
-            <mat-icon>undo</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="accent" type="button" (click)="enableFinanceConfigForm()" *ngIf="!financeConfigFormEnabled">
-            <mat-icon>edit</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}</span>
-          </button>
-        </div>
-      </form>
-      <!-- Removed generic type lists from here -->
+
+      <div class="category-config-tab">
+
+        <app-category-parameters-tab
+
+          categoryFilter="FINANCE"
+
+          coverIcon="ti-currency-dollar"
+
+          titleKey="GENERAL_CONFIG_UI.FINANCE_CONFIG.TITLE"
+
+          subtitleKey="GENERAL_CONFIG_UI.FINANCE_CONFIG.SUBTITLE"
+
+          highlightCode="PRIX_TRITURATION_KG"
+
+        ></app-category-parameters-tab>
+
+      </div>
+
     </mat-tab>
+
+
+
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.HR_TAB' | translate }}">
-      <!-- HR Config Section -->
-      <form [formGroup]="hrConfigForm" (ngSubmit)="onSaveHrConfig()" class="form-section">
-        <div class="actions">
-          <button mat-flat-button color="primary" type="submit" [disabled]="hrConfigForm.invalid || !hrConfigFormEnabled">
-            <mat-icon>save</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="warn" type="button" (click)="onResetHrConfig()" [disabled]="!hrConfigFormEnabled">
-            <mat-icon>undo</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="accent" type="button" (click)="enableHrConfigForm()" *ngIf="!hrConfigFormEnabled">
-            <mat-icon>edit</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}</span>
-          </button>
-        </div>
-      </form>
-      <!-- No generic type lists for HR for now -->
+
+      <div class="category-config-tab">
+
+        <app-category-parameters-tab
+
+          categoryFilter="HR"
+
+          coverIcon="ti-users"
+
+          titleKey="GENERAL_CONFIG_UI.HR_CONFIG.TITLE"
+
+          subtitleKey="GENERAL_CONFIG_UI.HR_CONFIG.SUBTITLE"
+
+        ></app-category-parameters-tab>
+
+      </div>
+
     </mat-tab>
+
+
+
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.TYPES_PARAMS_TAB' | translate }}">
+      <div class="types-params-tab">
+        <app-generic-type></app-generic-type>
+      </div>
+    </mat-tab>
+
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.OTHER_TAB' | translate }}">
-      <!-- Other Config Section -->
-      <form [formGroup]="otherConfigForm" (ngSubmit)="onSaveOtherConfig()" class="form-section">
-        <div class="actions">
-          <button mat-flat-button color="primary" type="submit" [disabled]="otherConfigForm.invalid || !otherConfigFormEnabled">
-            <mat-icon>save</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="warn" type="button" (click)="onResetOtherConfig()" [disabled]="!otherConfigFormEnabled">
-            <mat-icon>undo</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="accent" type="button" (click)="enableOtherConfigForm()" *ngIf="!otherConfigFormEnabled">
-            <mat-icon>edit</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}</span>
-          </button>
-        </div>
-      </form>
-      <!-- Removed generic type lists from here -->
+
+      <div class="other-config-tab">
+
+        <app-application-config></app-application-config>
+
+      </div>
+
     </mat-tab>
+
   </mat-tab-group>
+
 </app-card>
+

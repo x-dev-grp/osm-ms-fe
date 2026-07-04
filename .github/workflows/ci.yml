@@ -2,9 +2,9 @@ name: Frontend CI
 
 on:
   push:
-    branches: [main, develop, release]
+    branches: [main, develop, release, pfe-v2-final]
   pull_request:
-    branches: [main, develop, release]
+    branches: [main, develop, release, pfe-v2-final]
   workflow_dispatch:
 
 concurrency:
@@ -20,6 +20,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate VERSION matches package.json
+        run: |
+          test -f VERSION
+          V=$(tr -d '\r\n' < VERSION)
+          P=$(node -p "require('./package.json').version")
+          test "$V" = "$P" || (echo "VERSION ($V) != package.json ($P)" && exit 1)
+
       - name: Use Node 20
         uses: actions/setup-node@v4
         with:
@@ -31,6 +38,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Unit tests
+        run: npm test -- --watch=false --browsers=ChromeHeadlessNoSandbox --no-progress
 
       - name: Production build
         run: npx ng build -c=production --base-href=/ --deploy-url=/

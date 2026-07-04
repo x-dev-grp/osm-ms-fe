@@ -1,0 +1,82 @@
+<div class="dashboard-shell hr-form-page hr-form-page--contracts">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>description</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'HR.PAGE.CONTRACTS.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.CONTRACT_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <app-card [icon]="'description'" [cardTitle]="'HR.PAGE.CONTRACTS.TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.EMPLOYEE' | translate }}</mat-label>
+            <mat-select formControlName="employeeId" required>
+              @for (employee of employees; track employee.id) {
+                <mat-option [value]="employee.id">{{ employeeLabel(employee) }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.POSTE' | translate }}</mat-label>
+            <mat-select formControlName="posteId">
+              @for (poste of postes; track poste.id) {
+                <mat-option [value]="poste.id">{{ poste.title }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.TYPE' | translate }}</mat-label>
+            <mat-select formControlName="contractType">
+              @for (type of contractTypes; track type) {
+                <mat-option [value]="type">{{ 'HR.CONTRACTS.TYPE.' + type | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.STATUS' | translate }}</mat-label>
+            <mat-select formControlName="status">
+              @for (status of statuses; track status) {
+                <mat-option [value]="status">{{ 'HR.CONTRACTS.STATUS.' + status | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.START_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startDate" />
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.END_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="endDate" />
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.SALARY' | translate }}</mat-label>
+            <input matInput type="number" formControlName="salary" />
+          </mat-form-field>
+        </div>
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

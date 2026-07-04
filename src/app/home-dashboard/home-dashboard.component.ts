@@ -11,7 +11,6 @@ import {
   Action,
   ConditioningEntity,
   FinanceEntity,
-  HREntity,
   InventoryEntity,
   OOSMModule,
   permissionKey,
@@ -139,10 +138,6 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       ])
     ) {
       ids.push('conditioning');
-    }
-
-    if (this.auth.hasModule(OOSMModule.HR) && this.auth.hasPermission(permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ))) {
-      ids.push('hr');
     }
 
     return ids;

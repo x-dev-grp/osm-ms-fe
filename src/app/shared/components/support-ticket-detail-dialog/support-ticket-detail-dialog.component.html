@@ -1,0 +1,86 @@
+<h2 mat-dialog-title>{{ data.ticket.subject }}</h2>
+
+<mat-dialog-content class="support-ticket-detail">
+  <dl class="support-ticket-detail__meta">
+    <div>
+      <dt>{{ 'SUPPORT.FIELDS.STATUS' | translate }}</dt>
+      <dd>{{ 'SUPPORT.STATUS.' + data.ticket.status | translate }}</dd>
+    </div>
+    <div>
+      <dt>{{ 'SUPPORT.FIELDS.PRIORITY' | translate }}</dt>
+      <dd>{{ 'SUPPORT.PRIORITY.' + data.ticket.priority | translate }}</dd>
+    </div>
+    <div>
+      <dt>{{ 'SUPPORT.FIELDS.REPORTER' | translate }}</dt>
+      <dd>{{ data.ticket.reporterDisplayName || data.ticket.reporterUsername }}</dd>
+    </div>
+    @if (data.ticket.tenantName) {
+      <div>
+        <dt>{{ 'SUPPORT.FIELDS.TENANT' | translate }}</dt>
+        <dd>{{ data.ticket.tenantName }}</dd>
+      </div>
+    }
+    @if (data.ticket.createdDate) {
+      <div>
+        <dt>{{ 'SUPPORT.FIELDS.CREATED' | translate }}</dt>
+        <dd>{{ data.ticket.createdDate | date: 'medium' }}</dd>
+      </div>
+    }
+    @if (data.ticket.pageUrl) {
+      <div class="support-ticket-detail__full">
+        <dt>{{ 'SUPPORT.FIELDS.PAGE' | translate }}</dt>
+        <dd>{{ data.ticket.pageUrl }}</dd>
+      </div>
+    }
+  </dl>
+
+  <section>
+    <h3>{{ 'SUPPORT.FIELDS.DESCRIPTION' | translate }}</h3>
+    <p class="support-ticket-detail__description">{{ data.ticket.description }}</p>
+  </section>
+
+  @if (data.canManage) {
+    <form [formGroup]="form" class="support-ticket-detail__form">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ 'SUPPORT.FIELDS.STATUS' | translate }}</mat-label>
+        <mat-select formControlName="status">
+          @for (status of statuses; track status) {
+            <mat-option [value]="status">{{ 'SUPPORT.STATUS.' + status | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ 'SUPPORT.FIELDS.PRIORITY' | translate }}</mat-label>
+        <mat-select formControlName="priority">
+          @for (priority of priorities; track priority) {
+            <mat-option [value]="priority">{{ 'SUPPORT.PRIORITY.' + priority | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ 'SUPPORT.FIELDS.ADMIN_NOTE' | translate }}</mat-label>
+        <textarea matInput formControlName="adminNote" rows="3"></textarea>
+      </mat-form-field>
+    </form>
+  } @else if (data.ticket.adminNote) {
+    <section>
+      <h3>{{ 'SUPPORT.FIELDS.ADMIN_NOTE' | translate }}</h3>
+      <p>{{ data.ticket.adminNote }}</p>
+    </section>
+  }
+
+  @if (errorMsg) {
+    <p class="support-ticket-detail__error">{{ errorMsg }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">{{ 'COMMON.CANCEL' | translate }}</button>
+  @if (data.canManage) {
+    <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="submitting">
+      {{ 'COMMON.SAVE' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

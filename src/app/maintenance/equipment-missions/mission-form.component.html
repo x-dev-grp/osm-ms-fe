@@ -1,0 +1,170 @@
+<div class="dashboard-shell maintenance-form-page">
+  <div class="page-header sticky-actions page-header--admin">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--admin">
+        <mat-icon>local_shipping</mat-icon>
+      </div>
+      <div>
+        <h2 class="m-0 f-w-600">
+          {{
+            readOnly
+              ? ('MAINTENANCE.MISSIONS.VIEW_TITLE' | translate)
+              : editing
+                ? ('MAINTENANCE.MISSIONS.EDIT_TITLE' | translate)
+                : ('MAINTENANCE.MISSIONS.NEW_TITLE' | translate)
+          }}
+        </h2>
+        <p class="header-subtitle">{{ 'MAINTENANCE.MISSIONS.FORM_SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else {
+    <app-card [icon]="'local_shipping'" [cardTitle]="'MAINTENANCE.MISSIONS.FORM_TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()" class="maintenance-form">
+        <section class="form-section">
+          <h3>{{ 'MAINTENANCE.MISSIONS.SECTIONS.CLIENT' | translate }}</h3>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'MAINTENANCE.FIELDS.ASSET' | translate }}</mat-label>
+              <mat-select formControlName="equipmentId" required>
+                @for (equipment of equipmentOptions; track equipment.id) {
+                  <mat-option [value]="equipment.id">
+                    {{ equipment.name }}
+                    @if (equipment.registrationNumber) {
+                      ({{ equipment.registrationNumber }})
+                    }
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'MAINTENANCE.MISSIONS.FIELDS.CLIENT' | translate }}</mat-label>
+              <input matInput formControlName="clientName" required />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'MAINTENANCE.MISSIONS.FIELDS.CLIENT_PHONE' | translate }}</mat-label>
+              <input matInput formControlName="clientPhone" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'MAINTENANCE.MISSIONS.FIELDS.LOCATION' | translate }}</mat-label>
+              <input matInput formControlName="workLocation" />
+            </mat-form-field>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3>{{ 'MAINTENANCE.MISSIONS.SECTIONS.SCHEDULE' | translate }}</h3>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'CONTRACT.START_DATE' | translate }}</mat-label>
+              <input matInput [matDatepicker]="startPicker" formControlName="scheduledStart" />
+              <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'CONTRACT.END_DATE' | translate }}</mat-label>
+              <input matInput [matDatepicker]="endPicker" formControlName="scheduledEnd" />
+              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'MAINTENANCE.MISSIONS.FIELDS.OPERATOR' | translate }}</mat-label>
+              <input matInput formControlName="operatorName" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</mat-label>
+              <textarea matInput rows="3" formControlName="description"></textarea>
+            </mat-form-field>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3>{{ 'MAINTENANCE.MISSIONS.SECTIONS.BILLING' | translate }}</h3>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'MAINTENANCE.MISSIONS.FIELDS.HOURS' | translate }}</mat-label>
+              <input matInput type="number" min="0" step="0.25" formControlName="billableHours" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'MAINTENANCE.MISSIONS.FIELDS.RATE' | translate }}</mat-label>
+              <input matInput type="number" min="0" step="0.01" formControlName="hourlyRate" />
+            </mat-form-field>
+
+            <div class="total-display">
+              <span class="total-label">{{ 'MAINTENANCE.MISSIONS.FIELDS.TOTAL' | translate }}</span>
+              <strong class="total-value">{{ computedTotal | number: '1.2-2' }} TND</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3>{{ 'MAINTENANCE.MISSIONS.SECTIONS.STATUS' | translate }}</h3>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</mat-label>
+              <mat-select formControlName="status" required>
+                @for (status of statuses; track status) {
+                  <mat-option [value]="status">{{ 'MAINTENANCE.STATUS.' + status | translate }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            @if (showPaymentSection) {
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'TRANSACTIONS.PAYMENT_METHOD' | translate }}</mat-label>
+                <mat-select formControlName="paymentMethod">
+                  @for (method of paymentMethods; track method) {
+                    <mat-option [value]="method">{{ method }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'MAINTENANCE.MISSIONS.FIELDS.PAID_AMOUNT' | translate }}</mat-label>
+                <input matInput type="number" min="0" step="0.01" formControlName="paidAmount" />
+              </mat-form-field>
+            }
+
+            @if (invoiceReference) {
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'EXPENSES.FIELDS.INVOICE_REF' | translate }}</mat-label>
+                <input matInput [value]="invoiceReference" disabled />
+              </mat-form-field>
+            }
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'MAINTENANCE.MISSIONS.FIELDS.NOTES' | translate }}</mat-label>
+              <textarea matInput rows="2" formControlName="notes"></textarea>
+            </mat-form-field>
+          </div>
+        </section>
+
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving || form.invalid">
+              {{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}
+            </button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

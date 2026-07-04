@@ -1,0 +1,155 @@
+<div class="production-config-page">
+  <div *ngIf="loading" class="text-center p-5">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!loading">
+    <!-- Cover -->
+    <div class="row">
+      <div class="col-12">
+        <app-card cardClass="pro-card account-profile-cover" [showHeader]="false" [padding]="0">
+          <div class="profile-wave-left">
+            <img src="assets/images/profile/user-profile-back-left.svg" alt="" />
+          </div>
+          <div class="profile-wave-right">
+            <img src="assets/images/profile/user-profile-back-right.svg" alt="" />
+          </div>
+
+          <div class="account-profile-user">
+            <div class="production-cover-icon">
+              <i class="ti ti-seeding"></i>
+            </div>
+            <h3>{{ campaignPreview }}</h3>
+            <p class="profile-subtitle">{{ 'AUTO.CAMPAGNE_AGRICOLE' | translate }}</p>
+            <p class="profile-subtitle" *ngIf="campaignStartDisplay !== '—'">
+              {{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.START_FROM' | translate }} {{ campaignStartDisplay }}
+            </p>
+            <span class="user-status bg-accent-100 m-t-10" *ngIf="campaignEndDisplay">
+              {{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.ENDED' | translate }} {{ campaignEndDisplay }}
+            </span>
+          </div>
+        </app-card>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="row account-profile-tabs-card">
+      <div class="col-12">
+        <app-card [showHeader]="false" [padding]="0">
+          <mat-tab-group class="account-profile-tab-group" mat-stretch-tabs="false" mat-align-tabs="start">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="ti ti-calendar-event m-r-10"></i>
+                {{ 'AUTO.CAMPAGNE_AGRICOLE' | translate }}
+              </ng-template>
+
+              <form [formGroup]="campaignForm" (ngSubmit)="onSave()">
+                <div class="profile-tab-panel">
+                  <div class="row g-4">
+                    <div class="col-lg-4 col-md-5">
+                      <div class="profile-info-card">
+                        <div class="profile-info-header">{{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.SUMMARY' | translate }}</div>
+                        <ul class="profile-info-list">
+                          <li>
+                            <i class="ti ti-calendar"></i>
+                            <div>
+                              <span class="info-label">{{ 'AUTO.CAMPAGNE_COURANTE_CALCULEE' | translate }}</span>
+                              <span class="info-value">{{ campaignPreview }}</span>
+                            </div>
+                          </li>
+                          <li>
+                            <i class="ti ti-clock"></i>
+                            <div>
+                              <span class="info-label">{{ 'AUTO.DATE_DEBUT_CAMPAGNE' | translate }}</span>
+                              <span class="info-value">{{ campaignStartDisplay }}</span>
+                            </div>
+                          </li>
+                          <li>
+                            <i class="ti ti-calendar-off"></i>
+                            <div>
+                              <span class="info-label">{{ 'AUTO.DATE_FIN_CAMPAGNE' | translate }}</span>
+                              <span class="info-value">{{ campaignEndDisplay || '—' }}</span>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-8 col-md-7">
+                      <div class="profile-form-card">
+                        <div class="profile-form-header">{{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.EDIT_CAMPAIGN' | translate }}</div>
+                        <div class="profile-form-body">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>{{ 'AUTO.DATE_DEBUT_CAMPAGNE' | translate }}</mat-label>
+                                <input
+                                  matInput
+                                  [matDatepicker]="campaignStartPicker"
+                                  formControlName="campaignStartDate"
+                                />
+                                <mat-datepicker-toggle matSuffix [for]="campaignStartPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #campaignStartPicker></mat-datepicker>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-md-6">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>{{ 'AUTO.HEURE_DEBUT_CAMPAGNE' | translate }}</mat-label>
+                                <input matInput type="time" step="60" formControlName="campaignStartTime" />
+                              </mat-form-field>
+                            </div>
+                            <div class="col-12">
+                              <button
+                                mat-stroked-button
+                                color="primary"
+                                type="button"
+                                (click)="markCampaignEndDate()"
+                                [disabled]="!formEnabled"
+                              >
+                                <i class="ti ti-calendar-check m-r-5"></i>
+                                {{ 'AUTO.MARQUER_DATE_FIN' | translate }}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="profile-toolbar">
+                  <button mat-stroked-button color="accent" type="button" (click)="enableForm()" *ngIf="!formEnabled">
+                    <i class="ti ti-edit m-r-5"></i>
+                    {{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}
+                  </button>
+
+                  <ng-container *ngIf="formEnabled">
+                    <button mat-stroked-button color="warn" type="button" (click)="onReset()">
+                      <i class="ti ti-rotate m-r-5"></i>
+                      {{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}
+                    </button>
+                    <button mat-flat-button color="primary" type="submit" [disabled]="campaignForm.invalid || !campaignForm.dirty">
+                      <i class="ti ti-device-floppy m-r-5"></i>
+                      {{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}
+                    </button>
+                  </ng-container>
+                </div>
+              </form>
+            </mat-tab>
+
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="ti ti-adjustments m-r-10"></i>
+                {{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.PARAMETERS' | translate }}
+              </ng-template>
+
+              <div class="profile-tab-panel parameter-tab-panel">
+                <app-parameter [categoryFilter]="'PRODUCTION'"></app-parameter>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </app-card>
+      </div>
+    </div>
+  </ng-container>
+</div>

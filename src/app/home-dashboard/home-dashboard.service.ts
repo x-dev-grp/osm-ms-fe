@@ -19,8 +19,7 @@ export class HomeDashboardService {
       finance: this.loadFinanceMetrics(),
       storage: this.loadStorageMetrics(),
       inventory: this.loadInventoryMetrics(),
-      conditioning: this.loadConditioningMetrics(),
-      hr: this.loadHrMetrics()
+      conditioning: this.loadConditioningMetrics()
     };
 
     const requests = moduleIds.map((id) =>
@@ -162,10 +161,6 @@ export class HomeDashboardService {
       )
     );
   }
-
-  private loadHrMetrics(): Observable<HomeMetric[]> {
-    return this.count('hr/employee').pipe(map((employees) => [{ labelKey: 'HOME_DASHBOARD.METRICS.EMPLOYEES', value: employees }]));
-  }
 }
 
 const MODULE_META: Record<
@@ -206,12 +201,5 @@ const MODULE_META: Record<
     icon: 'precision_manufacturing',
     accentClass: 'module-card--conditioning',
     route: '/of'
-  },
-  hr: {
-    titleKey: 'HOME_DASHBOARD.SECTIONS.HR.TITLE',
-    subtitleKey: 'HOME_DASHBOARD.SECTIONS.HR.SUBTITLE',
-    icon: 'groups',
-    accentClass: 'module-card--hr',
-    route: '/hr'
   }
 };

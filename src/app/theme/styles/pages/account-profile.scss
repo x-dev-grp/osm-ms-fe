@@ -1,6 +1,8 @@
-// Able Pro account profile page styles
+// Able Pro account / company profile page styles
 
-.account-profile-page {
+.account-profile-page,
+.company-profile-page,
+.production-config-page {
   .account-profile-cover {
     position: relative;
     overflow: hidden;
@@ -242,10 +244,65 @@
   .mat-alert.mat-error {
     margin-bottom: 16px;
   }
+
+  .company-logo-wrap {
+    position: relative;
+    display: inline-flex;
+    width: 110px;
+    height: 110px;
+    border-radius: 16px;
+    border: 4px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.15);
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    .company-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    .company-logo-placeholder {
+      font-size: 42px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  .production-cover-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.15);
+
+    i {
+      font-size: 40px;
+      color: rgba(255, 255, 255, 0.95);
+    }
+  }
+
+  .profile-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--accent-300);
+    background: color-mix(in srgb, var(--accent-100) 50%, transparent);
+  }
 }
 
 @media (max-width: 991px) {
-  .account-profile-page {
+  .account-profile-page,
+  .company-profile-page,
+  .production-config-page {
     .profile-info-card {
       margin-bottom: 20px;
     }
@@ -253,7 +310,9 @@
 }
 
 @media (max-width: 575px) {
-  .account-profile-page {
+  .account-profile-page,
+  .company-profile-page,
+  .production-config-page {
     .account-profile-user {
       padding-top: 28px;
     }

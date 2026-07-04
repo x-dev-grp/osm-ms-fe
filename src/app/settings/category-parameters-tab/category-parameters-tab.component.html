@@ -1,0 +1,45 @@
+<div class="production-config-page">
+  <div *ngIf="loading" class="text-center p-5">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!loading">
+    <div class="row">
+      <div class="col-12">
+        <app-card cardClass="pro-card account-profile-cover" [showHeader]="false" [padding]="0">
+          <div class="profile-wave-left">
+            <img src="assets/images/profile/user-profile-back-left.svg" alt="" />
+          </div>
+          <div class="profile-wave-right">
+            <img src="assets/images/profile/user-profile-back-right.svg" alt="" />
+          </div>
+
+          <div class="account-profile-user">
+            <div class="production-cover-icon">
+              <i class="ti" [ngClass]="coverIcon"></i>
+            </div>
+            <h3 *ngIf="highlightDisplay; else titleOnly">
+              {{ highlightDisplay }}
+              <span class="cover-suffix">{{ highlightSuffixKey | translate }}</span>
+            </h3>
+            <ng-template #titleOnly>
+              <h3>{{ titleKey | translate }}</h3>
+            </ng-template>
+            <p class="profile-subtitle">{{ subtitleKey | translate }}</p>
+          </div>
+        </app-card>
+      </div>
+    </div>
+
+    <div class="row account-profile-tabs-card">
+      <div class="col-12">
+        <app-card [showHeader]="false" [padding]="0">
+          <app-parameter
+            [categoryFilter]="categoryFilter"
+            [excludeCategories]="excludeCategories"
+          ></app-parameter>
+        </app-card>
+      </div>
+    </div>
+  </ng-container>
+</div>

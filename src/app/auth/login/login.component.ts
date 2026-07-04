@@ -12,6 +12,7 @@ import { catchError, first, of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../theme/types/role';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { APP_LOGO_FULL } from '../../shared/config/logo.config';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrls: ['../authentication.scss']
 })
 export class LoginComponent implements OnInit {
+  readonly appLogoFull = APP_LOGO_FULL;
   authenticationService = inject(AuthenticationService);
   loading = false;
   form: FormGroup;

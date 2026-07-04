@@ -9,7 +9,8 @@ import {
   OOSMModule,
   permissionKey,
   ProductionEntity,
-  ReceptionEntity
+  ReceptionEntity,
+  HREntity
 } from 'src/app/theme/types/permissions';
 
 /**
@@ -154,6 +155,15 @@ export const oosm_menus: Navigation[] = [
             type: 'item',
             url: '/reception/reception-list/oil',
             icon: 'water_drop',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+          },
+          {
+            id: 'item-reception-purchase-journal',
+            title: 'MENU.RECEPTION.PURCHASE_JOURNAL',
+            type: 'item',
+            url: '/reception/purchase-journal',
+            icon: 'menu_book',
             breadcrumbs: false,
             ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           }
@@ -591,8 +601,26 @@ export const oosm_menus: Navigation[] = [
             icon: 'account_balance_wallet',
             breadcrumbs: false,
             ressourcePermission: FinanceEntity.BANKACCOUNT
+          },
+          {
+            id: 'item-finance-cash-register',
+            title: 'MENU.FINANCE.CASH_REGISTER',
+            type: 'item',
+            url: '/finance/cash-register',
+            icon: 'point_of_sale',
+            breadcrumbs: false,
+            ressourcePermission: FinanceEntity.FINANCIALTRANSACTION
           }
         ]
+      },
+      {
+        id: 'item-finance-season-recap',
+        title: 'MENU.FINANCE.SEASON_RECAP',
+        type: 'item',
+        url: '/finance/season-recap',
+        icon: 'summarize',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)]
       },
       {
         id: 'collapse-finance-sales',
@@ -633,6 +661,128 @@ export const oosm_menus: Navigation[] = [
     ]
   },
 
+  // ─── RH / HR ─────────────────────────────────────────────────────────────────
+  {
+    id: 'group-hr',
+    title: 'MENU.HR.TITLE',
+    type: 'group',
+    modulePermission: 'HR',
+    children: [
+      {
+        id: 'item-hr-dashboard',
+        title: 'HR.DASHBOARD.TITLE',
+        type: 'item',
+        url: '/hr',
+        icon: 'people',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ)]
+      },
+      {
+        id: 'item-hr-employees',
+        title: 'HR.QUICK_NAV.EMPLOYEES',
+        type: 'item',
+        url: '/hr/employees',
+        icon: 'groups',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ)]
+      },
+      {
+        id: 'item-hr-postes',
+        title: 'HR.QUICK_NAV.POSITIONS',
+        type: 'item',
+        url: '/hr/postes',
+        icon: 'badge',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.HR, HREntity.POSTE, Action.READ)]
+      },
+      {
+        id: 'item-hr-contracts',
+        title: 'HR.QUICK_NAV.CONTRACTS',
+        type: 'item',
+        url: '/hr/contracts',
+        icon: 'description',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.HR, HREntity.CONTRACT, Action.READ)]
+      },
+      {
+        id: 'item-hr-pointages',
+        title: 'HR.QUICK_NAV.POINTAGE',
+        type: 'item',
+        url: '/hr/pointages',
+        icon: 'schedule',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.HR, HREntity.POINTAGE, Action.READ)]
+      },
+      {
+        id: 'item-hr-leave',
+        title: 'HR.QUICK_NAV.LEAVE',
+        type: 'item',
+        url: '/hr/leave-requests',
+        icon: 'event_busy',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.HR, HREntity.LEAVEREQUEST, Action.READ)]
+      },
+      {
+        id: 'item-hr-payroll',
+        title: 'HR.QUICK_NAV.PAYROLL',
+        type: 'item',
+        url: '/hr/payroll-periods',
+        icon: 'calendar_month',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.HR, HREntity.PAYROLLPERIOD, Action.READ)]
+      },
+      {
+        id: 'item-hr-payslips',
+        title: 'HR.PAYSLIPS.LIST_TITLE',
+        type: 'item',
+        url: '/hr/payslips',
+        icon: 'receipt_long',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.HR, HREntity.PAYSLIP, Action.READ)]
+      }
+    ]
+  },
+
+  // ─── MAINTENANCE & ÉQUIPEMENT ───────────────────────────────────────────────
+  {
+    id: 'group-maintenance-equipment',
+    title: 'MENU.MAINTENANCE_EQUIPMENT.TITLE',
+    type: 'group',
+    modulePermission: 'PRODUCTION',
+    children: [
+      {
+        id: 'item-maintenance-work-orders',
+        title: 'MENU.MAINTENANCE.WORK_ORDERS',
+        type: 'item',
+        url: '/maintenance',
+        icon: 'handyman',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)],
+        ressourcePermission: ProductionEntity.MAINTENANCEWORKORDER
+      },
+      {
+        id: 'item-mill-equipment',
+        title: 'MENU.EQUIPMENT.REGISTRY',
+        type: 'item',
+        url: '/mill-equipment',
+        icon: 'agriculture',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLEQUIPMENT, Action.READ)],
+        ressourcePermission: ProductionEntity.MILLEQUIPMENT
+      },
+      {
+        id: 'item-equipment-missions',
+        title: 'MENU.EQUIPMENT.MISSIONS',
+        type: 'item',
+        url: '/equipment-missions',
+        icon: 'local_shipping',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.EQUIPMENTSERVICEMISSION, Action.READ)],
+        ressourcePermission: ProductionEntity.EQUIPMENTSERVICEMISSION
+      }
+    ]
+  },
+
   // ─── PARAMÈTRES ──────────────────────────────────────────────────────────────
   {
     id: 'group-settings',
@@ -654,25 +804,6 @@ export const oosm_menus: Navigation[] = [
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.HABILITATION, HabilitationEntity.COMPANYPROFILE, Action.READ)],
             ressourcePermission: HabilitationEntity.COMPANYPROFILE
-          },
-          {
-            id: 'item-settings-configuration',
-            title: 'MENU.SETTINGS.APP_UI',
-            type: 'item',
-            url: '/settings/configuration',
-            icon: 'dashboard_customize',
-            breadcrumbs: false,
-            ressourcePermission: HabilitationEntity.COMPANYPROFILE
-          },
-          {
-            id: 'item-settings-generic',
-            title: 'MENU.SETTINGS.GENERIC_TYPES',
-            type: 'item',
-            url: '/settings/generic',
-            icon: 'list_alt',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)],
-            ressourcePermission: ProductionEntity.base_type
           }
         ]
       },
@@ -711,16 +842,6 @@ export const oosm_menus: Navigation[] = [
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.READ)],
             ressourcePermission: ProductionEntity.MILLMACHINE
-          },
-          {
-            id: 'item-maintenance-work-orders',
-            title: 'MENU.MAINTENANCE.WORK_ORDERS',
-            type: 'item',
-            url: '/maintenance',
-            icon: 'handyman',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)],
-            ressourcePermission: ProductionEntity.MAINTENANCEWORKORDER
           }
         ]
       },

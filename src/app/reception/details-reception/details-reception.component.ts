@@ -19,6 +19,7 @@ import { MatChip, MatChipListbox } from '@angular/material/chips';
 import { deliveryType } from '../../shared/models/deleveryType';
 import { QrDialogComponent } from '../../shared/components/qr-dialog/qr-dialog.component';
 import { ConfirmationDialogService, ConfirmationType } from '../../shared/services/confirmation-dialog.service';
+import { buildTransactionsQueryParams } from '../../finance/utils/finance-resource-links.util';
 
 @Component({
   selector: 'app-details-reception-olive',
@@ -98,9 +99,11 @@ export class DetailsReceptionComponent implements OnInit {
   }
 
   openFinancialTransactions(): void {
-    const lotNumber = this.deliveryData?.lotNumber;
     this.router.navigate(['/finance/transactions'], {
-      queryParams: lotNumber ? { lotNumber } : undefined
+      queryParams: buildTransactionsQueryParams({
+        externalTransactionId: this.deliveryData?.id,
+        lotNumber: this.deliveryData?.lotNumber
+      })
     });
   }
 
@@ -115,6 +118,12 @@ export class DetailsReceptionComponent implements OnInit {
     const supplierId = this.deliveryData?.supplier?.id;
     if (!supplierId) return;
     this.router.navigate(['/reception/fournisseur/details', supplierId]);
+  }
+
+  openSupplierFinance(): void {
+    const supplierId = this.deliveryData?.supplier?.id;
+    if (!supplierId) return;
+    this.router.navigate(['/reception/fournisseur/details', supplierId], { queryParams: { tab: 'finance' } });
   }
 
   openSupplierPayments(): void {

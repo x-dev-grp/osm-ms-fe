@@ -10,6 +10,39 @@
     "MESSAGE": "Vous n'avez pas les permissions nécessaires pour consulter cette page.",
     "TITLE": "Accès refusé"
   },
+  "ABIOOC": {
+    "BASE_LEDGER": {
+      "HINT": "Totaux olive, huile et solde de paiement (suivi Fournisseur Base ABIOOC). Montants en DT.",
+      "OIL_L": "Quantité huile (L)",
+      "OLIVE_KG": "Quantité olive (kg)",
+      "TITLE": "Suivi fournisseur Base"
+    },
+    "CASH_REGISTER": {
+      "HINT": "Mouvements espèces uniquement (Caisse ABIOOC). Montants en DT.",
+      "INBOUND": "Entrées caisse",
+      "MOVEMENTS": "Mouvements",
+      "NET": "Solde caisse",
+      "OUTBOUND": "Sorties caisse",
+      "TITLE": "Caisse du jour"
+    },
+    "PURCHASE_JOURNAL": {
+      "HINT": "Vue combinée des achats et triturations (feuille Achat ABIOOC).",
+      "TITLE": "Journal achat"
+    },
+    "SEASON_RECAP": {
+      "CASH_NET": "Solde caisse net",
+      "DELIVERIES": "Réceptions achat",
+      "DELIVERY_PAID": "Réceptions payées",
+      "DELIVERY_UNPAID": "Réceptions non payées",
+      "EXPENSES": "Total dépenses",
+      "HINT": "Indicateurs saison (Récapt ABIOOC). Agrège les données courantes.",
+      "ITEMS": "lignes",
+      "OIL_L": "Total huile (L)",
+      "OIL_SALES": "Total ventes huile",
+      "OLIVE_KG": "Total olive (kg)",
+      "SALES": "ventes"
+    }
+  },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
     "ADD_COMPANY_CREATED": "Société et utilisateur admin créés avec succès.",
@@ -20,6 +53,7 @@
     "ADD_OOSM_ADMIN_SAVE": "Créer l'admin OOSM",
     "ADD_OOSM_ADMIN_TITLE": "Créer un utilisateur admin OOSM",
     "CANCEL": "Annuler",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
     "COMPANY_NAME": "Nom de la société",
     "COMPANY_NAME_REQUIRED": "Le nom de la société est requis.",
     "COMPANY_SECTION": "Informations sur la société",
@@ -82,6 +116,44 @@
     "TITLE": "Vue d'ensemble admin",
     "SUBTITLE": "Vue globale des tenants et utilisateurs de la plateforme"
   },
+  "ADMIN_PERMISSION_CATALOG": {
+    "BACK": "Tableau de bord admin",
+    "DASHBOARD_LINK": "Synchroniser permissions-spec.json avec la base après déploiement ou modification du catalogue.",
+    "GAP": "Permissions manquantes",
+    "KPIS": {
+      "DB_PERMISSIONS": "Permissions actives en base",
+      "ENTITIES": "Entités du catalogue",
+      "EXPECTED": "attendues",
+      "PROFILES": "profils",
+      "SPEC_VERSION": "Version catalogue"
+    },
+    "LOADING": "Chargement du statut du catalogue...",
+    "LOAD_ERROR": "Impossible de charger le statut du catalogue de permissions.",
+    "OPS": {
+      "CREATE": "Créer les permissions manquantes depuis permissions-spec.json",
+      "LEGACY": "Fusionner les alias d'entités legacy vers les entités canoniques",
+      "MIRRORS": "Copier les droits de rôle pour les miroirs configurés",
+      "REACTIVATE": "Réactiver les permissions supprimées qui correspondent au catalogue"
+    },
+    "RESULT": {
+      "CREATED": "Créées",
+      "EXISTING": "Déjà présentes",
+      "LEGACY": "Fusions legacy",
+      "MIRRORS": "Grants miroir ajoutés"
+    },
+    "SECTIONS": {
+      "LAST_RESULT": "Dernier résultat de sync",
+      "STATUS": "Statut du catalogue",
+      "SYNC": "Synchroniser le catalogue de permissions"
+    },
+    "STARTUP_SYNC": "Sync au démarrage",
+    "SUBTITLE": "Opérations plateforme — aligner la base permissions avec permissions-spec.json",
+    "SYNC_BUTTON": "Synchroniser maintenant",
+    "SYNC_ERROR": "Échec de la synchronisation du catalogue.",
+    "SYNC_HINT": "À exécuter après déploiement ou modification de permissions-spec.json. Idempotent — les lignes existantes sont conservées.",
+    "SYNC_SUCCESS": "Catalogue de permissions synchronisé avec succès.",
+    "TITLE": "Catalogue de permissions"
+  },
   "ADMIN_USERS": {
     "CARD_DESCRIPTION": "Rechercher les utilisateurs de tous les tenants et déclencher une réinitialisation de mot de passe.",
     "FIELDS": {
@@ -137,6 +209,309 @@
   "PWA": {
     "UPDATE_AVAILABLE": "Une nouvelle version est disponible. Rechargez l'application pour mettre à jour.",
     "UNRECOVERABLE_ERROR": "L'application n'a pas pu se charger correctement. Rechargement..."
+  },
+  "BRANDING": {
+    "SLOGAN": "Système de Gestion de l'Huile d'Olive",
+    "TAGLINE": "De la réception à la vente — une plateforme pour votre moulin"
+  },
+  "USER_GUIDE": {
+    "TITLE": "Aide & guide utilisateur",
+    "INTRO": "OOSM vous aide à gérer la réception, la production huile, le conditionnement, l'inventaire, la finance et les ressources humaines de votre moulin.",
+    "WELCOME_USER": "Bonjour {{name}} — voici comment tirer le meilleur parti d'OOSM.",
+    "MY_ACCOUNT": "Mon compte",
+    "NO_MODULES": "Aucun module visible pour votre rôle. Contactez votre administrateur pour obtenir les permissions.",
+    "MODULES_TITLE": "Vos modules",
+    "OPEN_MODULE": "Ouvrir le module",
+    "BACK_HOME": "Retour à l'accueil",
+    "FULL_DOCS_HINT": "Téléchargez les guides PDF ci-dessous, ou demandez à l'IT la documentation technique dans docs/.",
+    "NAV": {
+      "START": "Démarrage",
+      "FLOW": "Flux métier",
+      "MODULES": "Modules",
+      "TASKS": "Tâches fréquentes",
+      "WORKFLOWS": "Enchaînement",
+      "FAQ": "FAQ",
+      "PDF": "Guides PDF",
+      "SUPPORT": "Support",
+      "TIPS": "Astuces"
+    },
+    "ROLE": {
+      "OOSMADMIN": "Administrateur plateforme",
+      "ADMIN": "Administrateur entreprise",
+      "USER": "Utilisateur standard"
+    },
+    "FLOW": {
+      "TITLE": "Flux type du moulin",
+      "SUBTITLE": "De l'arrivée des olives à la vente — chaque étape relie le module suivant.",
+      "RECEPTION": "Réception",
+      "STORAGE": "Cuves",
+      "CONDITIONING": "Conditionnement",
+      "FINANCE": "Finance"
+    },
+    "QUICK_START": {
+      "TITLE": "Démarrage rapide",
+      "STEP1": "Connectez-vous avec l'identifiant et le mot de passe fournis par votre administrateur.",
+      "STEP2": "Consultez l'accueil pour voir vos modules et les éléments en attente.",
+      "STEP3": "Utilisez le menu : Réception → Production → Conditionnement → Inventaire → Finance.",
+      "STEP4": "Changez la langue via l'icône globe ; recherche globale pour les codes lot ou bon.",
+      "STEP5": "Retrouvez cette aide à tout moment via l'icône ? dans la barre du haut."
+    },
+    "COMMON_TASKS": {
+      "TITLE": "Tâches fréquentes",
+      "SUBTITLE": "Raccourcis selon vos permissions — accès direct aux actions courantes."
+    },
+    "TASKS": {
+      "NEW_OLIVE": "Nouvelle réception olive",
+      "NEW_OLIVE_HINT": "Enregistrer une réception simple",
+      "NEW_OIL": "Nouvelle réception huile",
+      "NEW_OIL_HINT": "Enregistrer un achat huile en cuve",
+      "OIL_SALES": "Ventes huile",
+      "OIL_SALES_HINT": "Créer ou gérer les ventes",
+      "TANK_RECAP": "Récap cuves",
+      "TANK_RECAP_HINT": "Vue visuelle des niveaux",
+      "NEW_OF": "Nouvel ordre de fabrication",
+      "NEW_OF_HINT": "Lancer un OF conditionnement",
+      "MY_PROFILE": "Mon profil",
+      "MY_PROFILE_HINT": "Mot de passe, photo, coordonnées",
+      "RECEPTION_LIST": "Historique réceptions",
+      "SUPPLIERS": "Fournisseurs",
+      "OLIVE_QC": "Contrôle qualité olive",
+      "OIL_MOVES": "Mouvements huile",
+      "PROJECTS": "Projets clients",
+      "LABELS": "Étiquettes",
+      "ARTICLES": "Articles",
+      "BOM": "Nomenclatures (BOM)",
+      "TRANSACTIONS": "Transactions financières",
+      "USERS": "Gestion utilisateurs",
+      "QC_RULES": "Règles QC",
+      "HR_EMPLOYEES": "Liste des employés",
+      "HR_CONTRACTS": "Contrats de travail",
+      "HR_PAYROLL": "Périodes de paie",
+      "HR_LEAVE": "Demandes de congé",
+      "NEW_EMPLOYEE": "Ajouter un employé",
+      "NEW_EMPLOYEE_HINT": "Créer une fiche avec date d'embauche et CNSS",
+      "HR_PAYROLL_RUN": "Lancer la paie mensuelle",
+      "HR_PAYROLL_RUN_HINT": "Ouvrir une période, générer les bulletins, avancer le statut"
+    },
+    "RECEPTION_TYPES": {
+      "TITLE": "Types d'opérations olive",
+      "SUBTITLE": "Chaque type a sa liste et son formulaire — choisissez celui qui correspond à votre cas.",
+      "OIL": "Réception achat huile"
+    },
+    "PDF_GUIDES": {
+      "TITLE": "Guides utilisateur PDF",
+      "SUBTITLE": "Guides complets imprimables — 8 chapitres par langue (réception à administration).",
+      "VIEW": "Voir",
+      "DOWNLOAD": "Télécharger",
+      "NOTE": "Les PDF métier (bons de réception, factures) se génèrent depuis les fiches détail, pas depuis ces guides.",
+      "FR": {
+        "TITLE": "Guide français",
+        "DESC": "Guide complet — 8 chapitres, langue principale opérateurs."
+      },
+      "EN": {
+        "TITLE": "Guide anglais",
+        "DESC": "Guide utilisateur anglais complet."
+      },
+      "AR": {
+        "TITLE": "Guide arabe",
+        "DESC": "Guide arabe complet (mise en page RTL dans le PDF)."
+      }
+    },
+    "FAQ": {
+      "TITLE": "Questions fréquentes",
+      "MISSING_MENU": {
+        "Q": "Pourquoi un menu est-il absent ?",
+        "A": "Les menus sont filtrés par permissions (MODULE:ENTITÉ:ACTION). Demandez à l'admin entreprise d'ajouter le rôle ou la permission requis."
+      },
+      "LOGIN": {
+        "Q": "Impossible de se connecter — que faire ?",
+        "A": "Vérifiez identifiant et mot de passe (sensible à la casse). Compte verrouillé ou société inactive : contactez l'admin. En local, vérifiez que le backend tourne."
+      },
+      "PDF": {
+        "Q": "Comment imprimer un bon de réception ou une facture ?",
+        "A": "Ouvrez la fiche détail et utilisez l'action PDF / impression. Les documents incluent le logo de votre société."
+      },
+      "PASSWORD": {
+        "Q": "Comment changer mon mot de passe ?",
+        "A": "Menu Mon compte (/account/profile) ou écran imposé après mot de passe temporaire."
+      },
+      "LANGUAGE": {
+        "Q": "Changer de langue ou RTL ?",
+        "A": "Icône globe dans la barre du haut. L'arabe (AR) active automatiquement l'affichage droite-à-gauche."
+      },
+      "OIL_SALE": {
+        "Q": "Quel est le cycle d'une vente huile ?",
+        "A": "Créer → Confirmer → Livrer (sortie stock) → Facture PDF → Encaisser via Finance."
+      },
+      "HR_PAYROLL": {
+        "Q": "Comment lancer la paie mensuelle ?",
+        "A": "Créer une période de paie → vue détail → onglet Bulletins → Générer les bulletins → contrôler → Avancer le statut : Calculée → Validée → Payée → Clôturée."
+      },
+      "HR_LEAVE": {
+        "Q": "Comment approuver un congé ?",
+        "A": "RH → Demandes de congé → Voir une demande en attente → Approuver ou Rejeter."
+      }
+    },
+    "TIPS": {
+      "TITLE": "Astuces",
+      "SEARCH": "La recherche globale (barre du haut) trouve les lots et bons de livraison.",
+      "LANGUAGE": "Basculez FR / EN / AR à tout moment.",
+      "PERMISSIONS": "Menu manquant ? Demandez à l'admin d'ajouter le rôle requis.",
+      "PDF": "Générez les PDF (bons, factures) depuis les fiches détail.",
+      "NOTIFICATIONS": "Consultez la cloche pour validations, blocages QC et maintenance.",
+      "LISTS": "La plupart des listes supportent filtres, export et actions — double-clic pour ouvrir une fiche."
+    },
+    "WORKFLOWS": {
+      "TITLE": "Comment les modules s'enchaînent",
+      "RECEPTION": "Réception olives/huile → CQ → planning → paiement vers Finance.",
+      "STORAGE": "Réceptions validées et ventes → mouvements IN/OUT des cuves.",
+      "CONDITIONING": "Les OF consomment le stock emballage et produisent des unités étiquetées.",
+      "FINANCE": "Journal des paiements ; vente huile : confirmer → livrer → facturer → encaisser.",
+      "HR": "RH : employés → contrats actifs → présence et congés → bulletins mensuels (CNSS, IRPP, CSS). La fiche employé regroupe tout.",
+      "PERMISSIONS": "Chaque écran exige MODULE:ENTITÉ:ACTION — contactez l'admin si menu absent."
+    },
+    "MODULES": {
+      "RECEPTION": {
+        "TITLE": "Réception",
+        "DESC": "Enregistrer livraisons olives et huile, fournisseurs, QC et planning."
+      },
+      "PRODUCTION": {
+        "TITLE": "Production & stockage huile",
+        "DESC": "Cuves, mouvements huile, filtration et contenants."
+      },
+      "CONDITIONING": {
+        "TITLE": "Conditionnement",
+        "DESC": "Ordres de fabrication, étiquettes, projets, expéditions et analytics."
+      },
+      "INVENTORY": {
+        "TITLE": "Inventaire",
+        "DESC": "Articles, produits, nomenclatures, mouvements stock et commandes."
+      },
+      "FINANCE": {
+        "TITLE": "Finance",
+        "DESC": "Dépenses, ventes huile, crédit huile, banques et factures."
+      },
+      "HR": {
+        "TITLE": "Ressources humaines",
+        "DESC": "Employés, contrats, présence, congés et paie tunisienne (CNSS, IRPP, CSS)."
+      },
+      "SETTINGS": {
+        "TITLE": "Paramètres",
+        "DESC": "Société, types génériques, règles QC, utilisateurs et rôles."
+      }
+    },
+    "HR": {
+      "NAV": "Module RH",
+      "LINKS": {
+        "DASHBOARD": "Tableau de bord RH",
+        "EMPLOYEES": "Employés",
+        "POSTES": "Postes",
+        "CONTRACTS": "Contrats",
+        "POINTAGE": "Présence",
+        "LEAVE": "Congés",
+        "PAYROLL": "Périodes de paie",
+        "PAYSLIPS": "Bulletins"
+      },
+      "GUIDE": {
+        "TITLE": "Utiliser le module RH",
+        "SUBTITLE": "Gérez le personnel, les contrats, la présence et la paie mensuelle (conformité tunisienne).",
+        "ACHIEVEMENTS_TITLE": "Ce qui est disponible aujourd'hui",
+        "ACHIEVEMENTS": {
+          "ENTITIES": "Sept entités : employés, postes, contrats, présence, congés, périodes de paie et bulletins — CRUD complet avec permissions.",
+          "PROFILE": "Fiche employé hub : résumé (contrat actif, poste, salaire) et onglets contrats, présence, congés, bulletins.",
+          "RULES": "Règles automatiques : un contrat actif par employé, CIN/CNSS uniques, contrat requis pour présence et congés, résiliation employé → contrats terminés.",
+          "PAYROLL": "Calcul paie Tunisie (CNSS 9,68 % / 17,07 %, CSS 0,5 %, IRPP progressif), génération en lot, cycle de période (Ouverte → Calculée → Validée → Payée → Clôturée) et PDF bulletin.",
+          "LEAVE": "Workflow congés : Approuver ou Rejeter depuis la vue détail.",
+          "PERMISSIONS": "Actions métier au-delà du CRUD : Approuver/Rejeter congés, Calculer/Valider/Payer/Clôturer la paie, PDF bulletins, Export présence — contrôlé par HR:ENTITE:ACTION."
+        },
+        "PERMISSIONS_TITLE": "Actions et permissions par entité",
+        "PERMISSIONS_SUBTITLE": "Chaque écran et action de ligne requiert HR:ENTITE:ACTION. Assignez les presets de rôle dans Paramètres → Utilisateurs et rôles.",
+        "PERMISSIONS": {
+          "POSTE": "Postes — LIRE, CRÉER, MODIFIER, SUPPRIMER, EXPORT",
+          "EMPLOYEE": "Employés — CRUD, EXPORT, GEN_PDF (dossier employé)",
+          "CONTRACT": "Contrats — CRUD, GEN_PDF, UPDATE_STATUS (activer/résilier)",
+          "POINTAGE": "Présence — CRUD, GEN_PDF (feuille), EXPORT",
+          "LEAVE": "Congés — CRUD, APPROUVER, REJETER, ANNULER, GEN_PDF",
+          "PAYROLL_PERIOD": "Périodes — CRUD, CALCULER, VALIDER, PAYER, CLÔTURER, EXPORT, RAPPORT",
+          "PAYSLIP": "Bulletins — CRUD, CALCULER, VALIDER, PAYER, GEN_PDF, EXPORT"
+        },
+        "ROLES_TITLE": "Presets de rôles suggérés",
+        "ROLES_SUBTITLE": "Référence dans permissions-spec.json — créez les rôles correspondants dans la gestion utilisateurs :",
+        "ROLES": {
+          "CLERK": "Clerc RH — employés, présence, soumission congés (sans approbation/paie)",
+          "MANAGER": "Responsable RH — approbation congés, contrats, PDF employé, présence complète",
+          "PAYROLL": "Paierie — calculer, valider, payer et clôturer les périodes + PDF bulletins",
+          "ADMIN": "Admin RH — profils complets sur les sept entités"
+        },
+        "WORKFLOW_TITLE": "Ordre de mise en place recommandé",
+        "WORKFLOW": {
+          "STEP1": "Créer les postes (intitulés) dans RH → Postes.",
+          "STEP2": "Ajouter les employés (identité, date d'embauche, CNSS).",
+          "STEP3": "Créer les contrats (employé + poste + salaire) et passer en Actif. Le CDI n'a pas de date de fin.",
+          "STEP4": "Saisir la présence et les congés ; approuver les demandes en attente.",
+          "STEP5": "Créer une période de paie → Voir → onglet Bulletins → Générer → contrôler → Avancer le statut jusqu'à Clôturée."
+        },
+        "LINKS_TITLE": "Liens rapides",
+        "EMPLOYEES_TITLE": "Employés",
+        "EMPLOYEES_BODY": "La liste permet recherche et filtres. La vue détail affiche la fiche hub : onglet Profil pour les données personnelles, autres onglets pour contrats, présence, congés et bulletins. Les boutons Ajouter pré-remplissent l'employé. L'intitulé de poste est en lecture seule si un contrat actif existe.",
+        "CONTRACTS_TITLE": "Contrats",
+        "CONTRACTS_BODY": "Chaque contrat lie employé, poste, type (CDI, CDD…), dates et salaire. Un seul contrat Actif par employé. Le CDI n'exige pas de date de fin.",
+        "PAYROLL_TITLE": "Paie",
+        "PAYROLL_BODY": "Une période par mois. Sur la vue période, onglet Bulletins → Générer les bulletins pour tous les employés avec contrat actif. Montants calculés automatiquement. Avancez le statut ; les périodes Payée/Clôturée sont verrouillées.",
+        "LEAVE_TITLE": "Congés",
+        "LEAVE_BODY": "Soumission avec type et dates. Contrôle des chevauchements et contrat actif requis. Approuver ou Rejeter depuis la vue détail si statut En attente.",
+        "DOCS_HINT": "Documentation complète : docs/user-guide/fr/09-module-rh.md dans le dépôt projet."
+      }
+    }
+  },
+  "SUPPORT": {
+    "OPEN_TICKET": "Ouvrir un ticket support",
+    "SUBMIT_TICKET": "Envoyer le ticket",
+    "TICKET_CREATED": "Votre ticket a été envoyé. Notre équipe vous recontactera.",
+    "TICKET_UPDATED": "Ticket support mis à jour.",
+    "MY_TICKETS": "Mes tickets",
+    "COMPANY_TICKETS": "Tickets de l'entreprise",
+    "NO_TICKETS": "Aucun ticket support pour le moment.",
+    "VIEW_TICKET": "Voir le détail",
+    "HELP_TITLE": "Besoin d'aide OOSM ?",
+    "HELP_DESC": "Signalez un bug, posez une question ou demandez une évolution. Votre ticket inclut automatiquement votre utilisateur et société.",
+    "HELP_TIP1": "Ouvrez le ticket depuis l'écran concerné — nous enregistrons l'URL de la page automatiquement.",
+    "HELP_TIP2": "Décrivez les étapes pour reproduire et le comportement attendu vs réel.",
+    "DIALOG": {
+      "TITLE": "Nouveau ticket support",
+      "LEAD": "Expliquez le problème ou votre demande. Nous joignons votre compte et la page courante au ticket."
+    },
+    "FIELDS": {
+      "SUBJECT": "Objet",
+      "DESCRIPTION": "Description",
+      "PRIORITY": "Priorité",
+      "STATUS": "Statut",
+      "REPORTER": "Demandeur",
+      "TENANT": "Entreprise",
+      "CREATED": "Créé le",
+      "PAGE": "URL de la page",
+      "ADMIN_NOTE": "Note équipe"
+    },
+    "STATUS": {
+      "OPEN": "Ouvert",
+      "IN_PROGRESS": "En cours",
+      "RESOLVED": "Résolu",
+      "CLOSED": "Fermé"
+    },
+    "PRIORITY": {
+      "LOW": "Basse",
+      "NORMAL": "Normale",
+      "HIGH": "Haute"
+    },
+    "ERRORS": {
+      "CREATE_FAILED": "Impossible d'envoyer le ticket. Réessayez.",
+      "UPDATE_FAILED": "Impossible de mettre à jour le ticket. Réessayez."
+    },
+    "ADMIN": {
+      "TITLE": "Support clients",
+      "SUBTITLE": "Les utilisateurs tenant envoient des tickets depuis l'app. Consultez et mettez à jour le statut ici — sans outil externe.",
+      "EMPTY": "Aucun ticket support pour le moment."
+    }
   },
   "SIDEBAR": {
     "BRAND_HOME": "Aller à l'accueil",
@@ -230,6 +605,65 @@
       "IN_PROGRESS": "En cours",
       "COMPLETED": "Terminée",
       "CANCELLED": "Annulée"
+    },
+    "EQUIPMENT": {
+      "NEW_TITLE": "Nouvel équipement",
+      "EDIT_TITLE": "Modifier l'équipement",
+      "VIEW_TITLE": "Détail équipement",
+      "FORM_TITLE": "Équipement mobile",
+      "LOAD_ERROR": "Impossible de charger l'équipement.",
+      "SAVE_SUCCESS": "Équipement enregistré avec succès.",
+      "SAVE_ERROR": "Impossible d'enregistrer l'équipement.",
+      "FIELDS": {
+        "NAME": "Nom",
+        "TYPE": "Type",
+        "CODE": "Code",
+        "REGISTRATION": "Immatriculation / série",
+        "HOURLY_RATE": "Tarif horaire par défaut (TND/h)",
+        "HOURS": "Heures d'utilisation",
+        "LAST_MAINTENANCE": "Dernière maintenance",
+        "NEXT_MAINTENANCE": "Prochaine maintenance"
+      },
+      "TYPE": {
+        "TRACTOR": "Tracteur",
+        "TRAILER": "Remorque",
+        "PUMP": "Pompe",
+        "HARVESTER": "Moissonneuse",
+        "OTHER": "Autre"
+      },
+      "STATUS": {
+        "AVAILABLE": "Disponible",
+        "IN_USE": "En utilisation",
+        "MAINTENANCE": "Maintenance",
+        "OUT_OF_SERVICE": "Hors service"
+      }
+    },
+    "MISSIONS": {
+      "NEW_TITLE": "Nouvelle mission externe",
+      "EDIT_TITLE": "Modifier la mission",
+      "VIEW_TITLE": "Détail mission",
+      "FORM_TITLE": "Mission de service externe",
+      "FORM_SUBTITLE": "Facturez les prestations hors site à l'heure.",
+      "LOAD_ERROR": "Impossible de charger la mission.",
+      "SAVE_SUCCESS": "Mission enregistrée avec succès.",
+      "SAVE_ERROR": "Impossible d'enregistrer la mission.",
+      "SECTIONS": {
+        "CLIENT": "Client & équipement",
+        "SCHEDULE": "Planning & travaux",
+        "BILLING": "Facturation horaire",
+        "STATUS": "Statut & paiement"
+      },
+      "FIELDS": {
+        "CLIENT": "Nom du client",
+        "CLIENT_PHONE": "Téléphone client",
+        "LOCATION": "Lieu d'intervention",
+        "OPERATOR": "Opérateur",
+        "HOURS": "Heures facturables",
+        "RATE": "Tarif horaire (TND/h)",
+        "TOTAL": "Montant total",
+        "PAID_AMOUNT": "Montant payé",
+        "NOTES": "Notes"
+      }
     }
   },
   "APPLICATION_CONFIG": {
@@ -302,6 +736,7 @@
   "BANK_ACCOUNTS": {
     "ACTIONS": {
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "EDIT": "Modifier",
       "PRINT": "Imprimer",
       "SAVE": "Enregistrer",
@@ -353,6 +788,8 @@
       "TYPE": "Catégorie"
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "ADD_TITLE": "Ajouter un type générique",
       "EDIT_TITLE": "Modifier un type générique",
       "VIEW_TITLE": "Détail du type générique"
@@ -379,8 +816,10 @@
   "COMMON": {
     "BACK": "Retour",
     "CANCEL": "Annuler",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
     "CLOSE": "Fermer",
     "DELETE": "Supprimer",
+    "DESCRIPTION": "Description",
     "EDIT": "Modifier",
     "LAST_UPDATED": "Dernier mis à jour",
     "LOADING": "Chargement...",
@@ -445,6 +884,7 @@
   "COMPANY_PROFILE_UI": {
     "ACTIONS": {
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "EDIT": "Modifier",
       "RESET": "Réinitialiser",
       "SAVE": "Enregistrer",
@@ -510,6 +950,7 @@
     "RECEPTION": {
       "BTNS": {
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CREATE": "Créer l'enregistrement",
         "UPDATE": "Mettre à jour l'enregistrement"
       },
@@ -554,18 +995,479 @@
       "STOCK": "Config Stock"
     }
   },
+  "PAYROLL": {
+    "ADD_TITLE": "Nouvelle paie",
+    "EDIT_TITLE": "Modifier la paie",
+    "DASHBOARD": {
+      "TITLE": "Bulletins de paie",
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir le bulletin."
+    },
+    "FIELDS": {
+      "EMPLOYEE": "Employé",
+      "PERIOD_START": "Début de période",
+      "PERIOD_END": "Fin de période",
+      "BASE_SALARY": "Salaire de base (TND)",
+      "BONUSES": "Primes (TND)",
+      "NET_SALARY": "Net à payer",
+      "PAID": "Payé",
+      "PAYMENT_DATE": "Date de paiement"
+    },
+    "MESSAGES": {
+      "SAVE_SUCCESS": "Bulletin enregistré avec succès",
+      "UPDATE_SUCCESS": "Bulletin mis à jour avec succès",
+      "ERROR_LOADING": "Erreur lors du chargement du bulletin",
+      "ERROR_SAVING": "Erreur lors de l'enregistrement du bulletin"
+    }
+  },
+  "LEAVE": {
+    "ADD_TITLE": "Nouvelle demande de congé",
+    "EDIT_TITLE": "Modifier la demande de congé",
+    "DASHBOARD": {
+      "TITLE": "Demandes de congé",
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir la demande."
+    },
+    "FIELDS": {
+      "EMPLOYEE": "Employé",
+      "START_DATE": "Date de début",
+      "END_DATE": "Date de fin",
+      "TYPE": "Type de congé",
+      "STATUS": "Statut",
+      "DURATION": "Durée (jours)",
+      "DURATION_HOURS": "Durée (heures)",
+      "UNIT": "Unité de durée",
+      "START_TIME": "Heure de début",
+      "END_TIME": "Heure de fin",
+      "REASON": "Motif"
+    },
+    "UNIT": {
+      "DAY": "Journée(s)",
+      "HOUR": "Heures"
+    },
+    "TYPE": {
+      "ANNUAL": "Congé annuel",
+      "SICK": "Maladie",
+      "MATERNITY": "Maternité",
+      "PATERNITY": "Paternité",
+      "UNPAID": "Sans solde",
+      "OTHER": "Autre"
+    },
+    "STATUS": {
+      "PENDING": "En attente",
+      "APPROVED": "Approuvé",
+      "REJECTED": "Rejeté",
+      "CANCELLED": "Annulé"
+    },
+    "MESSAGES": {
+      "SAVE_SUCCESS": "Demande de congé enregistrée",
+      "UPDATE_SUCCESS": "Demande de congé mise à jour",
+      "ERROR_LOADING": "Erreur lors du chargement de la demande",
+      "ERROR_SAVING": "Erreur lors de l'enregistrement de la demande"
+    }
+  },
+  "HR": {
+    "QUICK_NAV": {
+      "ARIA": "Navigation module RH",
+      "EMPLOYEES": "Annuaire & fiches",
+      "POSITIONS": "Intitulés & rôles",
+      "CONTRACTS": "Contrats de travail",
+      "PAYROLL": "Bulletins & CNSS",
+      "LEAVE": "Absences & validations",
+      "POINTAGE": "Présence quotidienne"
+    },
+    "EMPLOYMENT": {
+      "ACTIVE_DERIVED": "Le statut actif est défini automatiquement lorsqu'un contrat valide est en cours.",
+      "SINGLE_ACTIVE_CONTRACT": "Un seul contrat actif par employé. L'enregistrement actif expire le précédent.",
+      "CDI_OPEN_ENDED": "Les CDI peuvent être sans date de fin.",
+      "ACTIVE_CONTRACT": "Contrat actif",
+      "NO_ACTIVE_CONTRACT": "Cet employé n'a pas de contrat actif.",
+      "NO_EMPLOYABLE": "Aucun employé avec contrat actif. Ajoutez d'abord un contrat."
+    },
+    "PAGE": {
+      "EMPLOYEES": {
+        "TITLE": "Employés",
+        "SUBTITLE": "Gérez les dossiers, contrats et champs conformes au droit tunisien."
+      },
+      "POSITIONS": {
+        "TITLE": "Postes",
+        "SUBTITLE": "Définissez les intitulés utilisés dans les contrats et la paie."
+      },
+      "CONTRACTS": {
+        "TITLE": "Contrats",
+        "SUBTITLE": "Suivez types, salaires et statuts des contrats."
+      },
+      "PAYROLL": {
+        "TITLE": "Paie",
+        "SUBTITLE": "Générez les bulletins avec détail CNSS, IRPP et CSS."
+      },
+      "LEAVE": {
+        "TITLE": "Demandes de congé",
+        "SUBTITLE": "Consultez et validez les absences des employés."
+      },
+      "POINTAGE": {
+        "TITLE": "Pointage",
+        "SUBTITLE": "Enregistrez les entrées et sorties quotidiennes."
+      },
+      "ATTENDANCE": {
+        "TITLE": "Présence",
+        "SUBTITLE": "Consultez et gérez les enregistrements de présence."
+      },
+      "EMPLOYEE_FORM": {
+        "SUBTITLE": "Informations personnelles et emploi."
+      },
+      "PAYROLL_FORM": {
+        "SUBTITLE": "Créez une période de paie avec salaire de base et primes.",
+        "PERIOD": "Période de paie",
+        "AMOUNTS": "Salaire & paiement"
+      },
+      "LEAVE_FORM": {
+        "SUBTITLE": "Soumettez ou modifiez une demande de congé.",
+        "REQUEST": "Détails du congé"
+      },
+      "POSITION_FORM": {
+        "SUBTITLE": "Définissez un intitulé pour les contrats et dossiers RH."
+      },
+      "CONTRACT_FORM": {
+        "SUBTITLE": "Renseignez type, dates, salaire et poste associé."
+      }
+    },
+    "DASHBOARD": {
+      "TITLE": "Tableau de bord RH",
+      "SUBTITLE": "Vue d'ensemble des effectifs, contrats, congés et paie.",
+      "LOAD_ERROR": "Impossible de charger le tableau de bord RH.",
+      "QUICK_ACTIONS": "Actions rapides",
+      "KPI": {
+        "TOTAL_EMPLOYEES": "Total employés",
+        "ACTIVE_EMPLOYEES": "Employés actifs",
+        "ACTIVE_CONTRACTS": "Contrats actifs",
+        "PENDING_LEAVES": "Congés en attente",
+        "OPEN_PAYROLL": "Périodes ouvertes",
+        "DRAFT_PAYSLIPS": "Bulletins brouillon"
+      },
+      "CHART": {
+        "TITLE": "Répartition RH"
+      }
+    },
+    "EMPLOYEES": {
+      "LIST_TITLE": "Liste des employés",
+      "ADD_TITLE": "Ajouter un employé",
+      "EDIT_TITLE": "Modifier un employé",
+      "FIELDS": {
+        "FIRST_NAME": "Prénom",
+        "LAST_NAME": "Nom",
+        "CIN": "CIN",
+        "CNSS": "Matricule CNSS",
+        "EMAIL": "Email",
+        "PHONE": "Téléphone",
+        "ADDRESS": "Adresse",
+        "BIRTH_DATE": "Date de naissance",
+        "HIRE_DATE": "Date d'embauche",
+        "JOB_TITLE": "Poste",
+        "DEPARTMENT": "Département",
+        "STATUS": "Statut",
+        "BASE_SALARY": "Salaire de base",
+        "SALARY_TYPE": "Type de salaire",
+        "PAYMENT_MODE": "Mode de paiement",
+        "BANK_ACCOUNT": "Compte bancaire"
+      },
+      "FORM": {
+        "IDENTITY": "Identité",
+        "CONTACT": "Contact",
+        "EMPLOYMENT": "Emploi & rémunération"
+      },
+      "STATUS": {
+        "ACTIVE": "Actif",
+        "SUSPENDED": "Suspendu",
+        "TERMINATED": "Terminé"
+      },
+      "SALARY_TYPE": {
+        "MONTHLY": "Mensuel",
+        "HOURLY": "Horaire",
+        "DAILY": "Journalier"
+      },
+      "PAYMENT_MODE": {
+        "BANK_TRANSFER": "Virement",
+        "CASH": "Espèces",
+        "CHECK": "Chèque"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "Erreur lors du chargement de l'employé.",
+        "SAVE_SUCCESS": "Employé enregistré avec succès.",
+        "SAVE_ERROR": "Erreur lors de l'enregistrement.",
+        "NOT_FOUND": "Employé introuvable."
+      },
+      "PROFILE": {
+        "TAB_PROFILE": "Profil",
+        "TAB_CONTRACTS": "Contrats",
+        "TAB_ATTENDANCE": "Présence",
+        "TAB_LEAVES": "Congés",
+        "TAB_PAYSLIPS": "Bulletins",
+        "PERSONAL": "Informations personnelles",
+        "NO_CONTRACTS": "Aucun contrat enregistré.",
+        "NO_ATTENDANCE": "Aucune présence enregistrée.",
+        "NO_LEAVES": "Aucune demande de congé.",
+        "NO_PAYSLIPS": "Aucun bulletin de paie.",
+        "ADD_CONTRACT": "Ajouter un contrat",
+        "ADD_POINTAGE": "Ajouter une présence",
+        "ADD_LEAVE": "Ajouter un congé",
+        "ADD_PAYSLIP": "Ajouter un bulletin"
+      },
+      "WORK_REGIME": {
+        "HOURS_48": "48 h / semaine",
+        "HOURS_40": "40 h / semaine",
+        "AGRICULTURAL": "Agricole"
+      }
+    },
+    "CONTRACTS": {
+      "LIST_TITLE": "Liste des contrats",
+      "FIELDS": {
+        "EMPLOYEE": "Employé",
+        "POSTE": "Poste",
+        "TYPE": "Type",
+        "START_DATE": "Date de début",
+        "END_DATE": "Date de fin",
+        "SALARY": "Salaire",
+        "STATUS": "Statut"
+      },
+      "TYPE": {
+        "CDI": "CDI",
+        "CDD": "CDD",
+        "INTERNSHIP": "Stage",
+        "TEMPORARY": "Temporaire"
+      },
+      "STATUS": {
+        "DRAFT": "Brouillon",
+        "ACTIVE": "Actif",
+        "EXPIRED": "Expiré",
+        "TERMINATED": "Résilié"
+      }
+    },
+    "ATTENDANCE": {
+      "LIST_TITLE": "Présence & pointage",
+      "FIELDS": {
+        "EMPLOYEE": "Employé",
+        "WORK_DATE": "Date",
+        "CHECK_IN": "Entrée",
+        "CHECK_OUT": "Sortie",
+        "WORKED_HOURS": "Heures travaillées",
+        "STATUS": "Statut"
+      },
+      "FORM": {
+        "ADD_BUTTON": "Ajouter un pointage",
+        "ADD_TITLE": "Ajouter un pointage",
+        "EDIT_TITLE": "Modifier un pointage",
+        "SUBTITLE": "Saisie manuelle pour un employé (date, entrée, sortie).",
+        "BREAK_MINUTES": "Pause (minutes)",
+        "NOTES": "Notes",
+        "SAVE_SUCCESS": "Pointage enregistré",
+        "SAVE_ERROR": "Erreur lors de l'enregistrement du pointage",
+        "LOAD_ERROR": "Impossible de charger le pointage",
+        "LOAD_EMPLOYEES_ERROR": "Impossible de charger la liste des employés"
+      },
+      "STATUS": {
+        "PRESENT": "Présent",
+        "ABSENT": "Absent",
+        "HALF_DAY": "Demi-journée",
+        "LEAVE": "Congé",
+        "PUBLIC_HOLIDAY": "Jour férié"
+      }
+    },
+    "LEAVES": {
+      "LIST_TITLE": "Demandes de congé",
+      "FIELDS": {
+        "EMPLOYEE": "Employé",
+        "TYPE": "Type",
+        "START_DATE": "Début",
+        "END_DATE": "Fin",
+        "DURATION": "Durée (jours)",
+        "STATUS": "Statut"
+      },
+      "TYPE": {
+        "ANNUAL": "Annuel",
+        "SICK": "Maladie",
+        "UNPAID": "Sans solde",
+        "MATERNITY": "Maternité",
+        "PATERNITY": "Paternité",
+        "OTHER": "Autre"
+      },
+      "STATUS": {
+        "PENDING": "En attente",
+        "APPROVED": "Approuvé",
+        "REJECTED": "Rejeté",
+        "CANCELLED": "Annulé"
+      },
+      "ACTIONS": {
+        "APPROVE": "Approuver",
+        "REJECT": "Rejeter",
+        "APPROVE_SUCCESS": "Demande de congé approuvée.",
+        "REJECT_SUCCESS": "Demande de congé rejetée.",
+        "ACTION_ERROR": "Impossible de mettre à jour le statut du congé."
+      }
+    },
+    "PAYROLL": {
+      "LIST_TITLE": "Paie",
+      "TABS": {
+        "PERIODS": "Périodes"
+      },
+      "FIELDS": {
+        "YEAR": "Année",
+        "MONTH": "Mois",
+        "START_DATE": "Début",
+        "END_DATE": "Fin",
+        "STATUS": "Statut"
+      },
+      "STATUS": {
+        "OPEN": "Ouverte",
+        "CALCULATED": "Calculée",
+        "VALIDATED": "Validée",
+        "PAID": "Payée",
+        "CLOSED": "Clôturée"
+      },
+      "PROFILE": {
+        "TAB_PERIOD": "Période",
+        "TAB_PAYSLIPS": "Bulletins",
+        "GENERATE_PAYSLIPS": "Générer les bulletins",
+        "ADVANCE_STATUS": "Avancer le statut",
+        "NO_PAYSLIPS": "Aucun bulletin pour cette période.",
+        "GENERATE_SUCCESS": "Bulletins générés avec succès.",
+        "GENERATE_ERROR": "Impossible de générer les bulletins.",
+        "STATUS_SUCCESS": "Statut de la période mis à jour.",
+        "STATUS_ERROR": "Impossible de mettre à jour le statut."
+      }
+    },
+    "PAYSLIPS": {
+      "LIST_TITLE": "Bulletins de paie",
+      "DETAIL_TITLE": "Détail du bulletin",
+      "DOWNLOAD_PDF": "Télécharger PDF",
+      "SECTION": {
+        "AMOUNTS": "Montants"
+      },
+      "FIELDS": {
+        "EMPLOYEE": "Employé",
+        "GROSS_SALARY": "Salaire brut",
+        "BASE_SALARY": "Salaire de base",
+        "BONUSES": "Primes",
+        "NET_SALARY": "Salaire net",
+        "CNSS_EMPLOYEE": "CNSS salarié",
+        "CNSS_EMPLOYER": "CNSS employeur",
+        "CSS": "CSS",
+        "IRPP": "IRPP",
+        "CNSS_EMPLOYEE": "CNSS salarié",
+        "IRPP": "IRPP",
+        "TOTAL_DEDUCTIONS": "Total retenues",
+        "TOTAL_BONUSES": "Total primes",
+        "STATUS": "Statut",
+        "PAYMENT_DATE": "Date de paiement"
+      },
+      "STATUS": {
+        "DRAFT": "Brouillon",
+        "VALIDATED": "Validé",
+        "PAID": "Payé"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "Erreur lors du chargement du bulletin.",
+        "NOT_FOUND": "Bulletin introuvable.",
+        "PDF_ERROR": "Impossible de télécharger le PDF."
+      }
+    },
+    "REPORTS": {
+      "TITLE": "Rapports RH",
+      "SUBTITLE": "Générez des rapports synthétiques.",
+      "SELECT": "Sélection du rapport",
+      "TYPE": "Type de rapport",
+      "GENERATE": "Générer",
+      "RESULT": "Résultat",
+      "LOAD_ERROR": "Erreur lors de la génération du rapport.",
+      "TYPES": {
+        "HEADCOUNT": "Effectifs",
+        "LEAVE_SUMMARY": "Synthèse congés",
+        "PAYROLL_SUMMARY": "Synthèse paie"
+      }
+    },
+    "SETTINGS": {
+      "TITLE": "Paramètres RH",
+      "SUBTITLE": "Paramètres généraux et jours fériés.",
+      "TAB_PARAMETERS": "Paramètres",
+      "TAB_HOLIDAYS": "Jours fériés",
+      "PARAMETERS_TITLE": "Paramètres RH",
+      "HOLIDAYS_TITLE": "Jours fériés",
+      "FIELDS": {
+        "PARAM_KEY": "Clé",
+        "PARAM_TYPE": "Type",
+        "VALUE": "Valeur",
+        "DESCRIPTION": "Description",
+        "HOLIDAY_NAME": "Nom",
+        "HOLIDAY_DATE": "Date",
+        "RECURRING": "Récurrent"
+      },
+      "PARAM_TYPE": {
+        "STRING": "Texte",
+        "NUMBER": "Nombre",
+        "BOOLEAN": "Booléen"
+      }
+    },
+    "POINTAGE": {
+      "KIOSK": {
+        "MENU": "Pointage employés",
+        "OPEN": "Ouvrir le pointage",
+        "TITLE": "Pointage",
+        "SUBTITLE": "Saisissez votre CIN puis pointez votre entrée ou sortie.",
+        "CIN_LABEL": "Numéro CIN",
+        "CIN_REQUIRED": "Veuillez saisir votre CIN",
+        "IDENTIFY": "Identifier",
+        "RESET": "Nouveau",
+        "EMPLOYEE_NOT_FOUND": "Aucun employé trouvé pour ce CIN",
+        "LOAD_ERROR": "Impossible de charger le pointage",
+        "PUNCH_ERROR": "Pointage refusé",
+        "CHECK_IN_OK": "Entrée enregistrée",
+        "CHECK_OUT_OK": "Sortie enregistrée",
+        "TODAY": "Aujourd'hui",
+        "CHECK_IN": "Entrée",
+        "CHECK_OUT": "Sortie",
+        "WORKED_HOURS": "Heures travaillées",
+        "BUTTON_IN": "Entrée",
+        "BUTTON_OUT": "Sortie",
+        "DAY_COMPLETE": "Pointage du jour terminé",
+        "BACK_LIST": "Liste des présences",
+        "NO_JOB": "Poste non renseigné"
+      },
+      "SEARCH": "Rechercher un employé",
+      "SEARCH_PLACEHOLDER": "Nom, CIN, e-mail…",
+      "DATE": "Date",
+      "CHECK_IN": "Entrée",
+      "CHECK_OUT": "Sortie",
+      "DURATION": "Durée",
+      "MARK_ENTRY": "Pointer entrée",
+      "MARK_EXIT": "Pointer sortie",
+      "ENTRY_DONE": "Entrée enregistrée",
+      "EXIT_DONE": "Sortie enregistrée",
+      "LOAD_ERROR": "Impossible de charger le pointage pour cette date.",
+      "SAVE_ERROR": "Impossible d'enregistrer le pointage.",
+      "ENTRY_MARKED": "Entrée enregistrée à {{time}}.",
+      "EXIT_MARKED": "Sortie enregistrée à {{time}}.",
+      "PUNCH": "Pointage",
+      "OPEN_PUNCH": "Entrée ouverte — pointez la sortie d'abord"
+    }
+  },
   "CONTRACT": {
     "ADD": "Ajouter un contrat",
     "ADD_TITLE": "Ajouter un contrat",
     "CANCEL": "Annuler",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
     "EDIT_TITLE": "Modifier un contrat",
     "END_DATE": "Date de fin",
     "MESSAGES": {
+      "CONFIRM_DELETE": "Supprimer ce contrat ?",
+      "DELETE_CONFIRM": "Supprimer ce contrat ?",
+      "DELETE_SUCCESS": "Contrat supprimé avec succès",
+      "ERROR_DELETING": "Erreur lors de la suppression du contrat",
       "EMPLOYEE_REQUIRED": "L'employé est requis",
       "ERROR_LOADING": "Erreur lors du chargement du contrat",
+      "ERROR_SAVING": "Erreur lors de l'enregistrement du contrat",
       "ERROR_UPDATING": "Erreur lors de la mise à jour du contrat",
+      "SAVE_SUCCESS": "Contrat enregistré avec succès",
       "UPDATE_SUCCESS": "Contrat mis à jour avec succès"
     },
+    "LIST_TITLE": "Liste des contrats",
     "POSITION": "Poste",
     "POSTE": "Poste du contrat",
     "SALARY": "Salaire",
@@ -573,9 +1475,17 @@
     "START_DATE": "Date de début",
     "STATUS": "Statut du contrat",
     "TITLE": "Contracts",
-    "TYPE": "Type",
+    "TYPE": {
+      "CDD": "CDD (durée déterminée)",
+      "CDI": "CDI (durée indéterminée)",
+      "INTERNSHIP": "Stage",
+      "STAGE": "Stage",
+      "TEMPORARY": "Temporaire"
+    },
+    "TYPE_LABEL": "Type",
     "UPDATE": "Modifier le contrat",
     "DASHBOARD": {
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir le dossier employé (onglet contrats).",
       "FIELDS": {
         "CONTRACT_STATUS": "Statut du contrat",
         "CONTRACT_TYPE": "Type de contrat",
@@ -598,6 +1508,7 @@
     "BUTTONS": {
       "BACK": "Retour",
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "SUBMIT": "Soumettre",
       "VALIDATE": "Valider"
     },
@@ -618,6 +1529,8 @@
       "UNPAID_AMOUNT": "Montant impayé (TND)"
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "FIELDS": {
         "CATEGORY": "Catégorie",
         "DELIVERY_DATE": "Date",
@@ -720,6 +1633,7 @@
     "ACTIONS": {
       "BACK": "Retour",
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "CREATE": "Créer le client",
       "EDIT": "Modifier",
       "UPDATE": "Mettre à jour le client"
@@ -900,6 +1814,7 @@
         "QUALITY_CONTROL": "Contrôle qualité",
         "STORAGE_UNIT": "Unité de stockage",
         "SUPPLIER_DETAILS": "Détails fournisseur",
+        "SUPPLIER_FINANCE": "Finance fournisseur",
         "SUPPLIER_PAYMENTS": "Paiements fournisseur",
         "TITLE": "Liens associés"
       },
@@ -941,7 +1856,8 @@
       "OLIVE_TYPE": "Type d'olive",
       "OLIVE_VARIETY": "Variété",
       "OPERATION_TYPE": "Type d'opération",
-      "PAID_AMOUNT": "Montant paié",
+      "PAID": "Soldé",
+      "PAID_AMOUNT": "Montant payé",
       "PARCEL": "Parcelle",
       "PAYMENT_MODE": "Methode de paiment",
       "PAYMENT_STATUS": "Paiement",
@@ -966,10 +1882,13 @@
       "YIELD": "Rendement"
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "BUTTONS": {
         "ADD": "Ajouter",
         "BACK": "Retour",
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "SAVE": "Enregistrer",
         "UPDATE": "Mettre à jour"
       },
@@ -1092,34 +2011,6 @@
       "REFUSED": "Refusé"
     }
   },
-  "DEPARTMENT": {
-    "DETAIL": {
-      "EMPLOYEES": "Employés",
-      "GENERAL_INFO": "Informations générales",
-      "MANAGER_INFO": "Informations sur le responsable",
-      "MANAGER_NOT_FOUND": "Responsable non trouvé",
-      "NO_EMPLOYEES": "Aucun employé trouvé",
-      "TITLE": "Détails du département"
-    },
-    "FORM": {
-      "DESCRIPTION": "Description",
-      "NAME": "Nom"
-    },
-    "MESSAGES": {
-      "NOT_FOUND": "Département non trouvé"
-    },
-    "DASHBOARD": {
-      "FIELDS": {
-        "DESCRIPTION": "Description",
-        "EMPLOYEES_COUNT": "Nombre d'employés",
-        "MANAGER_ID": "Responsable",
-        "NAME": "Nom"
-      }
-    },
-    "DESCRIPTION": "Description",
-    "MANAGER": "Responsable",
-    "NAME": "Nom du département"
-  },
   "DIVORCED": "Divorcé(e)",
   "Dashboard": "Tableau de bord",
   "Data": "Données",
@@ -1134,32 +2025,41 @@
     "ADD_TITLE": "Ajouter un employé",
     "BIRTH_DATE": "Date de naissance",
     "CANCEL": "Annuler",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
     "CIN": "CIN",
     "CITY": "Ville",
     "COUNTRY": "Pays",
-    "DEPARTMENT": "Departement",
     "DETAIL": {
       "CONTACT_INFO": "Informations de contact",
+      "FILE_SUBTITLE": "Dossier complet : profil, contrats, paie, congés et pointage.",
+      "NO_POINTAGE": "Aucun pointage enregistré pour cet employé.",
       "PERSONAL_INFO": "Informations personnelles",
       "PROFESSIONAL_INFO": "Informations professionnelles",
+      "TAB_PROFILE": "Profil",
       "TITLE": "Détails de l'employé"
     },
     "EDIT_TITLE": "Modifier un employé",
     "EMAIL": "Email",
     "FIRST_NAME": "Prénom",
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "ADDRESS": "Adresse",
       "BIRTH_DATE": "Date de naissance",
       "CIN": "CIN",
       "CITY": "Ville",
       "COUNTRY": "Pays",
-      "DEPARTMENT": "Département",
       "EMAIL": "Email",
       "GENDER": "Sexe",
       "HIRE_DATE": "Date d'embauche",
       "MARITAL_STATUS": "État civil",
       "PHONE": "Téléphone",
       "POSTAL_CODE": "Code postal"
+    },
+    "WORK_REGIME": {
+      "HOURS_48": "48 h / semaine (SMIG industriel)",
+      "HOURS_40": "40 h / semaine (SMIG services)",
+      "AGRICULTURAL": "Agricole (SMAG)"
     },
     "GENDER": {
       "FEMALE": "Femme",
@@ -1170,8 +2070,11 @@
     "LAST_NAME": "Nom",
     "MARITAL_STATUS": {
       "MARRIED": "marié(e)",
-      "SINGLE": "Célibataire"
+      "SINGLE": "Célibataire",
+      "WIDOWED": "Veuf(ve)",
+      "DIVORCED": "Divorcé(e)"
     },
+    "LIST_TITLE": "Liste des employés",
     "MESSAGES": {
       "NOT_FOUND": "Employé introuvable"
     },
@@ -1182,7 +2085,31 @@
       "ACTIVE": "Actif",
       "INACTIVE": "Inactif"
     },
-    "UPDATE": "Mettre à jour"
+    "UPDATE": "Mettre à jour",
+    "DASHBOARD": {
+      "TITLE": "Tableau de bord RH",
+      "SUBTITLE": "Vue d'ensemble des effectifs, tendances et actions en attente.",
+      "STATS_TITLE": "Indicateurs clés",
+      "FULL_DASHBOARD": "Tableau de bord complet",
+      "TOTAL": "Total employés",
+      "OF_WORKFORCE": "des effectifs",
+      "NEEDS_REVIEW": "Profils à revoir",
+      "ACTIVE_CONTRACTS": "Contrats actifs",
+      "POSITIONS": "postes",
+      "PENDING_LEAVE": "Congés en attente",
+      "AWAITING_APPROVAL": "En attente de validation",
+      "UNPAID_PAYROLL": "Bulletins impayés",
+      "PAYSLIPS_TO_SETTLE": "Bulletins à régler",
+      "BY_WORK_REGIME": "Employés par régime de travail",
+      "BY_GENDER": "Employés par sexe",
+      "RECENT_HIRES": "Embauches récentes",
+      "VIEW_ALL": "Voir tous les employés",
+      "NO_RECENT_HIRES": "Aucune embauche récente enregistrée.",
+      "QUICK_ACTIONS": "Actions rapides",
+      "LOADING": "Chargement des statistiques…",
+      "NO_DATA": "Aucune donnée",
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir le dossier complet de l'employé."
+    }
   },
   "EXPENSE": {
     "CATEGORY": {
@@ -1216,6 +2143,7 @@
   "EXPENSES": {
     "ACTIONS": {
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "EDIT": "Modifier",
       "PRINT": "Imprimer",
       "SAVE": "Enregistrer",
@@ -1299,6 +2227,7 @@
   "GENERAL_CONFIG": {
     "ACTIONS": {
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "EDIT": "Modifier",
       "RESET": "Réinitialiser",
       "SAVE": "Enregistrer",
@@ -1330,6 +2259,7 @@
   "GENERAL_CONFIG_UI": {
     "ACTIONS": {
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "EDIT": "Modifier",
       "RESET": "Réinitialiser",
       "SAVE": "Enregistrer",
@@ -1344,12 +2274,14 @@
       "TITLE": "Informations d'adresse"
     },
     "COMPANY_INFO": {
+      "ACTIVE": "Entreprise active",
       "CAPITAL": "Capital",
       "CAPITAL_REQUIRED": "Le capital est requis.",
       "CNSS_NUMBER": "Numéro CNSS",
       "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
       "CREATION_DATE": "Date de création",
       "CREATION_DATE_REQUIRED": "La date de création est requise.",
+      "LEGAL_DETAILS": "Détails juridiques",
       "LEGAL_FORM": "Forme juridique",
       "LEGAL_FORMS": {
         "OTHER": "Autre",
@@ -1363,12 +2295,14 @@
       "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
       "REG_NUMBER": "Numéro d'enregistrement",
       "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
+      "SUMMARY": "Résumé entreprise",
       "TAX_ID": "Identifiant fiscal",
       "TAX_ID_REQUIRED": "L'identifiant fiscal est requis.",
       "TITLE": "Informations sur la société"
     },
     "CONFIGURATIONS": "Configurations",
     "CONTACT_INFO": {
+      "EDIT_TITLE": "Contact & localisation",
       "EMAIL": "Email",
       "EMAIL_REQUIRED": "L'email est requis.",
       "PHONE": "Téléphone",
@@ -1377,8 +2311,25 @@
       "WEBSITE": "Site web",
       "WEBSITE_REQUIRED": "Le site web est requis."
     },
+    "FINANCE_CONFIG": {
+      "PRICE_SUFFIX": "TND / kg",
+      "SUBTITLE": "Prix de trituration et paramètres financiers du système",
+      "TITLE": "Configuration finance"
+    },
     "FINANCE_TAB": "Config Finance",
+    "HR_CONFIG": {
+      "SUBTITLE": "Paramètres du module RH (règles de paie, valeurs par défaut, etc.)",
+      "TITLE": "Configuration RH"
+    },
     "HR_TAB": "Config RH",
+    "OTHER_CONFIG": {
+      "SUBTITLE": "Paramètres hors Production, Finance et RH",
+      "TITLE": "Autres configurations"
+    },
+    "CATEGORY_CONFIG": {
+      "SUBTITLE": "Paramètres système pour ce module",
+      "TITLE": "Configuration"
+    },
     "LOGO": {
       "CLICK_BROWSE": "ou cliquez pour parcourir",
       "DRAG_DROP": "Glissez-déposez votre logo ici",
@@ -1391,8 +2342,22 @@
       "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les modifications non enregistrées seront perdues."
     },
     "OTHER_TAB": "Autre Config",
+    "PRODUCTION_CONFIG": {
+      "DAILY_METRIC_HINT": "Valeur de référence actuelle. L'historique est conservé lors de l'enregistrement.",
+      "EDIT_CAMPAIGN": "Calendrier de campagne",
+      "ENDED": "Terminée le",
+      "HISTORY": "Historique",
+      "HISTORY_DATE": "Date",
+      "HISTORY_NO_MATCH": "Aucune entrée trouvée",
+      "HISTORY_SEARCH": "Rechercher…",
+      "HISTORY_VALUE": "Valeur",
+      "PARAMETERS": "Paramètres de production",
+      "START_FROM": "Début",
+      "SUMMARY": "Résumé de campagne"
+    },
     "PRODUCTION_TAB": "Config Production",
-    "TAB_TITLE": "Configuration Générale"
+    "TAB_TITLE": "Configuration Générale",
+    "TYPES_PARAMS_TAB": "Types Params"
   },
   "GENERAL_CONFIG_UI_GENERAL_CONFIG": {
     "CONFIGURATIONS": "Configurations",
@@ -1466,7 +2431,9 @@
       "COMPANY_PROFILES": "Profils de société",
       "DASHBOARD": "Tableau de bord admin",
       "TITLE": "Administration",
-      "USERS": "Gestion des utilisateurs"
+      "USERS": "Gestion des utilisateurs",
+      "SUPPORT": "Tickets support",
+      "PERMISSION_CATALOG": "Catalogue de permissions"
     },
     "CONDITIONNEMENT": {
       "EXPEDITIONS": "Expéditions & BL",
@@ -1483,6 +2450,7 @@
       "ACTIONS": {
         "BACK": "Retour aux clients",
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CREATE": "Créer un client",
         "EDIT": "Modifier",
         "SAVE": "Enregistrer",
@@ -1610,13 +2578,41 @@
         "OIL_SALES": "Ventes d'Huile",
         "TITLE": "Tableau de bord finance",
         "TRANSACTIONS": "Transactions",
-        "WASTE_SALES": "Ventes de Déchets"
+        "WASTE_SALES": "Ventes de Déchets",
+        "RECENT_SALES": "Ventes récentes",
+        "NO_RECENT_SALES": "Aucune vente sur la période sélectionnée",
+        "RECENT_ACTIVITY": "Activité récente",
+        "NO_RECENT_ACTIVITY": "Aucune transaction récente",
+        "EXPENSE_BREAKDOWN": "Répartition des dépenses",
+        "OVERVIEW": {
+          "COUNT": "Transactions",
+          "AMOUNT": "Montant (TND)"
+        },
+        "INVOICE_PREVIEW": {
+          "TITLE": "Aperçu facture",
+          "PRINT": "Imprimer",
+          "DATE": "Date",
+          "DUE_DATE": "Échéance",
+          "FROM": "De",
+          "TO": "À",
+          "NAME": "Désignation",
+          "DESCRIPTION": "Description",
+          "QTY": "Qté",
+          "PRICE": "Prix",
+          "TOTAL": "Total",
+          "SUBTOTAL": "Sous-total",
+          "GRAND_TOTAL": "Total général",
+          "NOTE": "Note",
+          "PARTIAL": "Partiellement payé"
+        }
       },
       "EXPENSES": "Dépenses",
       "DASHBOARD_OVERVIEW": "Tableau de bord finance",
       "OIL_CREDIT": "Crédit d'Huile",
       "OIL_SALES": "Ventes d'Huile",
       "OIL_TRANSACTIONS": "Mouvments d'huile",
+      "CASH_REGISTER": "Caisse du jour",
+      "SEASON_RECAP": "Récapt saison",
       "SALES": "Ventes & crédits",
       "TITLE": "Finance & Comptabilité",
       "TRANSACTIONS": "Transactions Financières",
@@ -1637,7 +2633,14 @@
       "TITLE": "Accueil"
     },
     "HR": {
+      "ATTENDANCE": "Pointage",
+      "CONTRACTS": "Contrats",
       "EMPLOYEES": "Employés",
+      "LEAVE": "Congés",
+      "ORGANIZATION": "Organisation",
+      "PAYROLL": "Paie & bulletins",
+      "PAYROLL_LEAVE": "Contrats, paie & congés",
+      "POSITIONS": "Postes",
       "ROLES_PERMISSIONS": "Rôles & permissions",
       "TITLE": "Ressources Humaines"
     },
@@ -1669,6 +2672,7 @@
       "OVERVIEW": "Vue d'ensemble",
       "PARTNERS": "Fournisseurs & apporteurs",
       "PLANNING": "Planification",
+      "PURCHASE_JOURNAL": "Journal achat",
       "QUALITY_CONTROL": "Contrôle qualité",
       "QUALITY_CONTROL_HUILE": "Quality control d'huile",
       "QUALITY_CONTROL_OLIVE": "Quality control d'olive",
@@ -1691,6 +2695,13 @@
     "MAINTENANCE": {
       "WORK_ORDERS": "Maintenance"
     },
+    "MAINTENANCE_EQUIPMENT": {
+      "TITLE": "Maintenance & équipements"
+    },
+    "EQUIPMENT": {
+      "REGISTRY": "Équipements mobiles",
+      "MISSIONS": "Missions externes"
+    },
     "STOCKS_INV": {
       "DASHBOARD": "Tableau de bord stock",
       "ITEMS": "Articles & Catalogue",
@@ -1700,6 +2711,8 @@
     },
     "STORAGE": {
       "FORM": {
+        "CNSS_MATRICULE": "Matricule CNSS",
+        "WORK_REGIME": "Régime horaire",
         "IS_PAID_STORAGE": "Ceci est une unité de stockage payante",
         "MONTHLY_RENTAL_PRICE": "Prix de location mensuel (TND)",
         "PAID_STORAGE_INFO": "Informations sur le stockage payant",
@@ -1728,6 +2741,7 @@
   "MILL_MACHINE": {
     "ACTIONS": {
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "EDIT": "Modifier",
       "MAINTENANCE": "Maintenance",
       "SAVE": "Enregistrer",
@@ -1795,10 +2809,13 @@
       }
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "ACTIVE": "Actif",
       "BARCODE": "Code-barres",
       "BUY_PRICE": "Prix d'achat",
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "CAPACITY": "Capacité (L)",
       "CERTIFICATION": "Certification",
       "DESCRIPTION": "Description",
@@ -1842,6 +2859,7 @@
   "OIL_CREDIT": {
     "ACTIONS": {
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "EDIT": "Modifier",
       "SAVE": "Enregistrer",
       "UPDATE": "Mettre à jour"
@@ -1874,8 +2892,11 @@
       "UNIT": "Unité"
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "BUTTONS": {
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CREATE": "Créer",
         "UPDATE": "Mettre à jour"
       },
@@ -1971,6 +2992,7 @@
       "BUTTONS": {
         "ADD": "Ajouter",
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "UPDATE": "Mettre à jour"
       },
       "CLIENT_REGION": "Client et région",
@@ -2096,6 +3118,12 @@
       "DOCUMENTS": "Documents",
       "LIFECYCLE": "Actions"
     },
+    "RELATED_LINKS": {
+      "FINANCIAL_TRANSACTIONS": "Transactions financières",
+      "STORAGE_UNIT": "Unité de stockage",
+      "SUPPLIER_FINANCE": "Finance fournisseur",
+      "TITLE": "Liens associés"
+    },
     "CONFIRMATIONS": {
       "CANCEL_MESSAGE": "Cette vente sera annulée et le stock sera restauré si applicable.",
       "CANCEL_TITLE": "Annuler la vente d'huile ?",
@@ -2104,6 +3132,7 @@
     },
     "ADD_TITLE": "Ajouter une vente d'huile",
     "CANCEL": "Annuler",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
     "CONFIRM": "Confirmer",
     "CONTAINERS": {
       "COUNT": "Quantité",
@@ -2166,6 +3195,8 @@
       "LAST_MODIFIED_DATE": "Dernière modification"
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "VALIDATION": {
         "ADDRESS_REQUIRED": "Une adresse de livraison est requise. Utilisez l'adresse du client ou saisissez-en une.",
         "BOTH_CUSTOMER_AND_SUPPLIER_SELECTED": "Veuillez sélectionner soit le client soit le fournisseur, pas les deux",
@@ -2321,15 +3352,19 @@
       }
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "ACTIONS": {
         "APPROVE": "Approuver",
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CREATE": "Créer",
         "UPDATE": "Mettre à jour"
       },
       "CONFIRMATION": {
         "APPROVE": {
           "CANCEL": "Annuler",
+          "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
           "CONFIRM": "Approuver",
           "MESSAGE": "Êtes-vous sûr de vouloir approuver cette transaction ? Cette action ne peut pas être annulée.",
           "TITLE": "Approuver la Transaction"
@@ -2442,10 +3477,13 @@
   },
   "OLIVE_RECEPTION": {
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "BUTTONS": {
         "ADD": "Ajouter",
         "BACK": "Retour",
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "SAVE": "Enregistrer",
         "UPDATE": "Mettre à jour"
       },
@@ -2535,6 +3573,7 @@
       "BONCOMMANDE": "Bon de commande",
       "Base_type": "Type génerique",
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "CERTIFICATION": "Certification",
       "CHECK_STOCK": "Vérifier le stock",
       "CLIENT": "Client",
@@ -2551,7 +3590,6 @@
       "REMOVE": "Supprimer",
       "DELIVER": "Livrer",
       "DELIVERYHISTORY": "Historique des réceptions",
-      "DEPARTMENT": "Département",
       "DETAIL": "Détails",
       "DRAFT": "Brouillon",
       "EMPLACEMENTSTOCK": "Emplacement de stock",
@@ -2709,7 +3747,6 @@
       "DASHBOARD_TITLES_FILTRATION": "Opérations de filtration réalisées sur l'huile stockée.",
       "AUTO_GESTION_DES_RESERVOIRS": "Cuves et réservoirs d'huile : niveaux, capacité et affectations.",
       "AUTO_GESTION_DES_CONTENANTS_D_HUILE": "Contenants d'huile pour conditionnement, transfert et vente.",
-      "AUTO_LISTE_DES_DEPARTEMENTS": "Départements RH pour organiser employés et rôles.",
       "AUTO_LISTE_DES_EMPLOYES": "Fiches employés, coordonnées et affectations.",
       "AUTO_LISTE_DES_CONTRATS": "Contrats de travail liés aux employés et postes.",
       "AUTO_LISTE_DES_POSTES": "Postes et intitulés utilisés en RH et paie.",
@@ -2982,7 +4019,8 @@
     "WASTE_PROCESSING": "Traitement des déchets oléicoles",
     "WEBSITE": "Site web",
     "YIELD": "Rendement",
-    "TERMS": "Conditions générales"
+    "TERMS": "Conditions générales",
+    "NÂ°COLIS": "Package #"
   },
   "PLANNING": {
     "CANCEL_CAUSE": "Motif d'annulation",
@@ -3011,12 +4049,24 @@
   "PLANNING_UNASSIGNED": "Non Assignées",
   "PLANNING_VARIETY": "Variété :",
   "POSTE": {
+    "LIST_TITLE": "Liste des postes",
     "ADD_TITLE": "Ajouter un poste",
     "CANCEL": "Annuler",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
     "DESCRIPTION": "Description du poste",
+    "DETAIL": {
+      "GENERAL_INFO": "Informations générales",
+      "NO_DESCRIPTION": "Aucune description",
+      "SUBTITLE": "Intitulé utilisé dans les contrats et dossiers RH.",
+      "TITLE": "Détail du poste"
+    },
+    "DASHBOARD": {
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir le détail du poste."
+    },
     "EDIT_TITLE": "Modifier un poste",
     "MESSAGES": {
-      "ERROR_LOADING": "Erreur lors du chargement des postes"
+      "ERROR_LOADING": "Erreur lors du chargement des postes",
+      "NOT_FOUND": "Poste non trouvé"
     },
     "NAME": "Poste",
     "SAVE": "Enregistrer le poste",
@@ -3045,6 +4095,7 @@
   "QUALITY_CONTROL_RULE": {
     "ACTIONS": {
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "EDIT": "Modifier",
       "SAVE": "Enregistrer",
       "UPDATE": "Mettre à jour"
@@ -3078,6 +4129,7 @@
       "ACTIONS": {
         "ADD": "Ajouter",
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "SAVE": "Mettre à jour",
         "UPDATE": "Mettre à jour"
       },
@@ -3274,6 +4326,7 @@
       "ADD": "Ajouter",
       "BACK": "Retour",
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "CLOSE": "Fermer",
       "DELETE": "Supprimer",
       "EDIT": "Modifier",
@@ -3287,23 +4340,28 @@
     "CONFIRMATION": {
       "BULK_DELETE": {
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CONFIRM": "Tout supprimer",
         "MESSAGE": "Êtes-vous sûr de vouloir supprimer les éléments sélectionnés ? Cette action ne peut pas être annulée.",
         "TITLE": "Confirmer la suppression en masse"
       },
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "DATA_LOSS": {
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CONFIRM": "Continuer",
         "MESSAGE": "Cette action entraînera une perte permanente de données. Êtes-vous sûr de vouloir continuer ?",
         "TITLE": "Avertissement de perte de données"
       },
       "DEFAULT": {
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CONFIRM": "Confirmer"
       },
       "DELETE": {
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CONFIRM": "Supprimer",
         "MESSAGE": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action ne peut pas être annulée.",
         "TITLE": "Confirmer la suppression"
@@ -3337,12 +4395,14 @@
       },
       "UPDATE": {
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CONFIRM": "Oui, mettre à jour",
         "MESSAGE": "Êtes-vous sûr de vouloir mettre à jour cette mouvment d'huile ? Cette action est irréversible.",
         "TITLE": "Confirmer la mise à jour"
       },
       "WARNING": {
         "CANCEL": "Annuler",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
         "CONFIRM": "Continuer",
         "MESSAGE": "Veuillez confirmer cette action.",
         "TITLE": "Avertissement"
@@ -3364,6 +4424,8 @@
       "LOAD": "Erreur lors du chargement de l'unité de stockage"
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "IS_PAID_STORAGE": "Stockage payant",
       "MONTHLY_RENTAL_PRICE": "Prix de location mensuel",
       "PAID_STORAGE_INFO": "Informations sur le stockage payant",
@@ -3451,6 +4513,7 @@
     "ACTIONS": {
       "ADD": "Ajouter",
       "CANCEL": "Annuler",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
       "EDIT": "Modifier"
     },
     "ADD": {
@@ -3510,6 +4573,7 @@
       "INBOUND": "Entrées",
       "OUTBOUND": "Sorties",
       "PAID": "Payé",
+      "PAYMENT_LEDGER_TITLE": "Journal des paiements",
       "RELATIONSHIP": "Relation financière",
       "STORAGE_SUPPLIER_HINT": "Ce fournisseur dispose d'un espace de stockage. Les crédits huile et transactions liées au stockage peuvent s'appliquer.",
       "TAB_FINANCE": "Finance",
@@ -3545,6 +4609,8 @@
       "ARTICLES_HINT": "Pour les articles inventaire, bons de commande et emballages. Distinct des fournisseurs réception olive/huile."
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "TITLE_CREATE": "Nouveau fournisseur matériel",
       "TITLE_EDIT": "Modifier le fournisseur matériel",
       "SUBTITLE_CREATE": "Ajouter un fournisseur matériel pour emballages, articles et bons de commande.",
@@ -3714,6 +4780,8 @@
     },
     "WASTE_PROCESSING": {
       "FORM": {
+        "CNSS_MATRICULE": "Matricule CNSS",
+        "WORK_REGIME": "Régime horaire",
         "FIELDS": {
           "METHOD": "الطريقة",
           "OIL_TYPE": "نوع الزيت",
@@ -3777,6 +4845,7 @@
     "BATCH_PAYMENT": "Paiement par lot",
     "BOTH_PAYMENT": "Paiement Mixte",
     "CANCEL": "Annuler",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
     "CASH": "Espèces",
     "CASH_AMOUNT": "Montant en Espèces",
     "CASH_PAYMENT": "Paiement en Espèces",
@@ -3952,6 +5021,18 @@
       "UNPAID_AMOUNT": "Montant impayé",
       "VENDOR": "Vendeur"
     },
+    "LINKS": {
+      "DELIVERY": "Réception liée",
+      "DELIVERY_HINT": "Ce paiement est rattaché à une réception ou livraison.",
+      "EXPENSE": "Dépense liée",
+      "EXPENSE_HINT": "Cette transaction est rattachée à une dépense d'exploitation.",
+      "SUPPLIER": "Compte fournisseur",
+      "SUPPLIER_HINT": "Ouvrir l'onglet finance du fournisseur pour voir tous les mouvements.",
+      "WASTE_SALE": "Vente de déchet liée",
+      "WASTE_SALE_HINT": "Cette transaction appartient à une vente de déchet.",
+      "EQUIPMENT_MISSION": "Mission équipement liée",
+      "EQUIPMENT_MISSION_HINT": "Ouvrir la mission de service externe ayant généré ce paiement."
+    },
     "MESSAGES": {
       "APPROVE_ERROR": "Erreur lors de l'approbation",
       "APPROVE_SUCCESS": "Transaction approuvée avec succès",
@@ -4066,6 +5147,11 @@
   "User Profile": "Profil de l'utilisateur",
   "View": "Afficher",
   "WASTE": {
+    "RELATED_LINKS": {
+      "FINANCIAL_TRANSACTIONS": "Transactions financières",
+      "SUPPLIER_FINANCE": "Finance fournisseur",
+      "TITLE": "Liens associés"
+    },
     "FIELDS": {
       "CUSTOMER": "Client",
       "INVOICE_NUMBER": "N° Facture",
@@ -4081,6 +5167,8 @@
       "UNIT_PRICE": "Prix unitaire (TND/kg)"
     },
     "FORM": {
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
       "ERRORS": {
         "QUALITY_GRADE_REQUIRED": "La quality d'huile est requis"
       }
@@ -4102,6 +5190,7 @@
     },
     "DESCRIPTION": "Gérez réceptions, production, stocks et finances au même endroit.",
     "HEADLINE": "Bienvenue sur OOSM",
+    "SLOGAN": "Système de Gestion de l'Huile d'Olive",
     "LINKS": {
       "FINANCE": "Finance",
       "FINANCE_HINT": "Factures, paiements & rapports",
@@ -4112,7 +5201,7 @@
       "SETTINGS": "Paramètres",
       "SETTINGS_HINT": "Configuration & permissions"
     },
-    "SUB": "Gestion de la filière olive",
+    "SUB": "Système de Gestion de l'Huile d'Olive",
     "TITLE": "Bienvenue"
   },
   "WIDOWED": "Veuf/Veuve",
@@ -4120,9 +5209,6 @@
   "auth": {
     "change_password_title": "Changer mot de passe",
     "password_changed_success": "Votre mot de passe a été modifié avec succès. Voulez-vous accéder à l'application ?"
-  },
-  "department": {
-    "description": "Description"
   },
   "reCaptcha": "reCaptcha",
   "AUTO": {
@@ -5714,7 +6800,6 @@
     "CDD": "CDD",
     "TEMPORARY": "TEMPORAIRE",
     "STAGE": "SCÈNE",
-    "LISTE_DES_DEPARTEMENTS": "Liste des départements",
     "LISTE_DES_EMPLOYES": "Liste des employés",
     "MALE": "MÂLE",
     "FEMALE": "FEMELLE",
@@ -5915,7 +7000,7 @@
   },
   "HOME_DASHBOARD": {
     "TITLE": "Accueil",
-    "GREETING": "Bon retour sur OOSM",
+    "GREETING": "Bon retour sur OSM",
     "GREETING_NAMED": "Bon retour, {{name}}",
     "LOADING": "Chargement de votre vue d’ensemble…",
     "LOAD_ERROR": "Impossible de charger la vue d’ensemble.",
@@ -5992,5 +7077,6 @@
     "1": "Niveau menus 4.1",
     "2": "Niveau menus 4.2"
   },
-  "CANCEL": "Annuler"
+  "CANCEL": "Annuler",
+  "DOWNLOAD_PDF": "Download contract (PDF)"
 }

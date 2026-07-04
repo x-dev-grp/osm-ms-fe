@@ -25,6 +25,7 @@ import { environment } from 'src/environments/environment';
 //type
 import { Navigation } from 'src/app/theme/types/navigation';
 import { Role } from 'src/app/theme/types/role';
+import { APP_LOGO_MARK } from '../../../shared/config/logo.config';
 import { oosm_menus } from '../../../shared/oosm_menu';
 import { admin_menus } from '../../../shared/admin_menu';
 import { filterMenuByPermissions } from '../../../shared/utils/menu-permission.filter';
@@ -71,6 +72,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   rtlMode: boolean = typeof localStorage !== 'undefined' && localStorage.getItem('app_language') === 'ar';
   windowWidth: number = window.innerWidth;
   protected readonly oosm_menus = oosm_menus;
+  protected readonly defaultLogoMark = APP_LOGO_MARK;
   private breakpointObserver = inject(BreakpointObserver);
   private themeService = inject(ThemeLayoutService);
   private cdr: ChangeDetectorRef;
@@ -208,6 +210,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
    * Listen to theme layout changes
    */
   private updateThemeLayout(layout: string) {
+    if (!layout) {
+      return;
+    }
     this.currentLayout = layout as string;
     this.manageLayout(layout);
   }
@@ -218,20 +223,25 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private manageLayout(layout: string) {
     const drawerContent = document.querySelector('.mat-drawer-content') as HTMLElement;
     if (drawerContent) {
+      if (this.windowWidth <= 1025) {
+        drawerContent.style.marginLeft = '0px';
+        drawerContent.style.marginRight = '0px';
+        this.direction = this.rtlMode === true ? RTL : LTR;
+        return;
+      }
+
       if (layout === VERTICAL) {
-        if (this.windowWidth > 1025) {
-          drawerContent.style.marginLeft = this.rtlMode === true ? '0px' : '280px';
-          drawerContent.style.marginRight = this.rtlMode === true ? '280px' : '0px';
-        }
+        drawerContent.style.marginLeft = this.rtlMode === true ? '0px' : '280px';
+        drawerContent.style.marginRight = this.rtlMode === true ? '280px' : '0px';
         this.direction = this.rtlMode === true ? RTL : LTR;
       } else if (layout === COMPACT) {
-        if (this.windowWidth > 1025) {
-          drawerContent.style.marginLeft = this.rtlMode == true ? '0px' : '90px';
-          drawerContent.style.marginRight = this.rtlMode == true ? '90px' : '0px';
-        }
+        drawerContent.style.marginLeft = this.rtlMode == true ? '0px' : '90px';
+        drawerContent.style.marginRight = this.rtlMode == true ? '90px' : '0px';
         this.direction = this.rtlMode == true ? RTL : LTR;
       } else if (layout == HORIZONTAL) {
         drawerContent.style.marginLeft = '0px';
+        drawerContent.style.marginRight = '0px';
+        this.direction = LTR;
       }
     }
   }

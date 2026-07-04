@@ -1,0 +1,28 @@
+<app-card [showHeader]="false">
+  <div class="row g-3 text-center">
+    @for (item of tiles(); track item.title) {
+      <div class="col-6">
+        <app-card [showHeader]="false" cardClass="m-b-0" [padding]="0">
+          @if (item.route) {
+            <a [routerLink]="item.route" class="status-tile-link">
+              <ng-container *ngTemplateOutlet="tileBody; context: { $implicit: item }"></ng-container>
+            </a>
+          } @else {
+            <div class="status-tile-body">
+              <ng-container *ngTemplateOutlet="tileBody; context: { $implicit: item }"></ng-container>
+            </div>
+          }
+        </app-card>
+      </div>
+    }
+  </div>
+</app-card>
+
+<ng-template #tileBody let-item>
+  <div class="p-y-25 p-x-10">
+    <div class="avatar {{ item.background }} border-50">
+      <i class="ti {{ item.icon }} f-20 text-white"></i>
+    </div>
+    <div class="m-b-0 f-w-600 m-t-15 text-muted">{{ item.title }}</div>
+  </div>
+</ng-template>

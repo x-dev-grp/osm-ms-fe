@@ -22,6 +22,7 @@ import { NotificationTextService } from '../../../../shared/services/notificatio
 import { LanguageService } from '../../../../shared/services/language.service';
 import { UserNotification } from '../../../../shared/models/notification.model';
 import { NotificationTextPipe } from '../../../../shared/pipes/notification-text.pipe';
+import { SupportTicketService } from '../../../../shared/services/support-ticket.service';
 
 @Component({
   selector: 'app-nav-right',
@@ -46,6 +47,7 @@ import { NotificationTextPipe } from '../../../../shared/pipes/notification-text
 })
 export class NavRightComponent {
   authenticationService = inject(AuthenticationService);
+  readonly supportTicketService = inject(SupportTicketService);
   private readonly notificationService = inject(NotificationService);
   readonly notificationTextService = inject(NotificationTextService);
   private readonly destroyRef = inject(DestroyRef);
@@ -83,6 +85,10 @@ export class NavRightComponent {
 
   markAllNotificationsRead(): void {
     this.notificationService.markAllRead();
+  }
+
+  openSupportTicket(): void {
+    this.supportTicketService.openCreateDialog();
   }
 
   useLanguage(language: string) {

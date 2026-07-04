@@ -29,6 +29,17 @@ const routes: Routes = [
     loadComponent: () => import('./admin-users/admin-users.component').then((m) => m.AdminUsersComponent),
     canActivate: [AdminAuthGuard]
   },
+  {
+    path: 'support',
+    loadComponent: () => import('./admin-support/admin-support.component').then((m) => m.AdminSupportComponent),
+    canActivate: [AdminAuthGuard]
+  },
+  {
+    path: 'permission-catalog',
+    loadComponent: () =>
+      import('./admin-permission-catalog/admin-permission-catalog.component').then((m) => m.AdminPermissionCatalogComponent),
+    canActivate: [AdminAuthGuard]
+  },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
 ];
 

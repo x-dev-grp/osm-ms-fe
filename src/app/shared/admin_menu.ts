@@ -33,6 +33,22 @@ export const admin_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
+        id: 'adminSupport',
+        title: 'MENU.ADMINISTRATION.SUPPORT',
+        type: 'item',
+        url: '/administration/support',
+        icon: 'support_agent',
+        breadcrumbs: false
+      },
+      {
+        id: 'adminPermissionCatalog',
+        title: 'MENU.ADMINISTRATION.PERMISSION_CATALOG',
+        type: 'item',
+        url: '/administration/permission-catalog',
+        icon: 'security',
+        breadcrumbs: false
+      },
+      {
         id: 'addOosmAdmin',
         title: 'MENU.ADMINISTRATION.ADD_OOSM_ADMIN',
         type: 'item',

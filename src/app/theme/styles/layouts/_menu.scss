@@ -451,6 +451,12 @@
   }
 }
 
+body.hide-caption {
+  .pc-sidebar .coded-menu-caption {
+    display: none;
+  }
+}
+
 // ============================
 //     menu css end
 // ============================

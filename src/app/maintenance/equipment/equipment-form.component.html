@@ -1,0 +1,114 @@
+<div class="dashboard-shell maintenance-form-page">
+  <div class="page-header sticky-actions page-header--admin">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--admin">
+        <mat-icon>agriculture</mat-icon>
+      </div>
+      <div>
+        <h2 class="m-0 f-w-600">
+          {{
+            readOnly
+              ? ('MAINTENANCE.EQUIPMENT.VIEW_TITLE' | translate)
+              : editing
+                ? ('MAINTENANCE.EQUIPMENT.EDIT_TITLE' | translate)
+                : ('MAINTENANCE.EQUIPMENT.NEW_TITLE' | translate)
+          }}
+        </h2>
+      </div>
+    </div>
+    <div class="page-header__right">
+      @if (readOnly && equipmentId) {
+        <button mat-stroked-button color="primary" type="button" (click)="createMission()">
+          <mat-icon>local_shipping</mat-icon>
+          <span class="ms-1">{{ 'MAINTENANCE.MISSIONS.NEW_TITLE' | translate }}</span>
+        </button>
+      }
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else {
+    <app-card [icon]="'agriculture'" [cardTitle]="'MAINTENANCE.EQUIPMENT.FORM_TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()" class="maintenance-form">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.EQUIPMENT.FIELDS.NAME' | translate }}</mat-label>
+            <input matInput formControlName="name" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.EQUIPMENT.FIELDS.TYPE' | translate }}</mat-label>
+            <mat-select formControlName="equipmentType" required>
+              @for (type of equipmentTypes; track type) {
+                <mat-option [value]="type">{{ 'MAINTENANCE.EQUIPMENT.TYPE.' + type | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.EQUIPMENT.FIELDS.CODE' | translate }}</mat-label>
+            <input matInput formControlName="code" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.EQUIPMENT.FIELDS.REGISTRATION' | translate }}</mat-label>
+            <input matInput formControlName="registrationNumber" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.EQUIPMENT.FIELDS.HOURLY_RATE' | translate }}</mat-label>
+            <input matInput type="number" min="0" step="0.01" formControlName="defaultHourlyRate" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</mat-label>
+            <mat-select formControlName="status" required>
+              @for (status of statuses; track status) {
+                <mat-option [value]="status">{{ 'MAINTENANCE.EQUIPMENT.STATUS.' + status | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.EQUIPMENT.FIELDS.HOURS' | translate }}</mat-label>
+            <input matInput type="number" formControlName="hoursOperated" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.EQUIPMENT.FIELDS.LAST_MAINTENANCE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="lastPicker" formControlName="lastMaintenanceDate" />
+            <mat-datepicker-toggle matSuffix [for]="lastPicker"></mat-datepicker-toggle>
+            <mat-datepicker #lastPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.EQUIPMENT.FIELDS.NEXT_MAINTENANCE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="nextPicker" formControlName="nextMaintenanceDate" />
+            <mat-datepicker-toggle matSuffix [for]="nextPicker"></mat-datepicker-toggle>
+            <mat-datepicker #nextPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</mat-label>
+            <textarea matInput rows="3" formControlName="notes"></textarea>
+          </mat-form-field>
+        </div>
+
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving || form.invalid">
+              {{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}
+            </button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

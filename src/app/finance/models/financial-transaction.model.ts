@@ -56,7 +56,6 @@ export enum Currency {
 
 export interface TransactionSupplier {
   id?: string;
-  externalId?: string;
   name?: string;
   lastname?: string;
   phone?: string;

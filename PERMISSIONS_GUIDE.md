@@ -85,10 +85,14 @@ import { OSMModule, FinanceEntity, Action, permissionKey } from 'src/app/theme/t
 
 - HR (see `src/app/hr/hr-routing.module.ts`)
   - Employee list/view/new/edit: `HR:EMPLOYEE:{READ|CREATE|UPDATE}`
-  - Department list/new/edit/view: `HR:DEPARTMENT:{READ|CREATE|UPDATE}`
   - Contracts pages: `HR:CONTRACT:{READ|CREATE|UPDATE}`
-  - Pointage: `HR:POINTAGE:READ`
+  - Pointage: `HR:POINTAGE:{READ|CREATE|UPDATE}`
   - Postes: `HR:POSTE:{READ|CREATE|UPDATE}`
+  - Leave approve/reject (detail view or list row): `HR:LEAVEREQUEST:{APPROVE|REJECT}`
+  - Payroll generate/advance: `HR:PAYROLLPERIOD:{CALCULATE|VALIDATE|PAY|CLOSE}`
+  - Payslip PDF: `HR:PAYSLIP:GEN_PDF`
+
+  HR action profiles: `HR_MASTER`, `HR_EMPLOYEE`, `HR_CONTRACT`, `HR_ATTENDANCE`, `HR_LEAVE`, `HR_PAYROLL_PERIOD`, `HR_PAYSLIP` — see `permissions-spec.json` and `rolePresets` for clerk/manager/payroll/admin templates.
 
 - Settings (see `src/app/settings/settings-routing.module.ts`)
   - Application configuration: `HABILITATION:PARAMETER:READ`

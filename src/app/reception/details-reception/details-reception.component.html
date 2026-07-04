@@ -107,6 +107,11 @@
         <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.OIL_TRANSACTIONS' | translate }}</span>
       </button>
 
+      <button *ngIf="deliveryData.supplier?.id" mat-stroked-button type="button" (click)="openSupplierFinance()">
+        <mat-icon aria-hidden="true">account_balance_wallet</mat-icon>
+        <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.SUPPLIER_FINANCE' | translate }}</span>
+      </button>
+
       <button *ngIf="deliveryData.supplier?.id" mat-stroked-button type="button" (click)="openSupplierDetails()">
         <mat-icon aria-hidden="true">person</mat-icon>
         <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.SUPPLIER_DETAILS' | translate }}</span>
@@ -169,7 +174,7 @@
 
       <div *ngIf="deliveryData?.description" class="grid-row">
         <div class="grid-item col-span-2">
-          <strong>{{ 'DEPARTMENT.FORM.DESCRIPTION' | translate }}:</strong>
+          <strong>{{ 'COMMON.DESCRIPTION' | translate }}:</strong>
           {{ deliveryData.description }}
         </div>
       </div>

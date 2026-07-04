@@ -10,10 +10,13 @@
       <mat-card class="auth-form-card">
         <!-- Logos row (kept identical) -->
         <div class="logo-container">
-          <a href="#"><img ngSrc="assets/OOSM.svg" alt="Logo OOSM" class="logo" height="72" width="156" /></a>
-          |
+          <a href="#" class="logo-oosm">
+            <img [ngSrc]="appLogoFull" alt="OOSM — Olive Oil Management System" class="logo-banner" height="108" width="100" />
+          </a>
+          <span class="logo-divider" aria-hidden="true">|</span>
           <a href="#"><img ngSrc="assets/XDEV.svg" alt="Logo XDEV" class="logo" height="644" width="646" /></a>
         </div>
+        <p class="auth-slogan">{{ 'BRANDING.SLOGAN' | translate }}</p>
 
         <!-- Title -->
         <h2 class="text-center">

@@ -1,0 +1,330 @@
+<div class="dashboard-shell hr-form-page hr-form-page--employees">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr">
+        <mat-icon>groups</mat-icon>
+      </div>
+      <div>
+        <h2 class="m-0 f-w-600">
+          @if (readOnly && employee) {
+            {{ employeeDisplayName() }}
+          } @else {
+            {{
+              editing
+                ? ('HR.EMPLOYEES.EDIT_TITLE' | translate)
+                : ('HR.EMPLOYEES.ADD_TITLE' | translate)
+            }}
+          }
+        </h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.EMPLOYEE_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      @if (readOnly && entityId) {
+        <button mat-stroked-button type="button" [routerLink]="['/hr/employees', entityId, 'edit']">
+          <mat-icon>edit</mat-icon>
+          <span class="ms-1">{{ 'COMMON.EDIT' | translate }}</span>
+        </button>
+      }
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else {
+    @if (readOnly && employee) {
+      <div class="summary-grid">
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'HR.EMPLOYEES.FIELDS.STATUS' | translate }}</span>
+            <span class="summary-value">{{ 'HR.EMPLOYEES.STATUS.' + employee.status | translate }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'HR.EMPLOYEES.FIELDS.JOB_TITLE' | translate }}</span>
+            <span class="summary-value">{{ employee.jobTitle || '—' }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'HR.CONTRACTS.FIELDS.POSTE' | translate }}</span>
+            <span class="summary-value">{{ employee.activeContract?.poste?.title || '—' }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'HR.CONTRACTS.FIELDS.SALARY' | translate }}</span>
+            <span class="summary-value">
+              @if (employee.activeContract?.salary != null) {
+                {{ employee.activeContract?.salary | number:'1.0-2' }}
+              } @else {
+                —
+              }
+            </span>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <nav class="page-tabs">
+        <button class="page-tab-btn" [class.active]="activePageTab === 'profile'" (click)="loadPageTab('profile')">
+          <mat-icon>badge</mat-icon>
+          {{ 'HR.EMPLOYEES.PROFILE.TAB_PROFILE' | translate }}
+        </button>
+        <button class="page-tab-btn" [class.active]="activePageTab === 'contracts'" (click)="loadPageTab('contracts')">
+          <mat-icon>description</mat-icon>
+          {{ 'HR.EMPLOYEES.PROFILE.TAB_CONTRACTS' | translate }}
+        </button>
+        <button class="page-tab-btn" [class.active]="activePageTab === 'pointages'" (click)="loadPageTab('pointages')">
+          <mat-icon>schedule</mat-icon>
+          {{ 'HR.EMPLOYEES.PROFILE.TAB_ATTENDANCE' | translate }}
+        </button>
+        <button class="page-tab-btn" [class.active]="activePageTab === 'leave'" (click)="loadPageTab('leave')">
+          <mat-icon>event_busy</mat-icon>
+          {{ 'HR.EMPLOYEES.PROFILE.TAB_LEAVES' | translate }}
+        </button>
+        <button class="page-tab-btn" [class.active]="activePageTab === 'payslips'" (click)="loadPageTab('payslips')">
+          <mat-icon>receipt_long</mat-icon>
+          {{ 'HR.EMPLOYEES.PROFILE.TAB_PAYSLIPS' | translate }}
+        </button>
+      </nav>
+    }
+
+    @if (!readOnly || activePageTab === 'profile') {
+      <app-card [icon]="'groups'" [cardTitle]="'HR.PAGE.EMPLOYEES.TITLE' | translate">
+        <form [formGroup]="form" (ngSubmit)="save()">
+          <section class="form-section">
+            <h3>{{ 'HR.EMPLOYEES.FORM.IDENTITY' | translate }}</h3>
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.FIRST_NAME' | translate }}</mat-label>
+                <input matInput formControlName="firstName" required />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.LAST_NAME' | translate }}</mat-label>
+                <input matInput formControlName="lastName" required />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.CIN' | translate }}</mat-label>
+                <input matInput formControlName="cin" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.CNSS' | translate }}</mat-label>
+                <input matInput formControlName="cnssMatricule" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.BIRTH_DATE' | translate }}</mat-label>
+                <input matInput [matDatepicker]="birthPicker" formControlName="birthDate" />
+                <mat-datepicker-toggle matSuffix [for]="birthPicker"></mat-datepicker-toggle>
+                <mat-datepicker #birthPicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3>{{ 'HR.EMPLOYEES.FORM.CONTACT' | translate }}</h3>
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.EMAIL' | translate }}</mat-label>
+                <input matInput formControlName="email" type="email" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.PHONE' | translate }}</mat-label>
+                <input matInput formControlName="phone" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="span-2">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.ADDRESS' | translate }}</mat-label>
+                <input matInput formControlName="address" />
+              </mat-form-field>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3>{{ 'HR.EMPLOYEES.FORM.EMPLOYMENT' | translate }}</h3>
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.HIRE_DATE' | translate }}</mat-label>
+                <input matInput [matDatepicker]="hirePicker" formControlName="hireDate" />
+                <mat-datepicker-toggle matSuffix [for]="hirePicker"></mat-datepicker-toggle>
+                <mat-datepicker #hirePicker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.JOB_TITLE' | translate }}</mat-label>
+                <input matInput formControlName="jobTitle" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.DEPARTMENT' | translate }}</mat-label>
+                <input matInput formControlName="department" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.STATUS' | translate }}</mat-label>
+                <mat-select formControlName="status">
+                  @for (status of statuses; track status) {
+                    <mat-option [value]="status">{{ 'HR.EMPLOYEES.STATUS.' + status | translate }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.SALARY_TYPE' | translate }}</mat-label>
+                <mat-select formControlName="salaryType">
+                  @for (type of salaryTypes; track type) {
+                    <mat-option [value]="type">{{ 'HR.EMPLOYEES.SALARY_TYPE.' + type | translate }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.PAYMENT_MODE' | translate }}</mat-label>
+                <mat-select formControlName="paymentMode">
+                  @for (mode of paymentModes; track mode) {
+                    <mat-option [value]="mode">{{ 'HR.EMPLOYEES.PAYMENT_MODE.' + mode | translate }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'HR.EMPLOYEES.FIELDS.BANK_ACCOUNT' | translate }}</mat-label>
+                <input matInput formControlName="bankAccountRef" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'CONTROLE_QUALITE.FORM.WORK_REGIME' | translate }}</mat-label>
+                <mat-select formControlName="workRegime">
+                  @for (regime of workRegimes; track regime) {
+                    <mat-option [value]="regime">{{ 'HR.EMPLOYEES.WORK_REGIME.' + regime | translate }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </section>
+
+          @if (!readOnly) {
+            <div class="form-actions">
+              <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+              <button mat-flat-button color="primary" type="submit" [disabled]="saving">
+                {{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}
+              </button>
+            </div>
+          }
+        </form>
+      </app-card>
+    }
+
+    @if (readOnly && employee && activePageTab === 'contracts') {
+      <app-card [icon]="'description'" [cardTitle]="'HR.EMPLOYEES.PROFILE.TAB_CONTRACTS' | translate">
+        <div class="tab-toolbar">
+          <button
+            mat-stroked-button
+            type="button"
+            [routerLink]="createChildRoute('contracts')"
+            [queryParams]="createChildQueryParams()">
+            <mat-icon>add</mat-icon>
+            {{ 'HR.EMPLOYEES.PROFILE.ADD_CONTRACT' | translate }}
+          </button>
+        </div>
+        @if (employee.contracts?.length) {
+          <div class="relation-table">
+            @for (contract of employee.contracts; track trackById($index, contract)) {
+              <a class="relation-row" [routerLink]="['/hr/contracts', contract.id, 'view']">
+                <span>{{ contract.poste?.title || '—' }}</span>
+                <span>{{ 'HR.CONTRACTS.TYPE.' + contract.contractType | translate }}</span>
+                <span>{{ contract.startDate | date:'yyyy-MM-dd' }}</span>
+                <span>{{ 'HR.CONTRACTS.STATUS.' + contract.status | translate }}</span>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="empty-tab">{{ 'HR.EMPLOYEES.PROFILE.NO_CONTRACTS' | translate }}</p>
+        }
+      </app-card>
+    }
+
+    @if (readOnly && employee && activePageTab === 'pointages') {
+      <app-card [icon]="'schedule'" [cardTitle]="'HR.EMPLOYEES.PROFILE.TAB_ATTENDANCE' | translate">
+        <div class="tab-toolbar">
+          <button
+            mat-stroked-button
+            type="button"
+            [routerLink]="createChildRoute('pointages')"
+            [queryParams]="createChildQueryParams()">
+            <mat-icon>add</mat-icon>
+            {{ 'HR.EMPLOYEES.PROFILE.ADD_POINTAGE' | translate }}
+          </button>
+        </div>
+        @if (employee.pointages?.length) {
+          <div class="relation-table">
+            @for (pointage of employee.pointages; track trackById($index, pointage)) {
+              <a class="relation-row" [routerLink]="['/hr/pointages', pointage.id, 'view']">
+                <span>{{ pointage.workDate | date:'yyyy-MM-dd' }}</span>
+                <span>{{ 'HR.ATTENDANCE.STATUS.' + pointage.status | translate }}</span>
+                <span>{{ pointage.workedHours ?? '—' }}</span>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="empty-tab">{{ 'HR.EMPLOYEES.PROFILE.NO_ATTENDANCE' | translate }}</p>
+        }
+      </app-card>
+    }
+
+    @if (readOnly && employee && activePageTab === 'leave') {
+      <app-card [icon]="'event_busy'" [cardTitle]="'HR.EMPLOYEES.PROFILE.TAB_LEAVES' | translate">
+        <div class="tab-toolbar">
+          <button
+            mat-stroked-button
+            type="button"
+            [routerLink]="createChildRoute('leave-requests')"
+            [queryParams]="createChildQueryParams()">
+            <mat-icon>add</mat-icon>
+            {{ 'HR.EMPLOYEES.PROFILE.ADD_LEAVE' | translate }}
+          </button>
+        </div>
+        @if (employee.leaveRequests?.length) {
+          <div class="relation-table">
+            @for (leave of employee.leaveRequests; track trackById($index, leave)) {
+              <a class="relation-row" [routerLink]="['/hr/leave-requests', leave.id, 'view']">
+                <span>{{ 'HR.LEAVES.TYPE.' + leave.leaveType | translate }}</span>
+                <span>{{ leave.startDate | date:'yyyy-MM-dd' }}</span>
+                <span>{{ leave.endDate | date:'yyyy-MM-dd' }}</span>
+                <span>{{ 'HR.LEAVES.STATUS.' + leave.status | translate }}</span>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="empty-tab">{{ 'HR.EMPLOYEES.PROFILE.NO_LEAVES' | translate }}</p>
+        }
+      </app-card>
+    }
+
+    @if (readOnly && employee && activePageTab === 'payslips') {
+      <app-card [icon]="'receipt_long'" [cardTitle]="'HR.EMPLOYEES.PROFILE.TAB_PAYSLIPS' | translate">
+        <div class="tab-toolbar">
+          <button
+            mat-stroked-button
+            type="button"
+            [routerLink]="createChildRoute('payslips')"
+            [queryParams]="createChildQueryParams()">
+            <mat-icon>add</mat-icon>
+            {{ 'HR.EMPLOYEES.PROFILE.ADD_PAYSLIP' | translate }}
+          </button>
+        </div>
+        @if (employee.payslips?.length) {
+          <div class="relation-table">
+            @for (payslip of employee.payslips; track trackById($index, payslip)) {
+              <a class="relation-row" [routerLink]="['/hr/payslips', payslip.id, 'view']">
+                <span>{{ payslip.payrollPeriod?.year }}/{{ payslip.payrollPeriod?.month }}</span>
+                <span>{{ payslip.netSalary | number:'1.0-2' }}</span>
+                <span>{{ 'HR.PAYSLIPS.STATUS.' + payslip.status | translate }}</span>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="empty-tab">{{ 'HR.EMPLOYEES.PROFILE.NO_PAYSLIPS' | translate }}</p>
+        }
+      </app-card>
+    }
+  }
+</div>

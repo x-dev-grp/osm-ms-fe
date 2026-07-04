@@ -1,4 +1,4 @@
-export type HomeModuleId = 'reception' | 'finance' | 'storage' | 'inventory' | 'conditioning' | 'hr';
+export type HomeModuleId = 'reception' | 'finance' | 'storage' | 'inventory' | 'conditioning';
 
 export interface HomeMetric {
   labelKey: string;

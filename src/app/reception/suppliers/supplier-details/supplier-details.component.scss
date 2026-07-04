@@ -200,6 +200,28 @@
   padding: 24px;
 }
 
+.base-ledger-overview {
+  margin-bottom: 12px;
+}
+
+.base-ledger-title {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.base-ledger-hint {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.base-payment-ledger {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
 .profile-section {
   margin-top: 8px;
 }

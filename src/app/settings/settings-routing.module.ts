@@ -20,8 +20,8 @@ const routes: Routes = [
   },
   {
     path: 'configuration',
-    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.HABILITATION, 'PARAMETER', Action.READ)])],
-    loadComponent: () => import('./application-config/application-config.component').then((c) => c.ApplicationConfigComponent)
+    redirectTo: 'general-config?tab=other',
+    pathMatch: 'full'
   },
   {
     path: 'generic',
@@ -29,8 +29,8 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        canActivate: [allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
-        loadComponent: () => import('./generic-type/generic-type.component').then((c) => c.GenericTypeComponent)
+        pathMatch: 'full',
+        redirectTo: '../general-config?tab=types'
       },
       {
         path: 'new',

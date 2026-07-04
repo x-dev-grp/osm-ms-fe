@@ -31,35 +31,28 @@ export const BASE_DASHBOARD: DashboardConfig = {
   filteredActions: [],
   defaultSearchData: {
     page: 0,
-    size: 10,
-    sort: 'createdDate',
+    size: 25,
+    sort: 'deliveryDate',
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      searchs: [
-        {
-          operation: SearchOperation.OR,
-          searchs: [
-            {
-              operation: SearchOperation.AND,
-              search: {
-                operationType: {
-                  equalValue: 'BASE'
-                },
-                status: {
-                  inValues: ['IN_STOCK']
-                },
-                deliveryType: {
-                  equalValue: 'OIL'
-                }
-              }
-            }
-          ]
-        }
-      ],
       search: {
-        isDeleted: {
-          equalValue: false
+        isDeleted: { equalValue: false },
+        operationType: { equalValue: 'BASE' },
+        status: {
+          inValues: [
+            'WAITING',
+            'NEW',
+            'OLIVE_CONTROLLED',
+            'PROD_READY',
+            'IN_PROGRESS',
+            'COMPLETED',
+            'OIL_CONTROLLED',
+            'IN_STOCK',
+            'STOCK_READY',
+            'REFUSED',
+            'WAITING_FOR_PAYMENT_DETAILS'
+          ]
         }
       }
     }
@@ -116,7 +109,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
       valuePath: 'name',
       exportable: true,
       sortable: true,
-      dataTable: false,
+      dataTable: true,
       filterable: true
     },
     {

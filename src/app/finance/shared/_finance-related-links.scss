@@ -1,0 +1,30 @@
+.finance-related-links {
+  margin: 0 0 1.25rem;
+  border: 1px solid #dde4cc;
+  border-radius: 12px;
+  background: #fafbf7;
+  padding: 0.75rem 0.9rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.65rem;
+    font-weight: 700;
+    color: #374151;
+
+    mat-icon {
+      color: #5f6f38;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    button[mat-stroked-button] {
+      border-radius: 10px;
+    }
+  }
+}

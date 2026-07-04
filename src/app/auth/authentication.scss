@@ -70,7 +70,35 @@
   justify-content: center;
   align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
+}
+
+.logo-oosm {
+  display: flex;
+  align-items: center;
+}
+
+.logo-banner {
+  width: auto;
+  height: 72px;
+  max-width: min(120px, 100%);
+  object-fit: contain;
+}
+
+.logo-divider {
+  color: #c8a951;
+  font-weight: 300;
+  user-select: none;
+}
+
+.auth-slogan {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7c4a;
 }
 
 .logo {

@@ -10,16 +10,50 @@
     "MESSAGE": "You don't have the required permissions to view this page.",
     "TITLE": "Access denied"
   },
+  "ABIOOC": {
+    "BASE_LEDGER": {
+      "HINT": "Totals for olive intake, oil output, and payment balance (ABIOOC suivi Fournisseur Base). Amounts in DT.",
+      "OIL_L": "Oil quantity (L)",
+      "OLIVE_KG": "Olive quantity (kg)",
+      "TITLE": "Base supplier ledger"
+    },
+    "CASH_REGISTER": {
+      "HINT": "Cash movements only (ABIOOC Caisse). Amounts in DT.",
+      "INBOUND": "Cash in",
+      "MOVEMENTS": "Movements",
+      "NET": "Net cash",
+      "OUTBOUND": "Cash out",
+      "TITLE": "Daily cash register"
+    },
+    "PURCHASE_JOURNAL": {
+      "HINT": "Combined view of all purchase and milling operations (ABIOOC Achat sheet).",
+      "TITLE": "Purchase journal"
+    },
+    "SEASON_RECAP": {
+      "CASH_NET": "Net cash",
+      "DELIVERIES": "Purchase deliveries",
+      "DELIVERY_PAID": "Deliveries paid",
+      "DELIVERY_UNPAID": "Deliveries unpaid",
+      "EXPENSES": "Expenses total",
+      "HINT": "Season summary KPIs (ABIOOC Récapt). Aggregates current data.",
+      "ITEMS": "items",
+      "OIL_L": "Total oil (L)",
+      "OIL_SALES": "Oil sales total",
+      "OLIVE_KG": "Total olive (kg)",
+      "SALES": "sales"
+    }
+  },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",
     "ADD_COMPANY_CREATED": "Company and admin user created successfully.",
-    "ADD_COMPANY_INITIAL_PASSWORD": "Company created. Share these credentials with the admin — Username: {{username}}, Password: {{password}}",
+    "ADD_COMPANY_INITIAL_PASSWORD": "Company created. Share these credentials with the admin â€” Username: {{username}}, Password: {{password}}",
     "ADD_OOSM_ADMIN_BUTTON": "Add OOSM Admin",
     "ADD_OOSM_ADMIN_ROLE": "Role",
     "ADD_OOSM_ADMIN_ROLE_VALUE": "OOSM Admin",
     "ADD_OOSM_ADMIN_SAVE": "Create OOSM Admin",
     "ADD_OOSM_ADMIN_TITLE": "Create OOSM Admin User",
     "CANCEL": "Cancel",
+    "DOWNLOAD_PDF": "Download contract (PDF)",
     "COMPANY_NAME": "Company name",
     "COMPANY_NAME_REQUIRED": "Company name is requeird",
     "COMPANY_SECTION": "Company informations",
@@ -82,6 +116,44 @@
     "TITLE": "Admin Overview",
     "SUBTITLE": "Platform-wide overview of tenants and users"
   },
+  "ADMIN_PERMISSION_CATALOG": {
+    "BACK": "Admin dashboard",
+    "DASHBOARD_LINK": "Sync permissions-spec.json into the database after deploy or catalog changes.",
+    "GAP": "Missing permissions",
+    "KPIS": {
+      "DB_PERMISSIONS": "Active permissions in DB",
+      "ENTITIES": "Catalog entities",
+      "EXPECTED": "expected",
+      "PROFILES": "profiles",
+      "SPEC_VERSION": "Catalog version"
+    },
+    "LOADING": "Loading permission catalog status...",
+    "LOAD_ERROR": "Unable to load permission catalog status.",
+    "OPS": {
+      "CREATE": "Create missing permission rows from permissions-spec.json",
+      "LEGACY": "Merge legacy entity aliases into canonical permissions",
+      "MIRRORS": "Copy role grants for configured entity mirrors",
+      "REACTIVATE": "Reactivate soft-deleted permissions that match the catalog"
+    },
+    "RESULT": {
+      "CREATED": "Created",
+      "EXISTING": "Already present",
+      "LEGACY": "Legacy merges",
+      "MIRRORS": "Mirror grants added"
+    },
+    "SECTIONS": {
+      "LAST_RESULT": "Last sync result",
+      "STATUS": "Catalog status",
+      "SYNC": "Synchronize permission catalog"
+    },
+    "STARTUP_SYNC": "Sync on startup",
+    "SUBTITLE": "Platform operations — keep the permission database aligned with permissions-spec.json",
+    "SYNC_BUTTON": "Sync catalog now",
+    "SYNC_ERROR": "Permission catalog sync failed.",
+    "SYNC_HINT": "Run after deploying a new backend version or editing permissions-spec.json. Safe to run multiple times — existing rows are preserved.",
+    "SYNC_SUCCESS": "Permission catalog synchronized successfully.",
+    "TITLE": "Permission catalog"
+  },
   "ADMIN_USERS": {
     "CARD_DESCRIPTION": "Search users across all tenants and trigger password resets.",
     "FIELDS": {
@@ -137,6 +209,309 @@
   "PWA": {
     "UPDATE_AVAILABLE": "A new version is available. Reload the app to update.",
     "UNRECOVERABLE_ERROR": "The app could not load correctly. Reloading..."
+  },
+  "BRANDING": {
+    "SLOGAN": "Olive Oil Management System",
+    "TAGLINE": "From reception to sale â€” one platform for your mill"
+  },
+  "USER_GUIDE": {
+    "TITLE": "Help & user guide",
+    "INTRO": "OOSM helps you manage reception, oil production, conditioning, inventory, finance and human resources for your olive oil mill.",
+    "WELCOME_USER": "Hello, {{name}} â€” here is how to get the most from OOSM.",
+    "MY_ACCOUNT": "My account",
+    "NO_MODULES": "No modules are visible for your role. Contact your administrator to assign permissions.",
+    "MODULES_TITLE": "Your modules",
+    "OPEN_MODULE": "Open module",
+    "BACK_HOME": "Back to home",
+    "FULL_DOCS_HINT": "Download full PDF guides below, or ask IT for technical docs in the project docs/ folder.",
+    "NAV": {
+      "START": "Quick start",
+      "FLOW": "Business flow",
+      "MODULES": "Modules",
+      "TASKS": "Common tasks",
+      "WORKFLOWS": "How it connects",
+      "FAQ": "FAQ",
+      "PDF": "PDF guides",
+      "SUPPORT": "Support",
+      "TIPS": "Tips"
+    },
+    "ROLE": {
+      "OOSMADMIN": "Platform administrator",
+      "ADMIN": "Company administrator",
+      "USER": "Standard user"
+    },
+    "FLOW": {
+      "TITLE": "Typical mill workflow",
+      "SUBTITLE": "From olive intake to sale â€” each step links to the next module.",
+      "RECEPTION": "Reception",
+      "STORAGE": "Tanks",
+      "CONDITIONING": "Packaging",
+      "FINANCE": "Finance"
+    },
+    "QUICK_START": {
+      "TITLE": "Quick start",
+      "STEP1": "Sign in with the username and password provided by your administrator.",
+      "STEP2": "Review the home dashboard for modules and pending items.",
+      "STEP3": "Use the sidebar: Reception â†’ Production â†’ Conditioning â†’ Inventory â†’ Finance.",
+      "STEP4": "Change language via the globe icon; use global search for lot or delivery codes.",
+      "STEP5": "Open this help page anytime from the ? icon in the toolbar."
+    },
+    "COMMON_TASKS": {
+      "TITLE": "Common tasks",
+      "SUBTITLE": "Shortcuts based on your permissions â€” jump straight to frequent actions."
+    },
+    "TASKS": {
+      "NEW_OLIVE": "New olive reception",
+      "NEW_OLIVE_HINT": "Register a simple olive delivery",
+      "NEW_OIL": "New oil reception",
+      "NEW_OIL_HINT": "Register purchased oil into tanks",
+      "OIL_SALES": "Oil sales",
+      "OIL_SALES_HINT": "Create or manage commercial sales",
+      "TANK_RECAP": "Tank recap board",
+      "TANK_RECAP_HINT": "Visual overview of tank levels",
+      "NEW_OF": "New manufacturing order",
+      "NEW_OF_HINT": "Start a conditioning run (OF)",
+      "MY_PROFILE": "My profile",
+      "MY_PROFILE_HINT": "Password, photo, contact details",
+      "RECEPTION_LIST": "Reception history",
+      "SUPPLIERS": "Suppliers",
+      "OLIVE_QC": "Olive quality control",
+      "OIL_MOVES": "Oil movements",
+      "PROJECTS": "Customer projects",
+      "LABELS": "Labels",
+      "ARTICLES": "Articles",
+      "BOM": "Bill of materials",
+      "TRANSACTIONS": "Financial transactions",
+      "USERS": "User management",
+      "QC_RULES": "QC rules",
+      "HR_EMPLOYEES": "Employee directory",
+      "HR_CONTRACTS": "Employment contracts",
+      "HR_PAYROLL": "Payroll periods",
+      "HR_LEAVE": "Leave requests",
+      "NEW_EMPLOYEE": "Add employee",
+      "NEW_EMPLOYEE_HINT": "Create a staff record with hire date and CNSS fields",
+      "HR_PAYROLL_RUN": "Run monthly payroll",
+      "HR_PAYROLL_RUN_HINT": "Open a period, generate payslips, advance status"
+    },
+    "RECEPTION_TYPES": {
+      "TITLE": "Olive operation types",
+      "SUBTITLE": "Each type has its own list and form â€” pick the one matching your business case.",
+      "OIL": "Oil purchase reception"
+    },
+    "PDF_GUIDES": {
+      "TITLE": "Download PDF user guides",
+      "SUBTITLE": "Complete printable guides â€” 8 chapters per language (reception through administration).",
+      "VIEW": "View",
+      "DOWNLOAD": "Download",
+      "NOTE": "Operational PDFs (reception slips, invoices) are generated from record detail screens, not from these guides.",
+      "FR": {
+        "TITLE": "French guide",
+        "DESC": "Full guide â€” 8 chapters, main operator language."
+      },
+      "EN": {
+        "TITLE": "English guide",
+        "DESC": "Complete English user guide."
+      },
+      "AR": {
+        "TITLE": "Arabic guide",
+        "DESC": "Full Arabic guide (RTL layout in PDF)."
+      }
+    },
+    "FAQ": {
+      "TITLE": "Frequently asked questions",
+      "MISSING_MENU": {
+        "Q": "Why is a menu item missing?",
+        "A": "Menus are filtered by your role permissions (MODULE:ENTITY:ACTION). Ask your company admin to grant the required permission or role."
+      },
+      "LOGIN": {
+        "Q": "I cannot log in â€” what should I check?",
+        "A": "Verify username and password (case-sensitive). If the account is locked or the company is inactive, contact your administrator. Ensure the backend server is running in local setups."
+      },
+      "PDF": {
+        "Q": "How do I print a reception slip or invoice?",
+        "A": "Open the record detail screen and use the PDF / print action. Documents are generated server-side with your company logo."
+      },
+      "PASSWORD": {
+        "Q": "How do I change my password?",
+        "A": "Go to My account (/account/profile) or follow the forced password-change screen after a temporary password."
+      },
+      "LANGUAGE": {
+        "Q": "How do I switch language or RTL?",
+        "A": "Use the globe icon in the toolbar. Arabic (AR) enables right-to-left layout automatically."
+      },
+      "OIL_SALE": {
+        "Q": "What is the oil sale workflow?",
+        "A": "Create sale â†’ Confirm â†’ Deliver (stock OUT) â†’ Generate invoice PDF â†’ Record payment in Finance transactions."
+      },
+      "HR_PAYROLL": {
+        "Q": "How do I run monthly payroll in HR?",
+        "A": "Create a payroll period (month/year) â†’ open its view â†’ Payslips tab â†’ Generate payslips â†’ review amounts â†’ Advance status: Calculated â†’ Validated â†’ Paid â†’ Closed."
+      },
+      "HR_LEAVE": {
+        "Q": "How do I approve a leave request?",
+        "A": "Open HR â†’ Leave requests â†’ View a pending request â†’ Approve or Reject. Approved leave can auto-mark attendance as Leave on overlapping days."
+      }
+    },
+    "TIPS": {
+      "TITLE": "Tips",
+      "SEARCH": "Global search (top bar) finds lots and delivery references.",
+      "LANGUAGE": "Switch FR / EN / AR anytime from the toolbar.",
+      "PERMISSIONS": "If a menu is missing, ask your admin to grant the required role.",
+      "PDF": "Generate PDF receipts and invoices from record detail screens.",
+      "NOTIFICATIONS": "Check the bell icon for validations, QC blocks, and maintenance alerts.",
+      "LISTS": "Most list screens support filters, export, and row actions â€” double-click a row to open details."
+    },
+    "WORKFLOWS": {
+      "TITLE": "How modules connect",
+      "RECEPTION": "Reception registers olives/oil â†’ QC â†’ mill planning â†’ payment links to Finance.",
+      "STORAGE": "Validated receptions and sales move oil IN/OUT of tanks (Storage module).",
+      "CONDITIONING": "Manufacturing orders consume packaging stock and produce labeled units.",
+      "FINANCE": "Ledger records payments; oil sales: confirm â†’ deliver â†’ invoice â†’ pay.",
+      "HR": "HR links employees â†’ active contracts â†’ attendance & leave â†’ monthly payslips (CNSS, IRPP, CSS). Employee profile shows all related records.",
+      "PERMISSIONS": "Each screen needs MODULE:ENTITY:ACTION â€” ask admin if a menu is hidden."
+    },
+    "MODULES": {
+      "RECEPTION": {
+        "TITLE": "Reception",
+        "DESC": "Register olive and oil deliveries, suppliers, quality control and mill planning."
+      },
+      "PRODUCTION": {
+        "TITLE": "Oil production & storage",
+        "DESC": "Manage tanks, oil movements, filtration and containers."
+      },
+      "CONDITIONING": {
+        "TITLE": "Conditioning",
+        "DESC": "Manufacturing orders, labels, projects, shipments and analytics."
+      },
+      "INVENTORY": {
+        "TITLE": "Inventory",
+        "DESC": "Articles, products, BOM, stock movements and purchase orders."
+      },
+      "FINANCE": {
+        "TITLE": "Finance",
+        "DESC": "Expenses, oil sales, oil credit, bank accounts and invoices."
+      },
+      "HR": {
+        "TITLE": "Human Resources",
+        "DESC": "Employees, contracts, attendance, leave approvals and Tunisian payroll (CNSS, IRPP, CSS)."
+      },
+      "SETTINGS": {
+        "TITLE": "Settings",
+        "DESC": "Company profile, generic types, QC rules, users and roles."
+      }
+    },
+    "HR": {
+      "NAV": "HR module",
+      "LINKS": {
+        "DASHBOARD": "HR dashboard",
+        "EMPLOYEES": "Employees",
+        "POSTES": "Positions",
+        "CONTRACTS": "Contracts",
+        "POINTAGE": "Attendance",
+        "LEAVE": "Leave requests",
+        "PAYROLL": "Payroll periods",
+        "PAYSLIPS": "Payslips"
+      },
+      "GUIDE": {
+        "TITLE": "How to use the HR module",
+        "SUBTITLE": "Manage staff, contracts, time tracking and monthly payroll with Tunisian compliance fields.",
+        "ACHIEVEMENTS_TITLE": "What is available today",
+        "ACHIEVEMENTS": {
+          "ENTITIES": "Seven entities: employees, positions, contracts, attendance, leave, payroll periods and payslips — full CRUD with role-based permissions.",
+          "PROFILE": "Employee profile hub with summary (active contract, poste, salary) and tabs for contracts, attendance, leave and payslips.",
+          "RULES": "Automatic rules: one active contract per employee, unique CIN/CNSS, contract required for attendance and leave, terminated employee closes contracts.",
+          "PAYROLL": "Tunisia payroll calculation (CNSS 9.68% / 17.07%, CSS 0.5%, progressive IRPP), batch payslip generation, period lifecycle (Open → Calculated → Validated → Paid → Closed), and payslip PDF download.",
+          "LEAVE": "Leave approval workflow: Approve or Reject pending requests from the leave detail view.",
+          "PERMISSIONS": "Entity-specific actions beyond CRUD: Approve/Reject leave, Calculate/Validate/Pay/Close payroll, Generate PDF payslips, Export attendance — gated by HR:ENTITY:ACTION permissions."
+        },
+        "PERMISSIONS_TITLE": "Actions & permissions by entity",
+        "PERMISSIONS_SUBTITLE": "Each screen and row action requires HR:ENTITY:ACTION. Assign role presets in Settings → Users & roles, or grant permissions individually.",
+        "PERMISSIONS": {
+          "POSTE": "Positions — READ, CREATE, UPDATE, DELETE, EXPORT",
+          "EMPLOYEE": "Employees — CRUD, EXPORT, GEN_PDF (employee dossier)",
+          "CONTRACT": "Contracts — CRUD, GEN_PDF, UPDATE_STATUS (activate/terminate)",
+          "POINTAGE": "Attendance — CRUD, GEN_PDF (attendance sheet), EXPORT",
+          "LEAVE": "Leave — CRUD, APPROVE, REJECT, CANCEL, GEN_PDF",
+          "PAYROLL_PERIOD": "Payroll periods — CRUD, CALCULATE (generate payslips), VALIDATE, PAY, CLOSE, EXPORT, REPORT",
+          "PAYSLIP": "Payslips — CRUD, CALCULATE, VALIDATE, PAY, GEN_PDF, EXPORT"
+        },
+        "ROLES_TITLE": "Suggested role presets",
+        "ROLES_SUBTITLE": "Reference presets in permissions-spec.json — create matching roles in User management:",
+        "ROLES": {
+          "CLERK": "HR Clerk — employees, attendance, leave submission (no approve/payroll run)",
+          "MANAGER": "HR Manager — approve leave, manage contracts, employee PDF, full attendance",
+          "PAYROLL": "Payroll Officer — calculate, validate, pay and close periods + payslip PDF",
+          "ADMIN": "HR Admin — full HR profiles on all seven entities"
+        },
+        "WORKFLOW_TITLE": "Recommended setup order",
+        "WORKFLOW": {
+          "STEP1": "Create positions (job titles) under HR → Positions.",
+          "STEP2": "Add employees with identity, hire date and CNSS fields.",
+          "STEP3": "Create employment contracts (employee + position + salary) and set status to Active when in force. CDI contracts have no end date.",
+          "STEP4": "Record daily attendance and submit leave requests; approve pending leave from the detail view.",
+          "STEP5": "Create a payroll period → View → Payslips tab → Generate payslips → review → Advance status until Closed."
+        },
+        "LINKS_TITLE": "Quick links",
+        "EMPLOYEES_TITLE": "Employees",
+        "EMPLOYEES_BODY": "The employee list supports search and filters. Open View to see the profile hub: edit personal data on the Profile tab, or use other tabs to browse linked contracts, attendance, leave and payslips. Use Add on each tab to create a child record with the employee pre-selected. Job title is read-only when an active contract exists (synced from the contract position). Setting status to Terminated closes active contracts.",
+        "CONTRACTS_TITLE": "Contracts",
+        "CONTRACTS_BODY": "Each contract links an employee to a position with type (CDI, CDD, etc.), dates and salary. Only one contract can be Active per employee — saving a new active contract expires the previous one. Permanent (CDI) contracts do not require an end date. Activate a contract only when it is legally in force.",
+        "PAYROLL_TITLE": "Payroll",
+        "PAYROLL_BODY": "Create one payroll period per month. On the period view, open the Payslips tab and click Generate payslips to create draft payslips for every employee with an active contract during the period. Amounts are calculated automatically from contract salary plus Tunisia statutory deductions. Advance the period status step by step; Paid and Closed periods lock further edits.",
+        "LEAVE_TITLE": "Leave",
+        "LEAVE_BODY": "Employees submit leave with type and date range. The system checks overlap with other pending or approved leave and requires an active contract. HR reviewers open the leave detail view and click Approve or Reject while status is Pending. Approved leave can automatically mark attendance as Leave on matching work dates.",
+        "DOCS_HINT": "Full technical documentation is also available in docs/user-guide/en/09-hr-module.md in the project repository."
+      }
+    }
+  },
+  "SUPPORT": {
+    "OPEN_TICKET": "Open support ticket",
+    "SUBMIT_TICKET": "Submit ticket",
+    "TICKET_CREATED": "Your support ticket was submitted. Our team will follow up soon.",
+    "TICKET_UPDATED": "Support ticket updated.",
+    "MY_TICKETS": "My tickets",
+    "COMPANY_TICKETS": "Company tickets",
+    "NO_TICKETS": "No support tickets yet.",
+    "VIEW_TICKET": "View details",
+    "HELP_TITLE": "Need help from OOSM?",
+    "HELP_DESC": "Report a bug, ask a question, or request a change. Your ticket includes your user and company context automatically.",
+    "HELP_TIP1": "Open the ticket from the screen where the issue happens â€” we capture the page URL automatically.",
+    "HELP_TIP2": "Describe steps to reproduce and expected vs actual behaviour.",
+    "DIALOG": {
+      "TITLE": "New support ticket",
+      "LEAD": "Tell us what went wrong or what you need. We attach your account and current page to the ticket."
+    },
+    "FIELDS": {
+      "SUBJECT": "Subject",
+      "DESCRIPTION": "Description",
+      "PRIORITY": "Priority",
+      "STATUS": "Status",
+      "REPORTER": "Reporter",
+      "TENANT": "Company",
+      "CREATED": "Created",
+      "PAGE": "Page URL",
+      "ADMIN_NOTE": "Team note"
+    },
+    "STATUS": {
+      "OPEN": "Open",
+      "IN_PROGRESS": "In progress",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed"
+    },
+    "PRIORITY": {
+      "LOW": "Low",
+      "NORMAL": "Normal",
+      "HIGH": "High"
+    },
+    "ERRORS": {
+      "CREATE_FAILED": "Could not submit the ticket. Please try again.",
+      "UPDATE_FAILED": "Could not update the ticket. Please try again."
+    },
+    "ADMIN": {
+      "TITLE": "Client support",
+      "SUBTITLE": "Tenant users submit tickets from the app. Review and update status here â€” no external tool required.",
+      "EMPTY": "No support tickets yet."
+    }
   },
   "SIDEBAR": {
     "BRAND_HOME": "Go to home",
@@ -230,6 +605,65 @@
       "IN_PROGRESS": "In progress",
       "COMPLETED": "Completed",
       "CANCELLED": "Cancelled"
+    },
+    "EQUIPMENT": {
+      "NEW_TITLE": "New equipment",
+      "EDIT_TITLE": "Edit equipment",
+      "VIEW_TITLE": "Equipment details",
+      "FORM_TITLE": "Mill equipment",
+      "LOAD_ERROR": "Unable to load equipment.",
+      "SAVE_SUCCESS": "Equipment saved successfully.",
+      "SAVE_ERROR": "Unable to save equipment.",
+      "FIELDS": {
+        "NAME": "Name",
+        "TYPE": "Type",
+        "CODE": "Code",
+        "REGISTRATION": "Registration / serial",
+        "HOURLY_RATE": "Default hourly rate (TND/h)",
+        "HOURS": "Hours operated",
+        "LAST_MAINTENANCE": "Last maintenance",
+        "NEXT_MAINTENANCE": "Next maintenance"
+      },
+      "TYPE": {
+        "TRACTOR": "Tractor",
+        "TRAILER": "Trailer",
+        "PUMP": "Pump",
+        "HARVESTER": "Harvester",
+        "OTHER": "Other"
+      },
+      "STATUS": {
+        "AVAILABLE": "Available",
+        "IN_USE": "In use",
+        "MAINTENANCE": "Maintenance",
+        "OUT_OF_SERVICE": "Out of service"
+      }
+    },
+    "MISSIONS": {
+      "NEW_TITLE": "New external mission",
+      "EDIT_TITLE": "Edit mission",
+      "VIEW_TITLE": "Mission details",
+      "FORM_TITLE": "External service mission",
+      "FORM_SUBTITLE": "Bill off-site equipment work by the hour.",
+      "LOAD_ERROR": "Unable to load mission.",
+      "SAVE_SUCCESS": "Mission saved successfully.",
+      "SAVE_ERROR": "Unable to save mission.",
+      "SECTIONS": {
+        "CLIENT": "Client & equipment",
+        "SCHEDULE": "Schedule & work",
+        "BILLING": "Hourly billing",
+        "STATUS": "Status & payment"
+      },
+      "FIELDS": {
+        "CLIENT": "Client name",
+        "CLIENT_PHONE": "Client phone",
+        "LOCATION": "Work location",
+        "OPERATOR": "Operator",
+        "HOURS": "Billable hours",
+        "RATE": "Hourly rate (TND/h)",
+        "TOTAL": "Total amount",
+        "PAID_AMOUNT": "Paid amount",
+        "NOTES": "Notes"
+      }
     }
   },
   "APPLICATION_CONFIG": {
@@ -302,6 +736,7 @@
   "BANK_ACCOUNTS": {
     "ACTIONS": {
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "EDIT": "Edit",
       "PRINT": "Print",
       "SAVE": "Save",
@@ -353,6 +788,8 @@
       "TYPE": "Category"
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "ADD_TITLE": "Add generic type",
       "EDIT_TITLE": "Edit generic type",
       "VIEW_TITLE": "Generic type details"
@@ -379,8 +816,10 @@
   "COMMON": {
     "BACK": "Back",
     "CANCEL": "Cancel",
+    "DOWNLOAD_PDF": "Download contract (PDF)",
     "CLOSE": "Close",
     "DELETE": "Delete",
+    "DESCRIPTION": "Description",
     "EDIT": "Edit",
     "LAST_UPDATED": "Last update at ",
     "LOADING": "Loading...",
@@ -445,6 +884,7 @@
   "COMPANY_PROFILE_UI": {
     "ACTIONS": {
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "EDIT": "Edit",
       "RESET": "Reset",
       "SAVE": "Save",
@@ -510,6 +950,7 @@
     "RECEPTION": {
       "BTNS": {
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CREATE": "Create Record",
         "UPDATE": "Update Record"
       },
@@ -554,18 +995,479 @@
       "STOCK": "Stock Config"
     }
   },
+  "PAYROLL": {
+    "ADD_TITLE": "New payroll",
+    "EDIT_TITLE": "Edit payroll",
+    "DASHBOARD": {
+      "TITLE": "Payslips",
+      "DOUBLE_CLICK_HINT": "Double-click a row to open the payslip."
+    },
+    "FIELDS": {
+      "EMPLOYEE": "Employee",
+      "PERIOD_START": "Period start",
+      "PERIOD_END": "Period end",
+      "BASE_SALARY": "Base salary (TND)",
+      "BONUSES": "Bonuses (TND)",
+      "NET_SALARY": "Net pay",
+      "PAID": "Paid",
+      "PAYMENT_DATE": "Payment date"
+    },
+    "MESSAGES": {
+      "SAVE_SUCCESS": "Payslip saved successfully",
+      "UPDATE_SUCCESS": "Payslip updated successfully",
+      "ERROR_LOADING": "Error loading payslip",
+      "ERROR_SAVING": "Error saving payslip"
+    }
+  },
+  "LEAVE": {
+    "ADD_TITLE": "New leave request",
+    "EDIT_TITLE": "Edit leave request",
+    "DASHBOARD": {
+      "TITLE": "Leave requests",
+      "DOUBLE_CLICK_HINT": "Double-click a row to open the leave request."
+    },
+    "FIELDS": {
+      "EMPLOYEE": "Employee",
+      "START_DATE": "Start date",
+      "END_DATE": "End date",
+      "TYPE": "Leave type",
+      "STATUS": "Status",
+      "DURATION": "Duration (days)",
+      "DURATION_HOURS": "Duration (hours)",
+      "UNIT": "Duration unit",
+      "START_TIME": "Start time",
+      "END_TIME": "End time",
+      "REASON": "Reason"
+    },
+    "UNIT": {
+      "DAY": "Full day(s)",
+      "HOUR": "Hours"
+    },
+    "TYPE": {
+      "ANNUAL": "Annual leave",
+      "SICK": "Sick leave",
+      "MATERNITY": "Maternity",
+      "PATERNITY": "Paternity",
+      "UNPAID": "Unpaid",
+      "OTHER": "Other"
+    },
+    "STATUS": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled"
+    },
+    "MESSAGES": {
+      "SAVE_SUCCESS": "Leave request saved",
+      "UPDATE_SUCCESS": "Leave request updated",
+      "ERROR_LOADING": "Error loading leave request",
+      "ERROR_SAVING": "Error saving leave request"
+    }
+  },
+  "HR": {
+    "QUICK_NAV": {
+      "ARIA": "HR module navigation",
+      "EMPLOYEES": "Directory & profiles",
+      "POSITIONS": "Job titles & roles",
+      "CONTRACTS": "Employment agreements",
+      "PAYROLL": "Payslips & CNSS",
+      "LEAVE": "Absences & approvals",
+      "POINTAGE": "Daily attendance"
+    },
+    "EMPLOYMENT": {
+      "ACTIVE_DERIVED": "Active status is set automatically when a valid contract is in force.",
+      "SINGLE_ACTIVE_CONTRACT": "Only one active contract per employee. Saving as active will expire the previous one.",
+      "CDI_OPEN_ENDED": "Permanent contracts (CDI) may have no end date.",
+      "ACTIVE_CONTRACT": "Active contract",
+      "NO_ACTIVE_CONTRACT": "This employee has no active contract.",
+      "NO_EMPLOYABLE": "No employees with an active contract. Add a contract first."
+    },
+    "PAGE": {
+      "EMPLOYEES": {
+        "TITLE": "Employees",
+        "SUBTITLE": "Manage staff records, contracts, and Tunisian compliance fields."
+      },
+      "POSITIONS": {
+        "TITLE": "Positions",
+        "SUBTITLE": "Define job titles used in contracts and payroll."
+      },
+      "CONTRACTS": {
+        "TITLE": "Contracts",
+        "SUBTITLE": "Track employment types, salaries, and contract status."
+      },
+      "PAYROLL": {
+        "TITLE": "Payroll",
+        "SUBTITLE": "Generate payslips with CNSS, IRPP, and CSS breakdown."
+      },
+      "LEAVE": {
+        "TITLE": "Leave requests",
+        "SUBTITLE": "Review and approve employee absences."
+      },
+      "POINTAGE": {
+        "TITLE": "Attendance",
+        "SUBTITLE": "Mark check-in and check-out for daily time tracking."
+      },
+      "ATTENDANCE": {
+        "TITLE": "Attendance",
+        "SUBTITLE": "View and manage attendance records."
+      },
+      "EMPLOYEE_FORM": {
+        "SUBTITLE": "Personal and employment details."
+      },
+      "PAYROLL_FORM": {
+        "SUBTITLE": "Create a payslip period with base salary and bonuses.",
+        "PERIOD": "Pay period",
+        "AMOUNTS": "Salary & payment"
+      },
+      "LEAVE_FORM": {
+        "SUBTITLE": "Submit or update a leave request for an employee.",
+        "REQUEST": "Leave details"
+      },
+      "POSITION_FORM": {
+        "SUBTITLE": "Define a job title for contracts and HR records."
+      },
+      "CONTRACT_FORM": {
+        "SUBTITLE": "Set contract type, dates, salary, and linked position."
+      }
+    },
+    "DASHBOARD": {
+      "TITLE": "HR Dashboard",
+      "SUBTITLE": "Overview of headcount, contracts, leave, and payroll.",
+      "LOAD_ERROR": "Unable to load HR dashboard.",
+      "QUICK_ACTIONS": "Quick actions",
+      "KPI": {
+        "TOTAL_EMPLOYEES": "Total employees",
+        "ACTIVE_EMPLOYEES": "Active employees",
+        "ACTIVE_CONTRACTS": "Active contracts",
+        "PENDING_LEAVES": "Pending leave",
+        "OPEN_PAYROLL": "Open periods",
+        "DRAFT_PAYSLIPS": "Draft payslips"
+      },
+      "CHART": {
+        "TITLE": "HR breakdown"
+      }
+    },
+    "EMPLOYEES": {
+      "LIST_TITLE": "Employee list",
+      "ADD_TITLE": "Add employee",
+      "EDIT_TITLE": "Edit employee",
+      "FIELDS": {
+        "FIRST_NAME": "First name",
+        "LAST_NAME": "Last name",
+        "CIN": "CIN",
+        "CNSS": "CNSS number",
+        "EMAIL": "Email",
+        "PHONE": "Phone",
+        "ADDRESS": "Address",
+        "BIRTH_DATE": "Birth date",
+        "HIRE_DATE": "Hire date",
+        "JOB_TITLE": "Job title",
+        "DEPARTMENT": "Department",
+        "STATUS": "Status",
+        "BASE_SALARY": "Base salary",
+        "SALARY_TYPE": "Salary type",
+        "PAYMENT_MODE": "Payment mode",
+        "BANK_ACCOUNT": "Bank account"
+      },
+      "FORM": {
+        "IDENTITY": "Identity",
+        "CONTACT": "Contact",
+        "EMPLOYMENT": "Employment & pay"
+      },
+      "STATUS": {
+        "ACTIVE": "Active",
+        "SUSPENDED": "Suspended",
+        "TERMINATED": "Terminated"
+      },
+      "SALARY_TYPE": {
+        "MONTHLY": "Monthly",
+        "HOURLY": "Hourly",
+        "DAILY": "Daily"
+      },
+      "PAYMENT_MODE": {
+        "BANK_TRANSFER": "Bank transfer",
+        "CASH": "Cash",
+        "CHECK": "Check"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "Error loading employee.",
+        "SAVE_SUCCESS": "Employee saved successfully.",
+        "SAVE_ERROR": "Error saving employee.",
+        "NOT_FOUND": "Employee not found."
+      },
+      "PROFILE": {
+        "TAB_PROFILE": "Profile",
+        "TAB_CONTRACTS": "Contracts",
+        "TAB_ATTENDANCE": "Attendance",
+        "TAB_LEAVES": "Leave",
+        "TAB_PAYSLIPS": "Payslips",
+        "PERSONAL": "Personal information",
+        "NO_CONTRACTS": "No contracts recorded.",
+        "NO_ATTENDANCE": "No attendance recorded.",
+        "NO_LEAVES": "No leave requests.",
+        "NO_PAYSLIPS": "No payslips.",
+        "ADD_CONTRACT": "Add contract",
+        "ADD_POINTAGE": "Add attendance",
+        "ADD_LEAVE": "Add leave",
+        "ADD_PAYSLIP": "Add payslip"
+      },
+      "WORK_REGIME": {
+        "HOURS_48": "48 hours / week",
+        "HOURS_40": "40 hours / week",
+        "AGRICULTURAL": "Agricultural"
+      }
+    },
+    "CONTRACTS": {
+      "LIST_TITLE": "Contract list",
+      "FIELDS": {
+        "EMPLOYEE": "Employee",
+        "POSTE": "Position",
+        "TYPE": "Type",
+        "START_DATE": "Start date",
+        "END_DATE": "End date",
+        "SALARY": "Salary",
+        "STATUS": "Status"
+      },
+      "TYPE": {
+        "CDI": "Permanent (CDI)",
+        "CDD": "Fixed-term (CDD)",
+        "INTERNSHIP": "Internship",
+        "TEMPORARY": "Temporary"
+      },
+      "STATUS": {
+        "DRAFT": "Draft",
+        "ACTIVE": "Active",
+        "EXPIRED": "Expired",
+        "TERMINATED": "Terminated"
+      }
+    },
+    "ATTENDANCE": {
+      "LIST_TITLE": "Attendance",
+      "FIELDS": {
+        "EMPLOYEE": "Employee",
+        "WORK_DATE": "Date",
+        "CHECK_IN": "Check-in",
+        "CHECK_OUT": "Check-out",
+        "WORKED_HOURS": "Worked hours",
+        "STATUS": "Status"
+      },
+      "FORM": {
+        "ADD_BUTTON": "Add attendance",
+        "ADD_TITLE": "Add attendance",
+        "EDIT_TITLE": "Edit attendance",
+        "SUBTITLE": "Manual entry for an employee (date, check-in, check-out).",
+        "BREAK_MINUTES": "Break (minutes)",
+        "NOTES": "Notes",
+        "SAVE_SUCCESS": "Attendance saved",
+        "SAVE_ERROR": "Error saving attendance",
+        "LOAD_ERROR": "Unable to load attendance",
+        "LOAD_EMPLOYEES_ERROR": "Unable to load employees"
+      },
+      "STATUS": {
+        "PRESENT": "Present",
+        "ABSENT": "Absent",
+        "HALF_DAY": "Half day",
+        "LEAVE": "Leave",
+        "PUBLIC_HOLIDAY": "Public holiday"
+      }
+    },
+    "LEAVES": {
+      "LIST_TITLE": "Leave requests",
+      "FIELDS": {
+        "EMPLOYEE": "Employee",
+        "TYPE": "Type",
+        "START_DATE": "Start",
+        "END_DATE": "End",
+        "DURATION": "Duration (days)",
+        "STATUS": "Status"
+      },
+      "TYPE": {
+        "ANNUAL": "Annual",
+        "SICK": "Sick",
+        "UNPAID": "Unpaid",
+        "MATERNITY": "Maternity",
+        "PATERNITY": "Paternity",
+        "OTHER": "Other"
+      },
+      "STATUS": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "CANCELLED": "Cancelled"
+      },
+      "ACTIONS": {
+        "APPROVE": "Approve",
+        "REJECT": "Reject",
+        "APPROVE_SUCCESS": "Leave request approved.",
+        "REJECT_SUCCESS": "Leave request rejected.",
+        "ACTION_ERROR": "Unable to update leave request status."
+      }
+    },
+    "PAYROLL": {
+      "LIST_TITLE": "Payroll",
+      "TABS": {
+        "PERIODS": "Periods"
+      },
+      "FIELDS": {
+        "YEAR": "Year",
+        "MONTH": "Month",
+        "START_DATE": "Start",
+        "END_DATE": "End",
+        "STATUS": "Status"
+      },
+      "STATUS": {
+        "OPEN": "Open",
+        "CALCULATED": "Calculated",
+        "VALIDATED": "Validated",
+        "PAID": "Paid",
+        "CLOSED": "Closed"
+      },
+      "PROFILE": {
+        "TAB_PERIOD": "Period",
+        "TAB_PAYSLIPS": "Payslips",
+        "GENERATE_PAYSLIPS": "Generate payslips",
+        "ADVANCE_STATUS": "Advance status",
+        "NO_PAYSLIPS": "No payslips for this period.",
+        "GENERATE_SUCCESS": "Payslips generated successfully.",
+        "GENERATE_ERROR": "Unable to generate payslips.",
+        "STATUS_SUCCESS": "Payroll period status updated.",
+        "STATUS_ERROR": "Unable to update payroll period status."
+      }
+    },
+    "PAYSLIPS": {
+      "LIST_TITLE": "Payslips",
+      "DETAIL_TITLE": "Payslip detail",
+      "DOWNLOAD_PDF": "Download PDF",
+      "SECTION": {
+        "AMOUNTS": "Amounts"
+      },
+      "FIELDS": {
+        "EMPLOYEE": "Employee",
+        "GROSS_SALARY": "Gross salary",
+        "BASE_SALARY": "Base salary",
+        "BONUSES": "Bonuses",
+        "NET_SALARY": "Net salary",
+        "CNSS_EMPLOYEE": "Employee CNSS",
+        "CNSS_EMPLOYER": "Employer CNSS",
+        "CSS": "CSS",
+        "IRPP": "IRPP",
+        "TOTAL_DEDUCTIONS": "Total deductions",
+        "TOTAL_BONUSES": "Total bonuses",
+        "STATUS": "Status",
+        "PAYMENT_DATE": "Payment date"
+      },
+      "STATUS": {
+        "DRAFT": "Draft",
+        "VALIDATED": "Validated",
+        "PAID": "Paid"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "Error loading payslip.",
+        "SAVE_ERROR": "Error saving payslip.",
+        "SAVE_SUCCESS": "Payslip saved successfully.",
+        "NOT_FOUND": "Payslip not found.",
+        "PDF_ERROR": "Unable to download PDF."
+      }
+    },
+    "REPORTS": {
+      "TITLE": "HR Reports",
+      "SUBTITLE": "Generate summary reports.",
+      "SELECT": "Report selection",
+      "TYPE": "Report type",
+      "GENERATE": "Generate",
+      "RESULT": "Result",
+      "LOAD_ERROR": "Error generating report.",
+      "TYPES": {
+        "HEADCOUNT": "Headcount",
+        "LEAVE_SUMMARY": "Leave summary",
+        "PAYROLL_SUMMARY": "Payroll summary"
+      }
+    },
+    "SETTINGS": {
+      "TITLE": "HR Settings",
+      "SUBTITLE": "General parameters and public holidays.",
+      "TAB_PARAMETERS": "Parameters",
+      "TAB_HOLIDAYS": "Public holidays",
+      "PARAMETERS_TITLE": "HR parameters",
+      "HOLIDAYS_TITLE": "Public holidays",
+      "FIELDS": {
+        "PARAM_KEY": "Key",
+        "PARAM_TYPE": "Type",
+        "VALUE": "Value",
+        "DESCRIPTION": "Description",
+        "HOLIDAY_NAME": "Name",
+        "HOLIDAY_DATE": "Date",
+        "RECURRING": "Recurring"
+      },
+      "PARAM_TYPE": {
+        "STRING": "Text",
+        "NUMBER": "Number",
+        "BOOLEAN": "Boolean"
+      }
+    },
+    "POINTAGE": {
+      "KIOSK": {
+        "MENU": "Employee clock-in",
+        "OPEN": "Open clock-in",
+        "TITLE": "Clock in / out",
+        "SUBTITLE": "Enter your CIN, then punch in or out.",
+        "CIN_LABEL": "CIN number",
+        "CIN_REQUIRED": "Please enter your CIN",
+        "IDENTIFY": "Identify",
+        "RESET": "New",
+        "EMPLOYEE_NOT_FOUND": "No employee found for this CIN",
+        "LOAD_ERROR": "Unable to load attendance",
+        "PUNCH_ERROR": "Punch rejected",
+        "CHECK_IN_OK": "Check-in recorded",
+        "CHECK_OUT_OK": "Check-out recorded",
+        "TODAY": "Today",
+        "CHECK_IN": "Check-in",
+        "CHECK_OUT": "Check-out",
+        "WORKED_HOURS": "Worked hours",
+        "BUTTON_IN": "Check in",
+        "BUTTON_OUT": "Check out",
+        "DAY_COMPLETE": "Today's punch is complete",
+        "BACK_LIST": "Attendance list",
+        "NO_JOB": "No job title"
+      },
+      "SEARCH": "Search employee",
+      "SEARCH_PLACEHOLDER": "Name, CIN, email…",
+      "DATE": "Date",
+      "CHECK_IN": "Check-in",
+      "CHECK_OUT": "Check-out",
+      "DURATION": "Duration",
+      "MARK_ENTRY": "Mark entry",
+      "MARK_EXIT": "Mark exit",
+      "ENTRY_DONE": "Entry recorded",
+      "EXIT_DONE": "Exit recorded",
+      "LOAD_ERROR": "Unable to load attendance for this date.",
+      "SAVE_ERROR": "Unable to save attendance.",
+      "ENTRY_MARKED": "Check-in recorded at {{time}}.",
+      "EXIT_MARKED": "Check-out recorded at {{time}}.",
+      "PUNCH": "Punch",
+      "OPEN_PUNCH": "Open check-in — mark exit first"
+    }
+  },
   "CONTRACT": {
     "ADD": "Add Contract",
     "ADD_TITLE": "Add contract",
     "CANCEL": "Cancel",
+    "DOWNLOAD_PDF": "Download contract (PDF)",
     "EDIT_TITLE": "Edit contract",
     "END_DATE": "End date",
     "MESSAGES": {
+      "CONFIRM_DELETE": "Delete this contract?",
+      "DELETE_SUCCESS": "Contract deleted successfully",
+      "ERROR_DELETING": "Error deleting contract",
       "EMPLOYEE_REQUIRED": "Employee is required",
       "ERROR_LOADING": "Error loading contract",
+      "ERROR_SAVING": "Error saving contract",
       "ERROR_UPDATING": "Error updating contract",
-      "UPDATE_SUCCESS": "Contract updated successfully"
+      "SAVE_SUCCESS": "Contract saved successfully",
+      "UPDATE_SUCCESS": "Contract updated successfully",
+      "DELETE_CONFIRM": "Supprimer ce contrat ?"
     },
+    "LIST_TITLE": "Contract list",
     "POSITION": "Position",
     "POSTE": "Contract position",
     "SALARY": "Salary",
@@ -573,9 +1475,17 @@
     "START_DATE": "Start Date",
     "STATUS": "Contract status",
     "TITLE": "Contracts",
-    "TYPE": "Type",
+    "TYPE": {
+      "CDD": "Fixed-term (CDD)",
+      "CDI": "Permanent (CDI)",
+      "INTERNSHIP": "Internship",
+      "STAGE": "Internship (stage)",
+      "TEMPORARY": "Temporary"
+    },
+    "TYPE_LABEL": "Type",
     "UPDATE": "Update contract",
     "DASHBOARD": {
+      "DOUBLE_CLICK_HINT": "Double-click a row to open the employee file (contracts tab).",
       "FIELDS": {
         "CONTRACT_STATUS": "Contract status",
         "CONTRACT_TYPE": "Contract type",
@@ -598,6 +1508,7 @@
     "BUTTONS": {
       "BACK": "Back",
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "SUBMIT": "Submit",
       "VALIDATE": "Validate"
     },
@@ -618,6 +1529,8 @@
       "UNPAID_AMOUNT": "Unpaid Amount (TND)"
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "FIELDS": {
         "CATEGORY": "Category",
         "DELIVERY_DATE": "Delivery Date",
@@ -720,6 +1633,7 @@
     "ACTIONS": {
       "BACK": "Back",
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "CREATE": "Create Customer",
       "EDIT": "Edit",
       "UPDATE": "Update Customer"
@@ -900,24 +1814,25 @@
         "QUALITY_CONTROL": "Quality control",
         "STORAGE_UNIT": "Storage unit",
         "SUPPLIER_DETAILS": "Supplier details",
+        "SUPPLIER_FINANCE": "Supplier finance",
         "SUPPLIER_PAYMENTS": "Supplier payments",
         "TITLE": "Related links"
       },
       "SECTIONS": {
-        "ADDITIONAL_INFO": "ℹ️ Additional Info",
-        "GENERAL_INFO": "📦 General Information",
-        "INFO_CONTROL_QUALITE": "🧪 Quality Control Info",
-        "INFO_PRIX": "💰 Pricing Info",
-        "INFO_PRODUCTION": "🏭 Production Info",
-        "OIL_INFO": "🛢️ Oil Information",
-        "OLIVE_INFO": "🌿 Olive Variety",
-        "OLIVE_OIL_INFO": "🫒 Olive & Oil Information",
+        "ADDITIONAL_INFO": "â„¹ï¸ Additional Info",
+        "GENERAL_INFO": "ðŸ“¦ General Information",
+        "INFO_CONTROL_QUALITE": "ðŸ§ª Quality Control Info",
+        "INFO_PRIX": "ðŸ’° Pricing Info",
+        "INFO_PRODUCTION": "ðŸ­ Production Info",
+        "OIL_INFO": "ðŸ›¢ï¸ Oil Information",
+        "OLIVE_INFO": "ðŸŒ¿ Olive Variety",
+        "OLIVE_OIL_INFO": "ðŸ«’ Olive & Oil Information",
         "PROCESSING": "Processing",
-        "STORAGE": "🏭 Storage Unit",
-        "STORAGE_UNIT": "🏭 Storage Unit",
-        "SUPPLIER": "👤 Supplier",
-        "TRUCK": "🚚 Truck Information",
-        "WEIGHT_CONTAINER ": "⚖️ Weight Information",
+        "STORAGE": "ðŸ­ Storage Unit",
+        "STORAGE_UNIT": "ðŸ­ Storage Unit",
+        "SUPPLIER": "ðŸ‘¤ Supplier",
+        "TRUCK": "ðŸšš Truck Information",
+        "WEIGHT_CONTAINER ": "âš–ï¸ Weight Information",
         "DOCUMENTS": "Documents"
       },
       "TITLE": "Reception Details"
@@ -925,22 +1840,23 @@
     "FIELDS": {
       "CATEGORY_OLIVE_OIL": "Olive Oil Category",
       "DELIVERY_DATE": "Delivery Date",
-      "DELIVERY_NUMBER": "N° réception",
+      "DELIVERY_NUMBER": "NÂ° rÃ©ception",
       "DELIVERY_TYPE": "Delivery Type",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "GROSS_WEIGHT": "Gross Weight (KG)",
-      "LOT_NUMBER": "Lot N°",
-      "LOT_OLIVE_NUMBER": "N° lot de référence",
+      "LOT_NUMBER": "Lot NÂ°",
+      "LOT_OLIVE_NUMBER": "NÂ° lot de rÃ©fÃ©rence",
       "MILL_MACHINE": "Mill machine",
       "MILL_START": "Processing start",
       "NET_WEIGHT": "Net Weight (KG)",
       "OIL_QUANTITY": "Oil Quantity",
       "OIL_TYPE": "Oil type",
-      "OLIVE_LOT_NUMBER": "Olive Lot N°/reception N°",
+      "OLIVE_LOT_NUMBER": "Olive Lot NÂ°/reception NÂ°",
       "OLIVE_QUANTITY": "Olive Quantity",
       "OLIVE_TYPE": "Olive Type",
       "OLIVE_VARIETY": "Variety",
       "OPERATION_TYPE": "Operation Type",
+      "PAID": "Paid in full",
       "PAID_AMOUNT": "Paid amount",
       "PARCEL": "Parcel",
       "PAYMENT_MODE": "Payment method",
@@ -966,10 +1882,13 @@
       "YIELD": "Yield"
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "BUTTONS": {
         "ADD": "Add",
         "BACK": "Back",
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "SAVE": "Save",
         "UPDATE": "Update"
       },
@@ -1092,34 +2011,6 @@
       "REFUSED": "Refused"
     }
   },
-  "DEPARTMENT": {
-    "DETAIL": {
-      "EMPLOYEES": "Employees",
-      "GENERAL_INFO": "General Information",
-      "MANAGER_INFO": "Manager Information",
-      "MANAGER_NOT_FOUND": "Manager not found",
-      "NO_EMPLOYEES": "No employees found",
-      "TITLE": "Department Details"
-    },
-    "FORM": {
-      "DESCRIPTION": "Description",
-      "NAME": "Name"
-    },
-    "MESSAGES": {
-      "NOT_FOUND": "Department not found"
-    },
-    "DASHBOARD": {
-      "FIELDS": {
-        "DESCRIPTION": "Description",
-        "EMPLOYEES_COUNT": "Employee count",
-        "MANAGER_ID": "Manager",
-        "NAME": "Name"
-      }
-    },
-    "DESCRIPTION": "Description",
-    "MANAGER": "Manager",
-    "NAME": "Department name"
-  },
   "DIVORCED": "Divorced",
   "Dashboard": "Dashboard",
   "Data": "Data",
@@ -1134,32 +2025,41 @@
     "ADD_TITLE": "Add Employee",
     "BIRTH_DATE": "Birth Date",
     "CANCEL": "Cancel",
+    "DOWNLOAD_PDF": "Download contract (PDF)",
     "CIN": "CIN",
     "CITY": "City",
     "COUNTRY": "Country",
-    "DEPARTMENT": "Departement",
     "DETAIL": {
       "CONTACT_INFO": "Contact Information",
+      "FILE_SUBTITLE": "Complete employee file: profile, contracts, payroll, leave and attendance.",
+      "NO_POINTAGE": "No attendance records for this employee.",
       "PERSONAL_INFO": "Personal Information",
       "PROFESSIONAL_INFO": "Professional Information",
+      "TAB_PROFILE": "Profile",
       "TITLE": "Employee Details"
     },
     "EDIT_TITLE": "Edit Employee",
     "EMAIL": "Email",
     "FIRST_NAME": "First Name",
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "ADDRESS": "Address",
       "BIRTH_DATE": "Birth Date",
       "CIN": "CIN",
       "CITY": "City",
       "COUNTRY": "Country",
-      "DEPARTMENT": "Department",
       "EMAIL": "Email",
       "GENDER": "Gender",
       "HIRE_DATE": "Hire Date",
       "MARITAL_STATUS": "Marital Status",
       "PHONE": "Phone",
       "POSTAL_CODE": "Postal Code"
+    },
+    "WORK_REGIME": {
+      "HOURS_48": "48 h/week (industrial SMIG)",
+      "HOURS_40": "40 h/week (services SMIG)",
+      "AGRICULTURAL": "Agricultural (SMAG)"
     },
     "GENDER": {
       "FEMALE": "Female",
@@ -1170,8 +2070,11 @@
     "LAST_NAME": "Last Name",
     "MARITAL_STATUS": {
       "MARRIED": "Married",
-      "SINGLE": "Single"
+      "SINGLE": "Single",
+      "WIDOWED": "Widowed",
+      "DIVORCED": "Divorced"
     },
+    "LIST_TITLE": "Employee list",
     "MESSAGES": {
       "NOT_FOUND": "Employee not found"
     },
@@ -1182,7 +2085,31 @@
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
     },
-    "UPDATE": "Update"
+    "UPDATE": "Update",
+    "DASHBOARD": {
+      "TITLE": "HR Dashboard",
+      "SUBTITLE": "Workforce overview, headcount trends, and pending HR actions.",
+      "STATS_TITLE": "Key indicators",
+      "FULL_DASHBOARD": "Full dashboard",
+      "TOTAL": "Total employees",
+      "OF_WORKFORCE": "of workforce",
+      "NEEDS_REVIEW": "Profiles to review",
+      "ACTIVE_CONTRACTS": "Active contracts",
+      "POSITIONS": "positions",
+      "PENDING_LEAVE": "Pending leave",
+      "AWAITING_APPROVAL": "Awaiting approval",
+      "UNPAID_PAYROLL": "Unpaid payslips",
+      "PAYSLIPS_TO_SETTLE": "Payslips to settle",
+      "BY_WORK_REGIME": "Employees by work regime",
+      "BY_GENDER": "Employees by gender",
+      "RECENT_HIRES": "Recent hires",
+      "VIEW_ALL": "View all employees",
+      "NO_RECENT_HIRES": "No recent hires recorded.",
+      "QUICK_ACTIONS": "Quick actions",
+      "LOADING": "Loading statistics…",
+      "NO_DATA": "No data",
+      "DOUBLE_CLICK_HINT": "Double-click a row to open the full employee file."
+    }
   },
   "EXPENSE": {
     "CATEGORY": {
@@ -1216,6 +2143,7 @@
   "EXPENSES": {
     "ACTIONS": {
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "EDIT": "Edit",
       "PRINT": "Print",
       "SAVE": "Save",
@@ -1299,6 +2227,7 @@
   "GENERAL_CONFIG": {
     "ACTIONS": {
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "EDIT": "Edit",
       "RESET": "Reset",
       "SAVE": "Save",
@@ -1338,6 +2267,7 @@
   "GENERAL_CONFIG_UI": {
     "ACTIONS": {
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "EDIT": "Edit",
       "RESET": "Reset",
       "SAVE": "Save",
@@ -1352,12 +2282,14 @@
       "TITLE": "Address Information"
     },
     "COMPANY_INFO": {
+      "ACTIVE": "Active company",
       "CAPITAL": "Capital",
       "CAPITAL_REQUIRED": "Capital is required.",
       "CNSS_NUMBER": "CNSS Number",
       "CNSS_NUMBER_REQUIRED": "CNSS number is required.",
       "CREATION_DATE": "Creation Date",
       "CREATION_DATE_REQUIRED": "Creation date is required.",
+      "LEGAL_DETAILS": "Legal details",
       "LEGAL_FORM": "Legal Form",
       "LEGAL_FORMS": {
         "OTHER": "Other",
@@ -1371,12 +2303,14 @@
       "LEGAL_NAME_REQUIRED": "Legal name is required.",
       "REG_NUMBER": "Registration Number",
       "REG_NUMBER_REQUIRED": "Registration number is required.",
+      "SUMMARY": "Company summary",
       "TAX_ID": "Tax ID",
       "TAX_ID_REQUIRED": "Tax ID is required.",
       "TITLE": "Company Information"
     },
     "CONFIGURATIONS": "Configurations",
     "CONTACT_INFO": {
+      "EDIT_TITLE": "Contact & location",
       "EMAIL": "Email",
       "EMAIL_REQUIRED": "Email is required.",
       "PHONE": "Phone",
@@ -1385,8 +2319,25 @@
       "WEBSITE": "Website",
       "WEBSITE_REQUIRED": "Website is required."
     },
+    "FINANCE_CONFIG": {
+      "PRICE_SUFFIX": "TND / kg",
+      "SUBTITLE": "Milling prices and finance-related system parameters",
+      "TITLE": "Finance configuration"
+    },
     "FINANCE_TAB": "Finance Config",
+    "HR_CONFIG": {
+      "SUBTITLE": "HR module parameters (payroll rules, defaults, etc.)",
+      "TITLE": "HR configuration"
+    },
     "HR_TAB": "HR Config",
+    "OTHER_CONFIG": {
+      "SUBTITLE": "Parameters not assigned to Production, Finance, or HR",
+      "TITLE": "Other configuration"
+    },
+    "CATEGORY_CONFIG": {
+      "SUBTITLE": "System parameters for this module",
+      "TITLE": "Configuration"
+    },
     "LOGO": {
       "CLICK_BROWSE": "or click to browse",
       "DRAG_DROP": "Drag & drop your logo here",
@@ -1399,8 +2350,22 @@
       "CONFIRM_RESET": "Are you sure you want to reset the form? All unsaved changes will be lost."
     },
     "OTHER_TAB": "Other Config",
+    "PRODUCTION_CONFIG": {
+      "DAILY_METRIC_HINT": "Current reference value. History is preserved when you save.",
+      "EDIT_CAMPAIGN": "Campaign schedule",
+      "ENDED": "Ended",
+      "HISTORY": "History",
+      "HISTORY_DATE": "Date",
+      "HISTORY_NO_MATCH": "No matching entries",
+      "HISTORY_SEARCH": "Search…",
+      "HISTORY_VALUE": "Value",
+      "PARAMETERS": "Production parameters",
+      "START_FROM": "Starts",
+      "SUMMARY": "Campaign summary"
+    },
     "PRODUCTION_TAB": "Production Config",
-    "TAB_TITLE": "General Configuration"
+    "TAB_TITLE": "General Configuration",
+    "TYPES_PARAMS_TAB": "Types Params"
   },
   "GENERAL_CONFIG_UI_GENERAL_CONFIG": {
     "CONFIGURATIONS": "Configurations",
@@ -1474,7 +2439,9 @@
       "COMPANY_PROFILES": "Company Profiles",
       "DASHBOARD": "Admin Dashboard",
       "TITLE": "Administration",
-      "USERS": "User Management"
+      "USERS": "User Management",
+      "SUPPORT": "Support tickets",
+      "PERMISSION_CATALOG": "Permission catalog"
     },
     "CONDITIONNEMENT": {
       "EXPEDITIONS": "Shipments & delivery notes",
@@ -1491,6 +2458,7 @@
       "ACTIONS": {
         "BACK": "Back to Customers",
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CREATE": "Create Customer",
         "EDIT": "Edit",
         "SAVE": "Save",
@@ -1615,13 +2583,41 @@
         "OIL_SALES": "Oil Sales",
         "TITLE": "Finance dashboard",
         "TRANSACTIONS": "Transactions",
-        "WASTE_SALES": "Waste Sales"
+        "WASTE_SALES": "Waste Sales",
+        "RECENT_SALES": "Recent sales",
+        "NO_RECENT_SALES": "No sales in the selected period",
+        "RECENT_ACTIVITY": "Recent activity",
+        "NO_RECENT_ACTIVITY": "No recent transactions",
+        "EXPENSE_BREAKDOWN": "Expense breakdown",
+        "OVERVIEW": {
+          "COUNT": "Transactions",
+          "AMOUNT": "Amount (TND)"
+        },
+        "INVOICE_PREVIEW": {
+          "TITLE": "Preview invoice",
+          "PRINT": "Print",
+          "DATE": "Date",
+          "DUE_DATE": "Due date",
+          "FROM": "From",
+          "TO": "To",
+          "NAME": "Name",
+          "DESCRIPTION": "Description",
+          "QTY": "Qty",
+          "PRICE": "Price",
+          "TOTAL": "Total",
+          "SUBTOTAL": "Sub total",
+          "GRAND_TOTAL": "Grand total",
+          "NOTE": "Note",
+          "PARTIAL": "Partially paid"
+        }
       },
       "EXPENSES": "Expenses",
       "DASHBOARD_OVERVIEW": "Finance dashboard",
       "OIL_CREDIT": "Oil Credit",
       "OIL_SALES": "Oil Sales",
       "OIL_TRANSACTIONS": "Oil Transactions",
+      "CASH_REGISTER": "Daily cash register",
+      "SEASON_RECAP": "Season recap",
       "SALES": "Sales & credits",
       "TITLE": "Finance & Accounting",
       "TRANSACTIONS": "Financial Transactions",
@@ -1642,7 +2638,14 @@
       "TITLE": "Home"
     },
     "HR": {
+      "ATTENDANCE": "Attendance",
+      "CONTRACTS": "Contracts",
       "EMPLOYEES": "Employees",
+      "LEAVE": "Leave requests",
+      "ORGANIZATION": "Organization",
+      "PAYROLL": "Payroll & payslips",
+      "PAYROLL_LEAVE": "Contracts, payroll & leave",
+      "POSITIONS": "Positions",
       "ROLES_PERMISSIONS": "Roles & Permissions",
       "TITLE": "Human Resources"
     },
@@ -1674,6 +2677,7 @@
       "OVERVIEW": "Overview",
       "PARTNERS": "Suppliers & contributors",
       "PLANNING": "Planning",
+      "PURCHASE_JOURNAL": "Purchase journal",
       "QUALITY_CONTROL": "Quality Control",
       "QUALITY_CONTROL_HUILE": "Oil quality controle",
       "QUALITY_CONTROL_OLIVE": "Olive quality controle",
@@ -1696,6 +2700,13 @@
     "MAINTENANCE": {
       "WORK_ORDERS": "Maintenance"
     },
+    "MAINTENANCE_EQUIPMENT": {
+      "TITLE": "Maintenance & equipment"
+    },
+    "EQUIPMENT": {
+      "REGISTRY": "Mill equipment",
+      "MISSIONS": "External missions"
+    },
     "STOCKS_INV": {
       "DASHBOARD": "Stock dashboard",
       "ITEMS": "Catalog & items",
@@ -1705,6 +2716,8 @@
     },
     "STORAGE": {
       "FORM": {
+        "CNSS_MATRICULE": "CNSS number",
+        "WORK_REGIME": "Work regime",
         "IS_PAID_STORAGE": "This is a paid storage unit",
         "MONTHLY_RENTAL_PRICE": "Monthly Rental Price (TND)",
         "PAID_STORAGE_INFO": "Paid Storage Information",
@@ -1736,6 +2749,7 @@
   "MILL_MACHINE": {
     "ACTIONS": {
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "EDIT": "Edit",
       "MAINTENANCE": "Maintenance",
       "SAVE": "Save",
@@ -1803,10 +2817,13 @@
       }
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "ACTIVE": "Active",
       "BARCODE": "Barcode",
       "BUY_PRICE": "Buy Price",
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "CAPACITY": "Capacity (L)",
       "CERTIFICATION": "Certification",
       "DESCRIPTION": "Description",
@@ -1831,7 +2848,7 @@
       "CONFIRM": "Confirm purchase",
       "CONFIRM_HINT": "Review the details. This will create an expense, a financial transaction, and update stock.",
       "CONFIRM_TITLE": "Confirm purchase",
-      "DIALOG_HINT": "Purchase {{name}} — enter quantity and supplier.",
+      "DIALOG_HINT": "Purchase {{name}} â€” enter quantity and supplier.",
       "DIALOG_TITLE": "Buy containers",
       "ERROR": "Failed to record purchase",
       "NEXT": "Continue",
@@ -1850,6 +2867,7 @@
   "OIL_CREDIT": {
     "ACTIONS": {
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "EDIT": "Edit",
       "SAVE": "Save",
       "UPDATE": "Update"
@@ -1882,8 +2900,11 @@
       "UNIT": "Unit"
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "BUTTONS": {
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CREATE": "Create",
         "UPDATE": "Update"
       },
@@ -1978,6 +2999,7 @@
       "BUTTONS": {
         "ADD": "Add",
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "UPDATE": "Update"
       },
       "DELIVERY_INFO": "Delivery Information",
@@ -2061,7 +3083,7 @@
       },
       "FIELDS": {
         "DELIVERY_DATE": "Delivery Date",
-        "DELIVERY_NUMBER": "N° réception",
+        "DELIVERY_NUMBER": "NÂ° rÃ©ception",
         "GLOBAL_LOT_NUMBER": "Global Lot Number",
         "LOT_NUMBER": "Lot Number",
         "OIL_QUANTITY": "Oil Quantity (KG)",
@@ -2070,9 +3092,9 @@
         "REGION": "Region",
         "STATUS": "Status",
         "SUPPLIER": "Supplier",
-        "TOTAL_PRICE": "Total Price (€)",
+        "TOTAL_PRICE": "Total Price (â‚¬)",
         "TRUCK_PLATE": "Truck Plate",
-        "UNIT_PRICE": "Unit Price (€/L)"
+        "UNIT_PRICE": "Unit Price (â‚¬/L)"
       },
       "MESSAGES": {
         "DELETE_ERROR": "Error deleting reception",
@@ -2103,6 +3125,12 @@
       "DOCUMENTS": "Documents",
       "LIFECYCLE": "Actions"
     },
+    "RELATED_LINKS": {
+      "FINANCIAL_TRANSACTIONS": "Financial transactions",
+      "STORAGE_UNIT": "Storage unit",
+      "SUPPLIER_FINANCE": "Supplier finance",
+      "TITLE": "Related links"
+    },
     "CONFIRMATIONS": {
       "CANCEL_MESSAGE": "This sale will be cancelled and stock will be restored if applicable.",
       "CANCEL_TITLE": "Cancel oil sale?",
@@ -2111,6 +3139,7 @@
     },
     "ADD_TITLE": "Add Oil Sale",
     "CANCEL": "Cancel",
+    "DOWNLOAD_PDF": "Download contract (PDF)",
     "CONFIRM": "Confirm",
     "CONTAINERS": {
       "COUNT": "Quantity",
@@ -2173,6 +3202,8 @@
       "LAST_MODIFIED_DATE": "Last modified date"
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "VALIDATION": {
         "ADDRESS_REQUIRED": "A delivery address is required. Use the client address or enter one manually.",
         "BOTH_CUSTOMER_AND_SUPPLIER_SELECTED": "Please select either customer or supplier, not both",
@@ -2324,19 +3355,23 @@
     "DIALOG": {
       "EXCHANGE": {
         "TITLE_DESTINATION": "chose the destination storage unit to validate the transaction",
-        "TITLE_SOURCE": "Choisir une unité de stockage source pour valider le transaction"
+        "TITLE_SOURCE": "Choisir une unitÃ© de stockage source pour valider le transaction"
       }
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "ACTIONS": {
         "APPROVE": "Approve",
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CREATE": "Create",
         "UPDATE": "Update"
       },
       "CONFIRMATION": {
         "APPROVE": {
           "CANCEL": "Cancel",
+          "DOWNLOAD_PDF": "Download contract (PDF)",
           "CONFIRM": "Approve",
           "MESSAGE": "Are you sure you want to approve this transaction? This action cannot be undone.",
           "TITLE": "Approve Transaction"
@@ -2449,10 +3484,13 @@
   },
   "OLIVE_RECEPTION": {
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "BUTTONS": {
         "ADD": "Add",
         "BACK": "Back",
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "SAVE": "Save",
         "UPDATE": "Update"
       },
@@ -2544,6 +3582,7 @@
       "BONCOMMANDE": "Purchase Order",
       "Base_type": "Base type",
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "CERTIFICATION": "Certification",
       "CHECK_STOCK": "Check Stock",
       "CLIENT": "Client",
@@ -2560,7 +3599,6 @@
       "REMOVE": "Remove",
       "DELIVER": "Deliver",
       "DELIVERYHISTORY": "Delivery History",
-      "DEPARTMENT": "Department",
       "DETAIL": "Details",
       "DRAFT": "Draft",
       "EMPLACEMENTSTOCK": "Stock Location",
@@ -2716,7 +3754,6 @@
       "DASHBOARD_TITLES_FILTRATION": "Filtration operations performed on stored oil.",
       "AUTO_GESTION_DES_RESERVOIRS": "Oil storage tanks and reservoirs: levels, capacity, and assignments.",
       "AUTO_GESTION_DES_CONTENANTS_D_HUILE": "Oil containers used for packaging, transfer, and sales.",
-      "AUTO_LISTE_DES_DEPARTEMENTS": "HR departments used to organize employees and roles.",
       "AUTO_LISTE_DES_EMPLOYES": "Employee records, contact details, and assignments.",
       "AUTO_LISTE_DES_CONTRATS": "Employment contracts linked to employees and positions.",
       "AUTO_LISTE_DES_POSTES": "Job positions and titles used in HR and payroll.",
@@ -2767,7 +3804,7 @@
   "Other": "Other",
   "PAGE_404": {
     "BACK_HOME": "Back To Home",
-    "DESCRIPTION": "The page you’re looking for doesn’t exist, was moved, or is temporarily unavailable.",
+    "DESCRIPTION": "The page youâ€™re looking for doesnâ€™t exist, was moved, or is temporarily unavailable.",
     "IMAGE_ALT": "404 error illustration",
     "TITLE": "Page Not Found"
   },
@@ -2782,7 +3819,7 @@
     "CLIENT_ADDRESS": "Address",
     "CLIENT_INFO": "Client",
     "CLIENT_NAME": "Client name",
-    "CLIENT_PHONE": "Mobile N°",
+    "CLIENT_PHONE": "Mobile NÂ°",
     "CODEECH": "Sample code",
     "COMPANY_ADDRESS": "Address",
     "COMPANY_EMAIL": "Email",
@@ -2853,8 +3890,8 @@
     "LOT": "Lot",
     "LOT_GLOBAL": "Global Lot",
     "LOT_NUMBER": "Lot Number",
-    "MOBILE": "Phone N°",
-    "NCOLIS": "Package N°",
+    "MOBILE": "Phone NÂ°",
+    "NCOLIS": "Package NÂ°",
     "NOTE_DE_PAIEMENT": "Payment note",
     "NOTE_PAYEMENT_RECEPTION": "Reception Payment Note",
     "NOTE_PAYEMENT_TRITURATION": "Crushing Payment Note",
@@ -2862,7 +3899,7 @@
     "NOTE_PAYEMENT_VENTE_HUILE": "Oil Sale Payment Note",
     "NO_QUALITY_DATA": "No quality control data available",
     "NUMBER_PLACEHOLDER": "No: ",
-    "N°COLIS": "Package #",
+    "NÂ°COLIS": "Package #",
     "OIL_CUSTOMER": "Oil Customer",
     "OIL_DISPATCH": "Oil Dispatch Note",
     "OIL_GRADE": {
@@ -2917,7 +3954,7 @@
     "RECEPTION_DATE": "Reception Date",
     "RECEPTION_ID": "Reception ID",
     "RECEPTION_IN": "Reception",
-    "RECEPTION_NUMBER": "N° réception",
+    "RECEPTION_NUMBER": "NÂ° rÃ©ception",
     "RECEPTION_OIL": "Oil Reception Receipt",
     "RECEPTION_OLIVE": "Olive Reception Receipt",
     "RECEPTION_REGION": "Reception Region",
@@ -2941,7 +3978,7 @@
     "STORAGE_UNIT_SOURCE": "Storage Unit (Source)",
     "SUBTOTAL": "Subtotal",
     "SUPPLIER": "Supplier",
-    "TANK_NUMBER": "N° Article",
+    "TANK_NUMBER": "NÂ° Article",
     "TAX_ID": "Tax ID",
     "TVA_LEGAL_MENTION": "Invoice issued in accordance with Article 18 of the Tunisian VAT Code. Unit prices exclude VAT. VAT rates and amounts are shown per line.",
     "UNIT_PRICE_HT": "Unit price excl. VAT",
@@ -2966,7 +4003,7 @@
     "TRITURATION": "Trituration",
     "TRITURATION_SERVICE": "Olive Oil Trituration Service",
     "TRUCK_MAT": "Truck Mat",
-    "TRUCK_STATE": "État du camion",
+    "TRUCK_STATE": "Ã‰tat du camion",
     "TYPE": "Type",
     "UNIT_PRICE": "Unit Price",
     "UNPAID": "Unpaid",
@@ -2989,7 +4026,8 @@
     "SNAPSHOT_CAPTURED_AT": "Snapshot captured at",
     "TRACEABILITY_GENEALOGY": "Traceability genealogy",
     "TRUCK": "Truck",
-    "UNIT": "Unit"
+    "UNIT": "Unit",
+    "N°COLIS": "N° Colis"
   },
   "PLANNING": {
     "CANCEL_CAUSE": "Cancellation reason",
@@ -3012,18 +4050,30 @@
   "PLANNING_SACKS": "Sacks:",
   "PLANNING_SAVE": "Save",
   "PLANNING_SEARCH": "Search lot",
-  "PLANNING_SEARCH_PLACEHOLDER": "Lot, supplier, global lot…",
+  "PLANNING_SEARCH_PLACEHOLDER": "Lot, supplier, global lot",
   "PLANNING_SUPPLIER": "Supplier:",
   "PLANNING_TYPE": "Type:",
   "PLANNING_UNASSIGNED": "Unassigned",
   "PLANNING_VARIETY": "Variety:",
   "POSTE": {
+    "LIST_TITLE": "Position list",
     "ADD_TITLE": "Add position",
     "CANCEL": "Cancel",
+    "DOWNLOAD_PDF": "Download contract (PDF)",
     "DESCRIPTION": "Poste description",
+    "DETAIL": {
+      "GENERAL_INFO": "General information",
+      "NO_DESCRIPTION": "No description provided",
+      "SUBTITLE": "Job title used in contracts and HR records.",
+      "TITLE": "Position details"
+    },
+    "DASHBOARD": {
+      "DOUBLE_CLICK_HINT": "Double-click a row to open position details."
+    },
     "EDIT_TITLE": "Edit position",
     "MESSAGES": {
-      "ERROR_LOADING": "Error loading positions"
+      "ERROR_LOADING": "Error loading positions",
+      "NOT_FOUND": "Position not found"
     },
     "NAME": "Position",
     "SAVE": "Save position",
@@ -3052,6 +4102,7 @@
   "QUALITY_CONTROL_RULE": {
     "ACTIONS": {
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "EDIT": "Edit",
       "SAVE": "Save",
       "UPDATE": "Update"
@@ -3085,6 +4136,7 @@
       "ACTIONS": {
         "ADD": "Add",
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "SAVE": "Save",
         "UPDATE": "Update"
       },
@@ -3180,7 +4232,7 @@
       "LOAD_WARNING_PLANNING": "Could not load saved planning assignments.",
       "MILL_OVER_CAPACITY": "{{mill}} is over capacity ({{used}} / {{capacity}} kg)",
       "MILL_BLOCKED_BADGE": "Blocked",
-      "MILL_BLOCKED_DROP": "Cannot assign lots to {{mill}} — {{reason}}",
+      "MILL_BLOCKED_DROP": "Cannot assign lots to {{mill}} â€” {{reason}}",
       "MILL_BLOCKED_TOOLTIP": "{{mill}} is not available for planning ({{reason}})",
       "MILL_BLOCKED_MAINTENANCE": "under maintenance",
       "MILL_BLOCKED_OUT_OF_SERVICE": "out of service",
@@ -3210,7 +4262,7 @@
     },
     "FIELDS": {
       "DELIVERY_DATE": "Reception Date",
-      "DELIVERY_NUMBER": "N° réception",
+      "DELIVERY_NUMBER": "NÂ° rÃ©ception",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "LOT_NUMBER": "Lot Number",
       "NET_WEIGHT": "Net Weight (kg)",
@@ -3281,6 +4333,7 @@
       "ADD": "Add",
       "BACK": "Back",
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "CLOSE": "Close",
       "DELETE": "Delete",
       "EDIT": "Edit",
@@ -3294,23 +4347,28 @@
     "CONFIRMATION": {
       "BULK_DELETE": {
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CONFIRM": "Delete All",
         "MESSAGE": "Are you sure you want to delete the selected items? This action cannot be undone.",
         "TITLE": "Confirm Bulk Deletion"
       },
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "DATA_LOSS": {
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CONFIRM": "Continue",
         "MESSAGE": "This action will result in permanent data loss. Are you sure you want to continue?",
         "TITLE": "Data Loss Warning"
       },
       "DEFAULT": {
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CONFIRM": "Confirm"
       },
       "DELETE": {
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CONFIRM": "Delete",
         "MESSAGE": "Are you sure you want to delete this item? This action cannot be undone.",
         "TITLE": "Confirm Deletion"
@@ -3327,7 +4385,7 @@
         "MESSAGE": "Are you sure you want to save this payment ?"
       },
       "SAVE_QC": {
-        "MESSAGE": "Are you sure you want to save the quality‑control results?",
+        "MESSAGE": "Are you sure you want to save the qualityâ€‘control results?",
         "TITLE": "Confirm Save"
       },
       "SIMPLE": {
@@ -3344,12 +4402,14 @@
       },
       "UPDATE": {
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CONFIRM": "Yes, update",
         "MESSAGE": "Are you sure you want to update this oil transaction? This action cannot be undone.",
         "TITLE": "Confirm Update"
       },
       "WARNING": {
         "CANCEL": "Cancel",
+        "DOWNLOAD_PDF": "Download contract (PDF)",
         "CONFIRM": "Continue",
         "MESSAGE": "Please confirm this action.",
         "TITLE": "Warning"
@@ -3371,6 +4431,8 @@
       "LOAD": "Error loading storage unit"
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "IS_PAID_STORAGE": "Is Paid Storage",
       "MONTHLY_RENTAL_PRICE": "Monthly Rental Price",
       "PAID_STORAGE_INFO": "Paid Storage Information",
@@ -3458,6 +4520,7 @@
     "ACTIONS": {
       "ADD": "Add",
       "CANCEL": "Cancel",
+      "DOWNLOAD_PDF": "Download contract (PDF)",
       "EDIT": "Edit"
     },
     "ADD": {
@@ -3517,6 +4580,7 @@
       "INBOUND": "Inbound",
       "OUTBOUND": "Outbound",
       "PAID": "Paid",
+      "PAYMENT_LEDGER_TITLE": "Payment ledger",
       "RELATIONSHIP": "Financial relationship",
       "STORAGE_SUPPLIER_HINT": "This supplier has storage capacity. Oil credits and storage-related transactions may apply.",
       "TAB_FINANCE": "Finance",
@@ -3552,6 +4616,8 @@
       "ARTICLES_HINT": "For inventory articles, purchase orders and packaging. Distinct from olive/oil reception suppliers."
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "TITLE_CREATE": "New material supplier",
       "TITLE_EDIT": "Edit material supplier",
       "SUBTITLE_CREATE": "Add a material supplier for packaging, articles and purchase orders.",
@@ -3631,147 +4697,149 @@
     "TYPE": "Type",
     "TRANSACTIONS": {
       "FIELDS": {
-        "TRANSACTION_TYPE": "نوع المعاملة"
+        "TRANSACTION_TYPE": "Ù†ÙˆØ¹ Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø©"
       }
     },
     "USER": {
-      "EMAIL": "البريد الإلكتروني",
-      "FIRST_NAME": "الاسم الأول",
-      "GROUP": "المجموعة",
-      "LAST_NAME": "اسم العائلة",
-      "PASSWORD": "كلمة المرور",
-      "STATUS": "الحالة",
-      "USERNAME": "اسم المستخدم"
+      "EMAIL": "Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ",
+      "FIRST_NAME": "Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø£ÙˆÙ„",
+      "GROUP": "Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø©",
+      "LAST_NAME": "Ø§Ø³Ù… Ø§Ù„Ø¹Ø§Ø¦Ù„Ø©",
+      "PASSWORD": "ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±",
+      "STATUS": "Ø§Ù„Ø­Ø§Ù„Ø©",
+      "USERNAME": "Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…"
     },
     "USERS": {
       "ACTIONS": {
-        "ADD": "إضافة",
-        "CANCEL": "إلغاء",
-        "DELETE": "حذف",
-        "EDIT": "تعديل",
-        "GENERATE_PDF": "إنشاء إيصال"
+        "ADD": "Ø¥Ø¶Ø§ÙØ©",
+        "CANCEL": "Ø¥Ù„ØºØ§Ø¡",
+        "DELETE": "Ø­Ø°Ù",
+        "EDIT": "ØªØ¹Ø¯ÙŠÙ„",
+        "GENERATE_PDF": "Ø¥Ù†Ø´Ø§Ø¡ Ø¥ÙŠØµØ§Ù„"
       },
       "FIELDS": {
-        "EMAIL": "البريد الإلكتروني",
-        "FIRST_NAME": "الاسم الأول",
-        "GROUP": "المجموعة",
-        "LAST_NAME": "اسم العائلة",
-        "PASSWORD": "كلمة المرور",
-        "STATUS": "الحالة",
-        "USERNAME": "اسم المستخدم"
+        "EMAIL": "Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ",
+        "FIRST_NAME": "Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø£ÙˆÙ„",
+        "GROUP": "Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø©",
+        "LAST_NAME": "Ø§Ø³Ù… Ø§Ù„Ø¹Ø§Ø¦Ù„Ø©",
+        "PASSWORD": "ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±",
+        "STATUS": "Ø§Ù„Ø­Ø§Ù„Ø©",
+        "USERNAME": "Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…"
       },
       "MESSAGES": {
-        "DELETE": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟ هذا الإجراء لا يمكن التراجع عنه.",
+        "DELETE": "Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ø£Ù†Ùƒ ØªØ±ÙŠØ¯ Ø­Ø°Ù Ù‡Ø°Ø§ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ØŸ Ù‡Ø°Ø§ Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡ Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø§Ù„ØªØ±Ø§Ø¬Ø¹ Ø¹Ù†Ù‡.",
         "ERROR": {
-          "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
-          "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
-          "USERNAME_REQUIRED": "اسم المستخدم مطلوب"
+          "EMAIL_REQUIRED": "Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ù…Ø·Ù„ÙˆØ¨",
+          "PASSWORD_REQUIRED": "ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ù…Ø·Ù„ÙˆØ¨Ø©",
+          "USERNAME_REQUIRED": "Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø·Ù„ÙˆØ¨"
         },
-        "LOAD": "خطأ أثناء تحميل المستخدم",
-        "LOADING": "جارٍ التحميل...",
-        "SAVE": "خطأ أثناء حفظ المستخدم",
+        "LOAD": "Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…",
+        "LOADING": "Ø¬Ø§Ø±Ù Ø§Ù„ØªØ­Ù…ÙŠÙ„...",
+        "SAVE": "Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø­ÙØ¸ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…",
         "SUCCESS": {
-          "DELETE": "تم حذف المستخدم بنجاح",
-          "SAVE": "تم حفظ المستخدم بنجاح"
+          "DELETE": "ØªÙ… Ø­Ø°Ù Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ø¨Ù†Ø¬Ø§Ø­",
+          "SAVE": "ØªÙ… Ø­ÙØ¸ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ø¨Ù†Ø¬Ø§Ø­"
         }
       },
-      "TITLE": "المستخدمين"
+      "TITLE": "Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†"
     },
     "WASTE": {
       "ACTIONS": {
-        "ADD": "إضافة",
-        "CANCEL": "إلغاء",
-        "EDIT": "تعديل"
+        "ADD": "Ø¥Ø¶Ø§ÙØ©",
+        "CANCEL": "Ø¥Ù„ØºØ§Ø¡",
+        "EDIT": "ØªØ¹Ø¯ÙŠÙ„"
       },
       "ADD": {
-        "TITLE_ADD": "إضافة نفايات",
-        "TITLE_EDIT": "تعديل النفايات"
+        "TITLE_ADD": "Ø¥Ø¶Ø§ÙØ© Ù†ÙØ§ÙŠØ§Øª",
+        "TITLE_EDIT": "ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ù†ÙØ§ÙŠØ§Øª"
       },
       "FIELDS": {
-        "AMOUNT": "الكمية",
-        "DATE": "التاريخ",
-        "DESCRIPTION": "الوصف",
-        "METHOD": "الطريقة",
-        "OIL_TYPE": "نوع الزيت",
-        "OLIVE_TYPE": "نوع الزيتون",
-        "OPERATION_TYPE": "نوع العملية",
-        "PRICE": "السعر",
-        "REGION": "المنطقة",
-        "SUPPLIER": "المورد",
-        "TREATMENT_DATE": "تاريخ المعالجة",
-        "TYPE": "النوع",
-        "WEIGHT": "الوزن"
+        "AMOUNT": "Ø§Ù„ÙƒÙ…ÙŠØ©",
+        "DATE": "Ø§Ù„ØªØ§Ø±ÙŠØ®",
+        "DESCRIPTION": "Ø§Ù„ÙˆØµÙ",
+        "METHOD": "Ø§Ù„Ø·Ø±ÙŠÙ‚Ø©",
+        "OIL_TYPE": "Ù†ÙˆØ¹ Ø§Ù„Ø²ÙŠØª",
+        "OLIVE_TYPE": "Ù†ÙˆØ¹ Ø§Ù„Ø²ÙŠØªÙˆÙ†",
+        "OPERATION_TYPE": "Ù†ÙˆØ¹ Ø§Ù„Ø¹Ù…Ù„ÙŠØ©",
+        "PRICE": "Ø§Ù„Ø³Ø¹Ø±",
+        "REGION": "Ø§Ù„Ù…Ù†Ø·Ù‚Ø©",
+        "SUPPLIER": "Ø§Ù„Ù…ÙˆØ±Ø¯",
+        "TREATMENT_DATE": "ØªØ§Ø±ÙŠØ® Ø§Ù„Ù…Ø¹Ø§Ù„Ø¬Ø©",
+        "TYPE": "Ø§Ù„Ù†ÙˆØ¹",
+        "WEIGHT": "Ø§Ù„ÙˆØ²Ù†"
       },
       "MESSAGES": {
-        "LOAD_ERROR": "خطأ أثناء تحميل بيانات النفايات",
-        "SAVE_ERROR": "خطأ أثناء حفظ بيانات النفايات",
-        "SAVE_SUCCESS": "تم حفظ بيانات النفايات بنجاح"
+        "LOAD_ERROR": "Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ ØªØ­Ù…ÙŠÙ„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù†ÙØ§ÙŠØ§Øª",
+        "SAVE_ERROR": "Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø­ÙØ¸ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù†ÙØ§ÙŠØ§Øª",
+        "SAVE_SUCCESS": "ØªÙ… Ø­ÙØ¸ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù†ÙØ§ÙŠØ§Øª Ø¨Ù†Ø¬Ø§Ø­"
       },
       "METHODS": {
-        "BURY": "دفن",
-        "DUMP": " выброс",
-        "RECYCLE": "تنقية",
-        "SOLD": "بيع"
+        "BURY": "Ø¯ÙÙ†",
+        "DUMP": " Ð²Ñ‹Ð±Ñ€Ð¾Ñ",
+        "RECYCLE": "ØªÙ†Ù‚ÙŠØ©",
+        "SOLD": "Ø¨ÙŠØ¹"
       },
-      "TITLE": "النفايات",
+      "TITLE": "Ø§Ù„Ù†ÙØ§ÙŠØ§Øª",
       "TYPES": {
-        "OIL": "زيت",
-        "OLIVE": "زيتون"
+        "OIL": "Ø²ÙŠØª",
+        "OLIVE": "Ø²ÙŠØªÙˆÙ†"
       }
     },
     "WASTE_PROCESSING": {
       "FORM": {
+        "CNSS_MATRICULE": "CNSS number",
+        "WORK_REGIME": "Work regime",
         "FIELDS": {
-          "METHOD": "الطريقة",
-          "OIL_TYPE": "نوع الزيت",
-          "OLIVE_TYPE": "نوع الزيتون",
-          "PRICE": "السعر",
-          "REGION": "المنطقة",
-          "WEIGHT": "الوزن"
+          "METHOD": "Ø§Ù„Ø·Ø±ÙŠÙ‚Ø©",
+          "OIL_TYPE": "Ù†ÙˆØ¹ Ø§Ù„Ø²ÙŠØª",
+          "OLIVE_TYPE": "Ù†ÙˆØ¹ Ø§Ù„Ø²ÙŠØªÙˆÙ†",
+          "PRICE": "Ø§Ù„Ø³Ø¹Ø±",
+          "REGION": "Ø§Ù„Ù…Ù†Ø·Ù‚Ø©",
+          "WEIGHT": "Ø§Ù„ÙˆØ²Ù†"
         },
         "MESSAGES": {
-          "LOAD_ERROR": "خطأ أثناء تحميل بيانات معالجة النفايات",
-          "SAVE_ERROR": "خطأ أثناء حفظ بيانات معالجة النفايات",
-          "SAVE_SUCCESS": "تم حفظ بيانات معالجة النفايات بنجاح"
+          "LOAD_ERROR": "Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ ØªØ­Ù…ÙŠÙ„ Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù†ÙØ§ÙŠØ§Øª",
+          "SAVE_ERROR": "Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø­ÙØ¸ Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù†ÙØ§ÙŠØ§Øª",
+          "SAVE_SUCCESS": "ØªÙ… Ø­ÙØ¸ Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù†ÙØ§ÙŠØ§Øª Ø¨Ù†Ø¬Ø§Ø­"
         },
         "METHODS": {
-          "BURY": "دفن",
-          "DUMP": " выброс",
-          "RECYCLE": "تنقية",
-          "SOLD": "بيع"
+          "BURY": "Ø¯ÙÙ†",
+          "DUMP": " Ð²Ñ‹Ð±Ñ€Ð¾Ñ",
+          "RECYCLE": "ØªÙ†Ù‚ÙŠØ©",
+          "SOLD": "Ø¨ÙŠØ¹"
         },
-        "TITLE": "معالجة النفايات"
+        "TITLE": "Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù†ÙØ§ÙŠØ§Øª"
       }
     },
     "WASTE_PROCESSING_LIST": {
       "ACTIONS": {
-        "DELETE": "حذف",
-        "EDIT": "تعديل",
-        "GENERATE_PDF": "إنشاء إيصال"
+        "DELETE": "Ø­Ø°Ù",
+        "EDIT": "ØªØ¹Ø¯ÙŠÙ„",
+        "GENERATE_PDF": "Ø¥Ù†Ø´Ø§Ø¡ Ø¥ÙŠØµØ§Ù„"
       },
       "FIELDS": {
-        "AMOUNT": "الكمية",
-        "DATE": "التاريخ",
-        "DESCRIPTION": "الوصف",
-        "METHOD": "الطريقة",
-        "OIL_TYPE": "نوع الزيت",
-        "OLIVE_TYPE": "نوع الزيتون",
-        "PRICE": "السعر",
-        "REGION": "المنطقة",
-        "TYPE": "النوع",
-        "WEIGHT": "الوزن"
+        "AMOUNT": "Ø§Ù„ÙƒÙ…ÙŠØ©",
+        "DATE": "Ø§Ù„ØªØ§Ø±ÙŠØ®",
+        "DESCRIPTION": "Ø§Ù„ÙˆØµÙ",
+        "METHOD": "Ø§Ù„Ø·Ø±ÙŠÙ‚Ø©",
+        "OIL_TYPE": "Ù†ÙˆØ¹ Ø§Ù„Ø²ÙŠØª",
+        "OLIVE_TYPE": "Ù†ÙˆØ¹ Ø§Ù„Ø²ÙŠØªÙˆÙ†",
+        "PRICE": "Ø§Ù„Ø³Ø¹Ø±",
+        "REGION": "Ø§Ù„Ù…Ù†Ø·Ù‚Ø©",
+        "TYPE": "Ø§Ù„Ù†ÙˆØ¹",
+        "WEIGHT": "Ø§Ù„ÙˆØ²Ù†"
       },
-      "TITLE": "معالجة النفايات"
+      "TITLE": "Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù†ÙØ§ÙŠØ§Øª"
     },
     "WASTE_PROCESSING_METHODS": {
-      "BURY": "دفن",
-      "DUMP": " выброс",
-      "RECYCLE": "تنقية",
-      "SOLD": "بيع"
+      "BURY": "Ø¯ÙÙ†",
+      "DUMP": " Ð²Ñ‹Ð±Ñ€Ð¾Ñ",
+      "RECYCLE": "ØªÙ†Ù‚ÙŠØ©",
+      "SOLD": "Ø¨ÙŠØ¹"
     },
     "WASTE_PROCESSING_TYPES": {
-      "OIL": "زيت",
-      "OLIVE": "زيتون"
+      "OIL": "Ø²ÙŠØª",
+      "OLIVE": "Ø²ÙŠØªÙˆÙ†"
     }
   },
   "SUPPLIER_PAYMENT": {
@@ -3784,6 +4852,7 @@
     "BATCH_PAYMENT": "Batch Payment",
     "BOTH_PAYMENT": "Mixed Payment",
     "CANCEL": "Cancel",
+    "DOWNLOAD_PDF": "Download contract (PDF)",
     "CASH": "Cash",
     "CASH_AMOUNT": "Cash Amount",
     "CASH_PAYMENT": "Cash Payment",
@@ -3910,7 +4979,7 @@
       "DEFAULT_DESIGNATION": "Service"
     },
     "CURRENCIES": {
-      "EUR": "€",
+      "EUR": "â‚¬",
       "TND": "TND",
       "USD": "$"
     },
@@ -3958,6 +5027,18 @@
       "UNPAID_AMOUNT": "Unpaid amount",
       "VENDOR": "Vendor",
       "CUSTOMER": "Customer"
+    },
+    "LINKS": {
+      "DELIVERY": "Linked reception",
+      "DELIVERY_HINT": "This payment is tied to a reception or delivery record.",
+      "EXPENSE": "Linked expense",
+      "EXPENSE_HINT": "This transaction was recorded against an operating expense.",
+      "SUPPLIER": "Supplier account",
+      "SUPPLIER_HINT": "Open the supplier finance tab to see all related movements.",
+      "WASTE_SALE": "Linked waste sale",
+      "WASTE_SALE_HINT": "This transaction belongs to a waste sale.",
+      "EQUIPMENT_MISSION": "Linked equipment mission",
+      "EQUIPMENT_MISSION_HINT": "Open the external service mission that generated this payment."
     },
     "PAYMENT_METHODS": {
       "BANK_TRANSFER": "Bank transfert",
@@ -4073,6 +5154,11 @@
   "User Profile": "User Profile",
   "View": "View",
   "WASTE": {
+    "RELATED_LINKS": {
+      "FINANCIAL_TRANSACTIONS": "Financial transactions",
+      "SUPPLIER_FINANCE": "Supplier finance",
+      "TITLE": "Related links"
+    },
     "FIELDS": {
       "CUSTOMER": "Customer",
       "INVOICE_NUMBER": "Invoice Number",
@@ -4088,6 +5174,8 @@
       "UNIT_PRICE": "Unit Price (TND/kg)"
     },
     "FORM": {
+      "CNSS_MATRICULE": "CNSS number",
+      "WORK_REGIME": "Work regime",
       "ERRORS": {
         "QUALITY_GRADE_REQUIRED": "Oil quality is required"
       }
@@ -4106,7 +5194,7 @@
     "TITLE": "Home",
     "GREETING": "Welcome back to OOSM",
     "GREETING_NAMED": "Welcome back, {{name}}",
-    "LOADING": "Loading your overview…",
+    "LOADING": "Loading your overview",
     "LOAD_ERROR": "Could not load the dashboard overview.",
     "NO_MODULES": "No module dashboards are available for your account. Contact an administrator if you need access.",
     "OPEN_MODULE": "Open module",
@@ -4172,6 +5260,7 @@
     },
     "DESCRIPTION": "Manage receptions, production, inventory and finance from one place.",
     "HEADLINE": "Welcome to OOSM",
+    "SLOGAN": "Olive Oil Management System",
     "LINKS": {
       "FINANCE": "Finance",
       "FINANCE_HINT": "Invoices, payments & reports",
@@ -4182,7 +5271,7 @@
       "SETTINGS": "Settings",
       "SETTINGS_HINT": "Configuration & permissions"
     },
-    "SUB": "Olive Supply Management",
+    "SUB": "Olive Oil Management System",
     "TITLE": "Welcome"
   },
   "WIDOWED": "Widowed",
@@ -4190,9 +5279,6 @@
   "auth": {
     "change_password_title": "Change Password",
     "password_changed_success": "Your password has been successfully changed. Do you want to access the application?"
-  },
-  "department": {
-    "description": "Description"
   },
   "reCaptcha": "reCaptcha",
   "AUTO": {
@@ -4396,7 +5482,7 @@
     "VOIR_DETAILS": "See details",
     "AUCUNE_ETIQUETTE_TROUVEE": "No labels found",
     "CHARGEMENT_DES_EMPREINTES": "Loading fingerprints...",
-    "LOT_N": "LOT N°",
+    "LOT_N": "LOT NÂ°",
     "EXTRACTION": "Extraction",
     "STOCKAGE": "Storage",
     "APERCU_DE_L_ETIQUETTE": "Label preview",
@@ -4436,7 +5522,7 @@
     "BLOQUE_PAR_LA_QUALITE": "blocked by quality",
     "LES_ACTIONS_DE_PRODUCTION_SONT_LIMITEES": ". Production actions are limited.",
     "LIBRE": "Libre",
-    "AUCUN_BLOCAGE": "– No blocking.",
+    "AUCUN_BLOCAGE": "â€“ No blocking.",
     "PRODUCTION_QUALITE": "Production & quality",
     "LES_AJUSTEMENTS_DE_CONSOMMATION_PREPARES_PENDANT_LA_PRODUCTION_N": "Consumption adjustments prepared during production do not deduct inventory immediately. The real movement is applied to the closure of the OF.",
     "LIGNE": "Line {{value0}} {{value1}}",
@@ -4485,7 +5571,7 @@
     "DATE_DEBUT": "date debut",
     "DATE_FIN": "date fin",
     "LA_DATE_DE_FIN_DOIT_ETRE_POSTERIEURE_AU_DEBUT": "The end date must be later than the start.",
-    "PRODUCTION_FABRICATION": "Production · Fabrication",
+    "PRODUCTION_FABRICATION": "Production Â· Fabrication",
     "ORDRES_DE_FABRICATION": "Manufacturing Orders",
     "SUIVEZ_ET_GEREZ_VOS_ORDRES_DE_FABRICATION_EN_TEMPS_REEL": "Track and manage your manufacturing orders in real time.",
     "NOUVEL_OF": "Nouvel OF",
@@ -4645,9 +5731,9 @@
     "ARTICLES_A_EXPEDIER": "Items to ship",
     "AJOUTER_UN_OF": "Add a OF",
     "SELECTIONNER_UN_OF": "Select a OF",
-    "VOLUME_M3": "Volume (m³)",
-    "CHAINE_DE_TRACABILITE_RECEPTION_FILTRATION_OF_ETIQUETTES": "Chain of traceability (reception → filtration → OF → labels)",
-    "SNAPSHOT_FIGE_A_LA_VALIDATION_CE_DOCUMENT_NE_CHANGERA_PLUS": "Snapshot frozen upon validation — this document will no longer change.",
+    "VOLUME_M3": "Volume (mÂ³)",
+    "CHAINE_DE_TRACABILITE_RECEPTION_FILTRATION_OF_ETIQUETTES": "Chain of traceability (reception â†’ filtration â†’ OF â†’ labels)",
+    "SNAPSHOT_FIGE_A_LA_VALIDATION_CE_DOCUMENT_NE_CHANGERA_PLUS": "Snapshot frozen upon validation â€” this document will no longer change.",
     "APERCU_EN_DIRECT_DES_LIGNES_DE_CETTE_EXPEDITION_LA_TRACABILITE_S": "Live overview of the lines of this expedition. Traceability will be fixed upon validation.",
     "CHARGEMENT_DE_LA_TRACABILITE": "Loading traceability...",
     "CODE_TRACABILITE": "Traceability code",
@@ -4703,7 +5789,7 @@
     "RAISON_DU_CHANGEMENT_DE_STATUT": "Reason for change of status",
     "AUCUN_CHANGEMENT_DE_STATUT_AUTORISE_POUR_CET_ETAT": "No status changes allowed for this state.",
     "RAPPORT_DE_TRACABILITE_GLOBAL": "Global Traceability Report",
-    "CHRONOLOGIE_RECEPTION_STOCKAGE_FILTRATION_CONDITIONNEMENT_EXPEDI": "Chronology: reception → storage → filtration → packaging → shipping.",
+    "CHRONOLOGIE_RECEPTION_STOCKAGE_FILTRATION_CONDITIONNEMENT_EXPEDI": "Chronology: reception â†’ storage â†’ filtration â†’ packaging â†’ shipping.",
     "GENERATION_DU_RAPPORT_DE_TRACABILITE_EN_COURS": "Generation of the traceability report in progress...",
     "AUCUNE_DONNEE_DE_TRACABILITE_DISPONIBLE_POUR_CE_PROJET": "No traceability data available for this project.",
     "RECEPTION_META": "Reception meta",
@@ -4785,11 +5871,11 @@
     "PAS_AU_DISPONIBLE_LIBRE": "(not freely available).",
     "COMPARAISON_AVEC_LE_STOCK": "Comparison with stock",
     "DISPONIBLE": "available",
-    "ACTUEL_RESERVE": "(current − reserved).",
-    "CALCUL_DES_BESOINS_MATIERES": "Calculation of material requirements…",
+    "ACTUEL_RESERVE": "(current âˆ’ reserved).",
+    "CALCUL_DES_BESOINS_MATIERES": "Calculation of material requirements",
     "AUCUNE_LIGNE_DE_NOMENCLATURE_A_AFFICHER": "No BOM lines to display.",
-    "ETAT": "État",
-    "VERIFICATION_DE_LA_CHAINE_DE_TRACABILITE": "Verification of the chain of custody…",
+    "ETAT": "Ã‰tat",
+    "VERIFICATION_DE_LA_CHAINE_DE_TRACABILITE": "Verification of the chain of custody",
     "NON_RESOLUE": "Unresolved",
     "RECEPTION_HUILE": "Oil reception",
     "LOT_TRACABILITE": "Traceability batch:",
@@ -4801,7 +5887,7 @@
     "LOT_CIBLE": "Target batch:",
     "CONDITIONNEMENT_ETIQUETTES": "Packaging & labels",
     "UNITE_DE_STOCKAGE_FINALE": "Final storage unit",
-    "AUCUNE_GENEALOGIE_HUILE_POUR_CET_OF_RECEPTION_FILTRATION": "No oil genealogy for this OF (reception → filtration).",
+    "AUCUNE_GENEALOGIE_HUILE_POUR_CET_OF_RECEPTION_FILTRATION": "No oil genealogy for this OF (reception â†’ filtration).",
     "AUCUNE_DONNEE_DE_TRACABILITE_A_AFFICHER": "No traceability data to display.",
     "EXAMPLE_TABLE_WITH_SORTING": "Example table with sorting",
     "CHARGEMENT_DE_L_ARTICLE": "Loading the article...",
@@ -4866,7 +5952,7 @@
     "USAGE_PREVU": "Intended use",
     "UNITE_D_USAGE": "Unit of use",
     "QUANTITE_CONTENUE": "Quantity contained",
-    "TEMPERATURE_DE_STOCKAGE_C": "Storage temperature (°C)",
+    "TEMPERATURE_DE_STOCKAGE_C": "Storage temperature (Â°C)",
     "LOGISTIQUE_UNITE": "Logistics & Unit",
     "UNITE_DE_MESURE": "Unit of measurement",
     "FOURNISSEUR_PRINCIPAL": "Main supplier",
@@ -4879,7 +5965,7 @@
     "NOM_CODE_CODE_PUBLIC": "Name, code, public code...",
     "CODE_HEX_QR_EX_A1B2C3": "Code hex QR, ex: A1B2C3",
     "TOUTES": "All",
-    "ARTICLE_S_EN_DESSOUS_DU_STOCK_MINIMUM_VERIFIEZ_LES_LIGNES_SURLIG": "item(s) below minimum stock — check highlighted lines.",
+    "ARTICLE_S_EN_DESSOUS_DU_STOCK_MINIMUM_VERIFIEZ_LES_LIGNES_SURLIG": "item(s) below minimum stock â€” check highlighted lines.",
     "STOCK_MIN": "Stock Min",
     "STOCK_MAX": "Stock Max",
     "ACTIVER": "Enable",
@@ -4926,10 +6012,10 @@
     "AJOUTEZ_AU_MOINS_UN_ARTICLE_BOUTEILLE_CARTON_BOUCHON_ETIQUETTE": "Add at least one item: bottle, carton, cap, label...",
     "CHOISIR_UN_ARTICLE": "Choose an item",
     "SUPPRIMER_LA_LIGNE": "Delete line",
-    "APERCU_STOCK_BESOINS_POUR_1_UNITE_PRODUITE": "Stock overview — requirements for 1 unit produced",
+    "APERCU_STOCK_BESOINS_POUR_1_UNITE_PRODUITE": "Stock overview â€” requirements for 1 unit produced",
     "APRES_ENREGISTREMENT_VOUS_POURREZ_SIMULER_LES_BESOINS_POUR_UNE_Q": "After saving, you will be able to simulate the needs for a production quantity from the detail sheet.",
     "NOMENCLATURES": "Nomenclatures",
-    "RECETTES_EMBALLAGE_PAR_PRODUIT_FINI_UNE_SEULE_VERSION": "Packaging recipes per finished product — only one version",
+    "RECETTES_EMBALLAGE_PAR_PRODUIT_FINI_UNE_SEULE_VERSION": "Packaging recipes per finished product â€” only one version",
     "PAR_PRODUIT": "per product.",
     "NOUVELLE_NOMENCLATURE": "New nomenclature",
     "L_OF_ET_LES_PROJETS_UTILISENT_LA_NOMENCLATURE": "The OF and the projects use the nomenclature",
@@ -4979,7 +6065,7 @@
     "ARTICLES_EN_ALERTE": "Items on alert",
     "TAUX_DE_RUPTURE": "Break rate",
     "BONS_EN_ATTENTE": "Pending vouchers",
-    "CHARGEMENT_DU_TABLEAU_DE_BORD": "Loading the dashboard…",
+    "CHARGEMENT_DU_TABLEAU_DE_BORD": "Loading the dashboard",
     "MOUVEMENTS_PAR_MOIS": "Movements per month",
     "AUCUN_MOUVEMENT_ENREGISTRE_SUR_LES_6_DERNIERS_MOIS": "No movement recorded over the last 6 months.",
     "ARTICLES_SOUS_SEUIL_CRITIQUE": "Items under critical threshold",
@@ -4992,7 +6078,7 @@
     "INFORMATIONS_GENERALES": "General information",
     "IDENTITE_ET_CLASSIFICATION_DE_L_EMPLACEMENT": "Location identity and classification.",
     "NOM_DE_L_EMPLACEMENT": "Location Name",
-    "TYPE_D_EMPLACEMENT": "Type d’emplacement *",
+    "TYPE_D_EMPLACEMENT": "Type dâ€™emplacement *",
     "CATEGORIE_ARTICLE_STOCKE": "Category article stock",
     "NON_SPECIFIEE": "Non specifiee",
     "CAPACITE_ET_CONDITIONS": "Capacity and conditions",
@@ -5073,7 +6159,7 @@
     "AUCUN_FOURNISSEUR_TROUVE": "No suppliers found",
     "AUCUN_RESULTAT_NE_CORRESPOND_AUX_CRITERES_SELECTIONNES": "No results match the selected criteria.",
     "FOURNISSEURS_WORKS": "suppliers works!",
-    "PRODUCTION_LIGNE_DE_CONDITIONNEMENT": "Production · Packaging line",
+    "PRODUCTION_LIGNE_DE_CONDITIONNEMENT": "Production Â· Packaging line",
     "DETAILS_DE_LA_LIGNE": "Line details",
     "ERREUR_DE_CHARGEMENT": "Loading error",
     "CODE_DE_LA_LIGNE": "Line code",
@@ -5087,7 +6173,7 @@
     "ACTION_DE_MAINTENANCE_REQUISE_IMMEDIATEMENT": "Maintenance action required immediately.",
     "CREE_LE": "Created on:",
     "MODIFIE_LE": "Modified on:",
-    "PRODUCTION_CONDITIONNEMENT": "Production · Packaging",
+    "PRODUCTION_CONDITIONNEMENT": "Production Â· Packaging",
     "GEREZ_VOS_UNITES_DE_PRODUCTION_SUIVEZ_LEUR_ETAT_OPERATIONNEL_ET_": "Manage your production units, monitor their operational status and control packaging capacity.",
     "NOUVELLE_LIGNE": "New line",
     "TOTAL_LIGNES": "Total lines",
@@ -5142,7 +6228,7 @@
     "CAMPAGNE": "Campaign",
     "EX_2025_2026": "Ex: 2025/2026",
     "GRADE_HUILE": "Oil grade",
-    "SELECTIONNER_UN_GRADE": "— Select a grade —",
+    "SELECTIONNER_UN_GRADE": "â€” Select a grade â€”",
     "DESCRIPTION_COURTE_DU_PRODUIT": "Short product description",
     "LES_CHAMPS_MARQUES_D_UN": "Fields marked with",
     "SONT_OBLIGATOIRES": "are obligatory",
@@ -5191,14 +6277,14 @@
     "VOLUME_APRES": "Volume after",
     "PERTES": "Losses",
     "GENERER_ETIQUETTE": "Generate label",
-    "FILTRATION_TRACABILITE_COMPLETE": "Filtration · Full traceability",
+    "FILTRATION_TRACABILITE_COMPLETE": "Filtration Â· Full traceability",
     "HISTORIQUE_DE_L_OPERATION": "History of the operation",
     "OPERATION_DE_FILTRATION": "Filtration operation",
     "DATE_HEURE": "Date/Time",
     "VOLUME_APRES_FILTRATION": "Volume after filtration",
-    "SOURCE_HUILE_NON_FILTREE": "Source — Unfiltered Oil",
+    "SOURCE_HUILE_NON_FILTREE": "Source â€” Unfiltered Oil",
     "HUILE_BRUTE": "crude oil",
-    "CIBLE_HUILE_FILTREE": "Target — Filtered oil",
+    "CIBLE_HUILE_FILTREE": "Target â€” Filtered oil",
     "HUILE_FILTREE": "filtered oil",
     "LIVRAISON_D_ORIGINE": "Original delivery",
     "NUMERO_DE_LIVRAISON": "Delivery number",
@@ -5241,7 +6327,7 @@
     "CHOOSE_FULL_OR_CONTAINER_LAYOUT": "Choose Full or Container Layout",
     "FULL_LAYOUT": "Full Layout",
     "CONTAINER_LAYOUT": "Container Layout",
-    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "OOSM crafted with ♥ by team XDEV",
+    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "OOSM crafted with â™¥ by team XDEV",
     "RECHERCHE_GLOBALE": "Global search",
     "LANCER_LA_RECHERCHE_GLOBALE": "Start global search",
     "MODE": "mode",
@@ -5418,7 +6504,7 @@
     "PRODUIT_CONDITIONNE": "Packaged Product:",
     "LE_NOM_DU_PRODUIT_EST_REQUIS": "The product name is required.",
     "EX_HUILE_EXTRA_VIERGE_VRAC_2024_2025": "Ex: Extra Virgin Oil Bulk 2024/2025",
-    "EX_HUILE_OLIVEA_750ML_BOUTEILLE_VERRE": "Ex: Olivéa Oil 750ml Glass Bottle",
+    "EX_HUILE_OLIVEA_750ML_BOUTEILLE_VERRE": "Ex: OlivÃ©a Oil 750ml Glass Bottle",
     "PARAMETRES_VRAC": "Bulk parameters",
     "PRODUIT_VRAC": "Bulk Product:",
     "L_HUILE_EST_STOCKEE_DIRECTEMENT_EN_CUVE_OU_EN_CITERNE_AUCUNE_NOM": "the oil is stored directly in a tank or tank. No packing nomenclature is necessary.",
@@ -5426,7 +6512,7 @@
     "EX_0_916": "Ex: 0.916",
     "EX_0_916_POUR_L_HUILE_D_OLIVE": "Ex: 0.916 for olive oil",
     "CUVE_UNITE_DE_STOCKAGE": "Tank / Storage unit",
-    "SELECTIONNER_UNE_CUVE": "— Select a tank —",
+    "SELECTIONNER_UNE_CUVE": "â€” Select a tank â€”",
     "SPECIFICATIONS_PRODUIT_CONDITIONNE": "Packaged product specifications",
     "L_HUILE_EST_MISE_EN_BOUTEILLE_OU_BIDON_RENSEIGNEZ_LES_CARACTERIS": "the oil is bottled or canned. Provide the physical characteristics of the finished product.",
     "EX_750": "Ex: 750",
@@ -5438,7 +6524,7 @@
     "SELECTIONNEZ_LES_ARTICLES_DU_CATALOGUE_PAR_CATEGORIE_POUR_CONSTI": "Select the catalog items by category to create the nomenclature of the packaged product.",
     "SOURCE_DE_LA_NOMENCLATURE": "Source of the nomenclature",
     "IMPORTER_UN_MODELE_EXISTANT": "Import an existing template",
-    "CHOISIR_UN_MODELE": "— Choose a model —",
+    "CHOISIR_UN_MODELE": "â€” Choose a model â€”",
     "LE_MODELE_SELECTIONNE_REMPLIRA_AUTOMATIQUEMENT_LES_ARTICLES_DE_L": "The selected template will automatically populate the BOM items.",
     "AUCUNE_NOMENCLATURE_EXISTANTE_CREEZ_UNE_NOUVELLE_BOM_PUIS_REVENE": "No existing nomenclature. Create a new BOM then come back and apply it to this product.",
     "AJOUTER_NOUVELLE_BOM": "Add new BOM",
@@ -5612,8 +6698,8 @@
     "ERREUR_LORS_DE_L_ENREGISTREMENT_DU_PRIX_DE_TRITURATION": "Error when recording the crushing price",
     "PARAMETRE_MIS_A_JOUR_AVEC_SUCCES": "Parameter updated successfully",
     "ERREUR_LORS_DE_LA_MISE_A_JOUR_DU_PARAMETRE": "Error updating parameter",
-    "ECHEC_DE_L_ENREGISTREMENT": "Registration failed ❌",
-    "ERREUR_DE_COMMUNICATION_AVEC_LE_SERVEUR": "Communication error with server ⚠️",
+    "ECHEC_DE_L_ENREGISTREMENT": "Registration failed âŒ",
+    "ERREUR_DE_COMMUNICATION_AVEC_LE_SERVEUR": "Communication error with server âš ï¸",
     "LA_QUANTITE_DOIT_ETRE_POSITIVE": "Quantity must be positive",
     "ERREUR_LORS_DE_L_ENTREE_EN_STOCK": "Error when entering stock",
     "ERREUR_LORS_DE_LA_SORTIE_DE_STOCK": "Error when out of stock",
@@ -5784,7 +6870,6 @@
     "CDD": "CDD",
     "TEMPORARY": "TEMPORARY",
     "STAGE": "STAGE",
-    "LISTE_DES_DEPARTEMENTS": "List of departments",
     "LISTE_DES_EMPLOYES": "List of employees",
     "MALE": "MALE",
     "FEMALE": "FEMALE",
@@ -6000,5 +7085,6 @@
     "2": "Menu Level 4.2"
   },
   "CANCEL": "Cancel",
+  "DOWNLOAD_PDF": "Download contract (PDF)",
   "OIL_FILTRAGE_MANAGEMENT": "Oil filtration management"
 }

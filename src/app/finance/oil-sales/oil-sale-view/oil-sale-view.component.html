@@ -100,6 +100,14 @@
 
         </button>
 
+        <button *ngIf="canDownloadInvoice()" mat-stroked-button type="button" (click)="onPreviewInvoice()">
+
+          <mat-icon>visibility</mat-icon>
+
+          {{ 'MENU.FINANCE.DASHBOARD.INVOICE_PREVIEW.TITLE' | translate }}
+
+        </button>
+
         <button *ngIf="canDownloadInvoice()" mat-stroked-button type="button" (click)="onDownloadInvoice()">
 
           <mat-icon>request_quote</mat-icon>
@@ -120,7 +128,26 @@
 
     </div>
 
-
+    <div class="finance-related-links" role="navigation" [attr.aria-label]="'OIL_SALES.RELATED_LINKS.TITLE' | translate">
+      <div class="finance-related-links__header">
+        <mat-icon aria-hidden="true">hub</mat-icon>
+        <span>{{ 'OIL_SALES.RELATED_LINKS.TITLE' | translate }}</span>
+      </div>
+      <div class="finance-related-links__actions">
+        <button mat-stroked-button type="button" (click)="openFinancialTransactions()">
+          <mat-icon aria-hidden="true">account_balance_wallet</mat-icon>
+          <span>{{ 'OIL_SALES.RELATED_LINKS.FINANCIAL_TRANSACTIONS' | translate }}</span>
+        </button>
+        <button *ngIf="oilSale.supplier?.id" mat-stroked-button type="button" (click)="openSupplierFinance()">
+          <mat-icon aria-hidden="true">person</mat-icon>
+          <span>{{ 'OIL_SALES.RELATED_LINKS.SUPPLIER_FINANCE' | translate }}</span>
+        </button>
+        <button *ngIf="oilSale.storageUnit?.id" mat-stroked-button type="button" (click)="openStorageUnit()">
+          <mat-icon aria-hidden="true">water_drop</mat-icon>
+          <span>{{ 'OIL_SALES.RELATED_LINKS.STORAGE_UNIT' | translate }}</span>
+        </button>
+      </div>
+    </div>
 
     <div class="details-grid">
 

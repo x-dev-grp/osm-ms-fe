@@ -25,7 +25,8 @@
     "COMPANY_SECTION": "معلومات الشركة",
     "SAVE": "حفظ",
     "SEARCH": "بحث",
-    "USER_SECTION": "معلومات المستخدم"
+    "USER_SECTION": "معلومات المستخدم",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
   },
   "ADMIN_COMPANY_PROFILE": {
     "CAPITAL": "رأس المال",
@@ -82,6 +83,44 @@
     "TITLE": "نظرة عامة للمسؤول",
     "SUBTITLE": "نظرة شاملة على المستأجرين والمستخدمين في المنصة"
   },
+  "ADMIN_PERMISSION_CATALOG": {
+    "BACK": "لوحة الإدارة",
+    "DASHBOARD_LINK": "مزامنة permissions-spec.json مع قاعدة البيانات بعد النشر أو تعديل فهرس الصلاحيات.",
+    "GAP": "صلاحيات ناقصة",
+    "KPIS": {
+      "DB_PERMISSIONS": "صلاحيات نشطة في القاعدة",
+      "ENTITIES": "كيانات الفهرس",
+      "EXPECTED": "متوقعة",
+      "PROFILES": "ملفات",
+      "SPEC_VERSION": "إصدار الفهرس"
+    },
+    "LOADING": "جاري تحميل حالة فهرس الصلاحيات...",
+    "LOAD_ERROR": "تعذر تحميل حالة فهرس الصلاحيات.",
+    "OPS": {
+      "CREATE": "إنشاء الصلاحيات الناقصة من permissions-spec.json",
+      "LEGACY": "دمج أسماء الكيانات القديمة في الكيانات الرسمية",
+      "MIRRORS": "نسخ منح الأدوار للمرايا الم configured",
+      "REACTIVATE": "إعادة تفعيل الصلاحيات المحذوفة المطابقة للفهرس"
+    },
+    "RESULT": {
+      "CREATED": "تم إنشاؤها",
+      "EXISTING": "موجودة مسبقاً",
+      "LEGACY": "دمج legacy",
+      "MIRRORS": "منح مرآة م added"
+    },
+    "SECTIONS": {
+      "LAST_RESULT": "آخر نتيجة مزامنة",
+      "STATUS": "حالة الفهرس",
+      "SYNC": "مزامنة فهرس الصلاحيات"
+    },
+    "STARTUP_SYNC": "مزامنة عند التشغيل",
+    "SUBTITLE": "عمليات المنصة — مواءمة قاعدة الصلاحيات مع permissions-spec.json",
+    "SYNC_BUTTON": "مزامنة الآن",
+    "SYNC_ERROR": "فشلت المزامنة.",
+    "SYNC_HINT": "شغّل بعد النشر أو تعديل permissions-spec.json. آمن للتكرار — الصفوف الموجودة تُحفظ.",
+    "SYNC_SUCCESS": "تمت مزامنة فهرس الصلاحيات بنجاح.",
+    "TITLE": "فهرس الصلاحيات"
+  },
   "ADMIN_USERS": {
     "CARD_DESCRIPTION": "البحث عن المستخدمين عبر جميع المستأجرين وإطلاق إعادة تعيين كلمة المرور.",
     "FIELDS": {
@@ -108,6 +147,309 @@
     },
     "TITLE": "جميع المستخدمين",
     "VIEW_TITLE": "تفاصيل المستخدم"
+  },
+  "BRANDING": {
+    "SLOGAN": "نظام إدارة زيت الزيتون",
+    "TAGLINE": "من الاستلام إلى البيع — منصة واحدة لمطحنكم"
+  },
+  "USER_GUIDE": {
+    "TITLE": "المساعدة ودليل المستخدم",
+    "INTRO": "OOSM يساعدكم على إدارة الاستقبال، إنتاج الزيت، التعبئة، المخزون، المالية والموارد البشرية في معصرتكم.",
+    "WELCOME_USER": "مرحباً {{name}} — إليك كيفية الاستفادة القصوى من OOSM.",
+    "MY_ACCOUNT": "حسابي",
+    "NO_MODULES": "لا توجد وحدات مرئية لدوركم. اتصلوا بمسؤول الشركة لمنح الصلاحيات.",
+    "MODULES_TITLE": "وحداتكم",
+    "OPEN_MODULE": "فتح الوحدة",
+    "BACK_HOME": "العودة للرئيسية",
+    "FULL_DOCS_HINT": "حمّل أدلة PDF أدناه، أو اطلب من IT الوثائق التقنية في مجلد docs/.",
+    "NAV": {
+      "START": "بدء سريع",
+      "FLOW": "سير العمل",
+      "MODULES": "الوحدات",
+      "TASKS": "مهام شائعة",
+      "WORKFLOWS": "الترابط",
+      "FAQ": "أسئلة شائعة",
+      "PDF": "أدلة PDF",
+      "SUPPORT": "الدعم",
+      "TIPS": "نصائح"
+    },
+    "ROLE": {
+      "OOSMADMIN": "مسؤول المنصة",
+      "ADMIN": "مسؤول الشركة",
+      "USER": "مستخدم عادي"
+    },
+    "FLOW": {
+      "TITLE": "سير العمل النموذجي",
+      "SUBTITLE": "من استلام الزيتون إلى البيع — كل خطوة تربط الوحدة التالية.",
+      "RECEPTION": "الاستقبال",
+      "STORAGE": "الخزانات",
+      "CONDITIONING": "التعبئة",
+      "FINANCE": "المالية"
+    },
+    "QUICK_START": {
+      "TITLE": "بدء سريع",
+      "STEP1": "سجّل الدخول باسم المستخدم وكلمة المرور من المسؤول.",
+      "STEP2": "راجع الصفحة الرئيسية للوحدات والعناصر المعلّقة.",
+      "STEP3": "استخدم القائمة: الاستقبال → الإنتاج → التعبئة → المخزون → المالية.",
+      "STEP4": "غيّر اللغة من أيقونة الكرة؛ البحث العام لرموز الدفعات.",
+      "STEP5": "افتح هذه المساعدة في أي وقت من أيقونة ? في الشريط العلوي."
+    },
+    "COMMON_TASKS": {
+      "TITLE": "مهام شائعة",
+      "SUBTITLE": "اختصارات حسب صلاحياتكم — انتقال مباشر للإجراءات المتكررة."
+    },
+    "TASKS": {
+      "NEW_OLIVE": "استقبال زيتون جديد",
+      "NEW_OLIVE_HINT": "تسجيل استقبال زيتون بسيط",
+      "NEW_OIL": "استقبال زيت جديد",
+      "NEW_OIL_HINT": "تسجيل شراء زيت في الخزانات",
+      "OIL_SALES": "مبيعات الزيت",
+      "OIL_SALES_HINT": "إنشاء أو إدارة المبيعات",
+      "TANK_RECAP": "لوحة ملخص الخزانات",
+      "TANK_RECAP_HINT": "نظرة بصرية على المستويات",
+      "NEW_OF": "أمر تصنيع جديد",
+      "NEW_OF_HINT": "بدء OF تعبئة",
+      "MY_PROFILE": "ملفي الشخصي",
+      "MY_PROFILE_HINT": "كلمة المرور، الصورة، التواصل",
+      "RECEPTION_LIST": "سجل الاستقبالات",
+      "SUPPLIERS": "الموردون",
+      "OLIVE_QC": "مراقبة جودة الزيتون",
+      "OIL_MOVES": "حركات الزيت",
+      "PROJECTS": "مشاريع العملاء",
+      "LABELS": "الملصقات",
+      "ARTICLES": "المواد",
+      "BOM": "قوائم المواد (BOM)",
+      "TRANSACTIONS": "المعاملات المالية",
+      "USERS": "إدارة المستخدمين",
+      "QC_RULES": "قواعد QC",
+      "HR_EMPLOYEES": "قائمة الموظفين",
+      "HR_CONTRACTS": "عقود العمل",
+      "HR_PAYROLL": "فترات الرواتب",
+      "HR_LEAVE": "طلبات الإجازة",
+      "NEW_EMPLOYEE": "إضافة موظف",
+      "NEW_EMPLOYEE_HINT": "إنشاء سجل مع تاريخ التوظيف وCNSS",
+      "HR_PAYROLL_RUN": "تشغيل الرواتب الشهرية",
+      "HR_PAYROLL_RUN_HINT": "فتح فترة، إنشاء كشوف، تقديم الحالة"
+    },
+    "RECEPTION_TYPES": {
+      "TITLE": "أنواع عمليات الزيتون",
+      "SUBTITLE": "لكل نوع قائمة ونموذج — اختر ما يناسب حالتكم.",
+      "OIL": "استقبال شراء زيت"
+    },
+    "PDF_GUIDES": {
+      "TITLE": "تحميل أدلة PDF",
+      "SUBTITLE": "أدلة كاملة للطباعة — 8 فصول لكل لغة (من الاستقبال إلى الإدارة).",
+      "VIEW": "عرض",
+      "DOWNLOAD": "تحميل",
+      "NOTE": "PDF التشغيل (إيصالات الاستقبال، الفواتير) تُنشأ من شاشات التفاصيل، وليس من هذه الأدلة.",
+      "FR": {
+        "TITLE": "الدليل الفرنسي",
+        "DESC": "دليل كامل — 8 فصول، اللغة الرئيسية للمشغّلين."
+      },
+      "EN": {
+        "TITLE": "الدليل الإنجليزي",
+        "DESC": "دليل مستخدم إنجليزي كامل."
+      },
+      "AR": {
+        "TITLE": "الدليل العربي",
+        "DESC": "دليل عربي كامل (تخطيط RTL في PDF)."
+      }
+    },
+    "FAQ": {
+      "TITLE": "أسئلة شائعة",
+      "MISSING_MENU": {
+        "Q": "لماذا اختفت عنصر من القائمة؟",
+        "A": "القوائم تُفلتر حسب الصلاحيات (MODULE:ENTITY:ACTION). اطلب من مسؤول الشركة منح الدور أو الصلاحية المطلوبة."
+      },
+      "LOGIN": {
+        "Q": "لا أستطيع الدخول — ماذا أفعل؟",
+        "A": "تحقق من اسم المستخدم وكلمة المرور. حساب مقفل أو شركة غير نشطة: اتصل بالمسؤول. محلياً، تأكد أن الخادم يعمل."
+      },
+      "PDF": {
+        "Q": "كيف أطبع إيصال استقبال أو فاتورة؟",
+        "A": "افتح شاشة التفاصيل واستخدم إجراء PDF / الطباعة. المستندات تُنشأ على الخادم بشعار شركتكم."
+      },
+      "PASSWORD": {
+        "Q": "كيف أغيّر كلمة المرور؟",
+        "A": "من حسابي (/account/profile) أو شاشة التغيير الإلزامي بعد كلمة مرور مؤقتة."
+      },
+      "LANGUAGE": {
+        "Q": "كيف أغيّر اللغة أو RTL؟",
+        "A": "أيقونة الكرة في الشريط العلوي. العربية (AR) تفعّل العرض من اليمين لليسار تلقائياً."
+      },
+      "OIL_SALE": {
+        "Q": "ما دورة بيع الزيت؟",
+        "A": "إنشاء → تأكيد → تسليم (خروج مخزون) → فاتورة PDF → تسجيل الدفع في المالية."
+      },
+      "HR_PAYROLL": {
+        "Q": "كيف أشغّل الرواتب الشهرية؟",
+        "A": "إنشاء فترة رواتب → عرض التفاصيل → تبويب كشوف → إنشاء الكشوف → مراجعة → تقديم الحالة: محسوبة → معتمدة → مدفوعة → مغلقة."
+      },
+      "HR_LEAVE": {
+        "Q": "كيف أعتمد طلب إجازة؟",
+        "A": "الموارد البشرية → طلبات الإجازة → عرض طلب معلّق → اعتماد أو رفض."
+      }
+    },
+    "TIPS": {
+      "TITLE": "نصائح",
+      "SEARCH": "البحث العام (الشريط العلوي) يجد الدفعات ومراجع الاستقبال.",
+      "LANGUAGE": "تبديل FR / EN / AR في أي وقت.",
+      "PERMISSIONS": "قائمة ناقصة؟ اطلب من المسؤول منح الدور المطلوب.",
+      "PDF": "إنشاء PDF (إيصالات، فواتير) من شاشات التفاصيل.",
+      "NOTIFICATIONS": "راجع أيقونة الجرس للموافقات وتنبيهات QC والصيانة.",
+      "LISTS": "معظم القوائم تدعم الفلاتر والتصدير والإجراءات — نقرة مزدوجة لفتح التفاصيل."
+    },
+    "WORKFLOWS": {
+      "TITLE": "كيف تترابط الوحدات",
+      "RECEPTION": "الاستقبال يسجّل الزيتون/الزيت → مراقبة الجودة → التخطيط → الدفع في المالية.",
+      "STORAGE": "الاستقبالات المعتمدة والمبيعات تحرّك الزيت داخل/خارج الخزانات.",
+      "CONDITIONING": "أوامر التصنيع تستهلك مواد التعبئة وتنتج وحدات ملصّقة.",
+      "FINANCE": "دفتر المدفوعات؛ بيع الزيت: تأكيد → تسليم → فاتورة → تحصيل.",
+      "HR": "الموارد البشرية: موظفون → عقود نشطة → حضور وإجازات → كشوف شهرية (CNSS، IRPP، CSS). ملف الموظف يجمع كل السجلات.",
+      "PERMISSIONS": "كل شاشة تحتاج MODULE:ENTITY:ACTION — اتصل بالمسؤول إن اختفت قائمة."
+    },
+    "MODULES": {
+      "RECEPTION": {
+        "TITLE": "الاستقبال",
+        "DESC": "تسجيل وصول الزيتون والزيت، الموردون، مراقبة الجودة والتخطيط."
+      },
+      "PRODUCTION": {
+        "TITLE": "إنتاج وتخزين الزيت",
+        "DESC": "الخزانات، حركات الزيت، التصفية والحاويات."
+      },
+      "CONDITIONING": {
+        "TITLE": "التعبئة",
+        "DESC": "أوامر التصنيع، الملصقات، المشاريع، الشحنات والتحليلات."
+      },
+      "INVENTORY": {
+        "TITLE": "المخزون",
+        "DESC": "المواد، المنتجات، BOM، حركات المخزون وأوامر الشراء."
+      },
+      "FINANCE": {
+        "TITLE": "المالية",
+        "DESC": "المصروفات، مبيعات الزيت، رصيد الزيت، البنوك والفواتير."
+      },
+      "HR": {
+        "TITLE": "الموارد البشرية",
+        "DESC": "الموظفون، العقود، الحضور، الإجازات ورواتب تونس (CNSS، IRPP، CSS)."
+      },
+      "SETTINGS": {
+        "TITLE": "الإعدادات",
+        "DESC": "ملف الشركة، الأنواع، قواعد QC، المستخدمون والأدوار."
+      }
+    },
+    "HR": {
+      "NAV": "وحدة الموارد البشرية",
+      "LINKS": {
+        "DASHBOARD": "لوحة RH",
+        "EMPLOYEES": "الموظفون",
+        "POSTES": "المناصب",
+        "CONTRACTS": "العقود",
+        "POINTAGE": "الحضور",
+        "LEAVE": "الإجازات",
+        "PAYROLL": "فترات الرواتب",
+        "PAYSLIPS": "كشوف الرواتب"
+      },
+      "GUIDE": {
+        "TITLE": "كيفية استخدام وحدة الموارد البشرية",
+        "SUBTITLE": "إدارة الموظفين والعقود والحضور والرواتب الشهرية (امتثال تونسي).",
+        "ACHIEVEMENTS_TITLE": "ما هو متاح اليوم",
+        "ACHIEVEMENTS": {
+          "ENTITIES": "سبع كيانات: موظفون، مناصب، عقود، حضور، إجازات، فترات رواتب وكشوف — CRUD كامل مع صلاحيات.",
+          "PROFILE": "ملف موظف مركزي: ملخص (عقد نشط، منصب، راتب) وتبويبات للعقود والحضور والإجازات والكشوف.",
+          "RULES": "قواعد تلقائية: عقد نشط واحد، CIN/CNSS فريدان، عقد مطلوب للحضور والإجازة، إنهاء الموظف يغلق العقود.",
+          "PAYROLL": "حساب رواتب تونس (CNSS 9.68% / 17.07%، CSS 0.5%، IRPP تصاعدي)، إنشاء جماعي، دورة فترة، وتنزيل PDF للكشوف.",
+          "LEAVE": "سير اعتماد الإجازات: اعتماد أو رفض من شاشة التفاصيل.",
+          "PERMISSIONS": "إجراءات متخصصة: اعتماد/رفض إجازات، حساب/اعتماد/دفع/إغلاق رواتب، PDF كشوف، تصدير حضور — عبر HR:ENTITY:ACTION."
+        },
+        "PERMISSIONS_TITLE": "الإجراءات والصلاحيات حسب الكيان",
+        "PERMISSIONS_SUBTITLE": "كل شاشة وإجراء يتطلب HR:ENTITY:ACTION. عيّن presets الأدوار من الإعدادات → المستخدمون والأدوار.",
+        "PERMISSIONS": {
+          "POSTE": "المناصب — READ, CREATE, UPDATE, DELETE, EXPORT",
+          "EMPLOYEE": "الموظفون — CRUD, EXPORT, GEN_PDF",
+          "CONTRACT": "العقود — CRUD, GEN_PDF, UPDATE_STATUS",
+          "POINTAGE": "الحضور — CRUD, GEN_PDF, EXPORT",
+          "LEAVE": "الإجازات — CRUD, APPROVE, REJECT, CANCEL, GEN_PDF",
+          "PAYROLL_PERIOD": "فترات الرواتب — CRUD, CALCULATE, VALIDATE, PAY, CLOSE, EXPORT, REPORT",
+          "PAYSLIP": "كشوف الرواتب — CRUD, CALCULATE, VALIDATE, PAY, GEN_PDF, EXPORT"
+        },
+        "ROLES_TITLE": "أدوار مقترحة",
+        "ROLES_SUBTITLE": "مرجع في permissions-spec.json — أنشئ أدواراً مطابقة في إدارة المستخدمين:",
+        "ROLES": {
+          "CLERK": "كاتب HR — موظفون، حضور، تقديم إجازات",
+          "MANAGER": "مسؤول HR — اعتماد إجازات، عقود، PDF موظف",
+          "PAYROLL": "مسؤول رواتب — حساب، اعتماد، دفع وإغلاق الفترات + PDF",
+          "ADMIN": "مدير HR — صلاحيات كاملة على السبع كيانات"
+        },
+        "WORKFLOW_TITLE": "ترتيب الإعداد الموصى به",
+        "WORKFLOW": {
+          "STEP1": "إنشاء المناصب في RH → المناصب.",
+          "STEP2": "إضافة الموظفين (هوية، تاريخ التوظيف، CNSS).",
+          "STEP3": "إنشاء العقود (موظف + منصب + راتب) وتفعيلها. CDI بدون تاريخ نهاية.",
+          "STEP4": "تسجيل الحضور والإجازات؛ اعتماد الطلبات المعلّقة.",
+          "STEP5": "إنشاء فترة رواتب → عرض → تبويب الكشوف → إنشاء → مراجعة → تقديم الحالة حتى الإغلاق."
+        },
+        "LINKS_TITLE": "روابط سريعة",
+        "EMPLOYEES_TITLE": "الموظفون",
+        "EMPLOYEES_BODY": "القائمة تدعم البحث والفلاتر. العرض يفتح الملف المركزي مع تبويبات. أزرار الإضافة تملأ الموظف مسبقاً. المسمى الوظيفي للقراءة فقط عند وجود عقد نشط.",
+        "CONTRACTS_TITLE": "العقود",
+        "CONTRACTS_BODY": "يربط كل عقد موظفاً بمنصب ونوع وتواريخ وراتب. عقد نشط واحد فقط. CDI بدون تاريخ نهاية.",
+        "PAYROLL_TITLE": "الرواتب",
+        "PAYROLL_BODY": "فترة واحدة شهرياً. من عرض الفترة → تبويب الكشوف → إنشاء الكشوف. المبالغ تُحسب تلقائياً. الفترات المدفوعة/المغلقة مقفلة.",
+        "LEAVE_TITLE": "الإجازات",
+        "LEAVE_BODY": "تقديم مع النوع والتواريخ. فحص التداخل وعقد نشط. اعتماد أو رفض من التفاصيل للحالة المعلّقة.",
+        "DOCS_HINT": "الوثائق الكاملة: docs/user-guide/en/09-hr-module.md في المستودع."
+      }
+    }
+  },
+  "SUPPORT": {
+    "OPEN_TICKET": "فتح تذكرة دعم",
+    "SUBMIT_TICKET": "إرسال التذكرة",
+    "TICKET_CREATED": "تم إرسال تذكرتك. سيتابع فريقنا معك قريباً.",
+    "TICKET_UPDATED": "تم تحديث تذكرة الدعم.",
+    "MY_TICKETS": "تذاكري",
+    "COMPANY_TICKETS": "تذاكر الشركة",
+    "NO_TICKETS": "لا توجد تذاكر دعم بعد.",
+    "VIEW_TICKET": "عرض التفاصيل",
+    "HELP_TITLE": "تحتاج مساعدة من OOSM؟",
+    "HELP_DESC": "أبلغ عن خطأ، اطرح سؤالاً، أو اطلب تعديلاً. التذكرة تتضمن سياق المستخدم والشركة تلقائياً.",
+    "HELP_TIP1": "افتح التذكرة من الشاشة التي ظهر فيها الخطأ — نلتقط رابط الصفحة تلقائياً.",
+    "HELP_TIP2": "صف خطوات إعادة الإنتاج والسلوك المتوقع مقابل الفعلي.",
+    "DIALOG": {
+      "TITLE": "تذكرة دعم جديدة",
+      "LEAD": "أخبرنا بالمشكلة أو طلبك. نرفق حسابك والصفحة الحالية مع التذكرة."
+    },
+    "FIELDS": {
+      "SUBJECT": "الموضوع",
+      "DESCRIPTION": "الوصف",
+      "PRIORITY": "الأولوية",
+      "STATUS": "الحالة",
+      "REPORTER": "المُبلّغ",
+      "TENANT": "الشركة",
+      "CREATED": "تاريخ الإنشاء",
+      "PAGE": "رابط الصفحة",
+      "ADMIN_NOTE": "ملاحظة الفريق"
+    },
+    "STATUS": {
+      "OPEN": "مفتوحة",
+      "IN_PROGRESS": "قيد المعالجة",
+      "RESOLVED": "تم الحل",
+      "CLOSED": "مغلقة"
+    },
+    "PRIORITY": {
+      "LOW": "منخفضة",
+      "NORMAL": "عادية",
+      "HIGH": "عالية"
+    },
+    "ERRORS": {
+      "CREATE_FAILED": "تعذّر إرسال التذكرة. حاول مرة أخرى.",
+      "UPDATE_FAILED": "تعذّر تحديث التذكرة. حاول مرة أخرى."
+    },
+    "ADMIN": {
+      "TITLE": "دعم العملاء",
+      "SUBTITLE": "مستخدمو الشركات يرسلون التذاكر من التطبيق. راجعها وحدّث الحالة هنا — بدون أداة خارجية.",
+      "EMPTY": "لا توجد تذاكر دعم بعد."
+    }
   },
   "SIDEBAR": {
     "BRAND_HOME": "الذهاب إلى الصفحة الرئيسية",
@@ -234,7 +576,8 @@
       "EDIT": "تعديل",
       "PRINT": "طباعة",
       "SAVE": "حفظ",
-      "UPDATE": "تحديث"
+      "UPDATE": "تحديث",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "ADD_TITLE": "إضافة حساب بنكي",
     "DETAILS_TITLE": "تفاصيل الحساب البنكي",
@@ -284,7 +627,9 @@
     "FORM": {
       "ADD_TITLE": "إضافة نوع عام",
       "EDIT_TITLE": "تعديل نوع عام",
-      "VIEW_TITLE": "تفاصيل النوع العام"
+      "VIEW_TITLE": "تفاصيل النوع العام",
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "MESSAGES": {
       "CREATE_SUCCESS": "تم حفظ النوع بنجاح",
@@ -333,7 +678,9 @@
     "CLEAR": "مسح",
     "NOT_DEFINED": "غير محدد",
     "SEARCH": "بحث",
-    "SELECT": "اختيار"
+    "SELECT": "اختيار",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
+    "DESCRIPTION": "Description"
   },
   "CERTIFICATIONS": {
     "FIELDS": {
@@ -377,7 +724,8 @@
       "EDIT": "تعديل",
       "RESET": "إعادة ضبط",
       "SAVE": "حفظ",
-      "UPDATE": "تحديث"
+      "UPDATE": "تحديث",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "ADDRESS_INFO": {
       "ADDRESS": "العنوان",
@@ -440,7 +788,8 @@
       "BTNS": {
         "CANCEL": "إلغاء",
         "CREATE": "إنشاء سجل",
-        "UPDATE": "تحديث السجل"
+        "UPDATE": "تحديث السجل",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "FIELDS": {
         "DESCRIPTION": "الوصف",
@@ -490,11 +839,18 @@
     "EDIT_TITLE": "تعديل العقد",
     "END_DATE": "تاريخ الانتهاء",
     "MESSAGES": {
+      "CONFIRM_DELETE": "حذف هذا العقد؟",
+      "DELETE_SUCCESS": "تم حذف العقد بنجاح",
+      "ERROR_DELETING": "خطأ أثناء حذف العقد",
       "EMPLOYEE_REQUIRED": "الموظف مطلوب",
       "ERROR_LOADING": "خطأ أثناء تحميل العقد",
+      "ERROR_SAVING": "خطأ أثناء حفظ العقد",
       "ERROR_UPDATING": "خطأ أثناء تحديث العقد",
-      "UPDATE_SUCCESS": "تم تحديث العقد بنجاح"
+      "SAVE_SUCCESS": "تم حفظ العقد بنجاح",
+      "UPDATE_SUCCESS": "تم تحديث العقد بنجاح",
+      "DELETE_CONFIRM": "Supprimer ce contrat ?"
     },
+    "LIST_TITLE": "قائمة العقود",
     "POSITION": "المنصب",
     "POSTE": "موقع العقد",
     "SALARY": "الراتب",
@@ -502,7 +858,14 @@
     "START_DATE": "تاريخ البدء",
     "STATUS": "حالة العقد",
     "TITLE": "العقود",
-    "TYPE": "النوع",
+    "TYPE": {
+      "CDD": "عقد محدد المدة",
+      "CDI": "عقد غير محدد المدة",
+      "INTERNSHIP": "تدريب",
+      "STAGE": "تدريب",
+      "TEMPORARY": "مؤقت"
+    },
+    "TYPE_LABEL": "النوع",
     "UPDATE": "تحديث العقد",
     "DASHBOARD": {
       "FIELDS": {
@@ -513,8 +876,10 @@
         "POSTE": "المنصب",
         "SALARY": "الراتب",
         "START_DATE": "تاريخ البداية"
-      }
-    }
+      },
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir le dossier employé (onglet contrats)."
+    },
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
   },
   "CONTRAT": {
     "STATUS": {
@@ -528,7 +893,8 @@
       "BACK": "الخلف",
       "CANCEL": "إلغاء",
       "SUBMIT": "إرسال",
-      "VALIDATE": "تحقق"
+      "VALIDATE": "تحقق",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "CATEGORIES": {
       "LAMPANTE": "لامة",
@@ -567,7 +933,9 @@
         "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
         "REQUIRED": "هذا الحقل مطلوب",
         "MAX": "القيمة تتجاوز الحد الأقصى"
-      }
+      },
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "LOADING": "جارٍ تحميل معاملات مراقبة الجودة...",
     "MESSAGES": {
@@ -651,7 +1019,8 @@
       "CANCEL": "إلغاء",
       "CREATE": "إنشاء عميل",
       "EDIT": "تعديل",
-      "UPDATE": "تحديث العميل"
+      "UPDATE": "تحديث العميل",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "ADD_TITLE": "إضافة عميل جديد",
     "CATEGORIES": {
@@ -829,6 +1198,7 @@
         "QUALITY_CONTROL": "مراقبة الجودة",
         "STORAGE_UNIT": "وحدة التخزين",
         "SUPPLIER_DETAILS": "تفاصيل المورد",
+        "SUPPLIER_FINANCE": "مالية المورد",
         "SUPPLIER_PAYMENTS": "مدفوعات المورد",
         "TITLE": "روابط مرتبطة"
       },
@@ -900,7 +1270,8 @@
         "BACK": "الخلف",
         "CANCEL": "إلغاء",
         "SAVE": "حفظ",
-        "UPDATE": "تحديث"
+        "UPDATE": "تحديث",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "FIELDS": {
         "DELIVERY_DATE": "تاريخ التسليم",
@@ -986,7 +1357,9 @@
         "NET_GREATER": "لا يمكن أن تكون الكمية أكبر من الوزن الإجمالي",
         "REMAINING_CAPACITY": "{{available}} لتر متبقية",
         "REQUIRED": "هذا الحقل مطلوب"
-      }
+      },
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "MESSAGES": {
       "CANCELLED_ERROR": "خطأ أثناء إلغاء الاستقبال",
@@ -1021,34 +1394,6 @@
       "REFUSED": "مرفوض"
     }
   },
-  "DEPARTMENT": {
-    "DETAIL": {
-      "EMPLOYEES": "الموظفون",
-      "GENERAL_INFO": "المعلومات العامة",
-      "MANAGER_INFO": "معلومات المدير",
-      "MANAGER_NOT_FOUND": "لم يتم العثور على المدير",
-      "NO_EMPLOYEES": "لم يتم العثور على موظفين",
-      "TITLE": "تفاصيل القسم"
-    },
-    "FORM": {
-      "DESCRIPTION": "الوصف",
-      "NAME": "الاسم"
-    },
-    "MESSAGES": {
-      "NOT_FOUND": "القسم غير موجود"
-    },
-    "DASHBOARD": {
-      "FIELDS": {
-        "DESCRIPTION": "الوصف",
-        "EMPLOYEES_COUNT": "عدد الموظفين",
-        "MANAGER_ID": "المسؤول",
-        "NAME": "الاسم"
-      }
-    },
-    "DESCRIPTION": "الوصف",
-    "MANAGER": "المسؤول",
-    "NAME": "اسم القسم"
-  },
   "DIVORCED": "مطلق",
   "Dashboard": "لوحة التحكم",
   "Data": "البيانات",
@@ -1066,12 +1411,14 @@
     "CIN": "CIN",
     "CITY": "المدينة",
     "COUNTRY": "البلد",
-    "DEPARTMENT": "القسم",
     "DETAIL": {
       "CONTACT_INFO": "معلومات التواصل",
       "PERSONAL_INFO": "المعلومات الشخصية",
       "PROFESSIONAL_INFO": "المعلومات المهنية",
-      "TITLE": "تفاصيل الموظف"
+      "TITLE": "تفاصيل الموظف",
+      "FILE_SUBTITLE": "Dossier complet : profil, contrats, paie, congés et pointage.",
+      "NO_POINTAGE": "Aucun pointage enregistré pour cet employé.",
+      "TAB_PROFILE": "Profil"
     },
     "EDIT_TITLE": "تعديل الموظف",
     "EMAIL": "البريد الإلكتروني",
@@ -1082,13 +1429,14 @@
       "CIN": "CIN",
       "CITY": "المدينة",
       "COUNTRY": "البلد",
-      "DEPARTMENT": "القسم",
       "EMAIL": "البريد الإلكتروني",
       "GENDER": "الجنس",
       "HIRE_DATE": "تاريخ التعيين",
       "MARITAL_STATUS": "الحالة الاجتماعية",
       "PHONE": "الهاتف",
-      "POSTAL_CODE": "الرمز البريدي"
+      "POSTAL_CODE": "الرمز البريدي",
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "GENDER": {
       "FEMALE": "أنثى",
@@ -1099,8 +1447,11 @@
     "LAST_NAME": "اللقب",
     "MARITAL_STATUS": {
       "MARRIED": "متزوج",
-      "SINGLE": "أعزب"
+      "SINGLE": "أعزب",
+      "WIDOWED": "أرمل",
+      "DIVORCED": "مطلق"
     },
+    "LIST_TITLE": "قائمة الموظفين",
     "MESSAGES": {
       "NOT_FOUND": "الموظف غير موجود"
     },
@@ -1111,7 +1462,37 @@
       "ACTIVE": "نشط",
       "INACTIVE": "غير نشط"
     },
-    "UPDATE": "تحديث"
+    "UPDATE": "تحديث",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
+    "WORK_REGIME": {
+      "HOURS_48": "48 h / semaine (SMIG industriel)",
+      "HOURS_40": "40 h / semaine (SMIG services)",
+      "AGRICULTURAL": "Agricole (SMAG)"
+    },
+    "DASHBOARD": {
+      "TITLE": "Tableau de bord RH",
+      "SUBTITLE": "Vue d'ensemble des effectifs, tendances et actions en attente.",
+      "STATS_TITLE": "Indicateurs clés",
+      "FULL_DASHBOARD": "Tableau de bord complet",
+      "TOTAL": "Total employés",
+      "OF_WORKFORCE": "des effectifs",
+      "NEEDS_REVIEW": "Profils à revoir",
+      "ACTIVE_CONTRACTS": "Contrats actifs",
+      "POSITIONS": "postes",
+      "PENDING_LEAVE": "Congés en attente",
+      "AWAITING_APPROVAL": "En attente de validation",
+      "UNPAID_PAYROLL": "Bulletins impayés",
+      "PAYSLIPS_TO_SETTLE": "Bulletins à régler",
+      "BY_WORK_REGIME": "Employés par régime de travail",
+      "BY_GENDER": "Employés par sexe",
+      "RECENT_HIRES": "Embauches récentes",
+      "VIEW_ALL": "Voir tous les employés",
+      "NO_RECENT_HIRES": "Aucune embauche récente enregistrée.",
+      "QUICK_ACTIONS": "Actions rapides",
+      "LOADING": "Chargement des statistiques…",
+      "NO_DATA": "Aucune donnée",
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir le dossier complet de l'employé."
+    }
   },
   "EXPENSE": {
     "CATEGORY": {
@@ -1148,7 +1529,8 @@
       "EDIT": "تعديل",
       "PRINT": "طباعة",
       "SAVE": "حفظ",
-      "UPDATE": "تحديث"
+      "UPDATE": "تحديث",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "ADD_TITLE": "إضافة مصاريف",
     "DETAILS_TITLE": "تفاصيل المصروفات",
@@ -1231,7 +1613,8 @@
       "EDIT": "تعديل",
       "RESET": "إعادة ضبط",
       "SAVE": "حفظ",
-      "UPDATE": "تحديث"
+      "UPDATE": "تحديث",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "CAPITAL": "رأس المال",
     "CITY": "المدينة",
@@ -1270,7 +1653,8 @@
       "EDIT": "تعديل",
       "RESET": "إعادة ضبط",
       "SAVE": "حفظ",
-      "UPDATE": "تحديث"
+      "UPDATE": "تحديث",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "ADDRESS_INFO": {
       "ADDRESS": "العنوان",
@@ -1403,7 +1787,9 @@
       "COMPANY_PROFILES": "ملفات الشركات",
       "DASHBOARD": "لوحة تحكم الإدارة",
       "TITLE": "الإدارة",
-      "USERS": "إدارة المستخدمين"
+      "USERS": "إدارة المستخدمين",
+      "SUPPORT": "تذاكر الدعم",
+      "PERMISSION_CATALOG": "فهرس الصلاحيات"
     },
     "CUSTOMERS": {
       "ACTIONS": {
@@ -1412,7 +1798,8 @@
         "CREATE": "إنشاء عميل",
         "EDIT": "تعديل",
         "SAVE": "حفظ",
-        "UPDATE": "تحديث"
+        "UPDATE": "تحديث",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "ADD_TITLE": "إضافة عميل جديد",
       "CATEGORIES": {
@@ -1573,7 +1960,14 @@
     "HR": {
       "EMPLOYEES": "الموظفون",
       "ROLES_PERMISSIONS": "الأدوار والأذونات",
-      "TITLE": "الموارد البشرية"
+      "TITLE": "الموارد البشرية",
+      "ATTENDANCE": "Pointage",
+      "CONTRACTS": "Contrats",
+      "LEAVE": "Congés",
+      "ORGANIZATION": "Organisation",
+      "PAYROLL": "Paie & bulletins",
+      "PAYROLL_LEAVE": "Contrats, paie & congés",
+      "POSITIONS": "Postes"
     },
     "PRODUCTION": {
       "ALL_OLIVE_RECEPTIONS": "جميع استقبالات الزيتون",
@@ -1635,7 +2029,9 @@
         "MONTHLY_RENTAL_PRICE": "سعر الإيجار الشهري (د.ت)",
         "PAID_STORAGE_INFO": "معلومات التخزين المدفوع",
         "RENTAL_PRICE_MIN_ERROR": "يجب أن يكون سعر الإيجار أكبر من أو يساوي 0",
-        "RENTAL_PRICE_REQUIRED": "سعر الإيجار مطلوب لوحدات التخزين المدفوعة"
+        "RENTAL_PRICE_REQUIRED": "سعر الإيجار مطلوب لوحدات التخزين المدفوعة",
+        "CNSS_MATRICULE": "Matricule CNSS",
+        "WORK_REGIME": "Régime horaire"
       },
       "OIL_STORAGE_UNITS": "وحدات تخزين الزيت",
       "TITLE": "التخزين والمخزون",
@@ -1657,6 +2053,9 @@
     },
     "DASHBOARDS": {
       "TITLE": "لوحات التحكم"
+    },
+    "MAINTENANCE": {
+      "WORK_ORDERS": "Maintenance"
     }
   },
   "MILL_MACHINE": {
@@ -1665,7 +2064,8 @@
       "EDIT": "تعديل",
       "MAINTENANCE": "الصيانة",
       "SAVE": "حفظ",
-      "UPDATE": "تحديث"
+      "UPDATE": "تحديث",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "ADD_TITLE": "إضافة آلة طحن",
     "DETAILS_TITLE": "تفاصيل آلة الطحن",
@@ -1747,7 +2147,10 @@
       "SELLING_PRICE": "سعر البيع",
       "STOCK_QUANTITY": "كمية المخزون",
       "STORAGE_LOCATION": "موقع التخزين",
-      "UPDATE": "تحديث"
+      "UPDATE": "تحديث",
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "MESSAGES": {
       "CREATED": "تم إنشاء حاوية الزيت بنجاح",
@@ -1778,7 +2181,8 @@
       "CANCEL": "إلغاء",
       "EDIT": "تعديل",
       "SAVE": "حفظ",
-      "UPDATE": "تحديث"
+      "UPDATE": "تحديث",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "ADD_TITLE": "إضافة اعتماد زيت",
     "DETAILS_TITLE": "تفاصيل اعتماد الزيت",
@@ -1811,7 +2215,8 @@
       "BUTTONS": {
         "CANCEL": "إلغاء",
         "CREATE": "إنشاء",
-        "UPDATE": "تحديث"
+        "UPDATE": "تحديث",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "CREDIT_STATES": {
         "APPROVED": "مقبول",
@@ -1863,7 +2268,9 @@
       "UNITS": {
         "KILOGRAM": "كيلوغرام",
         "LITRE": "لتر"
-      }
+      },
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "MESSAGES": {
       "FORM_INVALID": "يرجى تصحيح الأخطاء في النموذج.",
@@ -1904,7 +2311,8 @@
       "BUTTONS": {
         "ADD": "إضافة",
         "CANCEL": "إلغاء",
-        "UPDATE": "تحديث"
+        "UPDATE": "تحديث",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "DELIVERY_INFO": "معلومات التسليم",
       "EDIT_TITLE": "تعديل استقبال الزيت",
@@ -2025,6 +2433,12 @@
     "TOTAL_MAX": "المجموع يتجاوز الحد الأقصى"
   },
   "OIL_SALES": {
+    "RELATED_LINKS": {
+      "FINANCIAL_TRANSACTIONS": "المعاملات المالية",
+      "STORAGE_UNIT": "وحدة التخزين",
+      "SUPPLIER_FINANCE": "مالية المورد",
+      "TITLE": "روابط مرتبطة"
+    },
     "ADD_TITLE": "إضافة مبيعات زيت",
     "CANCEL": "إلغاء",
     "CONFIRM": "تأكيد",
@@ -2086,7 +2500,9 @@
         "CUSTOMER_OR_SUPPLIER_REQUIRED": "يجب اختيار العميل أو المورد",
         "INCOMPLETE_FORM": "يرجى إكمال جميع الحقول الإلزامية في النموذج.",
         "ADDRESS_REQUIRED": "العنوان مطلوب"
-      }
+      },
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "FORM_SUBTITLE": "أنشئ أو عدّل معلومات مبيعات الزيت",
     "INVOICE": "فاتورة",
@@ -2175,7 +2591,8 @@
       "DIALOG_TITLE": "تسليم البيع",
       "TITLE": "التسليم",
       "USE_CLIENT_ADDRESS": "استخدام عنوان العميل"
-    }
+    },
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
   },
   "OIL_TRANSACTION": {
     "DELIVERY": {
@@ -2258,14 +2675,16 @@
         "APPROVE": "قبول",
         "CANCEL": "إلغاء",
         "CREATE": "إنشاء",
-        "UPDATE": "تحديث"
+        "UPDATE": "تحديث",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "CONFIRMATION": {
         "APPROVE": {
           "CANCEL": "إلغاء",
           "CONFIRM": "قبول",
           "MESSAGE": "هل أنت متأكد أنك تريد قبول هذه المعاملة؟ هذا الإجراء لا يمكن التراجع عنه.",
-          "TITLE": "قبول المعاملة"
+          "TITLE": "قبول المعاملة",
+          "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
         }
       },
       "FIELDS": {
@@ -2320,7 +2739,9 @@
         "CAPACITY": "خطأ في التحقق من السعة أو كمية الزيت",
         "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
         "REQUIRED": "هذا الحقل مطلوب"
-      }
+      },
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "QUALITY_GRADES": {
       "EXTRA_VIRGIN": "بكر ممتاز",
@@ -2380,7 +2801,8 @@
         "BACK": "الخلف",
         "CANCEL": "إلغاء",
         "SAVE": "حفظ",
-        "UPDATE": "تحديث"
+        "UPDATE": "تحديث",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "FIELDS": {
         "CLIENT": "العميل",
@@ -2437,7 +2859,9 @@
         "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
         "NET_GREATER": "لا يمكن أن يكون الوزن الصافي أكبر من الوزن الإجمالي",
         "REQUIRED": "هذا الحقل مطلوب"
-      }
+      },
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "SECTIONS": {
       "OIL_EXCHANGE": "التبادل"
@@ -2483,7 +2907,6 @@
       "REMOVE": "حذف",
       "DELIVER": "تسليم",
       "DELIVERYHISTORY": "سجل الاستلام",
-      "DEPARTMENT": "قسم",
       "DRAFT": "مسودة",
       "EMPLACEMENTSTOCK": "موقع المخزون",
       "EMPLOYEE": "موظف",
@@ -2586,7 +3009,8 @@
       "PREPARE_LABEL": "تحضير الملصق",
       "APPROVE": "موافقة",
       "DETAIL": "تفاصيل",
-      "GEN_PDF_BON_LIVRAISON": "إنشاء PDF إذن التسليم"
+      "GEN_PDF_BON_LIVRAISON": "إنشاء PDF إذن التسليم",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "COLUMNS": {
       "HIDE": "إخفاء الأعمدة",
@@ -2642,7 +3066,6 @@
       "DASHBOARD_TITLES_FILTRATION": "عمليات ترشيح الزيت المخزّن.",
       "AUTO_GESTION_DES_RESERVOIRS": "خزانات الزيت: المستويات والسعة والتخصيص.",
       "AUTO_GESTION_DES_CONTENANTS_D_HUILE": "حاويات الزيت للتعبئة والنقل والبيع.",
-      "AUTO_LISTE_DES_DEPARTEMENTS": "أقسام الموارد البشرية لتنظيم الموظفين.",
       "AUTO_LISTE_DES_EMPLOYES": "سجلات الموظفين وبيانات الاتصال.",
       "AUTO_LISTE_DES_CONTRATS": "عقود العمل المرتبطة بالموظفين.",
       "AUTO_LISTE_DES_POSTES": "المناصب والمسميات الوظيفية.",
@@ -2915,7 +3338,8 @@
     "SNAPSHOT_CAPTURED_AT": "لقطة في",
     "TRACEABILITY_GENEALOGY": "سلسلة التتبع",
     "TRUCK": "شاحنة",
-    "UNIT": "وحدة"
+    "UNIT": "وحدة",
+    "NÂ°COLIS": "Package #"
   },
   "PLANNING": {
     "CANCEL_CAUSE": "سبب الإلغاء",
@@ -2944,16 +3368,28 @@
   "PLANNING_UNASSIGNED": "غير مُعين",
   "PLANNING_VARIETY": "التنوع:",
   "POSTE": {
+    "LIST_TITLE": "قائمة المناصب",
     "ADD_TITLE": "إضافة منصب",
     "CANCEL": "إلغاء",
     "DESCRIPTION": "وصف المنصب",
     "EDIT_TITLE": "تعديل المنصب",
     "MESSAGES": {
-      "ERROR_LOADING": "خطأ أثناء تحميل المناصب"
+      "ERROR_LOADING": "خطأ أثناء تحميل المناصب",
+      "NOT_FOUND": "Poste non trouvé"
     },
     "NAME": "المنصب",
     "SAVE": "حفظ المنصب",
-    "UPDATE": "تحديث المنصب"
+    "UPDATE": "تحديث المنصب",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
+    "DETAIL": {
+      "GENERAL_INFO": "Informations générales",
+      "NO_DESCRIPTION": "Aucune description",
+      "SUBTITLE": "Intitulé utilisé dans les contrats et dossiers RH.",
+      "TITLE": "Détail du poste"
+    },
+    "DASHBOARD": {
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir le détail du poste."
+    }
   },
   "PRODUCTION_TAB": "تكوين الإنتاج",
   "Pages": "الصفحات",
@@ -2971,7 +3407,8 @@
       "CANCEL": "إلغاء",
       "EDIT": "تعديل",
       "SAVE": "حفظ",
-      "UPDATE": "تحديث"
+      "UPDATE": "تحديث",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "ADD_TITLE": "إضافة قاعدة مراقبة الجودة",
     "DETAILS_TITLE": "تفاصيل قاعدة مراقبة الجودة",
@@ -3003,7 +3440,8 @@
         "ADD": "إضافة",
         "CANCEL": "إلغاء",
         "SAVE": "حفظ",
-        "UPDATE": "تحديث"
+        "UPDATE": "تحديث",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "DESCRIPTION": "الوصف",
       "EXPECTED_VALUE": "القيمة المتوقعة",
@@ -3206,31 +3644,36 @@
       "RETRY": "إعادة المحاولة",
       "SAVE": "حفظ",
       "SEARCH": "بحث",
-      "SUBMIT": "إرسال"
+      "SUBMIT": "إرسال",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "CONFIRMATION": {
       "BULK_DELETE": {
         "CANCEL": "إلغاء",
         "CONFIRM": "حذف الكل",
         "MESSAGE": "هل أنت متأكد أنك تريد حذف العناصر المحددة؟ هذا الإجراء لا يمكن التراجع عنه.",
-        "TITLE": "تأكيد الحذف الجماعي"
+        "TITLE": "تأكيد الحذف الجماعي",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "CANCEL": "إلغاء",
       "DATA_LOSS": {
         "CANCEL": "إلغاء",
         "CONFIRM": "متابعة",
         "MESSAGE": "سيؤدي هذا الإجراء إلى فقدان دائم للبيانات. هل أنت متأكد أنك تريد المتابعة؟",
-        "TITLE": "تحذير فقدان البيانات"
+        "TITLE": "تحذير فقدان البيانات",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "DEFAULT": {
         "CANCEL": "إلغاء",
-        "CONFIRM": "تأكيد"
+        "CONFIRM": "تأكيد",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "DELETE": {
         "CANCEL": "إلغاء",
         "CONFIRM": "حذف",
         "MESSAGE": "هل أنت متأكد أنك تريد حذف هذا العنصر؟ هذا الإجراء لا يمكن التراجع عنه.",
-        "TITLE": "تأكيد الحذف"
+        "TITLE": "تأكيد الحذف",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "DESTRUCTIVE_WARNING": "هذا الإجراء لا رجعة فيه وسيحذف البيانات بشكل دائم.",
       "OIL_TRANSACTION": {
@@ -3263,14 +3706,17 @@
         "CANCEL": "إلغاء",
         "CONFIRM": "نعم، تحديث",
         "MESSAGE": "هل أنت متأكد أنك تريد تحديث هذه المعاملة؟ هذا الإجراء لا يمكن التراجع عنه.",
-        "TITLE": "تأكيد التحديث"
+        "TITLE": "تأكيد التحديث",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
       },
       "WARNING": {
         "CANCEL": "إلغاء",
         "CONFIRM": "متابعة",
         "MESSAGE": "يرجى تأكيد هذا الإجراء.",
-        "TITLE": "تحذير"
-      }
+        "TITLE": "تحذير",
+        "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
+      },
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "TOAST": {
       "ERROR": "حدث خطأ",
@@ -3292,7 +3738,9 @@
       "MONTHLY_RENTAL_PRICE": "سعر الإيجار الشهري",
       "PAID_STORAGE_INFO": "معلومات التخزين المدفوع",
       "RENTAL_PRICE_MIN_ERROR": "يجب أن يكون سعر الإيجار أكبر من أو يساوي 0",
-      "RENTAL_PRICE_REQUIRED": "سعر الإيجار مطلوب للتخزين المدفوع"
+      "RENTAL_PRICE_REQUIRED": "سعر الإيجار مطلوب للتخزين المدفوع",
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "OIL_STORAGE_UNITS": "وحدات تخزين الزيت",
     "OIL_TRANSACTIONS": {
@@ -3375,7 +3823,8 @@
     "ACTIONS": {
       "ADD": "إضافة",
       "CANCEL": "إلغاء",
-      "EDIT": "تعديل"
+      "EDIT": "تعديل",
+      "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
     },
     "ADD": {
       "TITLE_ADD": "إضافة مورد",
@@ -3465,7 +3914,9 @@
       "NAME_PLACEHOLDER": "اسم المورد",
       "ACTIVE_LABEL": "مورد نشط",
       "ACTIVE_HINT": "متاح للمشتريات والطلبات والعمليات اليومية.",
-      "CONTACT_HINT": "الشخص المرجعي لدى المورد."
+      "CONTACT_HINT": "الشخص المرجعي لدى المورد.",
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "ERRORS": {
       "INVALID_FORM": "يرجى تصحيح الحقول المميزة قبل الإرسال.",
@@ -3643,7 +4094,9 @@
           "RECYCLE": "تنقية",
           "SOLD": "بيع"
         },
-        "TITLE": "معالجة النفايات"
+        "TITLE": "معالجة النفايات",
+        "CNSS_MATRICULE": "Matricule CNSS",
+        "WORK_REGIME": "Régime horaire"
       }
     },
     "WASTE_PROCESSING_LIST": {
@@ -3786,7 +4239,8 @@
     "TOTAL_UNPAID": "إجمالي غير المدفوع",
     "UNPAID": "غير مدفوع",
     "UNPAID_AMOUNT": "المبلغ غير المدفوع",
-    "UNPAID_DELIVERIES": "التسليمات غير المدفوعة"
+    "UNPAID_DELIVERIES": "التسليمات غير المدفوعة",
+    "DOWNLOAD_PDF": "Télécharger le contrat (PDF)"
   },
   "Sample Page": "صفحة تجريبية",
   "Setting": "الإعدادات",
@@ -3861,6 +4315,16 @@
       "PAID_AMOUNT": "المبلغ المدفوع",
       "UNPAID_AMOUNT": "المبلغ غير المدفوع",
       "VENDOR": "البائع"
+    },
+    "LINKS": {
+      "DELIVERY": "استقبال مرتبط",
+      "DELIVERY_HINT": "هذا الدفع مرتبط بسجل استقبال أو تسليم.",
+      "EXPENSE": "مصروف مرتبط",
+      "EXPENSE_HINT": "هذه المعاملة مسجلة مقابل مصروف تشغيلي.",
+      "SUPPLIER": "حساب المورد",
+      "SUPPLIER_HINT": "افتح تبويب مالية المورد لعرض جميع الحركات.",
+      "WASTE_SALE": "بيع نفايات مرتبط",
+      "WASTE_SALE_HINT": "هذه المعاملة مرتبطة ببيع نفايات."
     },
     "MESSAGES": {
       "APPROVE_ERROR": "خطأ أثناء الموافقة",
@@ -3976,6 +4440,11 @@
   "User Profile": "ملف المستخدم",
   "View": "عرض",
   "WASTE": {
+    "RELATED_LINKS": {
+      "FINANCIAL_TRANSACTIONS": "المعاملات المالية",
+      "SUPPLIER_FINANCE": "مالية المورد",
+      "TITLE": "روابط مرتبطة"
+    },
     "FIELDS": {
       "CUSTOMER": "العميل",
       "INVOICE_NUMBER": "رقم الفاتورة",
@@ -3993,7 +4462,9 @@
     "FORM": {
       "ERRORS": {
         "QUALITY_GRADE_REQUIRED": "جودة الزيت مطلوبة"
-      }
+      },
+      "CNSS_MATRICULE": "Matricule CNSS",
+      "WORK_REGIME": "Régime horaire"
     },
     "TITLE": "إدارة النفايات",
     "TYPES": {
@@ -4075,6 +4546,7 @@
     },
     "DESCRIPTION": "إدارة الاستلام والإنتاج والمخزون والمالية من مكان واحد.",
     "HEADLINE": "مرحبًا بك في OOSM",
+    "SLOGAN": "نظام إدارة زيت الزيتون",
     "LINKS": {
       "FINANCE": "المالية",
       "FINANCE_HINT": "الفواتير والمدفوعات والتقارير",
@@ -4085,7 +4557,7 @@
       "SETTINGS": "الإعدادات",
       "SETTINGS_HINT": "التهيئة والصلاحيات"
     },
-    "SUB": "إدارة سلسلة الزيتون",
+    "SUB": "نظام إدارة زيت الزيتون",
     "TITLE": "مرحبًا"
   },
   "WIDOWED": "أرمل",
@@ -4093,9 +4565,6 @@
   "auth": {
     "change_password_title": "تغيير كلمة المرور",
     "password_changed_success": "تم تغيير كلمة المرور الخاصة بك بنجاح. هل ترغب في الدخول إلى التطبيق؟"
-  },
-  "department": {
-    "description": "الوصف"
   },
   "reCaptcha": "reCaptcha",
   "AUTO": {
@@ -5683,7 +6152,6 @@
     "CDD": "العناية الواجبة",
     "TEMPORARY": "مؤقت",
     "STAGE": "منصة",
-    "LISTE_DES_DEPARTEMENTS": "قائمة الأقسام",
     "LISTE_DES_EMPLOYES": "قائمة الموظفين",
     "MALE": "ذكر",
     "FEMALE": "أنثى",
@@ -5926,5 +6394,496 @@
     "TITLE": "رمز QR",
     "TYPE": "النوع"
   },
-  "OIL_FILTRAGE_MANAGEMENT": "إدارة ترشيح الزيت"
+  "OIL_FILTRAGE_MANAGEMENT": "إدارة ترشيح الزيت",
+  "HR": {
+    "QUICK_NAV": {
+      "ARIA": "تنقل وحدة الموارد البشرية",
+      "EMPLOYEES": "الدليل والملفات",
+      "POSITIONS": "المسميات والأدوار",
+      "CONTRACTS": "عقود العمل",
+      "PAYROLL": "كشوف الرواتب والضمان",
+      "LEAVE": "الغيابات والموافقات",
+      "POINTAGE": "الحضور اليومي"
+    },
+    "EMPLOYMENT": {
+      "ACTIVE_DERIVED": "يتم تفعيل الموظف تلقائياً عند وجود عقد ساري.",
+      "SINGLE_ACTIVE_CONTRACT": "عقد نشط واحد فقط لكل موظف. حفظ عقد نشط ينهي العقد السابق.",
+      "CDI_OPEN_ENDED": "عقود CDI قد تكون بدون تاريخ نهاية.",
+      "ACTIVE_CONTRACT": "العقد النشط",
+      "NO_ACTIVE_CONTRACT": "لا يوجد عقد نشط لهذا الموظف.",
+      "NO_EMPLOYABLE": "لا يوجد موظفون بعقد نشط. أضف عقداً أولاً."
+    },
+    "PAGE": {
+      "EMPLOYEES": {
+        "TITLE": "الموظفون",
+        "SUBTITLE": "إدارة السجلات والعقود وبيانات الامتثال التونسي."
+      },
+      "POSITIONS": {
+        "TITLE": "المناصب",
+        "SUBTITLE": "تعريف المسميات المستخدمة في العقود والرواتب."
+      },
+      "CONTRACTS": {
+        "TITLE": "العقود",
+        "SUBTITLE": "متابعة الأنواع والرواتب وحالة العقود."
+      },
+      "PAYROLL": {
+        "TITLE": "الرواتب",
+        "SUBTITLE": "إنشاء كشوف مع تفصيل الضمان والضريبة."
+      },
+      "LEAVE": {
+        "TITLE": "طلبات الإجازة",
+        "SUBTITLE": "مراجعة والموافقة على غيابات الموظفين."
+      },
+      "POINTAGE": {
+        "TITLE": "الحضور",
+        "SUBTITLE": "تسجيل الدخول والخروج اليومي."
+      },
+      "ATTENDANCE": {
+        "TITLE": "الحضور",
+        "SUBTITLE": "عرض وإدارة سجلات الحضور."
+      },
+      "EMPLOYEE_FORM": {
+        "SUBTITLE": "أكمل المعلومات الشخصية والاتصال والعمل."
+      },
+      "PAYROLL_FORM": {
+        "SUBTITLE": "إنشاء فترة رواتب مع الراتب الأساسي والمكافآت.",
+        "PERIOD": "فترة الدفع",
+        "AMOUNTS": "الراتب والدفع"
+      },
+      "LEAVE_FORM": {
+        "SUBTITLE": "تقديم أو تحديث طلب إجازة لموظف.",
+        "REQUEST": "تفاصيل الإجازة"
+      },
+      "POSITION_FORM": {
+        "SUBTITLE": "تعريف مسمى وظيفي للعقود وسجلات الموارد البشرية."
+      },
+      "CONTRACT_FORM": {
+        "SUBTITLE": "تحديد النوع والتواريخ والراتب والمنصب."
+      }
+    },
+    "DASHBOARD": {
+      "TITLE": "لوحة الموارد البشرية",
+      "SUBTITLE": "نظرة عامة على الموظفين والعقود والإجازات والرواتب.",
+      "LOAD_ERROR": "تعذر تحميل لوحة الموارد البشرية.",
+      "QUICK_ACTIONS": "إجراءات سريعة",
+      "KPI": {
+        "TOTAL_EMPLOYEES": "إجمالي الموظفين",
+        "ACTIVE_EMPLOYEES": "الموظفون النشطون",
+        "ACTIVE_CONTRACTS": "العقود النشطة",
+        "PENDING_LEAVES": "إجازات معلقة",
+        "OPEN_PAYROLL": "فترات مفتوحة",
+        "DRAFT_PAYSLIPS": "كشوف مسودة"
+      },
+      "CHART": {
+        "TITLE": "توزيع الموارد البشرية"
+      }
+    },
+    "EMPLOYEES": {
+      "LIST_TITLE": "قائمة الموظفين",
+      "ADD_TITLE": "إضافة موظف",
+      "EDIT_TITLE": "تعديل موظف",
+      "FIELDS": {
+        "FIRST_NAME": "الاسم",
+        "LAST_NAME": "اللقب",
+        "CIN": "بطاقة التعريف",
+        "CNSS": "رقم الضمان",
+        "EMAIL": "البريد",
+        "PHONE": "الهاتف",
+        "ADDRESS": "العنوان",
+        "BIRTH_DATE": "تاريخ الميلاد",
+        "HIRE_DATE": "تاريخ التوظيف",
+        "JOB_TITLE": "المسمى",
+        "DEPARTMENT": "القسم",
+        "STATUS": "الحالة",
+        "BASE_SALARY": "الراتب الأساسي",
+        "SALARY_TYPE": "نوع الراتب",
+        "PAYMENT_MODE": "طريقة الدفع",
+        "BANK_ACCOUNT": "الحساب البنكي"
+      },
+      "FORM": {
+        "IDENTITY": "الهوية",
+        "CONTACT": "الاتصال",
+        "EMPLOYMENT": "العمل والأجر"
+      },
+      "STATUS": {
+        "ACTIVE": "نشط",
+        "SUSPENDED": "موقوف",
+        "TERMINATED": "منتهي"
+      },
+      "SALARY_TYPE": {
+        "MONTHLY": "شهري",
+        "HOURLY": "بالساعة",
+        "DAILY": "يومي"
+      },
+      "PAYMENT_MODE": {
+        "BANK_TRANSFER": "تحويل",
+        "CASH": "نقد",
+        "CHECK": "شيك"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "خطأ في تحميل الموظف.",
+        "SAVE_SUCCESS": "تم حفظ الموظف بنجاح.",
+        "SAVE_ERROR": "خطأ في الحفظ.",
+        "NOT_FOUND": "الموظف غير موجود."
+      },
+      "PROFILE": {
+        "TAB_PROFILE": "الملف",
+        "TAB_CONTRACTS": "العقود",
+        "TAB_ATTENDANCE": "الحضور",
+        "TAB_LEAVES": "الإجازات",
+        "TAB_PAYSLIPS": "كشوف الرواتب",
+        "PERSONAL": "المعلومات الشخصية",
+        "NO_CONTRACTS": "لا توجد عقود.",
+        "NO_ATTENDANCE": "لا يوجد حضور.",
+        "NO_LEAVES": "لا توجد طلبات إجازة.",
+        "NO_PAYSLIPS": "لا توجد كشوف رواتب."
+      }
+    },
+    "CONTRACTS": {
+      "LIST_TITLE": "قائمة العقود",
+      "FIELDS": {
+        "EMPLOYEE": "الموظف",
+        "TYPE": "النوع",
+        "START_DATE": "تاريخ البداية",
+        "END_DATE": "تاريخ النهاية",
+        "SALARY": "الراتب",
+        "STATUS": "الحالة"
+      },
+      "TYPE": {
+        "CDI": "دائم",
+        "CDD": "محدد",
+        "INTERNSHIP": "تدريب",
+        "TEMPORARY": "مؤقت"
+      },
+      "STATUS": {
+        "DRAFT": "مسودة",
+        "ACTIVE": "نشط",
+        "EXPIRED": "منتهي",
+        "TERMINATED": "ملغى"
+      }
+    },
+    "ATTENDANCE": {
+      "LIST_TITLE": "الحضور",
+      "FIELDS": {
+        "EMPLOYEE": "الموظف",
+        "WORK_DATE": "التاريخ",
+        "CHECK_IN": "الدخول",
+        "CHECK_OUT": "الخروج",
+        "WORKED_HOURS": "ساعات العمل",
+        "STATUS": "الحالة"
+      },
+      "FORM": {
+        "ADD_BUTTON": "إضافة حضور",
+        "ADD_TITLE": "إضافة حضور",
+        "EDIT_TITLE": "تعديل حضور",
+        "SUBTITLE": "إدخال يدوي لموظف (التاريخ، الدخول، الخروج).",
+        "BREAK_MINUTES": "استراحة (دقائق)",
+        "NOTES": "ملاحظات",
+        "SAVE_SUCCESS": "تم حفظ الحضور",
+        "SAVE_ERROR": "خطأ أثناء حفظ الحضور",
+        "LOAD_ERROR": "تعذر تحميل الحضور",
+        "LOAD_EMPLOYEES_ERROR": "تعذر تحميل قائمة الموظفين"
+      },
+      "STATUS": {
+        "PRESENT": "حاضر",
+        "ABSENT": "غائب",
+        "HALF_DAY": "نصف يوم",
+        "LEAVE": "إجازة",
+        "PUBLIC_HOLIDAY": "عطلة رسمية"
+      }
+    },
+    "LEAVES": {
+      "LIST_TITLE": "طلبات الإجازة",
+      "FIELDS": {
+        "EMPLOYEE": "الموظف",
+        "TYPE": "النوع",
+        "START_DATE": "البداية",
+        "END_DATE": "النهاية",
+        "DURATION": "المدة (أيام)",
+        "STATUS": "الحالة"
+      },
+      "TYPE": {
+        "ANNUAL": "سنوية",
+        "SICK": "مرض",
+        "UNPAID": "بدون أجر",
+        "MATERNITY": "أمومة",
+        "PATERNITY": "أبوة",
+        "OTHER": "أخرى"
+      },
+      "STATUS": {
+        "PENDING": "معلق",
+        "APPROVED": "موافق",
+        "REJECTED": "مرفوض",
+        "CANCELLED": "ملغى"
+      }
+    },
+    "PAYROLL": {
+      "LIST_TITLE": "الرواتب",
+      "TABS": {
+        "PERIODS": "الفترات"
+      },
+      "FIELDS": {
+        "YEAR": "السنة",
+        "MONTH": "الشهر",
+        "START_DATE": "البداية",
+        "END_DATE": "النهاية",
+        "STATUS": "الحالة"
+      },
+      "STATUS": {
+        "OPEN": "مفتوحة",
+        "CALCULATED": "محسوبة",
+        "VALIDATED": "مصادق عليها",
+        "PAID": "مدفوعة",
+        "CLOSED": "مغلقة"
+      }
+    },
+    "PAYSLIPS": {
+      "LIST_TITLE": "كشوف الرواتب",
+      "DETAIL_TITLE": "تفاصيل الكشف",
+      "DOWNLOAD_PDF": "تحميل PDF",
+      "SECTION": {
+        "AMOUNTS": "المبالغ"
+      },
+      "FIELDS": {
+        "EMPLOYEE": "الموظف",
+        "GROSS_SALARY": "الراتب الإجمالي",
+        "NET_SALARY": "الراتب الصافي",
+        "CNSS_EMPLOYEE": "ضمان الموظف",
+        "IRPP": "الضريبة",
+        "TOTAL_DEDUCTIONS": "إجمالي الاقتطاعات",
+        "TOTAL_BONUSES": "إجمالي المكافآت",
+        "STATUS": "الحالة",
+        "PAYMENT_DATE": "تاريخ الدفع"
+      },
+      "STATUS": {
+        "DRAFT": "مسودة",
+        "VALIDATED": "مصادق",
+        "PAID": "مدفوع"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "خطأ في تحميل الكشف.",
+        "NOT_FOUND": "الكشف غير موجود.",
+        "PDF_ERROR": "تعذر تحميل PDF."
+      }
+    },
+    "REPORTS": {
+      "TITLE": "تقارير الموارد البشرية",
+      "SUBTITLE": "إنشاء تقارير ملخصة.",
+      "SELECT": "اختيار التقرير",
+      "TYPE": "نوع التقرير",
+      "GENERATE": "إنشاء",
+      "RESULT": "النتيجة",
+      "LOAD_ERROR": "خطأ في إنشاء التقرير.",
+      "TYPES": {
+        "HEADCOUNT": "العدد",
+        "LEAVE_SUMMARY": "ملخص الإجازات",
+        "PAYROLL_SUMMARY": "ملخص الرواتب"
+      }
+    },
+    "SETTINGS": {
+      "TITLE": "إعدادات الموارد البشرية",
+      "SUBTITLE": "المعاملات العامة والعطل الرسمية.",
+      "TAB_PARAMETERS": "المعاملات",
+      "TAB_HOLIDAYS": "العطل",
+      "PARAMETERS_TITLE": "معاملات الموارد البشرية",
+      "HOLIDAYS_TITLE": "العطل الرسمية",
+      "FIELDS": {
+        "PARAM_KEY": "المفتاح",
+        "PARAM_TYPE": "النوع",
+        "VALUE": "القيمة",
+        "DESCRIPTION": "الوصف",
+        "HOLIDAY_NAME": "الاسم",
+        "HOLIDAY_DATE": "التاريخ",
+        "RECURRING": "متكرر"
+      },
+      "PARAM_TYPE": {
+        "STRING": "نص",
+        "NUMBER": "رقم",
+        "BOOLEAN": "منطقي"
+      }
+    },
+    "POINTAGE": {
+      "KIOSK": {
+        "MENU": "تسجيل حضور الموظفين",
+        "OPEN": "فتح تسجيل الحضور",
+        "TITLE": "تسجيل الدخول / الخروج",
+        "SUBTITLE": "أدخل رقم بطاقة التعريف ثم سجّل دخولك أو خروجك.",
+        "CIN_LABEL": "رقم بطاقة التعريف",
+        "CIN_REQUIRED": "يرجى إدخال رقم بطاقة التعريف",
+        "IDENTIFY": "تحديد",
+        "RESET": "جديد",
+        "EMPLOYEE_NOT_FOUND": "لم يتم العثور على موظف لهذا الرقم",
+        "LOAD_ERROR": "تعذر تحميل الحضور",
+        "PUNCH_ERROR": "تم رفض التسجيل",
+        "CHECK_IN_OK": "تم تسجيل الدخول",
+        "CHECK_OUT_OK": "تم تسجيل الخروج",
+        "TODAY": "اليوم",
+        "CHECK_IN": "الدخول",
+        "CHECK_OUT": "الخروج",
+        "WORKED_HOURS": "ساعات العمل",
+        "BUTTON_IN": "تسجيل الدخول",
+        "BUTTON_OUT": "تسجيل الخروج",
+        "DAY_COMPLETE": "اكتمل تسجيل اليوم",
+        "BACK_LIST": "قائمة الحضور",
+        "NO_JOB": "لم يتم تحديد المنصب"
+      },
+      "SEARCH": "بحث عن موظف",
+      "SEARCH_PLACEHOLDER": "الاسم، بطاقة التعريف، البريد…",
+      "DATE": "التاريخ",
+      "CHECK_IN": "الدخول",
+      "CHECK_OUT": "الخروج",
+      "DURATION": "المدة",
+      "MARK_ENTRY": "تسجيل الدخول",
+      "MARK_EXIT": "تسجيل الخروج",
+      "ENTRY_DONE": "تم تسجيل الدخول",
+      "EXIT_DONE": "تم تسجيل الخروج",
+      "LOAD_ERROR": "تعذر تحميل الحضور لهذا التاريخ.",
+      "SAVE_ERROR": "تعذر حفظ الحضور.",
+      "ENTRY_MARKED": "تم تسجيل الدخول في {{time}}.",
+      "EXIT_MARKED": "تم تسجيل الخروج في {{time}}.",
+      "PUNCH": "تسجيل",
+      "OPEN_PUNCH": "دخول مفتوح — سجّل الخروج أولاً"
+    }
+  },
+  "USER_PROFILE": {
+    "TITLE": "Mon compte",
+    "TABS": {
+      "PROFILE": "Profil",
+      "PASSWORD": "Changer le mot de passe"
+    },
+    "CURRENT_PASSWORD": "Mot de passe actuel",
+    "CHANGE_PASSWORD": "Mettre à jour le mot de passe",
+    "SAVE_SUCCESS": "Votre profil a été mis à jour.",
+    "PASSWORD_SUCCESS": "Votre mot de passe a été modifié.",
+    "LOAD_ERROR": "Impossible de charger votre profil.",
+    "SAVE_ERROR": "Impossible de mettre à jour votre profil.",
+    "PASSWORD_ERROR": "Impossible de modifier votre mot de passe.",
+    "PHOTO_TITLE": "Photo de profil",
+    "PHOTO_HINT": "Cliquez ou glissez une image PNG/JPEG (max 200 Ko). Supprimez la photo pour afficher vos initiales.",
+    "PHOTO_FORMAT": "Seules les images PNG et JPEG sont autorisées.",
+    "PHOTO_TOO_LARGE": "La photo doit faire 200 Ko maximum.",
+    "PHOTO_SUCCESS": "Photo de profil mise à jour.",
+    "PHOTO_REMOVE_SUCCESS": "Photo de profil supprimée.",
+    "PHOTO_ERROR": "Impossible de mettre à jour la photo de profil.",
+    "REMOVE_PHOTO": "Supprimer la photo",
+    "UPLOAD_PHOTO": "Téléverser une photo",
+    "ABOUT": "À propos",
+    "PERSONAL_INFO": "Informations personnelles"
+  },
+  "PWA": {
+    "UPDATE_AVAILABLE": "Une nouvelle version est disponible. Rechargez l'application pour mettre à jour.",
+    "UNRECOVERABLE_ERROR": "L'application n'a pas pu se charger correctement. Rechargement..."
+  },
+  "MAINTENANCE": {
+    "SUBTITLE": "Suivez la maintenance, les pièces utilisées et les dépenses associées.",
+    "NEW_TITLE": "Nouvelle maintenance",
+    "EDIT_TITLE": "Modifier la maintenance",
+    "VIEW_TITLE": "Détail maintenance",
+    "FORM_TITLE": "Ordre de travail",
+    "FORM_SUBTITLE": "Planifiez la maintenance et enregistrez les coûts de pièces pour la finance.",
+    "LOAD_ERROR": "Impossible de charger l'ordre de maintenance.",
+    "SAVE_ERROR": "Impossible d'enregistrer l'ordre de maintenance.",
+    "EXPENSE_CANCELLED_ERROR": "Les coûts ne peuvent pas être enregistrés sur un ordre annulé.",
+    "EXPENSE_HINT": "Une dépense de {{amount}} TND sera créée en Finance lors de l'enregistrement (le statut Planifié passera automatiquement à En cours).",
+    "SECTIONS": {
+      "ASSET": "Équipement",
+      "DETAILS": "Détails maintenance",
+      "PARTS": "Pièces & coûts"
+    },
+    "FIELDS": {
+      "ASSET": "Équipement",
+      "ASSET_TYPE": "Type d'équipement",
+      "TYPE": "Type",
+      "TOTAL_COST": "Coût total",
+      "PARTS_COST": "Coût des pièces",
+      "LABOR_COST": "Coût main d'œuvre / service",
+      "VENDOR": "Fournisseur"
+    },
+    "ASSET_TYPE": {
+      "MILL_MACHINE": "Machine de trituration",
+      "STORAGE_UNIT": "Cuve de stockage",
+      "LIGNE_CONDITIONNEMENT": "Ligne de conditionnement"
+    },
+    "TYPE": {
+      "PREVENTIVE": "Préventive",
+      "CORRECTIVE": "Corrective",
+      "PREDICTIVE": "Prédictive"
+    },
+    "STATUS": {
+      "PLANNED": "Planifiée",
+      "IN_PROGRESS": "En cours",
+      "COMPLETED": "Terminée",
+      "CANCELLED": "Annulée"
+    }
+  },
+  "PAYROLL": {
+    "ADD_TITLE": "Nouvelle paie",
+    "EDIT_TITLE": "Modifier la paie",
+    "DASHBOARD": {
+      "TITLE": "Bulletins de paie",
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir le bulletin."
+    },
+    "FIELDS": {
+      "EMPLOYEE": "Employé",
+      "PERIOD_START": "Début de période",
+      "PERIOD_END": "Fin de période",
+      "BASE_SALARY": "Salaire de base (TND)",
+      "BONUSES": "Primes (TND)",
+      "NET_SALARY": "Net à payer",
+      "PAID": "Payé",
+      "PAYMENT_DATE": "Date de paiement"
+    },
+    "MESSAGES": {
+      "SAVE_SUCCESS": "Bulletin enregistré avec succès",
+      "UPDATE_SUCCESS": "Bulletin mis à jour avec succès",
+      "ERROR_LOADING": "Erreur lors du chargement du bulletin",
+      "ERROR_SAVING": "Erreur lors de l'enregistrement du bulletin"
+    }
+  },
+  "LEAVE": {
+    "ADD_TITLE": "Nouvelle demande de congé",
+    "EDIT_TITLE": "Modifier la demande de congé",
+    "DASHBOARD": {
+      "TITLE": "Demandes de congé",
+      "DOUBLE_CLICK_HINT": "Double-cliquez sur une ligne pour ouvrir la demande."
+    },
+    "FIELDS": {
+      "EMPLOYEE": "Employé",
+      "START_DATE": "Date de début",
+      "END_DATE": "Date de fin",
+      "TYPE": "Type de congé",
+      "STATUS": "Statut",
+      "DURATION": "Durée (jours)",
+      "DURATION_HOURS": "Durée (heures)",
+      "UNIT": "Unité de durée",
+      "START_TIME": "Heure de début",
+      "END_TIME": "Heure de fin",
+      "REASON": "Motif"
+    },
+    "UNIT": {
+      "DAY": "Journée(s)",
+      "HOUR": "Heures"
+    },
+    "TYPE": {
+      "ANNUAL": "Congé annuel",
+      "SICK": "Maladie",
+      "MATERNITY": "Maternité",
+      "PATERNITY": "Paternité",
+      "UNPAID": "Sans solde",
+      "OTHER": "Autre"
+    },
+    "STATUS": {
+      "PENDING": "En attente",
+      "APPROVED": "Approuvé",
+      "REJECTED": "Rejeté",
+      "CANCELLED": "Annulé"
+    },
+    "MESSAGES": {
+      "SAVE_SUCCESS": "Demande de congé enregistrée",
+      "UPDATE_SUCCESS": "Demande de congé mise à jour",
+      "ERROR_LOADING": "Erreur lors du chargement de la demande",
+      "ERROR_SAVING": "Erreur lors de l'enregistrement de la demande"
+    }
+  },
+  "DOWNLOAD_PDF": "Download contract (PDF)"
 }
