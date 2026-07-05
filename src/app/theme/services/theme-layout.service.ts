@@ -23,6 +23,18 @@ export class ThemeLayoutService {
   // themeMode Change
   isDarkMode = signal<string>('');
 
+  /** True when viewport uses bottom navigation instead of the side drawer. */
+  isMobileNav = signal(false);
+
+  /** True when viewport width is at or below the mobile breakpoint. */
+  mobileViewport = signal(false);
+
+  /** User preference: enable bottom navigation on mobile viewports. */
+  mobileBottomNavEnabled = signal(true);
+
+  /** User preference: show dashboard list rows as cards on mobile viewports. */
+  mobileDashboardCardsEnabled = signal(true);
+
   drawerOpen = signal(false);
 
   /**

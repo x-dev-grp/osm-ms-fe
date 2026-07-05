@@ -151,6 +151,27 @@ export class OosmDashboard implements OnInit, AfterViewInit, OnChanges {
     return option?.labelTranslatePath || option?.label || option?.value;
   }
 
+  mobileCardFields(): Field[] {
+    return this._store.dataTableFields().filter((field) => field.dataTable && !field.flattedList);
+  }
+
+  mobileCardBodyFields(): Field[] {
+    const fields = this.mobileCardFields();
+    return fields.length > 1 ? fields.slice(1) : [];
+  }
+
+  mobileCardTitleField(): Field | undefined {
+    return this.mobileCardFields()[0];
+  }
+
+  trackCardRow(index: number, record: { id?: string }): string | number {
+    return record?.id ?? index;
+  }
+
+  onCardClick(row: unknown, event: MouseEvent): void {
+    this.onRowDoubleClick(row, event);
+  }
+
   redirectToFormPage() {
     const url = this.config().addNewItemUrl;
     if (url) {

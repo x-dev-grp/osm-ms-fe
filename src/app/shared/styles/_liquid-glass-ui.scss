@@ -1,0 +1,144 @@
+/* Liquid glass (glassmorphism) — enabled globally via body.liquid-glass-ui */
+
+@mixin liquid-glass-surface($radius: 14px) {
+  overflow: hidden;
+  border-radius: $radius !important;
+  border: 1px solid color-mix(in srgb, #fff 55%, var(--accent-300)) !important;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, #fff 78%, transparent) 0%,
+      color-mix(in srgb, #fff 58%, transparent) 48%,
+      color-mix(in srgb, var(--accent-100) 42%, transparent) 100%
+    ) !important;
+  backdrop-filter: blur(3px) saturate(1.65);
+  -webkit-backdrop-filter: blur(3px) saturate(1.65);
+  box-shadow:
+    0 14px 38px color-mix(in srgb, var(--accent-900) 14%, transparent),
+    0 2px 8px color-mix(in srgb, var(--accent-900) 6%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 72%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--accent-300) 18%, transparent);
+}
+
+@mixin liquid-glass-surface-dark($radius: 14px) {
+  border-color: color-mix(in srgb, #fff 14%, var(--accent-400)) !important;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--accent-200) 82%, transparent) 0%,
+      color-mix(in srgb, var(--accent-300) 68%, transparent) 52%,
+      color-mix(in srgb, var(--accent-400) 52%, transparent) 100%
+    ) !important;
+  box-shadow:
+    0 16px 40px color-mix(in srgb, #000 34%, transparent),
+    0 2px 8px color-mix(in srgb, #000 18%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 12%, transparent);
+}
+
+@mixin liquid-glass-list-hover {
+  &:hover:not(.mdc-list-item--disabled):not([aria-disabled='true']) {
+    background: color-mix(in srgb, #fff 52%, var(--primary-500) 12%) !important;
+    box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent);
+  }
+}
+
+body.liquid-glass-ui {
+  /* Action / context menus */
+  .mat-mdc-menu-panel {
+    @include liquid-glass-surface(14px);
+    min-width: 220px;
+
+    .mat-mdc-menu-content {
+      padding: 6px !important;
+    }
+
+    .mat-mdc-menu-item {
+      min-height: 42px !important;
+      border-radius: 10px !important;
+      margin: 2px 0;
+      font-weight: 600;
+      font-size: 0.8125rem;
+      transition: background-color 0.18s ease, box-shadow 0.18s ease;
+
+      .mat-mdc-menu-item-text {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 12px;
+      }
+
+      mat-icon {
+        margin-inline: 0 !important;
+        margin-left: auto !important;
+        opacity: 0.88;
+      }
+
+      @include liquid-glass-list-hover;
+    }
+  }
+
+  /* Dialogs & modal forms */
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    @include liquid-glass-surface(16px);
+  }
+
+  /* Select dropdown panels */
+  .mat-mdc-select-panel {
+    @include liquid-glass-surface(12px);
+
+    .mat-mdc-option {
+      border-radius: 8px;
+      margin: 2px 4px;
+      @include liquid-glass-list-hover;
+    }
+  }
+
+  /* Date picker overlay */
+  .mat-datepicker-content {
+    @include liquid-glass-surface(14px);
+  }
+
+  /* Autocomplete suggestion panels */
+  .mat-mdc-autocomplete-panel {
+    @include liquid-glass-surface(12px);
+
+    .mat-mdc-option {
+      border-radius: 8px;
+      margin: 2px 4px;
+      @include liquid-glass-list-hover;
+    }
+  }
+
+  /* Bottom sheets */
+  .mat-bottom-sheet-container {
+    @include liquid-glass-surface(16px);
+    border-bottom: none !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+
+  /* Toast / snackbar notifications */
+  .mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+    @include liquid-glass-surface(12px);
+  }
+
+  &.dark {
+    .mat-mdc-menu-panel,
+    .mat-mdc-dialog-container .mdc-dialog__surface,
+    .mat-mdc-select-panel,
+    .mat-datepicker-content,
+    .mat-mdc-autocomplete-panel,
+    .mat-bottom-sheet-container,
+    .mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+      @include liquid-glass-surface-dark;
+    }
+
+    .mat-mdc-menu-item,
+    .mat-mdc-option {
+      &:hover:not(.mdc-list-item--disabled):not([aria-disabled='true']) {
+        background: color-mix(in srgb, var(--accent-300) 72%, var(--primary-500) 14%) !important;
+      }
+    }
+  }
+}

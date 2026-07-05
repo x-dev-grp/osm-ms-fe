@@ -45,6 +45,14 @@ jobs:
       - name: Production build
         run: npx ng build -c=production --base-href=/ --deploy-url=/
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E smoke tests
+        run: npm run e2e:smoke
+        env:
+          CI: true
+
       - name: Detect output directory
         id: outdir
         run: |

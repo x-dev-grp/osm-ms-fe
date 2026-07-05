@@ -1,48 +1,50 @@
-<mat-drawer-container class="drawer-container" [dir]="direction">
-  <mat-drawer
-    #sidebar
-    class="pc-sidebar"
-    [mode]="modeValue"
-    opened
-    [ngClass]="{
-      compact: currentLayout === 'compact',
-      horizontal: currentLayout === 'horizontal'
-    }"
-  >
-    <nav>
-      <div class="navbar-wrapper">
-        <div class="m-header sidebar-top">
-          <a routerLink="/welcome" class="sidebar-top__brand">
-            <div class="sidebar-top__logo-wrap">
-              <img
-                class="sidebar-top__logo"
-                [src]="logoPreview || defaultLogoMark"
-                alt="OOSM Logo"
-              />
-            </div>
-            <div class="sidebar-top__meta">
-              @if (companyName) {
-                <span class="sidebar-top__company">{{ companyName }}</span>
-              } @else {
-                <span class="sidebar-top__slogan">{{ 'BRANDING.SLOGAN' | translate }}</span>
-              }
-              <span class="sidebar-top__version">v{{ currentApplicationVersion }}</span>
-            </div>
-          </a>
+<mat-drawer-container class="drawer-container" [class.drawer-container--mobile-nav]="isMobileNav" [dir]="direction">
+  @if (!isMobileNav) {
+    <mat-drawer
+      #sidebar
+      class="pc-sidebar"
+      [mode]="modeValue"
+      opened
+      [ngClass]="{
+        compact: currentLayout === 'compact',
+        horizontal: currentLayout === 'horizontal'
+      }"
+    >
+      <nav>
+        <div class="navbar-wrapper">
+          <div class="m-header sidebar-top">
+            <a routerLink="/welcome" class="sidebar-top__brand">
+              <div class="sidebar-top__logo-wrap">
+                <img
+                  class="sidebar-top__logo"
+                  [src]="logoPreview || defaultLogoMark"
+                  alt="OOSM Logo"
+                />
+              </div>
+              <div class="sidebar-top__meta">
+                @if (companyName) {
+                  <span class="sidebar-top__company">{{ companyName }}</span>
+                } @else {
+                  <span class="sidebar-top__slogan">{{ 'BRANDING.SLOGAN' | translate }}</span>
+                }
+                <span class="sidebar-top__version">v{{ currentApplicationVersion }}</span>
+              </div>
+            </a>
+          </div>
+          @if (currentLayout === 'vertical' || currentLayout === 'compact') {
+            <app-vertical-menu [menus]="menus" />
+          }
         </div>
-        @if (currentLayout === 'vertical' || currentLayout === 'compact') {
-          <app-vertical-menu [menus]="menus" />
-        }
-      </div>
-    </nav>
-  </mat-drawer>
+      </nav>
+    </mat-drawer>
+  }
   <div>
     <app-nav-bar
       [ngClass]="{
         'horizontal-navbar': currentLayout === 'horizontal'
       }"
     />
-    @if (currentLayout === 'horizontal') {
+    @if (currentLayout === 'horizontal' && !isMobileNav) {
       <app-horizontal-menu
         [menus]="menus"
         [ngClass]="{
@@ -60,4 +62,8 @@
     </div>
     <app-footer></app-footer>
   </div>
+
+  @if (isMobileNav) {
+    <app-mobile-bottom-nav [menus]="menus" [isAdmin]="isAdminSection" />
+  }
 </mat-drawer-container>

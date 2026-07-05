@@ -1,5 +1,5 @@
 <div class="header-button">
-  @if (showToggleMenu) {
+  @if (showToggleMenu && !isMobileNav()) {
     <button mat-button class="header-item sidebar-collapse" (click)="toggleMenu()">
       <a class="pc-head-link">
         <i class="ti ti-menu-2"></i>

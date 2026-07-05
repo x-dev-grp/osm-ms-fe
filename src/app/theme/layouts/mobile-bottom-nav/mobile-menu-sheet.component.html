@@ -1,0 +1,12 @@
+<div class="mobile-menu-sheet">
+  <div class="mobile-menu-sheet__handle" aria-hidden="true"></div>
+  <div class="mobile-menu-sheet__header">
+    <h3 class="mobile-menu-sheet__title">{{ (data.titleKey || 'MOBILE_NAV.ALL_MODULES') | translate }}</h3>
+    <button type="button" class="mobile-menu-sheet__close" (click)="close()" [attr.aria-label]="'MOBILE_NAV.CLOSE' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="mobile-menu-sheet__menu">
+    <app-mobile-module-menu [menus]="data.menus" />
+  </div>
+</div>

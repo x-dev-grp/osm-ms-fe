@@ -1,0 +1,33 @@
+<div class="mobile-module-menu">
+  @for (section of sections; track section.id) {
+    <section class="mobile-module-menu__section">
+      @if (section.title) {
+        <h4 class="mobile-module-menu__section-title">
+          @if (section.icon) {
+            <mat-icon>{{ section.icon }}</mat-icon>
+          }
+          <span>{{ section.title | translate }}</span>
+        </h4>
+      }
+
+      <ul class="mobile-module-menu__list">
+        @for (item of section.items; track item.id) {
+          <li>
+            <button
+              type="button"
+              class="mobile-module-menu__link"
+              [class.mobile-module-menu__link--active]="isActive(item.url)"
+              (click)="navigate(item.url)"
+            >
+              @if (item.icon) {
+                <mat-icon>{{ item.icon }}</mat-icon>
+              }
+              <span>{{ item.title | translate }}</span>
+              <mat-icon class="mobile-module-menu__chevron">chevron_right</mat-icon>
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>

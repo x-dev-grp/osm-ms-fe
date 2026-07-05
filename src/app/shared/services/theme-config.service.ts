@@ -13,6 +13,9 @@ export interface ThemeConfig {
   bodyColor: string;
   layout: 'vertical' | 'horizontal' | 'compact';
   boxLayouts: boolean;
+  liquidGlass: boolean;
+  mobileBottomNav: boolean;
+  mobileDashboardCards: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,7 +31,10 @@ export class ThemeConfigService {
     rtlLayout: false,
     bodyColor: 'blue-theme',
     layout: 'vertical',
-    boxLayouts: false
+    boxLayouts: false,
+    liquidGlass: false,
+    mobileBottomNav: true,
+    mobileDashboardCards: true
   };
   private readonly themeClasses = [
     'blue-theme',
@@ -46,6 +52,7 @@ export class ThemeConfigService {
   /** Apply saved theme as early as possible (APP bootstrap). */
   init(): void {
     const cfg = this.loadConfig();
+    this.syncAbleProConfig(cfg);
     this.applyConfig(cfg);
   }
 
@@ -64,20 +71,32 @@ export class ThemeConfigService {
 
   /** Load from LS (if any), override static defaults, and return a config */
   loadConfig(): ThemeConfig {
-    const def = this.defaultConfig;
+    const cfg = this.mergeConfig(this.readStoredPartial());
+    return this.normalizeConfig(this.syncRtlWithLanguage(cfg));
+  }
 
+  private readStoredPartial(): Partial<ThemeConfig> {
     const json = localStorage.getItem(this.STORAGE_KEY);
-    let cfg = def;
-    if (json) {
-      try {
-        const stored = JSON.parse(json) as Partial<ThemeConfig>;
-        cfg = { ...def, ...stored };
-      } catch {
-        console.warn('Invalid themeConfig in localStorage, using defaults');
-      }
+    if (!json) {
+      return {};
     }
 
-    return this.normalizeConfig(this.syncRtlWithLanguage(cfg));
+    try {
+      return JSON.parse(json) as Partial<ThemeConfig>;
+    } catch {
+      console.warn('Invalid themeConfig in localStorage, using defaults');
+      return {};
+    }
+  }
+
+  private mergeConfig(stored: Partial<ThemeConfig>): ThemeConfig {
+    return {
+      ...this.defaultConfig,
+      ...stored,
+      liquidGlass: stored.liquidGlass === true,
+      mobileBottomNav: stored.mobileBottomNav !== false,
+      mobileDashboardCards: stored.mobileDashboardCards !== false
+    };
   }
 
   resetConfig(): ThemeConfig {
@@ -111,8 +130,15 @@ export class ThemeConfigService {
   }
 
   /** Persist both to LS and to the static defaults */
-  saveConfig(cfg: ThemeConfig): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(cfg));
+  saveConfig(cfg: Partial<ThemeConfig>): void {
+    const merged = this.mergeConfig({ ...this.readStoredPartial(), ...cfg });
+    const normalized = this.normalizeConfig(this.syncRtlWithLanguage(merged));
+
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(normalized));
+    this.syncAbleProConfig(normalized);
+  }
+
+  private syncAbleProConfig(cfg: ThemeConfig): void {
     AbleProConfig.layout = cfg.layout;
     AbleProConfig.isDarkMode = cfg.layoutType;
     AbleProConfig.theme_color = cfg.bodyColor;
@@ -120,6 +146,9 @@ export class ThemeConfigService {
     AbleProConfig.isBox_container = cfg.boxLayouts;
     AbleProConfig.theme_contrast = cfg.contrast;
     AbleProConfig.menu_caption = cfg.caption;
+    AbleProConfig.liquidGlass = cfg.liquidGlass;
+    AbleProConfig.mobileBottomNav = cfg.mobileBottomNav;
+    AbleProConfig.mobileDashboardCards = cfg.mobileDashboardCards;
   }
 
   /** Apply a given config to <body> classes and html dir */
@@ -155,6 +184,13 @@ export class ThemeConfigService {
     this.themeLayout.directionChange.set(cfg.rtlLayout ? RTL : LTR);
     this.themeLayout.isDarkMode.set(cfg.layoutType);
     this.themeLayout.color.set(cfg.bodyColor);
+
+    document.body.classList.toggle('liquid-glass-ui', cfg.liquidGlass);
+    document.body.classList.toggle('mobile-bottom-nav-ui', cfg.mobileBottomNav);
+    document.body.classList.toggle('mobile-dashboard-cards-ui', cfg.mobileDashboardCards);
+
+    this.themeLayout.mobileBottomNavEnabled.set(cfg.mobileBottomNav);
+    this.themeLayout.mobileDashboardCardsEnabled.set(cfg.mobileDashboardCards);
 
     this.syncAutoModeListener(cfg);
   }

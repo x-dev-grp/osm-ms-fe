@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ThemeConfig, ThemeConfigService } from '../../shared/services/theme-config.service';
+import { LIQUID_GLASS_TARGETS } from '../../shared/constants/liquid-glass.constants';
 
 type ThemeMode = ThemeConfig['layoutType'];
 type LayoutType = ThemeConfig['layout'];
@@ -31,6 +32,11 @@ export class ApplicationConfigComponent implements OnInit {
   bodyColor: ThemeColor = 'blue-theme';
   layout: LayoutType = 'vertical';
   boxLayouts = false;
+  liquidGlass = false;
+  mobileBottomNav = true;
+  mobileDashboardCards = true;
+
+  readonly liquidGlassTargets = LIQUID_GLASS_TARGETS;
 
   ngOnInit(): void {
     this.loadFromService();
@@ -78,7 +84,26 @@ export class ApplicationConfigComponent implements OnInit {
     this.applyPreview();
   }
 
+  setLiquidGlass(enabled: boolean): void {
+    this.liquidGlass = enabled;
+    this.applyPreview();
+  }
+
+  setMobileBottomNav(enabled: boolean): void {
+    this.mobileBottomNav = enabled;
+    this.applyPreview();
+  }
+
+  setMobileDashboardCards(enabled: boolean): void {
+    this.mobileDashboardCards = enabled;
+    this.applyPreview();
+  }
+
   applySettings(): void {
+    this.persistThemeConfig();
+  }
+
+  private persistThemeConfig(): void {
     const cfg = this.buildConfig();
     this.themeConfig.saveConfig(cfg);
     this.themeConfig.applyConfig(cfg);
@@ -107,7 +132,10 @@ export class ApplicationConfigComponent implements OnInit {
       rtlLayout: this.rtlLayout,
       bodyColor: this.bodyColor,
       layout: this.layout,
-      boxLayouts: this.boxLayouts
+      boxLayouts: this.boxLayouts,
+      liquidGlass: this.liquidGlass === true,
+      mobileBottomNav: this.mobileBottomNav !== false,
+      mobileDashboardCards: this.mobileDashboardCards !== false
     };
   }
 
@@ -119,5 +147,8 @@ export class ApplicationConfigComponent implements OnInit {
     this.bodyColor = cfg.bodyColor;
     this.layout = cfg.layout;
     this.boxLayouts = cfg.boxLayouts;
+    this.liquidGlass = cfg.liquidGlass === true;
+    this.mobileBottomNav = cfg.mobileBottomNav !== false;
+    this.mobileDashboardCards = cfg.mobileDashboardCards !== false;
   }
 }

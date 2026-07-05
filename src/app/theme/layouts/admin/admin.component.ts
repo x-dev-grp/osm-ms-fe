@@ -12,6 +12,7 @@ import { HorizontalMenuComponent } from 'src/app/theme/layouts/menu/horizontal-m
 
 import { BreadcrumbComponent } from 'src/app/theme/components/breadcrumb/breadcrumb.component';
 import { FooterComponent } from 'src/app/theme/layouts/footer/footer.component';
+import { MobileBottomNavComponent } from 'src/app/theme/layouts/mobile-bottom-nav/mobile-bottom-nav.component';
 
 // service
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
@@ -50,6 +51,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
     BreadcrumbComponent,
     FooterComponent,
+    MobileBottomNavComponent,
     TranslateModule
   ],
   templateUrl: './admin.component.html',
@@ -71,6 +73,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   currentLayout: string = 'vertical';
   rtlMode: boolean = typeof localStorage !== 'undefined' && localStorage.getItem('app_language') === 'ar';
   windowWidth: number = window.innerWidth;
+  isMobileNav = false;
   protected readonly oosm_menus = oosm_menus;
   protected readonly defaultLogoMark = APP_LOGO_MARK;
   private breakpointObserver = inject(BreakpointObserver);
@@ -84,6 +87,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
     effect(() => {
       this.themeDirection(this.themeService.directionChange());
+    });
+    effect(() => {
+      this.syncMobileNavState();
     });
     this.cdr = inject(ChangeDetectorRef);
   }
@@ -102,19 +108,22 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.rtlMode = cfg.rtlLayout;
     this.manageLayout(cfg.layout);
 
-    this.breakpointObserver.observe([MIN_WIDTH_1025PX, MAX_WIDTH_1024PX]).subscribe((result) => {
-      if (result.breakpoints[MAX_WIDTH_1024PX]) {
-        this.modeValue = 'over';
-      } else if (result.breakpoints[MIN_WIDTH_1025PX]) {
-        this.modeValue = 'side';
-      }
-    });
+    this.themeService.mobileViewport.set(this.windowWidth <= 1024);
+
+    this.breakpointObserver
+      .observe([MIN_WIDTH_1025PX, MAX_WIDTH_1024PX])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        this.themeService.mobileViewport.set(!!result.breakpoints[MAX_WIDTH_1024PX]);
+      });
 
     /**
      * Dashboard menu sidebar toggle listener
      */
     this.themeService.dashBoardMenuState.subscribe(() => {
-      this.sidebar()!.toggle();
+      if (!this.isMobileNav) {
+        this.sidebar()?.toggle();
+      }
     });
 
     // Load company profile and logo
@@ -132,6 +141,22 @@ export class AdminComponent implements OnInit, AfterViewInit {
         this.buildMenus();
         this.cdr.detectChanges();
       });
+  }
+
+  get isAdminSection(): boolean {
+    return this.authenticationService.currentUserValue?.role === Role.OosmAdmin;
+  }
+
+  private syncMobileNavState(): void {
+    const mobileViewport = this.themeService.mobileViewport();
+    const bottomNavEnabled = this.themeService.mobileBottomNavEnabled();
+    const mobile = mobileViewport && bottomNavEnabled;
+
+    this.isMobileNav = mobile;
+    this.themeService.isMobileNav.set(mobile);
+    this.modeValue = mobileViewport ? 'over' : 'side';
+    this.manageLayout(this.currentLayout);
+    document.body.classList.toggle('mobile-nav-active', mobile);
   }
 
   private buildMenus(): void {
@@ -223,7 +248,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private manageLayout(layout: string) {
     const drawerContent = document.querySelector('.mat-drawer-content') as HTMLElement;
     if (drawerContent) {
-      if (this.windowWidth <= 1025) {
+      if (this.isMobileNav || this.windowWidth <= 1025) {
         drawerContent.style.marginLeft = '0px';
         drawerContent.style.marginRight = '0px';
         this.direction = this.rtlMode === true ? RTL : LTR;

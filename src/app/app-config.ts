@@ -6,6 +6,9 @@ export class AbleProConfig {
   static isBox_container = false; // false true
   static theme_contrast = false; //true false
   static menu_caption = false; // true false
+  static liquidGlass = false; // true false
+  static mobileBottomNav = true; // true false
+  static mobileDashboardCards = true; // true false
   static isLanding = true;
   static i18n = 'fr'; // en, fr, ro, cn
 }

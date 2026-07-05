@@ -555,6 +555,28 @@
       "LIGHT": "فاتح",
       "TITLE": "وضع الموضوع"
     },
+    "LIQUID_GLASS": {
+      "TITLE": "تأثير الزجاج السائل",
+      "DESCRIPTION": "يطبّق مظهر الزجاج المصنّع على العناصر العائمة في التطبيق.",
+      "TARGETS_HINT": "عند التفعيل، يُطبَّق التأثير على:",
+      "TARGETS": {
+        "MENUS": "قوائم الإجراءات والسياق",
+        "DIALOGS": "مربعات الحوار والنوافذ المنبثقة",
+        "SELECTS": "قوائم الاختيار (select)",
+        "DATEPICKERS": "تقويمات اختيار التاريخ",
+        "AUTOCOMPLETE": "قوائم الاقتراحات (autocomplete)",
+        "BOTTOM_SHEETS": "لوحات bottom sheet",
+        "SNACKBARS": "إشعارات toast و snackbar"
+      }
+    },
+    "MOBILE_BOTTOM_NAV": {
+      "TITLE": "التنقل السفلي للجوال",
+      "DESCRIPTION": "يستبدل القائمة الجانبية بشريط تبويبات سفلي على الشاشات حتى 1024 بكسل عرضًا."
+    },
+    "MOBILE_DASHBOARD_CARDS": {
+      "TITLE": "بطاقات لوحة التحكم للجوال",
+      "DESCRIPTION": "يعرض قوائم OOSM كبطاقات بدلًا من جدول على الشاشات حتى 1024 بكسل عرضًا."
+    },
     "TITLE": "تكوين الموضوع"
   },
   "Account Profile": "ملف التعريف",
@@ -1780,6 +1802,13 @@
   "Login": "تسجيل الدخول",
   "MALE": "ذكر",
   "MARRIED": "متزوج",
+  "MOBILE_NAV": {
+    "HOME": "الرئيسية",
+    "MORE": "المزيد",
+    "ALL_MODULES": "جميع الوحدات",
+    "CLOSE": "إغلاق القائمة",
+    "ARIA_LABEL": "التنقل الرئيسي"
+  },
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "إضافة شركة ومستخدم",

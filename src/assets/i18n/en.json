@@ -718,6 +718,28 @@
       "LIGHT": "Light",
       "TITLE": "Theme Mode"
     },
+    "LIQUID_GLASS": {
+      "TITLE": "Liquid Glass Effect",
+      "DESCRIPTION": "Apply a frosted glass look to floating overlays across the app.",
+      "TARGETS_HINT": "When enabled, the effect applies to:",
+      "TARGETS": {
+        "MENUS": "Action & context menus",
+        "DIALOGS": "Dialogs & modal windows",
+        "SELECTS": "Select dropdown panels",
+        "DATEPICKERS": "Date picker calendars",
+        "AUTOCOMPLETE": "Autocomplete suggestion lists",
+        "BOTTOM_SHEETS": "Bottom sheet panels",
+        "SNACKBARS": "Toast & snackbar notifications"
+      }
+    },
+    "MOBILE_BOTTOM_NAV": {
+      "TITLE": "Mobile Bottom Navigation",
+      "DESCRIPTION": "Replace the side drawer with a bottom tab bar on screens up to 1024px wide."
+    },
+    "MOBILE_DASHBOARD_CARDS": {
+      "TITLE": "Mobile Dashboard Cards",
+      "DESCRIPTION": "Show OOSM dashboard list rows as cards instead of a table on screens up to 1024px wide."
+    },
     "TITLE": "Theme Configuration"
   },
   "Account Profile": "Account Profile",
@@ -2432,6 +2454,13 @@
   "Login": "Login",
   "MALE": "Male",
   "MARRIED": "Married",
+  "MOBILE_NAV": {
+    "HOME": "Home",
+    "MORE": "More",
+    "ALL_MODULES": "All modules",
+    "CLOSE": "Close menu",
+    "ARIA_LABEL": "Main navigation"
+  },
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Add Company & User",

@@ -38,7 +38,8 @@
       </div>
 
     }
-    <div class="table-responsive mt-3">
+    <div class="table-responsive mt-3 oosm-dashboard-data">
+      <div class="oosm-dashboard-table-view">
       <table
         (matSortChange)="sortChange($event)"
         [class.loading]="true"
@@ -113,42 +114,7 @@
             }
 
             <td mat-cell *matCellDef="let record">
-              @if (item?.fieldType === "checkbox") {
-                <input
-                  type="checkbox"
-                  class="checkbox-cell"
-                  [checked]="record[item.name]"
-                  disabled
-                />
-              } @else if (item?.fieldType === "select") {
-                @if (item?.name === 'status') {
-                  <span class="status-badge" [ngClass]="'status-' + (record[item?.name] | lowercase)">
-                    {{ getSelectDataTableValue(record[item?.name], item?.name) | translate }}
-                  </span>
-                } @else {
-                  {{ getSelectDataTableValue(record[item?.name], item?.name) | translate }}
-                }
-              } @else if (item?.fieldType === "date") {
-                {{ (item?.valuePath ? getValue(item?.valuePath, record) : getValue(item?.name, record)) | date:'dd-MM-yyyy HH:mm' }}
-              } @else if (item.flattedItemIndex || item.flattedItemIndex == 0) {
-                <!--                {{ getValue(item?.valueField,record?.[item?.flattedListName]? record?.[item?.flattedListName][item?.flattedItemIndex]:null) }}-->
-                {{ getValue(item?.valueField, getTargetItemFromFlattedList(record, item)) }}
-              } @else {
-                @if (item?.isCurrency) {
-                  <span class="metric-value">
-  {{
-                      (item?.valuePath
-                          ? getValue(item.name + '.' + item.valuePath, record)
-                          : getValue(item.name, record)
-                      )
-                        | number:'1.2-2'
-                    }}&nbsp;{{ item.currency }}
-</span>
-                } @else {
-                  {{ item?.valuePath ? getValue((item?.name + '.' + item?.valuePath), record) : getValue(item?.name, record) }}
-
-                }
-              }
+              <ng-container *ngTemplateOutlet="dashboardFieldValue; context: { record: record, item: item }" />
             </td>
           </ng-container>
         }
@@ -156,57 +122,7 @@
         <ng-container matColumnDef="actions">
           <th *matHeaderCellDef mat-header-cell>{{ 'OSM_DASHBOARD.ACTIONS.TITLE' | translate }}</th>
           <td *matCellDef="let record" mat-cell>
-            <div class="table-cell-value">
-              @if (config().specificActions) {
-                @if (_store.actionLoading()) {
-                  <mat-spinner diameter="25" color="warn"></mat-spinner>
-                } @else {
-                  <button mat-icon-button [matMenuTriggerFor]="specificMenu"
-                          [matTooltip]="'OSM_DASHBOARD.ACTIONS.MORE' | translate"
-                          matTooltipPosition="above"
-                          aria-label="{{ 'OSM_DASHBOARD.ACTIONS.MORE' | translate }}">
-                    <mat-icon>more_vert</mat-icon>
-                  </button>
-                }
-
-                <mat-menu #specificMenu="matMenu">
-                  @for (item of config().specificActions; track item; ) {
-                    <button
-                      (click)="actionApply(item?.action, record)"
-                      [disabled]="!!item?.disabled && record[item.disabled.field] === item.disabled.value"
-                      mat-menu-item>
-                      <span>{{ 'OSM_DASHBOARD.ACTIONS.' + item?.action | translate }}</span>
-                      <mat-icon>{{ item?.icon }}</mat-icon>
-                    </button>
-                  }
-                </mat-menu>
-              } @else {
-                @if (_store.actionLoading()) {
-                  <mat-spinner diameter="25" color="warn"></mat-spinner>
-                } @else {
-                  <button mat-icon-button [matMenuTriggerFor]="menu"
-                          aria-label="{{ 'OSM_DASHBOARD.ACTIONS.MORE' | translate }}">
-                    <mat-icon>more_vert</mat-icon>
-                  </button>
-                }
-
-                <mat-menu #menu="matMenu">
-                  <ng-container
-                    *ngFor="let action of ($any(record)?.actions || []) | sortByTranslated : 'OSM_DASHBOARD.ACTIONS.'; trackBy: trackByAction">
-                    <button
-                      *ngIf="!config()?.filteredActions?.includes(action)"
-                      (click)="actionApply(action, record)"
-                      mat-menu-item>
-                      <span>{{ 'OSM_DASHBOARD.ACTIONS.' + action | translate }}</span>
-                      <mat-icon>{{ actions.get(action) }}</mat-icon>
-                    </button>
-                  </ng-container>
-
-
-                </mat-menu>
-              }
-
-            </div>
+            <ng-container *ngTemplateOutlet="dashboardRowActions; context: { record: record }" />
           </td>
         </ng-container>
         }
@@ -219,6 +135,59 @@
           (dblclick)="onRowDoubleClick(row, $event)">
         </tr>
       </table>
+      </div>
+
+      <div class="oosm-dashboard-card-view">
+        @if (!_store.data().data?.length) {
+          <div class="oosm-dashboard-card oosm-dashboard-card--empty">
+            {{ 'OSM_DASHBOARD.TABLE.NO_DATA' | translate }}
+          </div>
+        }
+
+        @for (record of _store.data().data; track trackCardRow($index, record)) {
+          <article
+            class="oosm-dashboard-card"
+            [class.oosm-dashboard-card--clickable]="!config().hideActions"
+            (click)="onCardClick(record, $event)"
+          >
+            @if (config().groupedActions) {
+              <div class="oosm-dashboard-card__select">
+                <mat-checkbox class="checklist-leaf-node" [checked]="true"></mat-checkbox>
+              </div>
+            }
+
+            <div class="oosm-dashboard-card__header">
+              @if (mobileCardTitleField(); as titleField) {
+                <div class="oosm-dashboard-card__title">
+                  <ng-container *ngTemplateOutlet="dashboardFieldValue; context: { record: record, item: titleField }" />
+                </div>
+              }
+
+              @if (!config().hideActions) {
+                <div class="oosm-dashboard-card__actions">
+                  <ng-container *ngTemplateOutlet="dashboardRowActions; context: { record: record }" />
+                </div>
+              }
+            </div>
+
+            @if (mobileCardBodyFields().length) {
+              <div class="oosm-dashboard-card__body">
+                @for (item of mobileCardBodyFields(); track item.name) {
+                  <div class="oosm-dashboard-card__row">
+                    <span class="oosm-dashboard-card__label">
+                      {{ item?.labelTranslatePath ? (item?.labelTranslatePath | translate) : item?.label }}
+                    </span>
+                    <span class="oosm-dashboard-card__value">
+                      <ng-container *ngTemplateOutlet="dashboardFieldValue; context: { record: record, item: item }" />
+                    </span>
+                  </div>
+                }
+              </div>
+            }
+          </article>
+        }
+      </div>
+
       <mat-paginator
         (page)="onPageChange($event)"
         [attr.aria-label]="'OSM_DASHBOARD.TABLE.PAGE_SIZE' | translate"
@@ -413,11 +382,109 @@
       </mat-menu>
     </ng-template>
 
+    <ng-template #dashboardFieldValue let-record="record" let-item="item">
+      @if (item?.fieldType === "checkbox") {
+        <input
+          type="checkbox"
+          class="checkbox-cell"
+          [checked]="record[item.name]"
+          disabled
+        />
+      } @else if (item?.fieldType === "select") {
+        @if (item?.name === 'status') {
+          <span class="status-badge" [ngClass]="'status-' + (record[item?.name] | lowercase)">
+            {{ getSelectDataTableValue(record[item?.name], item?.name) | translate }}
+          </span>
+        } @else {
+          {{ getSelectDataTableValue(record[item?.name], item?.name) | translate }}
+        }
+      } @else if (item?.fieldType === "date") {
+        {{ (item?.valuePath ? getValue(item?.valuePath, record) : getValue(item?.name, record)) | date:'dd-MM-yyyy HH:mm' }}
+      } @else if (item.flattedItemIndex || item.flattedItemIndex == 0) {
+        {{ getValue(item?.valueField, getTargetItemFromFlattedList(record, item)) }}
+      } @else {
+        @if (item?.isCurrency) {
+          <span class="metric-value">
+            {{
+              (item?.valuePath
+                ? getValue(item.name + '.' + item.valuePath, record)
+                : getValue(item.name, record)
+              ) | number:'1.2-2'
+            }}&nbsp;{{ item.currency }}
+          </span>
+        } @else {
+          {{ item?.valuePath ? getValue((item?.name + '.' + item?.valuePath), record) : getValue(item?.name, record) }}
+        }
+      }
+    </ng-template>
+
+    <ng-template #dashboardRowActions let-record="record">
+      <div class="table-cell-value">
+        @if (config().specificActions) {
+          @if (_store.actionLoading()) {
+            <mat-spinner diameter="25" color="warn"></mat-spinner>
+          } @else {
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="specificMenu"
+              [matTooltip]="'OSM_DASHBOARD.ACTIONS.MORE' | translate"
+              matTooltipPosition="above"
+              [attr.aria-label]="'OSM_DASHBOARD.ACTIONS.MORE' | translate"
+              (click)="$event.stopPropagation()"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          }
+
+          <mat-menu #specificMenu="matMenu">
+            @for (item of config().specificActions; track item) {
+              <button
+                (click)="actionApply(item?.action, record)"
+                [disabled]="!!item?.disabled && record[item.disabled.field] === item.disabled.value"
+                mat-menu-item
+              >
+                <span>{{ 'OSM_DASHBOARD.ACTIONS.' + item?.action | translate }}</span>
+                <mat-icon>{{ item?.icon }}</mat-icon>
+              </button>
+            }
+          </mat-menu>
+        } @else {
+          @if (_store.actionLoading()) {
+            <mat-spinner diameter="25" color="warn"></mat-spinner>
+          } @else {
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              [attr.aria-label]="'OSM_DASHBOARD.ACTIONS.MORE' | translate"
+              (click)="$event.stopPropagation()"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          }
+
+          <mat-menu #menu="matMenu">
+            <ng-container
+              *ngFor="let action of ($any(record)?.actions || []) | sortByTranslated : 'OSM_DASHBOARD.ACTIONS.'; trackBy: trackByAction"
+            >
+              <button
+                *ngIf="!config()?.filteredActions?.includes(action)"
+                (click)="actionApply(action, record)"
+                mat-menu-item
+              >
+                <span>{{ 'OSM_DASHBOARD.ACTIONS.' + action | translate }}</span>
+                <mat-icon>{{ actions.get(action) }}</mat-icon>
+              </button>
+            </ng-container>
+          </mat-menu>
+        }
+      </div>
+    </ng-template>
+
     <!-- Custom header options (appears on the right side of header) -->
-    <!-- <ng-template #headerOptionsTemplate>
+      <ng-template #headerOptionsTemplate>
         <button mat-icon-button>
           <mat-icon>more_vert</mat-icon>
         </button>
-      </ng-template> -->
+      </ng-template>
   </app-card>
 </div>

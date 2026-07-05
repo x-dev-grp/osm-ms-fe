@@ -718,6 +718,28 @@
       "LIGHT": "Clair",
       "TITLE": "Mode du Thème"
     },
+    "LIQUID_GLASS": {
+      "TITLE": "Effet Liquid Glass",
+      "DESCRIPTION": "Applique un effet verre dépoli aux éléments flottants de l'application.",
+      "TARGETS_HINT": "Lorsque l'option est activée, l'effet s'applique à :",
+      "TARGETS": {
+        "MENUS": "Menus d'actions et contextuels",
+        "DIALOGS": "Dialogues et fenêtres modales",
+        "SELECTS": "Listes déroulantes (select)",
+        "DATEPICKERS": "Calendriers (date picker)",
+        "AUTOCOMPLETE": "Listes de suggestions (autocomplete)",
+        "BOTTOM_SHEETS": "Panneaux bottom sheet",
+        "SNACKBARS": "Notifications toast & snackbar"
+      }
+    },
+    "MOBILE_BOTTOM_NAV": {
+      "TITLE": "Navigation mobile en bas",
+      "DESCRIPTION": "Remplace le menu latéral par une barre d'onglets en bas sur les écrans jusqu'à 1024 px de large."
+    },
+    "MOBILE_DASHBOARD_CARDS": {
+      "TITLE": "Cartes tableau de bord mobile",
+      "DESCRIPTION": "Affiche les listes OOSM sous forme de cartes au lieu d'un tableau sur les écrans jusqu'à 1024 px de large."
+    },
     "TITLE": "Configuration du Thème"
   },
   "Account Profile": "Profil du compte",
@@ -2424,6 +2446,13 @@
   "Login": "Connexion",
   "MALE": "Homme",
   "MARRIED": "Marié(e)",
+  "MOBILE_NAV": {
+    "HOME": "Accueil",
+    "MORE": "Plus",
+    "ALL_MODULES": "Tous les modules",
+    "CLOSE": "Fermer le menu",
+    "ARIA_LABEL": "Navigation principale"
+  },
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Ajouter société & utilisateur",

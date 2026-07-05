@@ -1,0 +1,25 @@
+<nav class="mobile-bottom-nav" [attr.aria-label]="'MOBILE_NAV.ARIA_LABEL' | translate">
+  @for (tab of primaryTabs; track tab.id) {
+    <button
+      type="button"
+      class="mobile-bottom-nav__item"
+      [class.mobile-bottom-nav__item--active]="isActive(tab.id)"
+      (click)="onTabClick(tab)"
+      [attr.aria-current]="isActive(tab.id) ? 'page' : null"
+    >
+      <mat-icon>{{ tab.icon }}</mat-icon>
+      <span>{{ tab.labelKey | translate }}</span>
+    </button>
+  }
+
+  <button
+    type="button"
+    class="mobile-bottom-nav__item"
+    [class.mobile-bottom-nav__item--active]="isActive(moreTabId)"
+    (click)="openMoreMenu()"
+    [attr.aria-label]="'MOBILE_NAV.MORE' | translate"
+  >
+    <mat-icon>apps</mat-icon>
+    <span>{{ 'MOBILE_NAV.MORE' | translate }}</span>
+  </button>
+</nav>

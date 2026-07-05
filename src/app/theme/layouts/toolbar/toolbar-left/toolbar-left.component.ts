@@ -14,6 +14,7 @@ export class NavLeftComponent {
   private themeService = inject(ThemeLayoutService);
 
   showToggleMenu = true;
+  readonly isMobileNav = this.themeService.isMobileNav;
 
   constructor() {
     effect(() => {
