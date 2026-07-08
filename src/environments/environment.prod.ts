@@ -12,6 +12,7 @@ export const environment = {
     activePollIntervalMs: 5_000,
     backendBaseUrl: 'https://oosm-api-5im4.onrender.com',
     wakeUrl: 'https://oosm-api-5im4.onrender.com/',
+    wakePath: '/',
     healthPath: '/api/public/health',
     requestTimeoutMs: 8_000
   }
