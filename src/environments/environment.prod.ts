@@ -5,7 +5,13 @@ export const environment = {
   production: true,
   // same-origin (proxied by Caddy to the gateway container)
   apiUrl: '',
-  apiAuth: ''
+  apiAuth: '',
+  loginBackendStatus: {
+    enabled: true,
+    pollIntervalMs: 60_000,
+    healthPath: '/api/public/health',
+    requestTimeoutMs: 8_000
+  }
 };
 export const AppConfig = {
   authentication: {

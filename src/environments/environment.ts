@@ -7,7 +7,13 @@ import packageInfo from '../../package.json';
 export const environment = {
   appVersion: packageInfo.version,
   production: false,
-  apiUrl: ''
+  apiUrl: '',
+  loginBackendStatus: {
+    enabled: true,
+    pollIntervalMs: 60_000,
+    healthPath: '/api/public/health',
+    requestTimeoutMs: 8_000
+  }
 };
 
 export const AppConfig={

@@ -2572,6 +2572,15 @@
     "REMEMBERME": "Se souvenir de moi pendant 24 h",
     "REMEMBERME_EXPIRY_ERROR": "Votre session mémorisée a expiré. Veuillez vous reconnecter.",
     "SERVICE_UNAVAILABLE": "Service indisponible, veuillez réessayer plus tard",
+    "BACKEND_STATUS": {
+      "CHECKING": "Vérification de l'API…",
+      "UP": "API disponible",
+      "DEGRADED": "API joignable — services partiellement dégradés",
+      "DOWN": "API indisponible",
+      "UNREACHABLE": "API inaccessible",
+      "DATABASE_DOWN": "Échec du contrôle base de données",
+      "LATENCY": "Base de données {{ms}} ms"
+    },
     "TITLE": "Connexion avec votre nom d'utilisateur",
     "UNEXPECTED_ERROR": "Une erreur inattendue s'est produite",
     "UPDATEPASSWORD": "Changer le mot de passe",

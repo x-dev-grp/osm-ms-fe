@@ -1,18 +1,20 @@
 // angular import
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, first, interval, of, startWith, switchMap } from 'rxjs';
 
 // project import
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TokenService } from '../services/tokenService.service';
 import { AuthenticationService } from '../services/authentication.service';
-import { catchError, first, of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../theme/types/role';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { APP_LOGO_FULL } from '../../shared/config/logo.config';
+import { BackendHealthService, BackendHealthState } from '../../shared/services/backend-health.service';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +25,10 @@ import { APP_LOGO_FULL } from '../../shared/config/logo.config';
 })
 export class LoginComponent implements OnInit {
   readonly appLogoFull = APP_LOGO_FULL;
+  readonly showBackendStatus: boolean;
+  backendHealthState: BackendHealthState = 'checking';
+  backendHealthDetail: string | null = null;
+
   authenticationService = inject(AuthenticationService);
   loading = false;
   form: FormGroup;
@@ -33,6 +39,12 @@ export class LoginComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private tokenService = inject(TokenService);
   private translateService = inject(TranslateService);
+  private backendHealthService = inject(BackendHealthService);
+  private destroyRef = inject(DestroyRef);
+
+  constructor() {
+    this.showBackendStatus = this.backendHealthService.isEnabled();
+  }
 
   getUserNameErrorMessage() {
     if (this.form.controls['username'].hasError('required')) {
@@ -64,6 +76,54 @@ export class LoginComponent implements OnInit {
     });
     this.prefillRememberedUsername();
     this.applyLogoutReason(this.route.snapshot.queryParamMap.get('error'));
+    this.startBackendHealthPolling();
+  }
+
+  backendStatusLabelKey(): string {
+    switch (this.backendHealthState) {
+      case 'up':
+        return 'LOGIN.BACKEND_STATUS.UP';
+      case 'degraded':
+        return 'LOGIN.BACKEND_STATUS.DEGRADED';
+      case 'down':
+        return 'LOGIN.BACKEND_STATUS.DOWN';
+      case 'unreachable':
+        return 'LOGIN.BACKEND_STATUS.UNREACHABLE';
+      default:
+        return 'LOGIN.BACKEND_STATUS.CHECKING';
+    }
+  }
+
+  private startBackendHealthPolling(): void {
+    if (!this.showBackendStatus) {
+      return;
+    }
+
+    const { pollIntervalMs } = this.backendHealthService.config();
+    interval(pollIntervalMs)
+      .pipe(
+        startWith(0),
+        switchMap(() => this.backendHealthService.check()),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(({ state, response }) => {
+        this.backendHealthState = state;
+        this.backendHealthDetail = this.buildHealthDetail(response?.checks);
+      });
+  }
+
+  private buildHealthDetail(checks?: Record<string, { status?: string; latencyMs?: number }>): string | null {
+    if (!checks) {
+      return null;
+    }
+    const database = checks['database'];
+    if (database?.status && database.status !== 'UP') {
+      return this.translateService.instant('LOGIN.BACKEND_STATUS.DATABASE_DOWN');
+    }
+    if (typeof database?.latencyMs === 'number') {
+      return this.translateService.instant('LOGIN.BACKEND_STATUS.LATENCY', { ms: database.latencyMs });
+    }
+    return null;
   }
 
   private applyLogoutReason(reason: string | null): void {
