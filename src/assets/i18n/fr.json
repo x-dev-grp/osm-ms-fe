@@ -2574,6 +2574,8 @@
     "SERVICE_UNAVAILABLE": "Service indisponible, veuillez réessayer plus tard",
     "BACKEND_STATUS": {
       "CHECKING": "Vérification de l'API…",
+      "WAKING": "Démarrage de l'API…",
+      "WAKE": "Démarrer l'API",
       "UP": "API disponible",
       "DEGRADED": "API joignable — services partiellement dégradés",
       "DOWN": "API indisponible",

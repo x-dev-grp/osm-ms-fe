@@ -65,13 +65,35 @@
   padding: 32px;
 }
 
+.backend-status-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.backend-status-wake {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  min-height: 2rem;
+  line-height: 1;
+
+  mat-spinner {
+    display: inline-block;
+  }
+}
+
 .backend-status {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 0.35rem 0.5rem;
-  margin: 0 0 1rem;
+  margin: 0;
   padding: 0.55rem 0.85rem;
   border-radius: 999px;
   font-size: 0.82rem;

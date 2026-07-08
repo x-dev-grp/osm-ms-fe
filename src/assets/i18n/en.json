@@ -2582,6 +2582,8 @@
     "SERVICE_UNAVAILABLE": "Service unavailable please try again later",
     "BACKEND_STATUS": {
       "CHECKING": "Checking API…",
+      "WAKING": "Starting API…",
+      "WAKE": "Start API",
       "UP": "API available",
       "DEGRADED": "API reachable — some services degraded",
       "DOWN": "API unavailable",

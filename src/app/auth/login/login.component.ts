@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, first, interval, of, startWith, switchMap } from 'rxjs';
+import { catchError, exhaustMap, first, of, startWith, Subject, switchMap, timer } from 'rxjs';
 
 // project import
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
   readonly showBackendStatus: boolean;
   backendHealthState: BackendHealthState = 'checking';
   backendHealthDetail: string | null = null;
+  backendWaking = false;
 
   authenticationService = inject(AuthenticationService);
   loading = false;
@@ -80,6 +81,9 @@ export class LoginComponent implements OnInit {
   }
 
   backendStatusLabelKey(): string {
+    if (this.backendWaking && this.backendHealthState === 'checking') {
+      return 'LOGIN.BACKEND_STATUS.WAKING';
+    }
     switch (this.backendHealthState) {
       case 'up':
         return 'LOGIN.BACKEND_STATUS.UP';
@@ -94,22 +98,45 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  showWakeBackendButton(): boolean {
+    return this.backendHealthState !== 'up' && this.backendHealthState !== 'degraded';
+  }
+
+  wakeBackend(): void {
+    if (!this.showBackendStatus || this.backendWaking) {
+      return;
+    }
+
+    this.backendWaking = true;
+    this.backendHealthState = 'checking';
+    this.backendHealthDetail = null;
+    this.backendHealthService.wake().pipe(first()).subscribe(() => this.healthPoll$.next());
+  }
+
+  private readonly healthPoll$ = new Subject<void>();
+
   private startBackendHealthPolling(): void {
     if (!this.showBackendStatus) {
       return;
     }
 
-    const { pollIntervalMs } = this.backendHealthService.config();
-    interval(pollIntervalMs)
+    const { pollIntervalMs, activePollIntervalMs } = this.backendHealthService.config();
+
+    this.healthPoll$
       .pipe(
-        startWith(0),
-        switchMap(() => this.backendHealthService.check()),
+        startWith(undefined),
+        exhaustMap(() => this.backendHealthService.check()),
+        switchMap(({ state, response }) => {
+          this.backendHealthState = state;
+          this.backendHealthDetail = this.buildHealthDetail(response?.checks);
+          this.backendWaking = false;
+
+          const delayMs = state === 'up' || state === 'degraded' ? pollIntervalMs : activePollIntervalMs;
+          return timer(delayMs);
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe(({ state, response }) => {
-        this.backendHealthState = state;
-        this.backendHealthDetail = this.buildHealthDetail(response?.checks);
-      });
+      .subscribe(() => this.healthPoll$.next());
   }
 
   private buildHealthDetail(checks?: Record<string, { status?: string; latencyMs?: number }>): string | null {

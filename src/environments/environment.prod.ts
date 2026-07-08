@@ -9,7 +9,9 @@ export const environment = {
   loginBackendStatus: {
     enabled: true,
     pollIntervalMs: 60_000,
+    activePollIntervalMs: 5_000,
     healthPath: '/api/public/health',
+    wakePath: '/actuator/health/liveness',
     requestTimeoutMs: 8_000
   }
 };

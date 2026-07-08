@@ -21,7 +21,9 @@ export interface PublicHealthResponse {
 export interface LoginBackendStatusConfig {
   enabled: boolean;
   pollIntervalMs: number;
+  activePollIntervalMs: number;
   healthPath: string;
+  wakePath: string;
   requestTimeoutMs: number;
 }
 
@@ -37,9 +39,27 @@ export class BackendHealthService {
     return {
       enabled: environment.loginBackendStatus?.enabled ?? true,
       pollIntervalMs: environment.loginBackendStatus?.pollIntervalMs ?? 60_000,
+      activePollIntervalMs: environment.loginBackendStatus?.activePollIntervalMs ?? 5_000,
       healthPath: environment.loginBackendStatus?.healthPath ?? '/api/public/health',
+      wakePath: environment.loginBackendStatus?.wakePath ?? '/actuator/health/liveness',
       requestTimeoutMs: environment.loginBackendStatus?.requestTimeoutMs ?? 8_000
     };
+  }
+
+  /** Ping the backend to wake a cold/sleeping instance (e.g. Render free tier). */
+  wake(): Observable<void> {
+    if (!this.isEnabled()) {
+      return of(undefined);
+    }
+
+    const { wakePath, requestTimeoutMs } = this.config();
+    const url = `${environment.apiUrl}${wakePath}`;
+
+    return this.http.get(url, { responseType: 'text' }).pipe(
+      timeout(requestTimeoutMs),
+      map(() => undefined),
+      catchError(() => of(undefined))
+    );
   }
 
   check(): Observable<{ state: BackendHealthState; response?: PublicHealthResponse }> {
