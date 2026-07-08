@@ -10,4 +10,4 @@ services:
     autoDeployTrigger: commit
     envVars:
       - key: BACKEND_URL
-        value: https://oosm-api.onrender.com
+        value: https://oosm-api-5im4.onrender.com

@@ -48,7 +48,7 @@ COPY --from=build ${DIST_PATH} /usr/share/nginx/html/
 
 # Render and Railway provide PORT at runtime.
 ENV PORT=8080
-ENV BACKEND_URL=https://oosm-api.onrender.com
+ENV BACKEND_URL=https://oosm-api-5im4.onrender.com
 ENV BACKEND_HOSTPORT=
 COPY nginx.conf.template /etc/nginx/default.conf.template
 

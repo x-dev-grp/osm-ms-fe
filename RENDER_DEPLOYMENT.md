@@ -14,7 +14,7 @@ The service is Docker-based so Nginx can proxy API calls:
 Set this environment variable on the frontend Render service:
 
 ```text
-BACKEND_URL=https://oosm-api.onrender.com
+BACKEND_URL=https://oosm-api-5im4.onrender.com
 ```
 
 Do not set `BACKEND_HOSTPORT` to a Docker Compose service name such as
