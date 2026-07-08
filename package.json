@@ -42,7 +42,6 @@
     "@angular/router": "19.0.5",
     "@angular/service-worker": "19.0.5",
     "@iplab/ngx-file-upload": "19.0.3",
-    "@newrelic/browser-agent": "^1.317.0",
     "@ngrx/signals": "^19.1.0",
     "@ngrx/store": "^19.1.0",
     "@ngx-translate/core": "^16.0.4",

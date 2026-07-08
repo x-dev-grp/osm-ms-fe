@@ -14,7 +14,6 @@ import { buildUserPhotoDataUrl } from '../../shared/utils/user-initials.util';
 import { NotificationService } from '../../shared/services/notification.service';
 import { PermissionService } from '../../settings/user-management/services/permission.service';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
-import { NewRelicService } from '../../shared/services/new-relic.service';
 
 export interface SessionRefreshResponse {
   access_token: string;
@@ -30,7 +29,6 @@ export class AuthenticationService {
   private _tokenService = inject(TokenService);
   private userService = inject(UserService);
   private permissionService = inject(PermissionService);
-  private newRelicService = inject(NewRelicService);
   private readonly injector = inject(Injector);
   readonly currentUserSignal = signal<User | null>(null);
   readonly userPhotoPreviewSignal = signal<string | null>(null);
@@ -203,7 +201,6 @@ export class AuthenticationService {
       explicitEnabledModules ??
       (this.currentUserValue?.id === user.id ? this.currentUserValue?.enabledModules : undefined);
     this.setCurrentUserValue = user;
-    this.newRelicService.setUserId(user.username || user.id || '');
 
     if (reloadPhoto) {
       this.loadUserPhoto();

@@ -75,16 +75,6 @@
           (changed)="refresh()"
         ></app-admin-settings-category>
       </mat-tab>
-      <mat-tab [label]="'ADMIN_SETTINGS.TABS.INTEGRATIONS' | translate">
-        <app-admin-settings-category
-          icon="insights"
-          titleKey="ADMIN_SETTINGS.TABS.INTEGRATIONS"
-          featureKey="newRelicApm"
-          [settings]="settingsFor('INTEGRATIONS')"
-          [status]="status"
-          (changed)="refresh()"
-        ></app-admin-settings-category>
-      </mat-tab>
       <mat-tab [label]="'ADMIN_SETTINGS.TABS.DIAGNOSTICS' | translate">
         <app-admin-settings-category
           icon="bug_report"
