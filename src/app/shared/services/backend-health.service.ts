@@ -24,6 +24,10 @@ export interface LoginBackendStatusConfig {
   activePollIntervalMs: number;
   healthPath: string;
   wakePath: string;
+  /** Absolute backend host for login health/wake when API is on a separate Render service. */
+  backendBaseUrl?: string;
+  /** Full URL for cold-start ping; defaults to backendBaseUrl + wakePath or api root. */
+  wakeUrl?: string;
   requestTimeoutMs: number;
 }
 
@@ -41,9 +45,32 @@ export class BackendHealthService {
       pollIntervalMs: environment.loginBackendStatus?.pollIntervalMs ?? 60_000,
       activePollIntervalMs: environment.loginBackendStatus?.activePollIntervalMs ?? 5_000,
       healthPath: environment.loginBackendStatus?.healthPath ?? '/api/public/health',
-      wakePath: environment.loginBackendStatus?.wakePath ?? '/actuator/health/liveness',
+      wakePath: environment.loginBackendStatus?.wakePath ?? '/',
+      backendBaseUrl: environment.loginBackendStatus?.backendBaseUrl,
+      wakeUrl: environment.loginBackendStatus?.wakeUrl,
       requestTimeoutMs: environment.loginBackendStatus?.requestTimeoutMs ?? 8_000
     };
+  }
+
+  private apiBaseUrl(): string {
+    const base = this.config().backendBaseUrl?.replace(/\/$/, '');
+    return base ?? environment.apiUrl;
+  }
+
+  private buildUrl(path: string): string {
+    return `${this.apiBaseUrl()}${path}`;
+  }
+
+  private wakeTargetUrl(): string {
+    const { wakeUrl, wakePath } = this.config();
+    if (wakeUrl) {
+      return wakeUrl;
+    }
+    const base = this.apiBaseUrl();
+    if (!wakePath || wakePath === '/') {
+      return base ? `${base.replace(/\/$/, '')}/` : '/';
+    }
+    return this.buildUrl(wakePath);
   }
 
   /** Ping the backend to wake a cold/sleeping instance (e.g. Render free tier). */
@@ -52,8 +79,8 @@ export class BackendHealthService {
       return of(undefined);
     }
 
-    const { wakePath, requestTimeoutMs } = this.config();
-    const url = `${environment.apiUrl}${wakePath}`;
+    const { requestTimeoutMs } = this.config();
+    const url = this.wakeTargetUrl();
 
     return this.http.get(url, { responseType: 'text' }).pipe(
       timeout(requestTimeoutMs),
@@ -68,7 +95,7 @@ export class BackendHealthService {
     }
 
     const { healthPath, requestTimeoutMs } = this.config();
-    const url = `${environment.apiUrl}${healthPath}`;
+    const url = this.buildUrl(healthPath);
 
     return this.http.get<PublicHealthResponse>(url, { observe: 'response' }).pipe(
       timeout(requestTimeoutMs),

@@ -10,8 +10,9 @@ export const environment = {
     enabled: true,
     pollIntervalMs: 60_000,
     activePollIntervalMs: 5_000,
+    backendBaseUrl: 'https://oosm-api-5im4.onrender.com',
+    wakeUrl: 'https://oosm-api-5im4.onrender.com/',
     healthPath: '/api/public/health',
-    wakePath: '/actuator/health/liveness',
     requestTimeoutMs: 8_000
   }
 };
