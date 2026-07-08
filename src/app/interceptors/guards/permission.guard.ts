@@ -25,10 +25,9 @@ export function anyPermissionGuard(requiredPermissions: string[]): CanActivateFn
 }
 export function moduleGuard(modules: string[]): CanActivateFn {
   return () => {
-    // CHANGE: permissions - use hasAnyPermission and standardize deny to 403 redirect
     const router = inject(Router);
     const authService = inject(AuthenticationService);
-    if (authService.hasAnyModule(modules) || authService.isAdmin()) {
+    if (authService.isOosmAdmin() || authService.hasAnyModule(modules)) {
       return true;
     }
     return router.createUrlTree(['/access-denied']);

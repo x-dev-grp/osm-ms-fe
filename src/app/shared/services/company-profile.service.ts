@@ -78,6 +78,10 @@ export class CompanyProfileService {
     return req$.pipe(tap((saved) => this.writeCache(saved)));
   }
 
+  updateTenantModules(tenantId: string, enabledModules: string[]): Observable<CompanyProfile> {
+    return this.http.put<CompanyProfile>(`${this.baseUrl}/${tenantId}/modules`, { enabledModules });
+  }
+
   clearCache(): void {
     const tenantId = this.getTenantId();
     localStorage.removeItem(this.STORAGE_KEY);

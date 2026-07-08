@@ -7,7 +7,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CardComponent } from '../../../theme/components/card/card.component';
-import { FinancialTransaction, parseTransactionAmount, TransactionDirection } from '../../models/financial-transaction.model';
+import { FinancialTransaction, parseTransactionAmount, TransactionBillRequest, TransactionDirection } from '../../models/financial-transaction.model';
 import { FinancialTransactionService } from '../../service/financial-transaction.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';
@@ -15,6 +15,7 @@ import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { TUNISIA_VAT_STANDARD_RATE } from '../../../shared/constants/tunisia-vat.constants';
 import { HttpErrorResponse } from '@angular/common/http';
 import { resolveBillConditions, resolveBillDesignation } from '../../utils/bill-labels.util';
+import { isPurchaseBillTransaction } from '../../utils/bill-vat.util';
 import { FinanceResourceLink, resolveFinanceResourceLinks } from '../../utils/finance-resource-links.util';
 
 @Component({
@@ -246,21 +247,24 @@ export class TransactionViewComponent implements OnInit {
     return error.error?.message || error.message || null;
   }
 
-  private buildBillRequest(profile: CompanyProfile) {
-    return {
+  private buildBillRequest(profile: CompanyProfile): TransactionBillRequest {
+    const request: TransactionBillRequest = {
       title: 'Facture commerciale',
       issuer: this.toIssuerParty(profile),
       logoBase64: profile.logoData,
       logoContentType: profile.logoContentType,
       designation: this.transaction ? resolveBillDesignation(this.translate, this.transaction) : '',
       conditions: this.transaction ? resolveBillConditions(this.translate, this.transaction) : undefined,
-      vatRatePercent: TUNISIA_VAT_STANDARD_RATE,
       footerContact: {
         companyName: profile.legalName,
         phone: profile.phone
       },
       notes: this.transaction?.lotNumber ? `Lot: ${this.transaction.lotNumber}` : undefined
     };
+    if (this.transaction && isPurchaseBillTransaction(this.transaction)) {
+      request.vatRatePercent = TUNISIA_VAT_STANDARD_RATE;
+    }
+    return request;
   }
 
   private toIssuerParty(profile: CompanyProfile) {

@@ -1,0 +1,53 @@
+<div class="admin-company-view">
+  <div class="page-header">
+    <div>
+      <h2>{{ 'TENANT_MODULES.VIEW_TITLE' | translate }}</h2>
+      <p class="subtitle">{{ profile?.legalName || '…' }}</p>
+    </div>
+    <button mat-stroked-button type="button" routerLink="/administration/companies">
+      <mat-icon>arrow_back</mat-icon>
+      <span class="ms-1">{{ 'TENANT_MODULES.BACK' | translate }}</span>
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else if (profile) {
+    <app-card [icon]="'business'" [cardTitle]="profile.legalName || ('TENANT_MODULES.VIEW_TITLE' | translate)" [showContent]="true">
+      <div class="details-grid">
+        <div><strong>{{ 'ADMIN_COMPANY_PROFILE.REG_NUMBER' | translate }}</strong><span>{{ profile.registrationNumber || '—' }}</span></div>
+        <div><strong>{{ 'ADMIN_COMPANY_PROFILE.TAX_ID' | translate }}</strong><span>{{ profile.taxId || '—' }}</span></div>
+        <div><strong>{{ 'ADMIN_COMPANY_PROFILE.LEGAL_FORM' | translate }}</strong><span>{{ profile.legalForm || '—' }}</span></div>
+        <div><strong>{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</strong><span>{{ profile.email || '—' }}</span></div>
+        <div><strong>{{ 'ADMIN_COMPANY_PROFILE.PHONE' | translate }}</strong><span>{{ profile.phone || '—' }}</span></div>
+        <div><strong>{{ 'ADMIN_COMPANY_PROFILE.CITY' | translate }}</strong><span>{{ profile.city || '—' }}</span></div>
+        <div><strong>{{ 'TENANT_MODULES.COLUMN' | translate }}</strong><span>{{ enabledModulesLabel() }}</span></div>
+      </div>
+    </app-card>
+
+    <section #modulesSection class="modules-section">
+      <app-card [icon]="'extension'" [cardTitle]="'TENANT_MODULES.SECTION_TITLE' | translate" [showContent]="true">
+        <p class="hint">{{ 'TENANT_MODULES.EDIT_HINT' | translate }}</p>
+        <form [formGroup]="modulesForm" (ngSubmit)="activateModules()">
+          <div class="module-grid">
+            @for (option of moduleOptions; track option.value) {
+              <mat-checkbox [formControlName]="option.value">{{ option.labelKey | translate }}</mat-checkbox>
+            }
+          </div>
+          <div class="actions">
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">
+              @if (saving) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                <mat-icon>extension</mat-icon>
+              }
+              <span class="ms-1">{{ 'TENANT_MODULES.ACTION_ACTIVATE' | translate }}</span>
+            </button>
+          </div>
+        </form>
+      </app-card>
+    </section>
+  }
+</div>

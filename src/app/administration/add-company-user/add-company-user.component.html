@@ -20,6 +20,18 @@
           </div>
         </div>
         <div class="form-section">
+          <h3 class="section-title">{{ 'TENANT_MODULES.SECTION_TITLE' | translate }}</h3>
+          <p class="section-hint">{{ 'TENANT_MODULES.SECTION_HINT' | translate }}</p>
+          <div class="module-grid">
+            @for (option of moduleOptions; track option.value) {
+              <mat-checkbox [formControlName]="option.value">{{ option.labelKey | translate }}</mat-checkbox>
+            }
+          </div>
+          @if (userForm.errors?.['modulesRequired'] && userForm.touched) {
+            <p class="text-warn-500">{{ 'TENANT_MODULES.REQUIRED' | translate }}</p>
+          }
+        </div>
+        <div class="form-section">
           <h3 class="section-title">{{ 'ADMIN.USER_SECTION' | translate }}</h3>
           <div class="row">
             <div class="col-md-6 col-lg-4 col-12">

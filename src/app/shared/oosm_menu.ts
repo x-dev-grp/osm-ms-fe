@@ -802,6 +802,7 @@ export const oosm_menus: Navigation[] = [
             url: '/settings/general-config',
             icon: 'domain',
             breadcrumbs: false,
+            modulePermission: 'HABILITATION',
             permissions: [permissionKey(OOSMModule.HABILITATION, HabilitationEntity.COMPANYPROFILE, Action.READ)],
             ressourcePermission: HabilitationEntity.COMPANYPROFILE
           }
@@ -858,6 +859,7 @@ export const oosm_menus: Navigation[] = [
             url: '/settings/users',
             icon: 'person_outline',
             breadcrumbs: false,
+            modulePermission: 'HABILITATION',
             ressourcePermission: HabilitationEntity.OOSMUSER
           },
           {
@@ -867,6 +869,7 @@ export const oosm_menus: Navigation[] = [
             url: '/settings/roles',
             icon: 'admin_panel_settings',
             breadcrumbs: false,
+            modulePermission: 'HABILITATION',
             ressourcePermission: HabilitationEntity.ROLE
           }
         ]

@@ -43,6 +43,23 @@
       "SALES": "ventes"
     }
   },
+  "TENANT_MODULES": {
+    "ACTION_ACTIVATE": "Enregistrer les modules licenciés",
+    "BACK": "Sociétés",
+    "COLUMN": "Modules activés",
+    "CONDITIONING": "Conditionnement",
+    "EDIT_HINT": "Les changements s'appliquent immédiatement aux nouvelles requêtes. Les utilisateurs peuvent devoir rafraîchir leur session pour voir les menus et permissions mis à jour.",
+    "FINANCE": "Finance",
+    "HABILITATION": "Gestion utilisateurs",
+    "HR": "Ressources humaines",
+    "INVENTAIR": "Inventaire",
+    "PRODUCTION": "Production",
+    "RECEPTION": "Réception",
+    "REQUIRED": "Sélectionnez au moins un module.",
+    "SECTION_HINT": "Choisissez les modules OOSM accessibles pour ce tenant. Aucun n'est activé par défaut.",
+    "SECTION_TITLE": "Modules licenciés",
+    "VIEW_TITLE": "Profil société"
+  },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
     "ADD_COMPANY_CREATED": "Société et utilisateur admin créés avec succès.",
@@ -75,6 +92,7 @@
   "ADMIN_DASHBOARD": {
     "ADD_COMPANY_LINK": "Créer un nouveau tenant et son utilisateur admin.",
     "ADD_OOSM_ADMIN_LINK": "Créer un nouveau compte administrateur de la plateforme.",
+    "API_DOCS_LINK": "Parcourir et tester les endpoints REST OOSM avec votre JWT administrateur.",
     "COMPANIES_LINK": "Parcourir et gérer tous les profils entreprise.",
     "HERO": {
       "ACTIVE": "actifs",
@@ -153,6 +171,121 @@
     "SYNC_HINT": "À exécuter après déploiement ou modification de permissions-spec.json. Idempotent — les lignes existantes sont conservées.",
     "SYNC_SUCCESS": "Catalogue de permissions synchronisé avec succès.",
     "TITLE": "Catalogue de permissions"
+  },
+  "ADMIN_API_DOCS": {
+    "BACK": "Paramètres",
+    "DISABLED": "La documentation OpenAPI est désactivée.",
+    "DISABLED_HINT": "Activez SPRINGDOC_ENABLED dans Administration → Paramètres → Diagnostics, puis redémarrez le backend. L'interface de documentation API apparaîtra ici pour les utilisateurs OOSMADMIN.",
+    "LOADING": "Chargement de la documentation API...",
+    "LOAD_ERROR": "Impossible de charger la documentation API. Vérifiez que SPRINGDOC_ENABLED est activé, que le backend a été redémarré et que vous êtes connecté en tant qu'OOSMADMIN.",
+    "OPEN_DOCS": "Ouvrir la documentation API",
+    "OPEN_SETTINGS": "Ouvrir les paramètres",
+    "SUBTITLE": "Parcourez et testez les endpoints REST OOSM avec votre JWT administrateur.",
+    "TITLE": "Documentation API"
+  },
+  "ADMIN_SETTINGS": {
+    "BACK": "Tableau de bord admin",
+    "LOADING": "Chargement des paramètres...",
+    "LOAD_ERROR": "Impossible de charger les paramètres d'administration.",
+    "RELOAD": "Recharger le cache",
+    "SAVE_SUCCESS": "Paramètre enregistré.",
+    "SAVE_ERROR": "Impossible d'enregistrer le paramètre.",
+    "SUBTITLE": "Gérez la configuration plateforme sans exposer les secrets d'infrastructure.",
+    "TABS": {
+      "MAIL": "Mail",
+      "GENERAL": "Général",
+      "NOTIFICATIONS": "Notifications",
+      "QR": "QR",
+      "INTEGRATIONS": "Intégrations",
+      "DIAGNOSTICS": "Diagnostics",
+      "STATUS": "Statut"
+    },
+    "CATEGORY": {
+      "SAVE_ALL": "Enregistrer tous les champs",
+      "SAVE_ALL_SUCCESS": "Tous les champs ont été enregistrés.",
+      "SAVE_ALL_PARTIAL": "Certains champs n'ont pas pu être enregistrés.",
+      "NOTHING_TO_SAVE": "Saisissez au moins une valeur avant d'enregistrer.",
+      "RESTART_REQUIRED": "Redémarrage requis",
+      "RESTART_CONFIRM_TITLE": "Redémarrage requis",
+      "RESTART_CONFIRM_MESSAGE": "Ce paramètre n'est appliqué qu'après le redémarrage du backend. Enregistrez la valeur puis redémarrez le backend pour l'appliquer.",
+      "RESTART_CONFIRM_BUTTON": "Enregistrer et redémarrer plus tard",
+      "STATUS_READY": "Prêt",
+      "STATUS_PARTIAL": "Partiellement configuré",
+      "STATUS_MISSING": "Non configuré"
+    },
+    "SOURCE": {
+      "DATABASE": "Base de données",
+      "DEFAULT": "Défaut",
+      "ENV": "Environnement"
+    },
+    "STATUS": {
+      "LAST_RELOAD": "Dernier rechargement",
+      "MAIL": "Envoi mail",
+      "TITLE": "Statut des paramètres",
+      "VERSION": "Version des paramètres",
+      "AUDIT_TITLE": "Activité récente",
+      "AUDIT_EMPTY": "Aucune modification enregistrée."
+    },
+    "MAIL": {
+      "CONFIG_CHECKLIST": "Liste de contrôle",
+      "ACTIVE_PROVIDER": "Fournisseur actif",
+      "CHECK_DELIVERY": "Envoi mail prêt",
+      "MISSING_HINT": "Manquant",
+      "SAVE_ALL": "Enregistrer tous les champs mail",
+      "SAVE_ALL_HINT": "Enregistre les champs mail visibles en base.",
+      "SAVE_ALL_SUCCESS": "Tous les champs mail ont été enregistrés.",
+      "SAVE_ALL_PARTIAL": "Certains champs mail n'ont pas pu être enregistrés.",
+      "NOTHING_TO_SAVE": "Saisissez au moins une adresse d'expéditeur.",
+      "CONFIGURED": "Configuré",
+      "ENABLED": "Mail activé",
+      "PROVIDER": "Fournisseur mail",
+      "PROVIDER_HINT": "Configurez les deux si besoin ; seul le fournisseur sélectionné est utilisé.",
+      "PROVIDER_RESEND": "Resend (API)",
+      "PROVIDER_SMTP": "Serveur SMTP",
+      "FROM_ADDRESS": "Adresse expéditeur",
+      "FROM_ADDRESS_HINT_RESEND": "Doit utiliser un domaine vérifié dans Resend (resend.com/domains).",
+      "FROM_ADDRESS_HINT_SMTP": "Adresse acceptée par votre serveur SMTP.",
+      "FROM_NAME": "Nom expéditeur",
+      "MISSING": "Manquant",
+      "REASON": "Motif (optionnel)",
+      "RESEND_KEY": "Clé API Resend",
+      "RESEND_KEY_HINT": "Les secrets sont en écriture seule. Utilisez la rotation pour mettre à jour la clé.",
+      "SMTP_SECTION": "Serveur SMTP",
+      "SMTP_HOST": "Hôte SMTP",
+      "SMTP_HOST_HINT": "Gmail : smtp.gmail.com (pas smtp.google.com). Port 587 + STARTTLS, ou 465 en SSL.",
+      "SMTP_PORT": "Port SMTP",
+      "SMTP_USERNAME": "Utilisateur SMTP",
+      "SMTP_PASSWORD": "Mot de passe SMTP",
+      "SMTP_PASSWORD_HINT": "Saisissez le mot de passe SMTP. L'ancienne valeur ne peut pas être affichée.",
+      "SMTP_AUTH": "Authentification SMTP",
+      "SMTP_STARTTLS": "Utiliser STARTTLS",
+      "ROTATE_BUTTON": "Rotation du secret",
+      "ROTATE_ERROR": "Impossible de faire tourner le secret.",
+      "ROTATE_HINT": "Saisissez une nouvelle clé API Resend (doit commencer par re_). L'ancienne valeur ne peut pas être affichée.",
+      "ROTATE_SUBMIT": "Enregistrer le secret",
+      "ROTATE_SUCCESS": "Secret mis à jour.",
+      "ROTATE_TITLE": "Rotation {{label}}",
+      "SECRET_VALUE": "Nouvelle valeur secrète",
+      "STATUS_DISABLED": "Désactivé",
+      "STATUS_ENABLED": "Activé",
+      "STATUS_MISCONFIGURED": "Mal configuré",
+      "SUPPORT_EMAIL": "E-mail support",
+      "TEST_BUTTON": "Envoyer un e-mail test",
+      "TEST_ERROR": "Échec de l'e-mail test.",
+      "TEST_HINT": "Envoie un message test avec la configuration mail effective.",
+      "TEST_RECIPIENT": "E-mail destinataire",
+      "TEST_SUBMIT": "Envoyer le test",
+      "TEST_SUCCESS": "E-mail test envoyé.",
+      "TEST_TITLE": "Envoyer un e-mail test",
+      "TITLE": "Paramètres mail"
+    },
+    "TITLE": "Paramètres d'administration",
+    "AUDIT": {
+      "WHEN": "Date",
+      "KEY": "Paramètre",
+      "ACTION": "Action",
+      "RESULT": "Résultat"
+    }
   },
   "ADMIN_USERS": {
     "CARD_DESCRIPTION": "Rechercher les utilisateurs de tous les tenants et déclencher une réinitialisation de mot de passe.",
@@ -1572,7 +1705,8 @@
         "MAX_VALUE": "La valeur doit être inférieure à {{max}}",
         "MIN_VALUE": "La valeur doit être supérieure à 0",
         "REQUIRED": "Ce champ est obligatoire",
-        "MAX": "La valeur dépasse le maximum"
+        "MAX": "La valeur dépasse le maximum",
+        "OLIVE_VARIETY_REQUIRED": "La variété d'olive est obligatoire"
       }
     },
     "LOADING": "Chargement des paramètres de contrôle qualité...",
@@ -1590,7 +1724,9 @@
       "SUCCESS": {
         "SAVE": "Données mises à jour avec succès",
         "STORAGE_UNIT_SAVED": "Données mises à jour avec succès - Cuve : {{name}}"
-      }
+      },
+      "OLIVE_VARIETY_REQUIRED": "Veuillez sélectionner une variété d'olive avant d'enregistrer",
+      "QC_NOT_COMPLIANT": "Tous les paramètres de contrôle qualité doivent être renseignés et conformes avant l'enregistrement"
     },
     "OIL_DETAILS": {
       "OIL_TYPE": "Type d'huile",
@@ -1627,6 +1763,20 @@
     },
     "STATUS": {
       "COMPLETED": "Contrôle Qualité Terminé"
+    },
+    "COMPLIANCE": {
+      "TITLE": "Conformité QC",
+      "STANDARD": "Tunisie / COI",
+      "PASSED": "Conformes",
+      "FAILED": "Non conformes",
+      "PENDING": "En attente",
+      "PASS": "Conforme",
+      "FAIL": "Non conforme",
+      "SUGGESTED_GRADE": "Grade suggéré (COI)"
+    },
+    "SAVE_HINTS": {
+      "ALREADY_SAVED": "Les résultats du contrôle qualité ont déjà été enregistrés.",
+      "INCOMPLETE_FORM": "Remplissez tous les paramètres requis avant d'enregistrer."
     },
     "STORAGE_UNIT": {
       "ERRORS": {
@@ -2462,7 +2612,9 @@
       "TITLE": "Administration",
       "USERS": "Gestion des utilisateurs",
       "SUPPORT": "Tickets support",
-      "PERMISSION_CATALOG": "Catalogue de permissions"
+      "PERMISSION_CATALOG": "Catalogue de permissions",
+      "SETTINGS": "Paramètres",
+      "API_DOCS": "Documentation API"
     },
     "CONDITIONNEMENT": {
       "EXPEDITIONS": "Expéditions & BL",
@@ -3083,6 +3235,7 @@
       },
       "OIL_DETAILS": "Détails de l'huile",
       "OPERATION_TYPE": "Type d'opération",
+      "SUBTITLE": "Enregistrez une livraison d'huile en quelques étapes simples",
       "PAYMENT_DETAILS": "Détails du Paiement",
       "PAYMENT_DIALOG_DESCRIPTION": "Saisissez le prix unitaire et la quantité pour ce paiement d'huile. Le total ne peut pas dépasser le montant impayé de la réception d'olives d'origine.",
       "QUANTITY": "Quantité (kg)",
@@ -3563,6 +3716,7 @@
         "ADD": "Ajouter une réception d'olives",
         "EDIT": "Modifier la réception d'olives"
       },
+      "SUBTITLE": "Saisissez la livraison, le fournisseur et les poids en un seul écran",
       "TRUCK_STATES": {
         "COMPLIANT": "Conforme",
         "NON_COMPLIANT": "Non conforme"
@@ -3715,6 +3869,7 @@
       "WRITE": "Créer",
       "ADD_OF": "Ajouter un ordre de fabrication",
       "ACTIVATE": "Activer",
+      "ACTIVATE_MODULES": "Activer les modules",
       "READ_ARTICLE": "Voir l'article",
       "REFUSE": "Refuser",
       "STATUS": "Statut",

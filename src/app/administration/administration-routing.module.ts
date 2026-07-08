@@ -25,6 +25,12 @@ const routes: Routes = [
     canActivate: [AdminAuthGuard]
   },
   {
+    path: 'companies/:tenantId/view',
+    loadComponent: () =>
+      import('./admin-company-view/admin-company-view.component').then((m) => m.AdminCompanyViewComponent),
+    canActivate: [AdminAuthGuard]
+  },
+  {
     path: 'users',
     loadComponent: () => import('./admin-users/admin-users.component').then((m) => m.AdminUsersComponent),
     canActivate: [AdminAuthGuard]
@@ -38,6 +44,16 @@ const routes: Routes = [
     path: 'permission-catalog',
     loadComponent: () =>
       import('./admin-permission-catalog/admin-permission-catalog.component').then((m) => m.AdminPermissionCatalogComponent),
+    canActivate: [AdminAuthGuard]
+  },
+  {
+    path: 'settings',
+    loadComponent: () => import('./admin-settings/admin-settings.component').then((m) => m.AdminSettingsComponent),
+    canActivate: [AdminAuthGuard]
+  },
+  {
+    path: 'api-docs',
+    loadComponent: () => import('./admin-api-docs/admin-api-docs.component').then((m) => m.AdminApiDocsComponent),
     canActivate: [AdminAuthGuard]
   },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' }

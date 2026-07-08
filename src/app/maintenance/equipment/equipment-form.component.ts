@@ -15,6 +15,9 @@ import { SharedModule } from '../../shared/shared.module';
 import { MillEquipmentService } from '../services/mill-equipment.service';
 import { MillEquipment, MillEquipmentStatus, MillEquipmentType } from '../models/mill-equipment.model';
 import { ToastService } from '../../shared/services/toast.service';
+import { TunisianPlateMaskDirective } from '../../shared/directives/tunisian-plate-mask.directive';
+import { tunisianPlateOptionalValidators } from '../../shared/validators/tunisian-plate.validator';
+import { normalizeTunisianPlate, TUNISIAN_VEHICLE_PLATE_EXAMPLE } from '../../shared/utils/tunisian-plate.util';
 
 @Component({
   selector: 'app-equipment-form',
@@ -31,7 +34,8 @@ import { ToastService } from '../../shared/services/toast.service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TunisianPlateMaskDirective
   ],
   templateUrl: './equipment-form.component.html',
   styleUrl: './equipment-form.component.scss'
@@ -52,13 +56,14 @@ export class EquipmentFormComponent implements OnInit {
 
   equipmentTypes: MillEquipmentType[] = ['TRACTOR', 'TRAILER', 'PUMP', 'HARVESTER', 'OTHER'];
   statuses: MillEquipmentStatus[] = ['AVAILABLE', 'IN_USE', 'MAINTENANCE', 'OUT_OF_SERVICE'];
+  protected readonly platePlaceholder = TUNISIAN_VEHICLE_PLATE_EXAMPLE;
 
   ngOnInit(): void {
     this.form = this.fb.group({
       code: [''],
       name: ['', Validators.required],
       equipmentType: ['TRACTOR', Validators.required],
-      registrationNumber: [''],
+      registrationNumber: ['', tunisianPlateOptionalValidators],
       defaultHourlyRate: [0, [Validators.required, Validators.min(0)]],
       status: ['AVAILABLE', Validators.required],
       hoursOperated: [{ value: 0, disabled: true }],
@@ -118,7 +123,7 @@ export class EquipmentFormComponent implements OnInit {
       code: raw.code,
       name: raw.name,
       equipmentType: raw.equipmentType,
-      registrationNumber: raw.registrationNumber,
+      registrationNumber: normalizeTunisianPlate(raw.registrationNumber) || undefined,
       defaultHourlyRate: Number(raw.defaultHourlyRate),
       status: raw.status,
       notes: raw.notes,

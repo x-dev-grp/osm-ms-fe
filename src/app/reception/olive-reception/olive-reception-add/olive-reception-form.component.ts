@@ -35,11 +35,13 @@ import { map, startWith } from 'rxjs/operators';
 import { OperationType } from '../../../shared/models/operation-type.enum';
 import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
 import { ToastService } from '../../../shared/services/toast.service';
-import { CardComponent } from '../../../theme/components/card/card.component';
 import { Olive_Oil_Type } from '../../../shared/models/olive-type.enum';
 import {
   GenericTypeDialogComponent
 } from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
+import { TunisianPlateMaskDirective } from '../../../shared/directives/tunisian-plate-mask.directive';
+import { tunisianPlateRequiredValidators } from '../../../shared/validators/tunisian-plate.validator';
+import { normalizeTunisianPlate, TUNISIAN_VEHICLE_PLATE_EXAMPLE } from '../../../shared/utils/tunisian-plate.util';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -70,12 +72,12 @@ function isObjectWithId(value: unknown): value is { id: string | number } {
     MatDatepickerModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
-    CardComponent,
     MatIcon,
     MatAutocompleteModule,
     FormsModule,
     TranslateModule,
-    BaseTypeComponent
+    BaseTypeComponent,
+    TunisianPlateMaskDirective
   ],
   templateUrl: './olive-reception-form.component.html',
   styleUrls: ['./olive-reception-form.component.scss']
@@ -115,6 +117,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   filteredOliveVarieties!: Observable<BaseType[]>;
   filteredOperationTypes!: Observable<BaseType[]>;
   protected readonly TypeCategory = TypeCategory;
+  protected readonly platePlaceholder = TUNISIAN_VEHICLE_PLATE_EXAMPLE;
   /** Operation type forced by router (data.op or :op) */
   private forcedOp?: OperationType;
   private hydrating = false;
@@ -157,7 +160,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         region: [null, Validators.required],
         poidsBrute: [0, [Validators.min(1)]],
         poidsNet: [{ value: 0, disabled: true }],
-        matriculeCamion: ['', [Validators.required]],
+        matriculeCamion: ['', tunisianPlateRequiredValidators],
         supplier: [null, Validators.required],
         trtDate: [new Date(), [Validators.required]],
         oliveVariety: [null],
@@ -355,7 +358,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       region: formValue.region || null,
       poidsBrute: Number(formValue.poidsBrute) || 0,
       poidsNet: Number(formValue.poidsNet) || 0,
-      matriculeCamion: formValue.matriculeCamion || '',
+      matriculeCamion: normalizeTunisianPlate(formValue.matriculeCamion) || '',
       supplier: formValue.supplier || null,
       trtDate: formValue.trtDate ? new Date(formValue.trtDate) : null,
       oliveVariety: formValue.oliveVariety || null,
@@ -593,7 +596,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         parcel: matchedParcel,
         poidsBrute: d.poidsBrute,
         poidsNet: d.poidsNet,
-        matriculeCamion: d.matriculeCamion,
+        matriculeCamion: normalizeTunisianPlate(d.matriculeCamion),
         supplier: matchedSupplier || null,
         oliveVariety: d.oliveVariety || null,
         sackCount: d.sackCount,

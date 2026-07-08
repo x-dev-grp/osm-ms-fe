@@ -7,6 +7,7 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['DELETE', 'delete'],
   ['REMOVE', 'delete'],
   ['TOGGLE_ACTIVE', 'power_settings_new'],
+  ['ACTIVATE_MODULES', 'extension'],
   ['ACTIVATE', 'check_circle'],
   ['CANCEL', 'cancel'],
   ['CONFIRM', 'check_circle'],

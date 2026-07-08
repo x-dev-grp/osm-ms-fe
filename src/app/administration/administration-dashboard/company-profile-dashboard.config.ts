@@ -10,6 +10,11 @@ export const companyProfileDashboardConfig: DashboardConfig = {
   addNewItem: true,
   addNewItemUrl: '/administration/add-company-user',
   filterTenant: false,
+  doubleClickAction: 'READ',
+  specificActions: [
+    { action: 'READ', color: 'primary', icon: 'visibility' },
+    { action: 'ACTIVATE_MODULES', color: 'accent', icon: 'extension' }
+  ],
   defaultSearchData: {
     page: 0,
     size: 10,
@@ -24,6 +29,16 @@ export const companyProfileDashboardConfig: DashboardConfig = {
     }
   },
   fields: [
+    {
+      name: 'enabledModules',
+      label: 'Enabled modules',
+      labelTranslatePath: 'TENANT_MODULES.COLUMN',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      dataTable: true,
+      filterable: false,
+      sortable: false
+    },
     {
       name: 'legalName',
       label: 'Legal Name',

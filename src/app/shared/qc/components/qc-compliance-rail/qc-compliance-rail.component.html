@@ -1,29 +1,63 @@
 <aside class="qc-rail" [class.collapsed]="!expanded">
-  <button type="button" class="qc-rail__toggle" (click)="toggle()">
-    <mat-icon>{{ expanded ? 'chevron_right' : 'chevron_left' }}</mat-icon>
-    <span class="qc-rail__score">{{ summary.percent }}%</span>
-    <span class="qc-rail__count">{{ summary.passed }}/{{ summary.total }}</span>
+  <button type="button" class="qc-rail__toggle" (click)="toggle()" [attr.aria-expanded]="expanded">
+    <div class="qc-rail__progress-ring" [style.--progress]="summary.percent">
+      <span>{{ summary.percent }}%</span>
+    </div>
+    <div class="qc-rail__toggle-text" *ngIf="expanded">
+      <span class="qc-rail__score">{{ 'CONTROLE_QUALITE.COMPLIANCE.TITLE' | translate }}</span>
+      <span class="qc-rail__count">{{ summary.passed }}/{{ summary.total }}</span>
+    </div>
+    <mat-icon *ngIf="expanded">chevron_right</mat-icon>
   </button>
 
   <div class="qc-rail__body" *ngIf="expanded">
-    <h3>Conformité QC</h3>
+    <h3>{{ 'CONTROLE_QUALITE.COMPLIANCE.TITLE' | translate }}</h3>
+
+    <div class="qc-rail__progress-bar" role="progressbar" [attr.aria-valuenow]="summary.percent" aria-valuemin="0" aria-valuemax="100">
+      <span [style.width.%]="summary.percent"></span>
+    </div>
+
     <div class="qc-rail__stats">
-      <div><strong>{{ summary.passed }}</strong> ✅</div>
-      <div><strong>{{ summary.failed }}</strong> ❌</div>
-      <div><strong>{{ summary.pending }}</strong> …</div>
+      <div class="qc-rail__stat qc-rail__stat--pass">
+        <strong>{{ summary.passed }}</strong>
+        <span>{{ 'CONTROLE_QUALITE.COMPLIANCE.PASSED' | translate }}</span>
+      </div>
+      <div class="qc-rail__stat qc-rail__stat--fail">
+        <strong>{{ summary.failed }}</strong>
+        <span>{{ 'CONTROLE_QUALITE.COMPLIANCE.FAILED' | translate }}</span>
+      </div>
+      <div class="qc-rail__stat qc-rail__stat--pending">
+        <strong>{{ summary.pending }}</strong>
+        <span>{{ 'CONTROLE_QUALITE.COMPLIANCE.PENDING' | translate }}</span>
+      </div>
     </div>
 
     <p class="qc-rail__grade" *ngIf="summary.suggestedGrade">
-      Grade suggéré (COI): <strong>{{ summary.suggestedGrade }}</strong>
+      <mat-icon>grade</mat-icon>
+      <span>
+        {{ 'CONTROLE_QUALITE.COMPLIANCE.SUGGESTED_GRADE' | translate }}:
+        <strong>{{ summary.suggestedGrade }}</strong>
+      </span>
     </p>
 
-    <mat-list dense>
-      <mat-list-item *ngFor="let item of summary.items">
-        <span matListItemIcon class="qc-rail__status" [attr.aria-label]="item.passed === true ? 'Conforme' : 'Non conforme'">
-          {{ item.passed === true ? '✅' : '❌' }}
-        </span>
-        <span matListItemTitle>{{ item.ruleName }}</span>
-      </mat-list-item>
-    </mat-list>
+    <div class="qc-rail__items">
+      <div
+        *ngFor="let item of summary.items"
+        class="qc-rail__item"
+        [class.qc-rail__item--pass]="item.passed === true"
+        [class.qc-rail__item--fail]="item.passed === false"
+        [class.qc-rail__item--pending]="item.passed === null"
+      >
+        <mat-icon
+          class="qc-rail__item-icon"
+          [class.qc-rail__item-icon--pass]="item.passed === true"
+          [class.qc-rail__item-icon--fail]="item.passed === false"
+          [class.qc-rail__item-icon--pending]="item.passed === null"
+        >
+          {{ item.passed === true ? 'check_circle' : item.passed === false ? 'cancel' : 'radio_button_unchecked' }}
+        </mat-icon>
+        <span class="qc-rail__item-name">{{ item.ruleName }}</span>
+      </div>
+    </div>
   </div>
 </aside>

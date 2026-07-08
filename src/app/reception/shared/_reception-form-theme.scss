@@ -1,0 +1,228 @@
+@import '../../shared/styles/dashboard-common.scss';
+
+$reception-primary: #2e7d32;
+$reception-primary-light: #43a047;
+$reception-oil: #1565c0;
+$reception-oil-light: #1e88e5;
+$reception-surface: #ffffff;
+$reception-border: #e2e8f0;
+$reception-muted: #64748b;
+$reception-text: #0f172a;
+$reception-radius: 16px;
+$reception-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+
+:host {
+  display: block;
+}
+
+.reception-form-page {
+  padding-bottom: 2rem;
+
+  .page-header.sticky-actions {
+    margin-bottom: 1.25rem;
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    padding: 3.5rem 0;
+  }
+
+  .reception-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-weight: 500;
+
+    mat-icon {
+      flex-shrink: 0;
+    }
+  }
+}
+
+.reception-form-page--olive .page-header--reception {
+  background: linear-gradient(135deg, rgba($reception-primary, 0.1), rgba(255, 255, 255, 0.97));
+  border: 1px solid rgba($reception-primary, 0.14);
+}
+
+.reception-form-page--oil .page-header--reception {
+  background: linear-gradient(135deg, rgba($reception-oil, 0.1), rgba(255, 255, 255, 0.97));
+  border: 1px solid rgba($reception-oil, 0.14);
+
+  .header-icon-wrap--reception {
+    background: linear-gradient(145deg, $reception-oil, $reception-oil-light);
+    box-shadow: 0 8px 20px rgba($reception-oil, 0.28);
+  }
+}
+
+.reception-op-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba($reception-primary, 0.1);
+  color: $reception-primary;
+  font-size: 0.78rem;
+  font-weight: 600;
+
+  mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+}
+
+.reception-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reception-form-section {
+  background: $reception-surface;
+  border: 1px solid $reception-border;
+  border-radius: $reception-radius;
+  box-shadow: $reception-shadow;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.85rem 1.15rem;
+    border-bottom: 1px solid #eef2f6;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+
+    mat-icon {
+      color: $reception-primary;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: $reception-text;
+    }
+  }
+
+  &__body {
+    padding: 1rem 1.15rem 1.15rem;
+  }
+}
+
+.reception-form-page--oil .reception-form-section__header mat-icon {
+  color: $reception-oil;
+}
+
+.reception-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.85rem 1rem;
+
+  .span-2 {
+    grid-column: span 2;
+  }
+
+  .span-full {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+
+    .span-2 {
+      grid-column: span 1;
+    }
+  }
+}
+
+.reception-metric-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.reception-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 140px;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba($reception-primary, 0.08), rgba($reception-primary, 0.02));
+  border: 1px solid rgba($reception-primary, 0.15);
+
+  &__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $reception-muted;
+  }
+
+  &__value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $reception-primary;
+    line-height: 1.2;
+  }
+}
+
+.reception-form-page--oil .reception-metric {
+  background: linear-gradient(135deg, rgba($reception-oil, 0.08), rgba($reception-oil, 0.02));
+  border-color: rgba($reception-oil, 0.15);
+
+  .reception-metric__value {
+    color: $reception-oil;
+  }
+}
+
+.reception-form-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+  padding: 1rem 1.15rem;
+  border-radius: $reception-radius;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid $reception-border;
+  box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(8px);
+
+  @media (max-width: 576px) {
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+.reception-form-grid,
+.reception-form-section__body {
+  ::ng-deep .mat-mdc-form-field,
+  ::ng-deep mat-form-field {
+    width: 100%;
+  }
+
+  ::ng-deep base-type {
+    display: block;
+    width: 100%;
+  }
+}

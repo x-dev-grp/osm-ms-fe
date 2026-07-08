@@ -1,16 +1,27 @@
-<div class="qc-rule-field" [class.compact]="compact">
+<div
+  class="qc-rule-field"
+  [class.compact]="compact"
+  [class.qc-rule-field--pass]="evaluation === 'pass'"
+  [class.qc-rule-field--fail]="evaluation === 'fail'"
+>
   <div class="qc-rule-field__header">
-    <label [for]="rule.ruleKey">{{ ruleLabel() }}</label>
-    <mat-chip-set>
-      <mat-chip
-        [class.chip-pass]="evaluation === 'pass'"
-        [class.chip-fail]="evaluation !== 'pass'"
-        [attr.aria-label]="evaluation === 'pass' ? 'Conforme' : 'Non conforme'"
-      >{{ evaluation === 'pass' ? '✅' : '❌' }}</mat-chip>
-    </mat-chip-set>
+    <div class="qc-rule-field__title">
+      <label [for]="rule.ruleKey">{{ ruleLabel() }}</label>
+      <span class="qc-rule-field__type">{{ ruleTypeLabel() }}</span>
+    </div>
+    <span
+      class="qc-rule-field__status"
+      [class.qc-rule-field__status--pass]="evaluation === 'pass'"
+      [class.qc-rule-field__status--fail]="evaluation === 'fail'"
+      [class.qc-rule-field__status--pending]="evaluation === 'pending'"
+      [attr.aria-label]="statusAriaLabel()"
+    >
+      <mat-icon>{{ evaluation === 'pass' ? 'check_circle' : evaluation === 'fail' ? 'cancel' : 'radio_button_unchecked' }}</mat-icon>
+      {{ statusLabel() | translate }}
+    </span>
   </div>
 
-  <p class="qc-rule-field__hint" *ngIf="rule.description">{{ rule.description }}</p>
+  <p class="qc-rule-field__hint" *ngIf="displayDescription()">{{ displayDescription() }}</p>
 
   <mat-form-field appearance="outline" class="qc-rule-field__control" *ngIf="rule.ruleType === 'NUMERIC'">
     <mat-label>{{ ruleLabel() }}</mat-label>

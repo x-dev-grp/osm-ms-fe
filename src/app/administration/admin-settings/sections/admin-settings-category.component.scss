@@ -1,0 +1,81 @@
+@import '../../shared/_administration-theme';
+
+.category-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.category-missing {
+  font-size: 0.85rem;
+  color: #92400e;
+}
+
+.category-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.category-field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+
+  &__input {
+    flex: 1 1 280px;
+    min-width: 0;
+  }
+}
+
+.category-save-all-row {
+  margin-top: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eef2f6;
+}
+
+.restart-badge {
+  display: inline-flex;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.secret-row,
+.secret-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.secret-row {
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eef2f6;
+}
+
+.secret-note {
+  margin: 0.35rem 0 0;
+  color: $admin-muted;
+  font-size: 0.85rem;
+}
+
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #eef2f6;
+  color: $admin-muted;
+  font-size: 0.72rem;
+  font-weight: 600;
+}

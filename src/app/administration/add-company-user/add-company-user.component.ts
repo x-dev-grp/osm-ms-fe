@@ -8,17 +8,18 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSelect } from '@angular/material/select';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { NgIf } from '@angular/common';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { UserService } from '../../settings/user-management/services/user.service';
 import { AdvancedSearchService } from '../../shared/services/advanced-serach.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from '../../theme/types/user';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of, tap } from 'rxjs';
 import { AddCompanyUserService } from '../../shared/services/add-company-user.service';
 import { CompanyUserDto } from '../../shared/models/company-user-dto';
 import { ToastService } from '../../shared/services/toast.service';
+import { TENANT_MODULE_OPTIONS } from '../../shared/constants/tenant-modules.constants';
 
 @Component({
   selector: 'app-add-company-user',
@@ -33,6 +34,7 @@ import { ToastService } from '../../shared/services/toast.service';
     MatProgressSpinner,
     MatSelect,
     MatSlideToggle,
+    MatCheckboxModule,
     NgIf,
     ReactiveFormsModule,
     SharedModule
@@ -55,11 +57,17 @@ export class AddCompanyUserComponent {
   viewMode: boolean = false;
   loading: boolean = false;
   errorMessage: string = '';
-  user: User;
+  user: Record<string, unknown>;
+  readonly moduleOptions = TENANT_MODULE_OPTIONS;
 
   constructor() {}
 
   ngOnInit() {
+    const moduleControls: Record<string, unknown> = {};
+    for (const option of this.moduleOptions) {
+      moduleControls[option.value] = [false];
+    }
+
     this.userForm = this._fb.group(
       {
         companyName: [null, Validators.required],
@@ -69,10 +77,11 @@ export class AddCompanyUserComponent {
         email: [null, [Validators.email]],
         phoneNumber: [null, [Validators.pattern(/^ ?\d{8,12}$/)]],
         confirmationMethod: ['EMAIL', Validators.required],
-        locked: [false]
+        locked: [false],
+        ...moduleControls
       },
       {
-        validators: [this.emailOrPhoneRequired()]
+        validators: [this.emailOrPhoneRequired(), this.atLeastOneModuleSelected()]
       }
     );
     this.userForm
@@ -100,9 +109,21 @@ export class AddCompanyUserComponent {
       return;
     }
     this.loading = true;
+    const formValue = this.userForm.value;
     const dto: CompanyUserDto = {
-      legalName: this.userForm.value.companyName,
-      companyUser: { ...this.userForm.value }
+      legalName: formValue.companyName,
+      companyUser: {
+        firstName: formValue.firstName,
+        lastName: formValue.lastName,
+        username: formValue.username,
+        email: formValue.email,
+        phoneNumber: formValue.phoneNumber,
+        confirmationMethod: formValue.confirmationMethod,
+        locked: formValue.locked
+      },
+      enabledModules: this.moduleOptions
+        .filter((option) => formValue[option.value])
+        .map((option) => option.value)
     };
     this._addCompanyUserService
       .addCompanyWithUser(dto)
@@ -183,6 +204,13 @@ export class AddCompanyUserComponent {
       }
 
       return null;
+    };
+  }
+
+  private atLeastOneModuleSelected() {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const selected = this.moduleOptions.some((option) => group.get(option.value)?.value);
+      return selected ? null : { modulesRequired: true };
     };
   }
 }

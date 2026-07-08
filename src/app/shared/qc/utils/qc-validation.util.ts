@@ -218,3 +218,7 @@ export function buildResultPayload(
     })
     .filter((item): item is QualityControlResultDto => !!item);
 }
+
+export function isQcChecklistCompliant(summary: QcChecklistSummary): boolean {
+  return summary.total > 0 && summary.failed === 0 && summary.passed === summary.total;
+}

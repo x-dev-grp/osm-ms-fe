@@ -26,11 +26,13 @@ import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.c
 import { ToastService } from '../../../shared/services/toast.service';
 import { Olive_Oil_Type } from '../../../shared/models/olive-type.enum';
 import { TypeCategory } from '../../../shared/models/type-category.enum';
-import { CardComponent } from '../../../theme/components/card/card.component';
 import { SupplierAddComponent } from '../../suppliers/supplier-add/supplier-add.component';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericTypeDialogComponent } from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
 import { map } from 'rxjs/operators';
+import { TunisianPlateMaskDirective } from '../../../shared/directives/tunisian-plate-mask.directive';
+import { tunisianPlateRequiredValidators } from '../../../shared/validators/tunisian-plate.validator';
+import { normalizeTunisianPlate, TUNISIAN_VEHICLE_PLATE_EXAMPLE } from '../../../shared/utils/tunisian-plate.util';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -56,11 +58,11 @@ function isValidSelection<T extends { id?: string }>(value: unknown, list: T[]):
     MatDatepickerModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    CardComponent,
     MatIcon,
     MatAutocompleteModule,
     TranslateModule,
-    BaseTypeComponent
+    BaseTypeComponent,
+    TunisianPlateMaskDirective
   ],
   templateUrl: './oil-reception-add.component.html',
   styleUrls: ['./oil-reception-add.component.scss']
@@ -80,6 +82,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   partyRegionSectionKey = 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
   filteredSuppliers$: Observable<SupplierType[]>;
   protected readonly TypeCategory = TypeCategory;
+  protected readonly platePlaceholder = TUNISIAN_VEHICLE_PLATE_EXAMPLE;
   private pendingCalls = 0; // Compteur de requêtes HTTP en cours
   private subscriptions: Subscription[] = [];
   private deliveryId: string | null;
@@ -107,7 +110,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         deliveryDate: [new Date(), Validators.required],
         region: [null, Validators.required],
         supplier: [null, Validators.required],
-        matriculeCamion: ['', Validators.required],
+        matriculeCamion: ['', tunisianPlateRequiredValidators],
         poidsBrute: [null],
         poidsNet: [0, [Validators.min(0)]],
         oilQuantity: [0, [Validators.min(0)]],
@@ -311,7 +314,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       region: formValue.region || null,
       poidsBrute: Number(formValue.poidsBrute) || 0,
       poidsNet: Number(formValue.poidsNet) || 0,
-      matriculeCamion: formValue.matriculeCamion || '',
+      matriculeCamion: normalizeTunisianPlate(formValue.matriculeCamion) || '',
       supplier: formValue.supplier || null,
       globalLotNumber: formValue.globalLotNumber || null,
       oilVariety: formValue.oilVariety || null,
@@ -362,7 +365,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   resetForm(): void {
-    this.router.navigate(['reception/reception-huile']);
+    this.router.navigate(['/reception/reception-huile']);
   }
 
   validateSupplier(): void {
@@ -497,7 +500,8 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         trtDate: parseDate(d.trtDate),
         supplier: matchedSupplier,
         region: matchedRegion,
-        parcel: matchedParcel
+        parcel: matchedParcel,
+        matriculeCamion: normalizeTunisianPlate(d.matriculeCamion)
         // (leave the rest of your fields as-is)
       },
       { emitEvent: false }

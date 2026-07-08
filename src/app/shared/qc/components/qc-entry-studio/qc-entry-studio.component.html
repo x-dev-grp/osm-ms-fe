@@ -4,7 +4,7 @@
     <span>{{ 'CONTROLE_QUALITE.LOADING' | translate }}</span>
   </div>
 
-  <div class="qc-studio__error" *ngIf="message && !loading">
+  <div class="qc-studio__error" *ngIf="message && !loading" role="alert">
     <mat-icon>error_outline</mat-icon>
     <p>{{ message }}</p>
   </div>
@@ -12,16 +12,13 @@
   <div class="qc-studio__grid" *ngIf="!loading && !message && rules.length > 0" [class.rail-collapsed]="!railExpanded">
     <main class="qc-studio__main">
       <form [formGroup]="form">
-        <mat-accordion multi>
-          <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <mat-icon>tune</mat-icon>
-                {{ 'CONTROLE_QUALITE.SECTIONS.PARAMETERS' | translate }}
-              </mat-panel-title>
-              <mat-panel-description>Tunisia / COI</mat-panel-description>
-            </mat-expansion-panel-header>
-
+        <section class="reception-form-section">
+          <header class="reception-form-section__header">
+            <mat-icon>tune</mat-icon>
+            <h3>{{ 'CONTROLE_QUALITE.SECTIONS.PARAMETERS' | translate }}</h3>
+            <span class="qc-studio__section-badge">{{ 'CONTROLE_QUALITE.COMPLIANCE.STANDARD' | translate }}</span>
+          </header>
+          <div class="reception-form-section__body">
             <div class="qc-studio__rules">
               <app-qc-rule-field
                 *ngFor="let rule of rules"
@@ -30,17 +27,25 @@
                 [compact]="compact"
               />
             </div>
-          </mat-expansion-panel>
-        </mat-accordion>
+          </div>
+        </section>
       </form>
 
-      <div class="qc-studio__actions" *ngIf="showSaveButton">
+      <div class="qc-studio__actions" *ngIf="showSaveButton && !isReadOnly">
+        <p
+          class="qc-studio__save-hint"
+          *ngIf="saveHintKey"
+          [class.qc-studio__save-hint--muted]="isReadOnly"
+        >
+          <mat-icon>{{ isReadOnly ? 'lock' : 'info' }}</mat-icon>
+          {{ saveHintKey | translate }}
+        </p>
         <button
           mat-flat-button
           color="primary"
           type="button"
           (click)="onSave()"
-          [disabled]="saving || readOnly || !form.valid || !canSubmit"
+          [disabled]="!canSave"
         >
           <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
           <mat-icon *ngIf="!saving">save</mat-icon>
@@ -53,6 +58,7 @@
       *ngIf="!compact"
       [summary]="summary"
       [expanded]="railExpanded"
+      (expandedChange)="railExpanded = $event"
     />
   </div>
 </div>

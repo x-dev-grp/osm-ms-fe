@@ -23,6 +23,7 @@ import { LanguageService } from '../../../../shared/services/language.service';
 import { UserNotification } from '../../../../shared/models/notification.model';
 import { NotificationTextPipe } from '../../../../shared/pipes/notification-text.pipe';
 import { SupportTicketService } from '../../../../shared/services/support-ticket.service';
+import { SystemHealthComponent } from '../../../../shared/components/system-health/system-health.component';
 
 @Component({
   selector: 'app-nav-right',
@@ -39,7 +40,8 @@ import { SupportTicketService } from '../../../../shared/services/support-ticket
     MatMenuModule,
     MatBadgeModule,
     UserAvatarComponent,
-    NotificationTextPipe
+    NotificationTextPipe,
+    SystemHealthComponent
   ],
   templateUrl: './toolbar-right.component.html',
   standalone: true,

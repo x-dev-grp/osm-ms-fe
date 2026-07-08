@@ -1,0 +1,42 @@
+<div class="dashboard-shell admin-api-docs">
+  <div class="page-header sticky-actions page-header--admin">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--admin">
+        <mat-icon>api</mat-icon>
+      </div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'ADMIN_API_DOCS.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'ADMIN_API_DOCS.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" routerLink="/administration/settings">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'ADMIN_API_DOCS.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner diameter="56"></mat-spinner>
+      <p>{{ 'ADMIN_API_DOCS.LOADING' | translate }}</p>
+    </div>
+  } @else if (loadError) {
+    <div class="error-state">
+      <mat-icon>cloud_off</mat-icon>
+      <p>{{ 'ADMIN_API_DOCS.LOAD_ERROR' | translate }}</p>
+    </div>
+  } @else if (!swaggerEnabled) {
+    <div class="disabled-state">
+      <mat-icon>info</mat-icon>
+      <p>{{ 'ADMIN_API_DOCS.DISABLED' | translate }}</p>
+      <p class="hint">{{ 'ADMIN_API_DOCS.DISABLED_HINT' | translate }}</p>
+      <button mat-flat-button color="primary" type="button" routerLink="/administration/settings">
+        {{ 'ADMIN_API_DOCS.OPEN_SETTINGS' | translate }}
+      </button>
+    </div>
+  } @else {
+    <div #swaggerHost class="swagger-ui-host"></div>
+  }
+</div>

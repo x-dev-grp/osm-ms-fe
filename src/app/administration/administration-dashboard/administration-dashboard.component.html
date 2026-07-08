@@ -114,6 +114,16 @@
           </div>
           <mat-icon class="quick-link-card__arrow">chevron_right</mat-icon>
         </a>
+        @if (swaggerEnabled) {
+          <a class="quick-link-card quick-link-card--api-docs" routerLink="/administration/api-docs">
+            <span class="quick-link-card__badge"><mat-icon>api</mat-icon></span>
+            <div class="quick-link-card__text">
+              <strong>{{ 'ADMIN_API_DOCS.TITLE' | translate }}</strong>
+              <span>{{ 'ADMIN_DASHBOARD.API_DOCS_LINK' | translate }}</span>
+            </div>
+            <mat-icon class="quick-link-card__arrow">chevron_right</mat-icon>
+          </a>
+        }
       </div>
     </section>
 

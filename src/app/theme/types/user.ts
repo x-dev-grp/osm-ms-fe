@@ -14,6 +14,7 @@ export interface User {
     isNewUser?:boolean;
     tenantId:string;
     tenantName?: string;
+    enabledModules?: string[];
     photoData?: string | null;
     photoContentType?: string | null;
 }

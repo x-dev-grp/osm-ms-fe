@@ -49,6 +49,22 @@ export const admin_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
+        id: 'adminSettings',
+        title: 'MENU.ADMINISTRATION.SETTINGS',
+        type: 'item',
+        url: '/administration/settings',
+        icon: 'tune',
+        breadcrumbs: false
+      },
+      {
+        id: 'adminApiDocs',
+        title: 'MENU.ADMINISTRATION.API_DOCS',
+        type: 'item',
+        url: '/administration/api-docs',
+        icon: 'api',
+        breadcrumbs: false
+      },
+      {
         id: 'addOosmAdmin',
         title: 'MENU.ADMINISTRATION.ADD_OOSM_ADMIN',
         type: 'item',

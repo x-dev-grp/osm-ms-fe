@@ -1,0 +1,296 @@
+@import '../../shared/_administration-theme';
+
+
+
+.mail-config-panel {
+
+  margin-bottom: 1.25rem;
+
+  padding: 1rem 1.1rem;
+
+  border-radius: 12px;
+
+  background: #f8fafc;
+
+  border: 1px solid #eef2f6;
+
+}
+
+
+
+.mail-config-provider {
+
+  margin: 0.5rem 0 0;
+
+  font-size: 0.85rem;
+
+  color: $admin-muted;
+
+}
+
+
+
+.provider-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 0.15rem 0.5rem;
+
+  border-radius: 999px;
+
+  background: #e0f2fe;
+
+  color: #0369a1;
+
+  font-size: 0.75rem;
+
+  font-weight: 700;
+
+}
+
+
+
+.mail-provider-section {
+
+  margin-top: 0.5rem;
+
+  padding-top: 1rem;
+
+  border-top: 1px solid #eef2f6;
+
+
+
+  &__title {
+
+    margin: 0 0 0.75rem;
+
+    font-size: 0.95rem;
+
+    font-weight: 600;
+
+  }
+
+}
+
+
+
+.mail-config-list {
+
+  margin: 0.75rem 0 0;
+
+  padding: 0;
+
+  list-style: none;
+
+
+
+  li {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.5rem;
+
+    margin-bottom: 0.45rem;
+
+    font-size: 0.9rem;
+
+
+
+    mat-icon {
+
+      font-size: 18px;
+
+      width: 18px;
+
+      height: 18px;
+
+    }
+
+
+
+    &.ok mat-icon {
+
+      color: #15803d;
+
+    }
+
+
+
+    &.missing mat-icon {
+
+      color: #b45309;
+
+    }
+
+  }
+
+}
+
+
+
+.mail-config-hint {
+
+  margin: 0.75rem 0 0;
+
+  font-size: 0.85rem;
+
+  color: $admin-muted;
+
+
+
+  &.warn {
+
+    color: #92400e;
+
+  }
+
+}
+
+
+
+.mail-status-row,
+
+.secret-row,
+
+.secret-actions {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 0.75rem;
+
+  align-items: center;
+
+}
+
+
+
+.mail-status-row,
+
+.secret-row {
+
+  justify-content: space-between;
+
+  margin-bottom: 1.25rem;
+
+}
+
+
+
+.mail-form {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.5rem;
+
+  margin-bottom: 1.5rem;
+
+}
+
+
+
+.mail-field-row {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 0.75rem;
+
+  align-items: center;
+
+
+
+  &__input {
+
+    flex: 1 1 280px;
+
+    min-width: 0;
+
+  }
+
+}
+
+
+
+.mail-save-all-row {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 0.75rem;
+
+  margin-top: 0.75rem;
+
+  padding-top: 1rem;
+
+  border-top: 1px solid #eef2f6;
+
+}
+
+
+
+.mail-save-hint {
+
+  font-size: 0.82rem;
+
+  color: $admin-muted;
+
+}
+
+
+
+.secret-note {
+
+  margin: 0.35rem 0 0;
+
+  color: $admin-muted;
+
+  font-size: 0.85rem;
+
+}
+
+
+
+.source-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 0.2rem 0.55rem;
+
+  border-radius: 999px;
+
+  background: #eef2f6;
+
+  color: $admin-muted;
+
+  font-size: 0.72rem;
+
+  font-weight: 600;
+
+}
+
+
+
+.dialog-note {
+
+  margin: 0 0 1rem;
+
+  color: $admin-muted;
+
+  line-height: 1.5;
+
+}
+

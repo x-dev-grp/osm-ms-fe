@@ -59,6 +59,9 @@ export const COI_VIRGIN_LIMITS = {
 
 export const TUNISIA_QC_REGULATORY_MARKER = 'Tunisia default';
 
+/** Truck state options aligned with reception TRUCK_STATES and default QC rule EtatCamion. */
+export const TUNISIA_TRUCK_STATE_OPTIONS = ['Conforme', 'Non conforme'] as const;
+
 export interface OilMeasurementValues {
   acidity?: number | null;
   k232?: number | null;
@@ -127,6 +130,18 @@ export function extractOilMeasurements(values: Record<string, string | number | 
 
 export function isTunisiaDefaultRule(description?: string | null): boolean {
   return !!description?.includes(TUNISIA_QC_REGULATORY_MARKER);
+}
+
+/** Normalize legacy descriptions that duplicated the regulatory prefix during API provisioning. */
+export function formatQcRuleDescription(description?: string | null): string | null {
+  if (!description) {
+    return description ?? null;
+  }
+  const prefix = `${TUNISIA_QC_REGULATORY_MARKER} — `;
+  if (description.startsWith(prefix + prefix)) {
+    return description.slice(prefix.length);
+  }
+  return description;
 }
 
 export function isAboveVirginCoiLimit(ruleKey: string, maxValue?: number | null): boolean {

@@ -1,0 +1,193 @@
+<div class="dashboard-shell admin-settings">
+  <div class="page-header sticky-actions page-header--admin">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--admin">
+        <mat-icon>tune</mat-icon>
+      </div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'ADMIN_SETTINGS.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'ADMIN_SETTINGS.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" routerLink="/administration/dashboard">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'ADMIN_SETTINGS.BACK' | translate }}</span>
+      </button>
+      <button mat-stroked-button color="primary" type="button" (click)="reloadCache()" [disabled]="reloading || loading">
+        <mat-icon [class.spinning]="reloading">sync</mat-icon>
+        <span class="d-none d-sm-inline ms-1">{{ 'ADMIN_SETTINGS.RELOAD' | translate }}</span>
+      </button>
+      <button mat-stroked-button color="primary" type="button" (click)="refresh()" [disabled]="loading">
+        <mat-icon [class.spinning]="loading">refresh</mat-icon>
+        <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner diameter="56"></mat-spinner>
+      <p>{{ 'ADMIN_SETTINGS.LOADING' | translate }}</p>
+    </div>
+  } @else if (loadError) {
+    <div class="error-state">
+      <mat-icon>cloud_off</mat-icon>
+      <p>{{ 'ADMIN_SETTINGS.LOAD_ERROR' | translate }}</p>
+      <button mat-flat-button color="primary" type="button" (click)="refresh()">{{ 'COMMON.REFRESH' | translate }}</button>
+    </div>
+  } @else {
+    <mat-tab-group animationDuration="200ms">
+      <mat-tab [label]="'ADMIN_SETTINGS.TABS.MAIL' | translate">
+        <app-admin-settings-mail
+          [settings]="settingsFor('MAIL')"
+          [status]="status"
+          (changed)="refresh()"
+        ></app-admin-settings-mail>
+      </mat-tab>
+      <mat-tab [label]="'ADMIN_SETTINGS.TABS.GENERAL' | translate">
+        <app-admin-settings-category
+          icon="public"
+          titleKey="ADMIN_SETTINGS.TABS.GENERAL"
+          featureKey="frontend"
+          [settings]="settingsFor('FRONTEND')"
+          [status]="status"
+          (changed)="refresh()"
+        ></app-admin-settings-category>
+      </mat-tab>
+      <mat-tab [label]="'ADMIN_SETTINGS.TABS.NOTIFICATIONS' | translate">
+        <app-admin-settings-category
+          icon="notifications"
+          titleKey="ADMIN_SETTINGS.TABS.NOTIFICATIONS"
+          featureKey="notifications"
+          [settings]="settingsFor('NOTIFICATIONS')"
+          [status]="status"
+          (changed)="refresh()"
+        ></app-admin-settings-category>
+      </mat-tab>
+      <mat-tab [label]="'ADMIN_SETTINGS.TABS.QR' | translate">
+        <app-admin-settings-category
+          icon="qr_code_2"
+          titleKey="ADMIN_SETTINGS.TABS.QR"
+          featureKey="qr"
+          [settings]="settingsFor('QR')"
+          [status]="status"
+          (changed)="refresh()"
+        ></app-admin-settings-category>
+      </mat-tab>
+      <mat-tab [label]="'ADMIN_SETTINGS.TABS.INTEGRATIONS' | translate">
+        <app-admin-settings-category
+          icon="insights"
+          titleKey="ADMIN_SETTINGS.TABS.INTEGRATIONS"
+          featureKey="newRelicApm"
+          [settings]="settingsFor('INTEGRATIONS')"
+          [status]="status"
+          (changed)="refresh()"
+        ></app-admin-settings-category>
+      </mat-tab>
+      <mat-tab [label]="'ADMIN_SETTINGS.TABS.DIAGNOSTICS' | translate">
+        <app-admin-settings-category
+          icon="bug_report"
+          titleKey="ADMIN_SETTINGS.TABS.DIAGNOSTICS"
+          featureKey="swagger"
+          [settings]="settingsFor('DIAGNOSTICS')"
+          [status]="status"
+          (changed)="refresh()"
+        ></app-admin-settings-category>
+        @if (status?.features?.['swagger']?.enabled) {
+          <section class="dashboard-section diagnostics-actions">
+            <button mat-flat-button color="primary" type="button" routerLink="/administration/api-docs">
+              <mat-icon>api</mat-icon>
+              <span class="ms-1">{{ 'ADMIN_API_DOCS.OPEN_DOCS' | translate }}</span>
+            </button>
+          </section>
+        }
+      </mat-tab>
+      <mat-tab [label]="'ADMIN_SETTINGS.TABS.STATUS' | translate">
+        <section class="dashboard-section">
+          @if (status) {
+            <app-card [icon]="'monitor_heart'" [cardTitle]="'ADMIN_SETTINGS.STATUS.TITLE' | translate" [showContent]="true">
+              <div class="sync-result-grid">
+                <div>
+                  <strong>{{ 'ADMIN_SETTINGS.STATUS.VERSION' | translate }}</strong>
+                  {{ status.settingsVersion }}
+                </div>
+                <div>
+                  <strong>{{ 'ADMIN_SETTINGS.STATUS.LAST_RELOAD' | translate }}</strong>
+                  {{ status.lastReloadAt || ('COMMON.NOT_DEFINED' | translate) }}
+                </div>
+              </div>
+
+              <div class="feature-grid">
+                @for (entry of status.features | keyvalue; track entry.key) {
+                  <div class="feature-grid__item">
+                    <strong>{{ entry.key }}</strong>
+                    {{
+                      (entry.value.enabled
+                        ? 'ADMIN_SETTINGS.CATEGORY.STATUS_READY'
+                        : entry.value.configured
+                          ? 'ADMIN_SETTINGS.CATEGORY.STATUS_PARTIAL'
+                          : 'ADMIN_SETTINGS.CATEGORY.STATUS_MISSING') | translate
+                    }}
+                    @if (entry.value.provider) {
+                      <span class="source-badge">{{ entry.value.provider }}</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              @if (status.missingFeatureRequired?.length) {
+                <div class="catalog-flags">
+                  @for (key of status.missingFeatureRequired; track key) {
+                    <span class="status-pill warn">{{ key }}</span>
+                  }
+                </div>
+              }
+
+              <div class="catalog-flags">
+                @for (entry of status.sourceCounts | keyvalue; track entry.key) {
+                  <span class="status-pill">{{ entry.key }}: {{ entry.value }}</span>
+                }
+              </div>
+            </app-card>
+
+            <app-card [icon]="'history'" [cardTitle]="'ADMIN_SETTINGS.STATUS.AUDIT_TITLE' | translate" [showContent]="true">
+              @if (!auditEntries.length) {
+                <p class="catalog-note">{{ 'ADMIN_SETTINGS.STATUS.AUDIT_EMPTY' | translate }}</p>
+              } @else {
+                <div class="table-responsive">
+                  <table class="admin-table admin-table--compact">
+                    <thead>
+                      <tr>
+                        <th>{{ 'ADMIN_SETTINGS.AUDIT.WHEN' | translate }}</th>
+                        <th>{{ 'ADMIN_SETTINGS.AUDIT.KEY' | translate }}</th>
+                        <th>{{ 'ADMIN_SETTINGS.AUDIT.ACTION' | translate }}</th>
+                        <th>{{ 'ADMIN_SETTINGS.AUDIT.RESULT' | translate }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (row of auditEntries; track row.changedAt + row.settingKey + row.action) {
+                        <tr>
+                          <td>{{ row.changedAt | date: 'short' }}</td>
+                          <td>{{ row.settingKey }}</td>
+                          <td>{{ row.action }}</td>
+                          <td>
+                            @if (row.success) {
+                              <span class="status-pill active">OK</span>
+                            } @else {
+                              <span class="status-pill warn" [matTooltip]="row.failureReason || ''">Failed</span>
+                            }
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </app-card>
+          }
+        </section>
+      </mat-tab>
+    </mat-tab-group>
+  }
+</div>

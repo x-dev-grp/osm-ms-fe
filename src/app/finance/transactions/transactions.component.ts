@@ -9,7 +9,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { resolveBillConditions, resolveBillDesignation } from '../utils/bill-labels.util';
-import { FinancialTransaction } from '../models/financial-transaction.model';
+import { isPurchaseBillTransaction } from '../utils/bill-vat.util';
+import { FinancialTransaction, TransactionBillRequest } from '../models/financial-transaction.model';
 import { FinancialTransactionService } from '../service/financial-transaction.service';
 import { TRANSACTIONS_DASHBOARD_CONFIG } from './transactions-dashboard.config';
 import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
@@ -295,21 +296,24 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     return error.error?.message || error.message || null;
   }
 
-  private buildBillRequest(transaction: FinancialTransaction, profile: CompanyProfile) {
-    return {
+  private buildBillRequest(transaction: FinancialTransaction, profile: CompanyProfile): TransactionBillRequest {
+    const request: TransactionBillRequest = {
       title: 'Facture commerciale',
       issuer: this.toIssuerParty(profile),
       logoBase64: profile.logoData,
       logoContentType: profile.logoContentType,
       designation: resolveBillDesignation(this.i18n, transaction),
       conditions: resolveBillConditions(this.i18n, transaction),
-      vatRatePercent: TUNISIA_VAT_STANDARD_RATE,
       footerContact: {
         companyName: profile.legalName,
         phone: profile.phone
       },
       notes: transaction.lotNumber ? `Lot: ${transaction.lotNumber}` : undefined
     };
+    if (isPurchaseBillTransaction(transaction)) {
+      request.vatRatePercent = TUNISIA_VAT_STANDARD_RATE;
+    }
+    return request;
   }
 
   private toIssuerParty(profile: CompanyProfile) {

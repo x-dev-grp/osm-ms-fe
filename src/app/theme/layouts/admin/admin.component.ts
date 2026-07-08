@@ -168,7 +168,19 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.menus = filterMenuByPermissions(
         this.menus,
         currentUser?.permissions,
-        false
+        {
+          bypassPermissionChecks: false,
+          enabledModules: this.authenticationService.getTenantEnabledModules()
+        }
+      );
+    } else {
+      this.menus = filterMenuByPermissions(
+        this.menus,
+        currentUser?.permissions,
+        {
+          bypassPermissionChecks: true,
+          enabledModules: this.authenticationService.getTenantEnabledModules()
+        }
       );
     }
   }
@@ -207,6 +219,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private applyCompanyProfile(profile: CompanyProfile): void {
     this.companyName = profile.legalName?.trim() || '';
     this.logoPreview = this.companyProfileService.getLogoDataUrlFromCache() ?? this.buildLogoUrl(profile);
+    if (profile.enabledModules) {
+      this.authenticationService.setTenantEnabledModules(profile.enabledModules);
+    }
     this.cdr.markForCheck();
   }
 

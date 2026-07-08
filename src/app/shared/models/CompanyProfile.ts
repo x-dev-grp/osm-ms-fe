@@ -28,5 +28,7 @@ export interface CompanyProfile {
   /** MIME type of the logo (e.g. "image/png") */
   logoContentType?: string;
 
+  enabledModules?: string[];
+
   // read‑only list of bank accounts
  }

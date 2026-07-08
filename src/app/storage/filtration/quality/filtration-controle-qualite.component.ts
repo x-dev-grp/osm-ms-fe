@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,7 +22,6 @@ import { QcEntryStudioComponent } from '../../../shared/qc/components/qc-entry-s
     CommonModule,
     RouterModule,
     MatButtonModule,
-    MatChipsModule,
     MatIconModule,
     MatProgressSpinnerModule,
     TranslateModule,

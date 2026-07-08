@@ -1,3 +1,10 @@
+<div class="generic-type-toolbar">
+  <button mat-stroked-button color="primary" type="button" (click)="provisionDefaults()" [disabled]="provisioning">
+    <mat-icon>{{ provisioning ? 'hourglass_top' : 'playlist_add_check' }}</mat-icon>
+    Seed Tunisia defaults
+  </button>
+</div>
+
 <oosm-dashboard
   #dashboard
   (addNewItemClick)="openAddDialog()"

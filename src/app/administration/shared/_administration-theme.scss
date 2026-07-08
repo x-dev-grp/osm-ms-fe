@@ -14,7 +14,8 @@ $admin-shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.1);
 .admin-dashboard,
 .admin-permission-catalog,
 .admin-support,
-.admin-users-page {
+.admin-users-page,
+.admin-settings {
   padding-bottom: 2rem;
 }
 
@@ -175,11 +176,16 @@ $admin-shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.1);
     background: linear-gradient(135deg, #0d47a1, #5472d3);
   }
 
+  &--api-docs .quick-link-card__badge {
+    background: linear-gradient(135deg, #00695c, #26a69a);
+  }
+
   &--users:hover { border-color: rgba(25, 118, 210, 0.35); }
   &--companies:hover { border-color: rgba(123, 31, 162, 0.35); }
   &--add:hover { border-color: rgba(239, 108, 0, 0.35); }
   &--osm-admin:hover { border-color: rgba(55, 71, 79, 0.35); }
   &--permissions:hover { border-color: rgba(13, 71, 161, 0.35); }
+  &--api-docs:hover { border-color: rgba(0, 105, 92, 0.35); }
 }
 
 .admin-kpi-grid {

@@ -14,11 +14,13 @@ import { buildUserPhotoDataUrl } from '../../shared/utils/user-initials.util';
 import { NotificationService } from '../../shared/services/notification.service';
 import { PermissionService } from '../../settings/user-management/services/permission.service';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
+import { NewRelicService } from '../../shared/services/new-relic.service';
 
 export interface SessionRefreshResponse {
   access_token: string;
   token_type?: string;
   authorities?: string[];
+  enabledModules?: string[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,6 +30,7 @@ export class AuthenticationService {
   private _tokenService = inject(TokenService);
   private userService = inject(UserService);
   private permissionService = inject(PermissionService);
+  private newRelicService = inject(NewRelicService);
   private readonly injector = inject(Injector);
   readonly currentUserSignal = signal<User | null>(null);
   readonly userPhotoPreviewSignal = signal<string | null>(null);
@@ -167,17 +170,19 @@ export class AuthenticationService {
 
   applyAccessToken(
     accessToken: string,
-    options: { notifyOnChange?: boolean; reloadPhoto?: boolean; authorities?: string[] } = {}
+    options: { notifyOnChange?: boolean; reloadPhoto?: boolean; authorities?: string[]; enabledModules?: string[] } = {}
   ): boolean {
     const notifyOnChange = options.notifyOnChange ?? true;
     const reloadPhoto = options.reloadPhoto ?? true;
     const explicitAuthorities = options.authorities;
+    const explicitEnabledModules = options.enabledModules;
 
     if (!accessToken) {
       return false;
     }
 
     const previousPermissions = this.normalizedPermissions().join('|');
+    const previousEnabledModules = this.getTenantEnabledModules().join('|');
     this._tokenService.setToken(accessToken);
 
     const decodedToken = this._tokenService.decodeToken() as Record<string, unknown> | null;
@@ -194,7 +199,11 @@ export class AuthenticationService {
       explicitAuthorities ??
       (decodedToken['authorities'] as string[] | undefined) ??
       (this.currentUserValue?.id === user.id ? this.currentUserValue?.permissions : undefined);
+    user.enabledModules =
+      explicitEnabledModules ??
+      (this.currentUserValue?.id === user.id ? this.currentUserValue?.enabledModules : undefined);
     this.setCurrentUserValue = user;
+    this.newRelicService.setUserId(user.username || user.id || '');
 
     if (reloadPhoto) {
       this.loadUserPhoto();
@@ -204,7 +213,8 @@ export class AuthenticationService {
 
     if (notifyOnChange) {
       const currentPermissions = this.normalizedPermissions().join('|');
-      if (previousPermissions !== currentPermissions) {
+      const currentEnabledModules = this.getTenantEnabledModules().join('|');
+      if (previousPermissions !== currentPermissions || previousEnabledModules !== currentEnabledModules) {
         this.permissionsChangedSubject.next();
       }
     }
@@ -274,7 +284,8 @@ export class AuthenticationService {
             this.applyAccessToken(response.access_token, {
               notifyOnChange: true,
               reloadPhoto: false,
-              authorities: response.authorities
+              authorities: response.authorities,
+              enabledModules: response.enabledModules
             });
           }
         }),
@@ -346,7 +357,14 @@ export class AuthenticationService {
     const user = this.currentUserValue;
     if (!user) return false;
 
-    if (user.role === Role.Admin || user.role === Role.OosmAdmin) return true;
+    if (user.role === Role.OosmAdmin) return true;
+
+    const modulePrefix = permission.split(':')[0]?.toUpperCase();
+    if (modulePrefix && !this.hasTenantModule(modulePrefix)) {
+      return false;
+    }
+
+    if (user.role === Role.Admin) return true;
 
     const permissions = this.normalizedPermissions();
     return permissions.includes(permission.toUpperCase());
@@ -356,10 +374,47 @@ export class AuthenticationService {
     const user = this.currentUserValue;
     if (!user) return false;
 
-    if (user.role === Role.Admin || user.role === Role.OosmAdmin) return true;
+    if (user.role === Role.OosmAdmin) return true;
+    if (!this.hasTenantModule(module)) return false;
+    if (user.role === Role.Admin) return true;
 
     const modulePrefix = `${module.toUpperCase()}:`;
     return this.normalizedPermissions().some((p) => p.startsWith(modulePrefix));
+  }
+
+  hasTenantModule(module: string): boolean {
+    const user = this.currentUserValue;
+    if (!user) return false;
+    if (user.role === Role.OosmAdmin) return true;
+    const enabled = this.getTenantEnabledModules();
+    if (!enabled.length) return false;
+    return enabled.includes(module.toUpperCase());
+  }
+
+  getTenantEnabledModules(): string[] {
+    const modules = this.currentUserValue?.enabledModules;
+    if (!modules?.length) {
+      return [];
+    }
+    return modules.map((module) => String(module).toUpperCase());
+  }
+
+  setTenantEnabledModules(modules: string[] | undefined): void {
+    const user = this.currentUserValue;
+    if (!user) {
+      return;
+    }
+    const previousEnabledModules = this.getTenantEnabledModules().join('|');
+    user.enabledModules = modules?.map((module) => module.toUpperCase()) ?? [];
+    this.setCurrentUserValue = user;
+    const currentEnabledModules = this.getTenantEnabledModules().join('|');
+    if (previousEnabledModules !== currentEnabledModules) {
+      this.permissionsChangedSubject.next();
+    }
+  }
+
+  isOosmAdmin(): boolean {
+    return this.currentUserValue?.role === Role.OosmAdmin;
   }
 
   private normalizedPermissions(): string[] {

@@ -48,6 +48,7 @@ import { CustomTranslateLoader } from './custom-translate-loader';
 
 // project import
 import { CardComponent } from 'src/app/theme/components/card/card.component';
+import { TunisianPlateMaskDirective } from 'src/app/shared/directives/tunisian-plate-mask.directive';
 
 const MaterialModules = [
   MatToolbarModule,
@@ -103,8 +104,9 @@ const MaterialModules = [
         useClass: CustomTranslateLoader
       }
     }),
-    CardComponent
+    CardComponent,
+    TunisianPlateMaskDirective
   ],
-  exports: [MaterialModules, FormsModule, ReactiveFormsModule, NgScrollbarModule, TranslateModule, CardComponent]
+  exports: [MaterialModules, FormsModule, ReactiveFormsModule, NgScrollbarModule, TranslateModule, CardComponent, TunisianPlateMaskDirective]
 })
 export class SharedModule {}

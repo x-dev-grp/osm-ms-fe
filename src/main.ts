@@ -21,6 +21,7 @@ import { CustomTranslateLoader } from './app/shared/custom-translate-loader';
 import { ThemeConfigService } from './app/shared/services/theme-config.service';
 import { PwaUpdateService } from './app/shared/services/pwa-update.service';
 import { LanguageService } from './app/shared/services/language.service';
+import { NewRelicService } from './app/shared/services/new-relic.service';
 
 function initApp(languageService: LanguageService, themeConfig: ThemeConfigService) {
   return () =>
@@ -39,13 +40,19 @@ function initPwa(pwaUpdateService: PwaUpdateService) {
   };
 }
 
+function initNewRelic(newRelicService: NewRelicService) {
+  return async () => {
+    await newRelicService.initFromBackend();
+    if (environment.production && !newRelicService.isEnabled()) {
+      console.log = () => {};
+      console.debug = () => {};
+      console.info = () => {};
+    }
+  };
+}
+
 if (environment.production) {
   enableProdMode();
-  console.log = () => {};
-  console.debug = () => {};
-  console.info = () => {};
-  // console.warn = () => {};   // uncomment to silence warns too
-  // console.error = () => {};  // usually keep errors visible
 }
 
 bootstrapApplication(AppComponent, {
@@ -70,6 +77,7 @@ bootstrapApplication(AppComponent, {
     { provide: HTTP_INTERCEPTORS, useClass: ResponseMessageInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'fr' },
+    { provide: APP_INITIALIZER, useFactory: initNewRelic, deps: [NewRelicService], multi: true },
     { provide: APP_INITIALIZER, useFactory: initApp, deps: [LanguageService, ThemeConfigService], multi: true },
     { provide: APP_INITIALIZER, useFactory: initAuth, deps: [AuthenticationService], multi: true },
     { provide: APP_INITIALIZER, useFactory: initPwa, deps: [PwaUpdateService], multi: true },

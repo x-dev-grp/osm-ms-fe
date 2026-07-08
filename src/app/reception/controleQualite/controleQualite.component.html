@@ -1,85 +1,105 @@
-<div class="quality-control-container">
-  <div class="quality-header">
-    <div class="header-content">
-      <div class="header-icon">
+<div
+  class="dashboard-shell qc-page"
+  [class.qc-page--olive]="isOliveDelivery() && !oilFromOlive"
+  [class.qc-page--oil]="!isOliveDelivery() || oilFromOlive"
+>
+  <div class="page-header sticky-actions page-header--reception">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--reception">
         <mat-icon>science</mat-icon>
       </div>
-      <div class="header-text">
-        <h2>{{ 'CONTROLE_QUALITE.TITLE' | translate }}</h2>
-        <p>{{ 'CONTROLE_QUALITE.SUBTITLE' | translate }}</p>
-      </div>
-      <div *ngIf="isQualityControlDone" class="header-status">
-        <mat-chip color="accent" selected>
-          <mat-icon>check_circle</mat-icon>
-          {{ 'CONTROLE_QUALITE.STATUS.COMPLETED' | translate }}
-        </mat-chip>
-      </div>
-      <div class="rawstring-banner" *ngIf="deliveryData?.lotNumber">
-        <mat-chip color="primary" selected>
-          <mat-icon>label</mat-icon>
-          {{ deliveryData?.lotNumber }}
-        </mat-chip>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'CONTROLE_QUALITE.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'CONTROLE_QUALITE.SUBTITLE' | translate }}</p>
+        <div class="qc-page-badges">
+          <span *ngIf="isQualityControlDone" class="qc-status-badge qc-status-badge--done">
+            <mat-icon aria-hidden="true">check_circle</mat-icon>
+            {{ 'CONTROLE_QUALITE.STATUS.COMPLETED' | translate }}
+          </span>
+          <span *ngIf="deliveryData?.lotNumber" class="qc-status-badge qc-status-badge--lot">
+            <mat-icon aria-hidden="true">label</mat-icon>
+            {{ deliveryData?.lotNumber }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="loading-state">
-    <mat-spinner diameter="40"></mat-spinner>
-    <p>{{ 'CONTROLE_QUALITE.LOADING' | translate }}</p>
-  </div>
+  @if (isLoading) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else if (message) {
+    <div class="qc-error-banner" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ message }}</span>
+    </div>
+  } @else {
+    <div class="qc-form">
+      @if (isOliveDelivery() && !oilFromOlive) {
+        <section class="reception-form-section">
+          <header class="reception-form-section__header">
+            <mat-icon>local_florist</mat-icon>
+            <h3>{{ 'OLIVE_RECEPTION.FORM.FIELDS.OLIVE_VARIETY' | translate }}</h3>
+          </header>
+          <div class="reception-form-section__body">
+            <form [formGroup]="qualityForm">
+              <base-type
+                (selected)="onOliveVarietySelected($event)"
+                [formControl]="qualityForm.controls['oliveVariety']"
+                [type]="'OLIVE_VARIETY'"
+              />
+              <p class="qc-field-error" *ngIf="oliveVarietyInvalid()">
+                {{ 'CONTROLE_QUALITE.FORM.VALIDATION.OLIVE_VARIETY_REQUIRED' | translate }}
+              </p>
+            </form>
+          </div>
+        </section>
+      }
 
-  <div *ngIf="message && !isLoading" class="error-state">
-    <mat-icon>error_outline</mat-icon>
-    <p>{{ message }}</p>
-  </div>
+      @if (!isOliveDelivery() || oilFromOlive) {
+        <section class="reception-form-section">
+          <header class="reception-form-section__header">
+            <mat-icon>inventory_2</mat-icon>
+            <h3>{{ 'CONTROLE_QUALITE.STORAGE_UNIT.LABEL' | translate }}</h3>
+          </header>
+          <div class="reception-form-section__body">
+            <form [formGroup]="storageunitForm">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_DESTINATION' | translate }}</mat-label>
+                <mat-select formControlName="storageUnitDestinationId">
+                  <mat-option
+                    *ngFor="let u of storageUnits"
+                    [value]="u"
+                    [disabled]="u.maxCapacity - u.currentVolume < (oilFromOlive ? (originalOliveReception?.oilQuantity ?? 0) : (deliveryData?.poidsNet ?? 0))"
+                  >
+                    {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="storageunitForm.get('storageUnitDestinationId')?.hasError('required')">
+                  {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="capacityError">
+                  {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </form>
+          </div>
+        </section>
+      }
 
-  <div *ngIf="isOliveDelivery() && !oilFromOlive && !isLoading && !message" class="quality-content">
-    <form [formGroup]="qualityForm" class="quality-form">
-      <div class="form-section">
-        <div class="section-header">
-          <mat-icon>local_florist</mat-icon>
-          <h3>{{ 'OLIVE_RECEPTION.FORM.FIELDS.OLIVE_VARIETY' | translate }}</h3>
-        </div>
-        <base-type
-          (selected)="onOliveVarietySelected($event)"
-          [formControl]="qualityForm.controls['oliveVariety']"
-          [type]="'OLIVE_VARIETY'"
-        />
-      </div>
-    </form>
-  </div>
-
-  <div *ngIf="(!isOliveDelivery() || oilFromOlive) && !isLoading && !message" class="quality-content">
-    <form [formGroup]="storageunitForm" class="quality-form">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_DESTINATION' | translate }}</mat-label>
-        <mat-select formControlName="storageUnitDestinationId">
-          <mat-option
-            *ngFor="let u of storageUnits"
-            [value]="u"
-            [disabled]="u.maxCapacity - u.currentVolume < (oilFromOlive ? (originalOliveReception?.oilQuantity ?? 0) : (deliveryData?.poidsNet ?? 0))"
-          >
-            {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="storageunitForm.get('storageUnitDestinationId')?.hasError('required')">
-          {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED' | translate }}
-        </mat-error>
-        <mat-error *ngIf="capacityError">
-          {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY' | translate }}
-        </mat-error>
-      </mat-form-field>
-    </form>
-  </div>
-
-  <app-qc-entry-studio
-    *ngIf="!isLoading && !message"
-    [context]="studioContext"
-    [deliveryId]="deliveryData?.id"
-    [oliveIdx]="oliveIdx"
-    [storageUnitId]="selectedStorageUnitId()"
-    [canSubmit]="isStorageValid()"
-    [preSave]="preSave"
-    (saved)="onQcSaved()"
-  />
+      <app-qc-entry-studio
+        [context]="studioContext"
+        [deliveryId]="deliveryData?.id"
+        [oliveIdx]="oliveIdx"
+        [storageUnitId]="selectedStorageUnitId()"
+        [canSubmit]="isStorageValid()"
+        [submitBlockedHint]="submitBlockedHint()"
+        [readOnly]="isQualityControlDone"
+        [showSaveButton]="!isQualityControlDone"
+        [preSave]="preSave"
+        (saved)="onQcSaved()"
+      />
+    </div>
+  }
 </div>

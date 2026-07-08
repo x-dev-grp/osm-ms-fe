@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 
 import { CommonModule, DatePipe } from '@angular/common';
 
 import { RouterLink } from '@angular/router';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatButtonModule } from '@angular/material/button';
 
@@ -18,6 +20,8 @@ import { AdminDashboardService } from '../services/admin-dashboard.service';
 
 import { AdminDashboardStats } from '../models/admin-dashboard-stats.model';
 
+import { AdminSettingsService } from '../admin-settings/services/admin-settings.service';
+
 @Component({
   selector: 'app-administration-dashboard',
 
@@ -30,19 +34,32 @@ import { AdminDashboardStats } from '../models/admin-dashboard-stats.model';
   styleUrls: ['./administration-dashboard.component.scss']
 })
 export class AdministrationDashboardComponent implements OnInit {
+  private readonly adminDashboardService = inject(AdminDashboardService);
+  private readonly adminSettingsService = inject(AdminSettingsService);
+  private readonly destroyRef = inject(DestroyRef);
+
   stats: AdminDashboardStats | null = null;
 
   loading = false;
 
   loadError = false;
 
+  swaggerEnabled = false;
+
   lastUpdated: Date | null = null;
 
   maxRoleCount = 0;
 
-  constructor(private adminDashboardService: AdminDashboardService) {}
-
   ngOnInit(): void {
+    this.adminSettingsService
+      .getStatus()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (status) => {
+          this.swaggerEnabled = status.features?.['swagger']?.enabled ?? false;
+        }
+      });
+
     this.refresh();
   }
 

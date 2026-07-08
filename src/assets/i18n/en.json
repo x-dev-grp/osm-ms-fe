@@ -43,6 +43,23 @@
       "SALES": "sales"
     }
   },
+  "TENANT_MODULES": {
+    "ACTION_ACTIVATE": "Save licensed modules",
+    "BACK": "Companies",
+    "COLUMN": "Enabled modules",
+    "CONDITIONING": "Conditioning",
+    "EDIT_HINT": "Changes apply immediately for new requests. Users may need to refresh their session to see updated menus and permissions.",
+    "FINANCE": "Finance",
+    "HABILITATION": "User management",
+    "HR": "Human resources",
+    "INVENTAIR": "Inventory",
+    "PRODUCTION": "Production",
+    "RECEPTION": "Reception",
+    "REQUIRED": "Select at least one module.",
+    "SECTION_HINT": "Choose which OOSM modules this tenant can access. None are enabled by default.",
+    "SECTION_TITLE": "Licensed modules",
+    "VIEW_TITLE": "Company profile"
+  },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",
     "ADD_COMPANY_CREATED": "Company and admin user created successfully.",
@@ -75,6 +92,7 @@
   "ADMIN_DASHBOARD": {
     "ADD_COMPANY_LINK": "Create a new tenant and its admin user.",
     "ADD_OOSM_ADMIN_LINK": "Create a new platform administrator account.",
+    "API_DOCS_LINK": "Browse and test OOSM REST endpoints with your admin JWT.",
     "COMPANIES_LINK": "Browse and manage all company profiles.",
     "HERO": {
       "ACTIVE": "active",
@@ -153,6 +171,121 @@
     "SYNC_HINT": "Run after deploying a new backend version or editing permissions-spec.json. Safe to run multiple times — existing rows are preserved.",
     "SYNC_SUCCESS": "Permission catalog synchronized successfully.",
     "TITLE": "Permission catalog"
+  },
+  "ADMIN_API_DOCS": {
+    "BACK": "Settings",
+    "DISABLED": "OpenAPI documentation is disabled.",
+    "DISABLED_HINT": "Enable SPRINGDOC_ENABLED in Administration → Settings → Diagnostics, then restart the backend. The API docs UI will appear here for OOSMADMIN users.",
+    "LOADING": "Loading API documentation...",
+    "LOAD_ERROR": "Unable to load API documentation. Ensure SPRINGDOC_ENABLED is true, the backend has been restarted, and you are logged in as OOSMADMIN.",
+    "OPEN_DOCS": "Open API documentation",
+    "OPEN_SETTINGS": "Open settings",
+    "SUBTITLE": "Browse and test OOSM REST endpoints with your admin JWT.",
+    "TITLE": "API documentation"
+  },
+  "ADMIN_SETTINGS": {
+    "BACK": "Admin dashboard",
+    "LOADING": "Loading settings...",
+    "LOAD_ERROR": "Unable to load administration settings.",
+    "RELOAD": "Reload cache",
+    "SAVE_SUCCESS": "Setting saved.",
+    "SAVE_ERROR": "Unable to save setting.",
+    "SUBTITLE": "Manage platform configuration without exposing infrastructure secrets.",
+    "TABS": {
+      "MAIL": "Mail",
+      "GENERAL": "General",
+      "NOTIFICATIONS": "Notifications",
+      "QR": "QR",
+      "INTEGRATIONS": "Integrations",
+      "DIAGNOSTICS": "Diagnostics",
+      "STATUS": "Status"
+    },
+    "CATEGORY": {
+      "SAVE_ALL": "Save all fields",
+      "SAVE_ALL_SUCCESS": "All fields saved.",
+      "SAVE_ALL_PARTIAL": "Some fields could not be saved.",
+      "NOTHING_TO_SAVE": "Enter at least one value before saving.",
+      "RESTART_REQUIRED": "Restart required",
+      "RESTART_CONFIRM_TITLE": "Restart required",
+      "RESTART_CONFIRM_MESSAGE": "This setting is applied only after the backend restarts. Save the value and restart the backend to apply it.",
+      "RESTART_CONFIRM_BUTTON": "Save and restart later",
+      "STATUS_READY": "Ready",
+      "STATUS_PARTIAL": "Partially configured",
+      "STATUS_MISSING": "Not configured"
+    },
+    "SOURCE": {
+      "DATABASE": "Database",
+      "DEFAULT": "Default",
+      "ENV": "Environment"
+    },
+    "STATUS": {
+      "LAST_RELOAD": "Last reload",
+      "MAIL": "Mail delivery",
+      "TITLE": "Settings status",
+      "VERSION": "Settings version",
+      "AUDIT_TITLE": "Recent activity",
+      "AUDIT_EMPTY": "No settings changes recorded yet."
+    },
+    "MAIL": {
+      "CONFIG_CHECKLIST": "Configuration checklist",
+      "ACTIVE_PROVIDER": "Active provider",
+      "CHECK_DELIVERY": "Mail delivery ready",
+      "MISSING_HINT": "Still missing",
+      "SAVE_ALL": "Save all mail fields",
+      "SAVE_ALL_HINT": "Save visible mail fields to the database.",
+      "SAVE_ALL_SUCCESS": "All mail fields saved.",
+      "SAVE_ALL_PARTIAL": "Some mail fields could not be saved.",
+      "NOTHING_TO_SAVE": "Enter at least a from address before saving.",
+      "CONFIGURED": "Configured",
+      "ENABLED": "Mail enabled",
+      "PROVIDER": "Mail provider",
+      "PROVIDER_HINT": "Configure both providers if needed; only the selected one is used for sending.",
+      "PROVIDER_RESEND": "Resend (API)",
+      "PROVIDER_SMTP": "SMTP server",
+      "FROM_ADDRESS": "From address",
+      "FROM_ADDRESS_HINT_RESEND": "Must be an address on a domain verified in Resend (resend.com/domains).",
+      "FROM_ADDRESS_HINT_SMTP": "Sender address accepted by your SMTP server.",
+      "FROM_NAME": "From name",
+      "MISSING": "Missing",
+      "REASON": "Reason (optional)",
+      "RESEND_KEY": "Resend API key",
+      "RESEND_KEY_HINT": "Secret values are write-only. Use rotate to update the stored key.",
+      "SMTP_SECTION": "SMTP server",
+      "SMTP_HOST": "SMTP host",
+      "SMTP_HOST_HINT": "Gmail: smtp.gmail.com (not smtp.google.com). Port 587 + STARTTLS, or port 465 for SSL.",
+      "SMTP_PORT": "SMTP port",
+      "SMTP_USERNAME": "SMTP username",
+      "SMTP_PASSWORD": "SMTP password",
+      "SMTP_PASSWORD_HINT": "Enter the SMTP password. The previous value cannot be displayed.",
+      "SMTP_AUTH": "SMTP authentication",
+      "SMTP_STARTTLS": "Use STARTTLS",
+      "ROTATE_BUTTON": "Rotate secret",
+      "ROTATE_ERROR": "Unable to rotate secret.",
+      "ROTATE_HINT": "Enter a new Resend API key (must start with re_). The previous value cannot be displayed.",
+      "ROTATE_SUBMIT": "Save secret",
+      "ROTATE_SUCCESS": "Secret rotated successfully.",
+      "ROTATE_TITLE": "Rotate {{label}}",
+      "SECRET_VALUE": "New secret value",
+      "STATUS_DISABLED": "Disabled",
+      "STATUS_ENABLED": "Enabled",
+      "STATUS_MISCONFIGURED": "Misconfigured",
+      "SUPPORT_EMAIL": "Support email",
+      "TEST_BUTTON": "Send test email",
+      "TEST_ERROR": "Mail test failed.",
+      "TEST_HINT": "Sends a fixed test message using the current effective mail settings.",
+      "TEST_RECIPIENT": "Recipient email",
+      "TEST_SUBMIT": "Send test",
+      "TEST_SUCCESS": "Test email sent.",
+      "TEST_TITLE": "Send test email",
+      "TITLE": "Mail settings"
+    },
+    "TITLE": "Administration settings",
+    "AUDIT": {
+      "WHEN": "When",
+      "KEY": "Setting",
+      "ACTION": "Action",
+      "RESULT": "Result"
+    }
   },
   "ADMIN_USERS": {
     "CARD_DESCRIPTION": "Search users across all tenants and trigger password resets.",
@@ -1572,7 +1705,8 @@
         "MAX_VALUE": "Value must be less than {{max}}",
         "MIN_VALUE": "Value must be greater than 0",
         "REQUIRED": "This field is required",
-        "MAX": "Value exceeds maximum"
+        "MAX": "Value exceeds maximum",
+        "OLIVE_VARIETY_REQUIRED": "Olive variety is required"
       }
     },
     "LOADING": "Loading quality control parameters...",
@@ -1590,7 +1724,9 @@
       "SUCCESS": {
         "SAVE": "Data updated successfully",
         "STORAGE_UNIT_SAVED": "Data updated successfully - Unit: {{name}}"
-      }
+      },
+      "OLIVE_VARIETY_REQUIRED": "Please select an olive variety before saving",
+      "QC_NOT_COMPLIANT": "All quality control parameters must be filled and compliant before saving"
     },
     "OIL_DETAILS": {
       "OIL_TYPE": "Oil Type",
@@ -1627,6 +1763,20 @@
     },
     "STATUS": {
       "COMPLETED": "Quality Control Completed"
+    },
+    "COMPLIANCE": {
+      "TITLE": "QC Compliance",
+      "STANDARD": "Tunisia / COI",
+      "PASSED": "Passed",
+      "FAILED": "Failed",
+      "PENDING": "Pending",
+      "PASS": "Pass",
+      "FAIL": "Fail",
+      "SUGGESTED_GRADE": "Suggested grade (COI)"
+    },
+    "SAVE_HINTS": {
+      "ALREADY_SAVED": "Quality control results have already been saved.",
+      "INCOMPLETE_FORM": "Fill in all required parameters before saving."
     },
     "STORAGE_UNIT": {
       "ERRORS": {
@@ -2470,7 +2620,9 @@
       "TITLE": "Administration",
       "USERS": "User Management",
       "SUPPORT": "Support tickets",
-      "PERMISSION_CATALOG": "Permission catalog"
+      "PERMISSION_CATALOG": "Permission catalog",
+      "SETTINGS": "Settings",
+      "API_DOCS": "API documentation"
     },
     "CONDITIONNEMENT": {
       "EXPEDITIONS": "Shipments & delivery notes",
@@ -3089,6 +3241,7 @@
       },
       "OIL_DETAILS": "Oil Details",
       "OPERATION_TYPE": "Operation Type",
+      "SUBTITLE": "Register an oil delivery in a few simple steps",
       "PAYMENT_DETAILS": "Payment Details",
       "PAYMENT_DIALOG_DESCRIPTION": "Enter the unit price and quantity for this oil payment. The total cannot exceed the unpaid amount of the original olive reception.",
       "QUANTITY": "Quantity (kg)",
@@ -3570,6 +3723,7 @@
         "ADD": "Add Olive Reception",
         "EDIT": "Edit Olive Reception"
       },
+      "SUBTITLE": "Capture delivery, supplier, and weight details in one place",
       "TRUCK_STATES": {
         "COMPLIANT": "Compliant",
         "NON_COMPLIANT": "Non-compliant"
@@ -3601,6 +3755,7 @@
       "AJUSTER_STOCK": "Adjust Stock",
       "ANALYTICS": "Analytics",
       "ACTIVATE": "Activate",
+      "ACTIVATE_MODULES": "Activate modules",
       "APPROVE": "Approve",
       "ARTICLESEC": "Article",
       "ASSIGN_EMPLACEMENT": "Assign Location",

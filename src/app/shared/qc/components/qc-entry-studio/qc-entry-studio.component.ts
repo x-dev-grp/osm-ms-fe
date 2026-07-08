@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,7 +18,7 @@ import { ToastService } from '../../../services/toast.service';
 import { QcComplianceRailComponent } from '../qc-compliance-rail/qc-compliance-rail.component';
 import { QcRuleFieldComponent } from '../qc-rule-field/qc-rule-field.component';
 import { QcChecklistSummary, QcEntryContext } from '../../models/qc-context.model';
-import { buildQcChecklist, buildQcFormControls, buildResultPayload } from '../../utils/qc-validation.util';
+import { buildQcChecklist, buildQcFormControls, buildResultPayload, isQcChecklistCompliant } from '../../utils/qc-validation.util';
 
 @Component({
   selector: 'app-qc-entry-studio',
@@ -28,7 +27,6 @@ import { buildQcChecklist, buildQcFormControls, buildResultPayload } from '../..
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatExpansionModule,
     MatIconModule,
     MatProgressSpinnerModule,
     TranslateModule,
@@ -46,9 +44,14 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
   @Input() filtrationOperationId?: string | null;
   @Input() traceabilityLotId?: string | null;
   @Input() canSubmit = true;
+  @Input() submitBlockedHint: string | null = null;
   @Input() compact = false;
   @Input() showSaveButton = true;
   @Input() preSave?: () => Observable<boolean> | Promise<boolean>;
+  @Input() set readOnly(value: boolean) {
+    this._inputReadOnly = !!value;
+    this.syncReadOnlyState();
+  }
 
   @Output() saved = new EventEmitter<void>();
   @Output() saveFailed = new EventEmitter<string>();
@@ -58,7 +61,8 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
   loading = false;
   saving = false;
   message = '';
-  readOnly = false;
+  private _inputReadOnly = false;
+  private _resultsReadOnly = false;
   summary: QcChecklistSummary = {
     total: 0,
     passed: 0,
@@ -68,6 +72,37 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
     items: []
   };
   railExpanded = true;
+
+  get isReadOnly(): boolean {
+    return this._inputReadOnly || this._resultsReadOnly;
+  }
+
+  get isFullyCompliant(): boolean {
+    return isQcChecklistCompliant(this.summary);
+  }
+
+  get canSave(): boolean {
+    return !this.saving && !this.isReadOnly && this.canSubmit && this.form.valid && this.isFullyCompliant;
+  }
+
+  get saveHintKey(): string | null {
+    if (this.isReadOnly) {
+      return 'CONTROLE_QUALITE.SAVE_HINTS.ALREADY_SAVED';
+    }
+    if (this.canSave) {
+      return null;
+    }
+    if (this.submitBlockedHint) {
+      return this.submitBlockedHint;
+    }
+    if (!this.form.valid) {
+      return 'CONTROLE_QUALITE.SAVE_HINTS.INCOMPLETE_FORM';
+    }
+    if (!this.isFullyCompliant) {
+      return 'CONTROLE_QUALITE.MESSAGES.QC_NOT_COMPLIANT';
+    }
+    return null;
+  }
 
   private existingResults: QualityControlResultDto[] = [];
   private subs: Subscription[] = [];
@@ -97,8 +132,11 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   async onSave(): Promise<void> {
-    if (this.saving || this.readOnly || !this.form.valid || !this.canSubmit) {
+    if (!this.canSave) {
       this.form.markAllAsTouched();
+      if (!this.isFullyCompliant) {
+        this.toast.warning('CONTROLE_QUALITE.MESSAGES.QC_NOT_COMPLIANT');
+      }
       return;
     }
 
@@ -127,8 +165,8 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
     request$.pipe(finalize(() => (this.saving = false))).subscribe({
       next: () => {
         this.toast.success('AUTO.RESULTATS_CREES_AVEC_SUCCES');
-        this.readOnly = true;
-        this.form.disable();
+        this._resultsReadOnly = true;
+        this.syncReadOnlyState();
         this.saved.emit();
       },
       error: () => {
@@ -165,7 +203,7 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
       this.qcResultService.getResultsByFiltration(this.filtrationOperationId).subscribe({
         next: (res) => {
           this.existingResults = this.normalizeResults(res?.data);
-          this.readOnly = this.existingResults.length > 0;
+          this._resultsReadOnly = this.existingResults.length > 0;
           this.buildForm();
         },
         error: () => this.buildForm()
@@ -177,7 +215,7 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
       this.qcResultService.getAllResultsByDeliveryID(this.deliveryId).subscribe({
         next: (res) => {
           this.existingResults = this.normalizeResults(res?.data);
-          this.readOnly = this.existingResults.length > 0;
+          this._resultsReadOnly = this.existingResults.length > 0;
           this.buildForm();
         },
         error: () => this.buildForm()
@@ -192,10 +230,22 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
     this.subs.forEach((s) => s.unsubscribe());
     this.subs = [];
 
-    this.form = buildQcFormControls(this.rules, this.existingResults, this.readOnly);
+    this.form = buildQcFormControls(this.rules, this.existingResults, this.isReadOnly);
     this.refreshSummary();
 
     this.subs.push(this.form.valueChanges.subscribe(() => this.refreshSummary()));
+  }
+
+  private syncReadOnlyState(): void {
+    if (!this.form || Object.keys(this.form.controls).length === 0) {
+      return;
+    }
+    if (this.isReadOnly) {
+      this.form.disable({ emitEvent: false });
+    } else {
+      this.form.enable({ emitEvent: false });
+    }
+    this.refreshSummary();
   }
 
   private refreshSummary(): void {

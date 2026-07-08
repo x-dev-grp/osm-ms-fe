@@ -1,0 +1,260 @@
+<section class="admin-settings-mail">
+
+  <app-card [icon]="'mail'" [cardTitle]="'ADMIN_SETTINGS.MAIL.TITLE' | translate" [showContent]="true">
+
+    @if (mailFeature(); as mail) {
+
+      <div class="mail-config-panel">
+
+        <strong>{{ 'ADMIN_SETTINGS.MAIL.CONFIG_CHECKLIST' | translate }}</strong>
+
+        <p class="mail-config-provider">
+          {{ 'ADMIN_SETTINGS.MAIL.ACTIVE_PROVIDER' | translate }}:
+          <span class="provider-badge">{{ mail.provider || selectedProvider() }}</span>
+        </p>
+
+        <ul class="mail-config-list">
+
+          <li [class.ok]="mail.enabled" [class.missing]="!mail.enabled">
+            <mat-icon>{{ mail.enabled ? 'check_circle' : 'error_outline' }}</mat-icon>
+            {{ 'ADMIN_SETTINGS.MAIL.CHECK_DELIVERY' | translate }}
+          </li>
+
+          @if (isResend()) {
+            <li [class.ok]="isConfigured('RESEND_API_KEY')" [class.missing]="!isConfigured('RESEND_API_KEY')">
+              <mat-icon>{{ isConfigured('RESEND_API_KEY') ? 'check_circle' : 'error_outline' }}</mat-icon>
+              {{ 'ADMIN_SETTINGS.MAIL.RESEND_KEY' | translate }}
+              @if (setting('RESEND_API_KEY'); as s) {
+                <span class="source-badge">{{ sourceLabel(s.source) | translate }}</span>
+              }
+            </li>
+          }
+
+          @if (isSmtp()) {
+            <li [class.ok]="isConfigured('SMTP_HOST')" [class.missing]="!isConfigured('SMTP_HOST')">
+              <mat-icon>{{ isConfigured('SMTP_HOST') ? 'check_circle' : 'error_outline' }}</mat-icon>
+              {{ 'ADMIN_SETTINGS.MAIL.SMTP_HOST' | translate }}
+              @if (setting('SMTP_HOST'); as s) {
+                <span class="source-badge">{{ sourceLabel(s.source) | translate }}</span>
+              }
+            </li>
+
+            @if (mailForm.get('SMTP_AUTH')?.value) {
+              <li [class.ok]="isConfigured('SMTP_PASSWORD')" [class.missing]="!isConfigured('SMTP_PASSWORD')">
+                <mat-icon>{{ isConfigured('SMTP_PASSWORD') ? 'check_circle' : 'error_outline' }}</mat-icon>
+                {{ 'ADMIN_SETTINGS.MAIL.SMTP_PASSWORD' | translate }}
+                @if (setting('SMTP_PASSWORD'); as s) {
+                  <span class="source-badge">{{ sourceLabel(s.source) | translate }}</span>
+                }
+              </li>
+            }
+          }
+
+          <li [class.ok]="hasFromAddress()" [class.missing]="!hasFromAddress()">
+            <mat-icon>{{ hasFromAddress() ? 'check_circle' : 'error_outline' }}</mat-icon>
+            {{ 'ADMIN_SETTINGS.MAIL.FROM_ADDRESS' | translate }}
+            @if (setting('MAIL_FROM_ADDRESS'); as s) {
+              <span class="source-badge">{{ sourceLabel(s.source) | translate }}</span>
+            }
+          </li>
+
+        </ul>
+
+        @if (mail.missingKeys?.length) {
+          <p class="mail-config-hint warn">{{ 'ADMIN_SETTINGS.MAIL.MISSING_HINT' | translate }}: {{ mail.missingKeys.join(', ') }}</p>
+        }
+
+      </div>
+
+    }
+
+    <div class="mail-status-row">
+
+      @if (mailFeature(); as mail) {
+        <span class="status-pill" [class.active]="mail.enabled" [class.warn]="!mail.configured">
+          @if (mail.enabled) {
+            {{ 'ADMIN_SETTINGS.MAIL.STATUS_ENABLED' | translate }}
+          } @else if (!mail.configured) {
+            {{ 'ADMIN_SETTINGS.MAIL.STATUS_MISCONFIGURED' | translate }}
+          } @else {
+            {{ 'ADMIN_SETTINGS.MAIL.STATUS_DISABLED' | translate }}
+          }
+        </span>
+      }
+
+      <button mat-stroked-button color="primary" type="button" (click)="openMailTestDialog()">
+        <mat-icon>send</mat-icon>
+        <span class="ms-1">{{ 'ADMIN_SETTINGS.MAIL.TEST_BUTTON' | translate }}</span>
+      </button>
+
+    </div>
+
+    <form [formGroup]="mailForm" class="mail-form">
+
+      <div class="mail-field-row">
+        <mat-slide-toggle formControlName="MAIL_ENABLED" (change)="saveToggle('MAIL_ENABLED')">
+          {{ 'ADMIN_SETTINGS.MAIL.ENABLED' | translate }}
+        </mat-slide-toggle>
+        @if (setting('MAIL_ENABLED'); as enabledSetting) {
+          <span class="source-badge">{{ sourceLabel(enabledSetting.source) | translate }}</span>
+        }
+      </div>
+
+      <div class="mail-field-row">
+        <mat-form-field appearance="outline" class="mail-field-row__input">
+          <mat-label>{{ 'ADMIN_SETTINGS.MAIL.PROVIDER' | translate }}</mat-label>
+          <mat-select formControlName="MAIL_PROVIDER" (selectionChange)="saveProvider()">
+            @for (option of providerOptions; track option) {
+              <mat-option [value]="option">
+                {{ ('ADMIN_SETTINGS.MAIL.PROVIDER_' + option) | translate }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-hint>{{ 'ADMIN_SETTINGS.MAIL.PROVIDER_HINT' | translate }}</mat-hint>
+        </mat-form-field>
+        @if (setting('MAIL_PROVIDER'); as providerSetting) {
+          <span class="source-badge">{{ sourceLabel(providerSetting.source) | translate }}</span>
+        }
+      </div>
+
+      <div class="mail-field-row">
+        <mat-form-field appearance="outline" class="mail-field-row__input">
+          <mat-label>{{ 'ADMIN_SETTINGS.MAIL.FROM_ADDRESS' | translate }}</mat-label>
+          <input matInput formControlName="MAIL_FROM_ADDRESS" placeholder="noreply@yourdomain.com" />
+          <mat-hint>
+            @if (isResend()) {
+              {{ 'ADMIN_SETTINGS.MAIL.FROM_ADDRESS_HINT_RESEND' | translate }}
+            } @else {
+              {{ 'ADMIN_SETTINGS.MAIL.FROM_ADDRESS_HINT_SMTP' | translate }}
+            }
+          </mat-hint>
+        </mat-form-field>
+        <button mat-stroked-button type="button" (click)="saveField('MAIL_FROM_ADDRESS')" [disabled]="savingKey === 'MAIL_FROM_ADDRESS'">
+          {{ 'COMMON.SAVE' | translate }}
+        </button>
+      </div>
+
+      <div class="mail-field-row">
+        <mat-form-field appearance="outline" class="mail-field-row__input">
+          <mat-label>{{ 'ADMIN_SETTINGS.MAIL.FROM_NAME' | translate }}</mat-label>
+          <input matInput formControlName="MAIL_FROM_NAME" />
+        </mat-form-field>
+        <button mat-stroked-button type="button" (click)="saveField('MAIL_FROM_NAME')" [disabled]="savingKey === 'MAIL_FROM_NAME'">
+          {{ 'COMMON.SAVE' | translate }}
+        </button>
+      </div>
+
+      <div class="mail-field-row">
+        <mat-form-field appearance="outline" class="mail-field-row__input">
+          <mat-label>{{ 'ADMIN_SETTINGS.MAIL.SUPPORT_EMAIL' | translate }}</mat-label>
+          <input matInput formControlName="MAIL_SUPPORT_EMAIL" />
+        </mat-form-field>
+        <button mat-stroked-button type="button" (click)="saveField('MAIL_SUPPORT_EMAIL')" [disabled]="savingKey === 'MAIL_SUPPORT_EMAIL'">
+          {{ 'COMMON.SAVE' | translate }}
+        </button>
+      </div>
+
+      @if (isSmtp()) {
+        <div class="mail-provider-section">
+          <h3 class="mail-provider-section__title">{{ 'ADMIN_SETTINGS.MAIL.SMTP_SECTION' | translate }}</h3>
+
+          <div class="mail-field-row">
+            <mat-form-field appearance="outline" class="mail-field-row__input">
+              <mat-label>{{ 'ADMIN_SETTINGS.MAIL.SMTP_HOST' | translate }}</mat-label>
+              <input matInput formControlName="SMTP_HOST" placeholder="smtp.gmail.com" />
+              <mat-hint>{{ 'ADMIN_SETTINGS.MAIL.SMTP_HOST_HINT' | translate }}</mat-hint>
+            </mat-form-field>
+            <button mat-stroked-button type="button" (click)="saveField('SMTP_HOST')" [disabled]="savingKey === 'SMTP_HOST'">
+              {{ 'COMMON.SAVE' | translate }}
+            </button>
+          </div>
+
+          <div class="mail-field-row">
+            <mat-form-field appearance="outline" class="mail-field-row__input">
+              <mat-label>{{ 'ADMIN_SETTINGS.MAIL.SMTP_PORT' | translate }}</mat-label>
+              <input matInput formControlName="SMTP_PORT" type="number" />
+            </mat-form-field>
+            <button mat-stroked-button type="button" (click)="saveField('SMTP_PORT')" [disabled]="savingKey === 'SMTP_PORT'">
+              {{ 'COMMON.SAVE' | translate }}
+            </button>
+          </div>
+
+          <div class="mail-field-row">
+            <mat-form-field appearance="outline" class="mail-field-row__input">
+              <mat-label>{{ 'ADMIN_SETTINGS.MAIL.SMTP_USERNAME' | translate }}</mat-label>
+              <input matInput formControlName="SMTP_USERNAME" autocomplete="off" />
+            </mat-form-field>
+            <button mat-stroked-button type="button" (click)="saveField('SMTP_USERNAME')" [disabled]="savingKey === 'SMTP_USERNAME'">
+              {{ 'COMMON.SAVE' | translate }}
+            </button>
+          </div>
+
+          <div class="mail-field-row">
+            <mat-slide-toggle formControlName="SMTP_AUTH" (change)="saveToggle('SMTP_AUTH')">
+              {{ 'ADMIN_SETTINGS.MAIL.SMTP_AUTH' | translate }}
+            </mat-slide-toggle>
+          </div>
+
+          <div class="mail-field-row">
+            <mat-slide-toggle formControlName="SMTP_STARTTLS" (change)="saveToggle('SMTP_STARTTLS')">
+              {{ 'ADMIN_SETTINGS.MAIL.SMTP_STARTTLS' | translate }}
+            </mat-slide-toggle>
+          </div>
+        </div>
+      }
+
+      <div class="mail-save-all-row">
+        <button mat-flat-button color="primary" type="button" (click)="saveAll()" [disabled]="!!savingKey">
+          <mat-icon>save</mat-icon>
+          <span class="ms-1">{{ 'ADMIN_SETTINGS.MAIL.SAVE_ALL' | translate }}</span>
+        </button>
+        <span class="mail-save-hint">{{ 'ADMIN_SETTINGS.MAIL.SAVE_ALL_HINT' | translate }}</span>
+      </div>
+
+    </form>
+
+    @if (isResend()) {
+      <div class="secret-row">
+        <div>
+          <strong>{{ 'ADMIN_SETTINGS.MAIL.RESEND_KEY' | translate }}</strong>
+          <p class="secret-note">{{ 'ADMIN_SETTINGS.MAIL.RESEND_KEY_HINT' | translate }}</p>
+        </div>
+        <div class="secret-actions">
+          @if (setting('RESEND_API_KEY'); as apiKeySetting) {
+            <span class="status-pill" [class.active]="apiKeySetting.configured" [class.warn]="!apiKeySetting.configured">
+              {{ (apiKeySetting.configured ? 'ADMIN_SETTINGS.MAIL.CONFIGURED' : 'ADMIN_SETTINGS.MAIL.MISSING') | translate }}
+            </span>
+            <span class="source-badge">{{ sourceLabel(apiKeySetting.source) | translate }}</span>
+          }
+          <button mat-flat-button color="primary" type="button" (click)="openRotateSecretDialog('RESEND_API_KEY')">
+            <mat-icon>vpn_key</mat-icon>
+            <span class="ms-1">{{ 'ADMIN_SETTINGS.MAIL.ROTATE_BUTTON' | translate }}</span>
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (isSmtp() && mailForm.get('SMTP_AUTH')?.value) {
+      <div class="secret-row">
+        <div>
+          <strong>{{ 'ADMIN_SETTINGS.MAIL.SMTP_PASSWORD' | translate }}</strong>
+          <p class="secret-note">{{ 'ADMIN_SETTINGS.MAIL.SMTP_PASSWORD_HINT' | translate }}</p>
+        </div>
+        <div class="secret-actions">
+          @if (setting('SMTP_PASSWORD'); as passwordSetting) {
+            <span class="status-pill" [class.active]="passwordSetting.configured" [class.warn]="!passwordSetting.configured">
+              {{ (passwordSetting.configured ? 'ADMIN_SETTINGS.MAIL.CONFIGURED' : 'ADMIN_SETTINGS.MAIL.MISSING') | translate }}
+            </span>
+            <span class="source-badge">{{ sourceLabel(passwordSetting.source) | translate }}</span>
+          }
+          <button mat-flat-button color="primary" type="button" (click)="openRotateSecretDialog('SMTP_PASSWORD')">
+            <mat-icon>vpn_key</mat-icon>
+            <span class="ms-1">{{ 'ADMIN_SETTINGS.MAIL.ROTATE_BUTTON' | translate }}</span>
+          </button>
+        </div>
+      </div>
+    }
+
+  </app-card>
+
+</section>

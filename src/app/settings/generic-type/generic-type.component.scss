@@ -1,3 +1,22 @@
+.generic-type-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 8px;
+  }
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
 .mat-form-field {
   width: 100%;
   margin-bottom: 10px;

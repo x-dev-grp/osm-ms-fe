@@ -1,0 +1,98 @@
+<section class="admin-settings-category">
+  <app-card [icon]="icon" [cardTitle]="titleKey | translate" [showContent]="true">
+
+    @if (featureStatus(); as feature) {
+      <div class="category-status-row">
+        <span class="status-pill" [class.active]="feature.enabled" [class.warn]="!feature.configured">
+          {{
+            (feature.enabled
+              ? 'ADMIN_SETTINGS.CATEGORY.STATUS_READY'
+              : feature.configured
+                ? 'ADMIN_SETTINGS.CATEGORY.STATUS_PARTIAL'
+                : 'ADMIN_SETTINGS.CATEGORY.STATUS_MISSING') | translate
+          }}
+        </span>
+        @if (feature.missingKeys?.length) {
+          <span class="category-missing">{{ 'ADMIN_SETTINGS.MAIL.MISSING_HINT' | translate }}: {{ feature.missingKeys.join(', ') }}</span>
+        }
+      </div>
+    }
+
+    <form [formGroup]="form" class="category-form">
+      @for (setting of editableSettings(); track setting.key) {
+        <div class="category-field-row">
+          @if (isBoolean(setting)) {
+            <mat-slide-toggle [formControlName]="setting.key" (change)="saveToggle(setting.key)">
+              {{ setting.label }}
+            </mat-slide-toggle>
+            @if (setting.restartRequired) {
+              <span class="restart-badge">{{ 'ADMIN_SETTINGS.CATEGORY.RESTART_REQUIRED' | translate }}</span>
+            }
+          } @else if (isEnum(setting)) {
+            <mat-form-field appearance="outline" class="category-field-row__input">
+              <mat-label>{{ setting.label }}</mat-label>
+              <mat-select [formControlName]="setting.key">
+                @for (option of enumOptions(setting.key); track option) {
+                  <mat-option [value]="option">{{ option }}</mat-option>
+                }
+              </mat-select>
+              @if (setting.description) {
+                <mat-hint>{{ setting.description }}</mat-hint>
+              }
+            </mat-form-field>
+          } @else {
+            <mat-form-field appearance="outline" class="category-field-row__input">
+              <mat-label>{{ setting.label }}</mat-label>
+              <input matInput [formControlName]="setting.key" [type]="setting.valueType === 'INTEGER' ? 'number' : 'text'" />
+              @if (setting.description) {
+                <mat-hint>{{ setting.description }}</mat-hint>
+              }
+            </mat-form-field>
+          }
+
+          @if (!isBoolean(setting)) {
+            <button mat-stroked-button type="button" (click)="saveField(setting.key)" [disabled]="savingKey === setting.key">
+              {{ 'COMMON.SAVE' | translate }}
+            </button>
+          }
+
+          <span class="source-badge">{{ sourceLabel(setting.source) | translate }}</span>
+          @if (setting.restartRequired) {
+            <span class="restart-badge">{{ 'ADMIN_SETTINGS.CATEGORY.RESTART_REQUIRED' | translate }}</span>
+          }
+        </div>
+      }
+
+      @if (editableSettings().length) {
+        <div class="category-save-all-row">
+          <button mat-flat-button color="primary" type="button" (click)="saveAll()" [disabled]="!!savingKey">
+            <mat-icon>save</mat-icon>
+            <span class="ms-1">{{ 'ADMIN_SETTINGS.CATEGORY.SAVE_ALL' | translate }}</span>
+          </button>
+        </div>
+      }
+    </form>
+
+    @for (secret of secretSettings(); track secret.key) {
+      <div class="secret-row">
+        <div>
+          <strong>{{ secret.label }}</strong>
+          @if (secret.description) {
+            <p class="secret-note">{{ secret.description }}</p>
+          }
+        </div>
+        <div class="secret-actions">
+          <span class="status-pill" [class.active]="secret.configured" [class.warn]="!secret.configured">
+            {{ (secret.configured ? 'ADMIN_SETTINGS.MAIL.CONFIGURED' : 'ADMIN_SETTINGS.MAIL.MISSING') | translate }}
+          </span>
+          <span class="source-badge">{{ sourceLabel(secret.source) | translate }}</span>
+          <button mat-flat-button color="primary" type="button" (click)="openRotateSecretDialog(secret)">
+            <mat-icon>vpn_key</mat-icon>
+            <span class="ms-1">{{ 'ADMIN_SETTINGS.MAIL.ROTATE_BUTTON' | translate }}</span>
+          </button>
+        </div>
+      </div>
+    }
+
+  </app-card>
+</section>

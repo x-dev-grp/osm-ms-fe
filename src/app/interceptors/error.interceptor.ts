@@ -7,6 +7,7 @@ import { AuthenticationService } from '../auth/services/authentication.service';
 import { TokenService } from '../auth/services/tokenService.service';
 import { AppConfig } from 'src/environments/environment';
 import { ToastService } from '../shared/services/toast.service';
+import { NewRelicService } from '../shared/services/new-relic.service';
 
 /** Empty string marks a failed refresh so queued requests can fail fast instead of hanging. */
 const REFRESH_FAILED = '';
@@ -16,6 +17,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   private refreshTokenInProgress = false;
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
   private _snackBar = inject(ToastService);
+  private _newRelicService = inject(NewRelicService);
   constructor() {}
   private _authService = inject(AuthenticationService);
   private _tokenService = inject(TokenService);
@@ -32,6 +34,9 @@ export class ErrorInterceptor implements HttpInterceptor {
             case 403:
               return this.handle403Error(err);
             default:
+              if (err.status >= 500) {
+                this.reportServerError(request, err);
+              }
               break;
           }
         }
@@ -127,5 +132,14 @@ export class ErrorInterceptor implements HttpInterceptor {
   }
   private isUrlExcluded(url: string): boolean {
     return this.excludedUrls.some((excludedUrl) => url.includes(excludedUrl.replace(/^\//, '')));
+  }
+
+  private reportServerError(request: HttpRequest<unknown>, error: HttpErrorResponse): void {
+    const message = `HTTP ${error.status} ${request.method} ${request.url}`;
+    this._newRelicService.noticeError(new Error(message), {
+      httpStatus: error.status,
+      httpMethod: request.method,
+      httpUrl: request.url
+    });
   }
 }

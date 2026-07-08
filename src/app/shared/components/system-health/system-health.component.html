@@ -1,0 +1,22 @@
+<button
+  type="button"
+  class="system-health"
+  [class.system-health--compact]="compact()"
+  [attr.data-status]="status"
+  [matTooltip]="tooltip"
+  matTooltipClass="system-health-tooltip"
+  matTooltipPosition="below"
+  aria-label="System health"
+>
+  <span class="system-health__dot"></span>
+  @if (!compact()) {
+    <span class="system-health__label">{{ statusLabel }}</span>
+    <span class="system-health__checks" aria-hidden="true">
+      <span class="system-health__check" [attr.data-status]="checkStatus('backend')">BE</span>
+      <span class="system-health__check" [attr.data-status]="checkStatus('database')">DB</span>
+      <span class="system-health__check" [attr.data-status]="checkStatus('frontend')">FE</span>
+    </span>
+  } @else {
+    <mat-icon class="system-health__icon">monitor_heart</mat-icon>
+  }
+</button>

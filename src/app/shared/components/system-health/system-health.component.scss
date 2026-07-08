@@ -1,0 +1,114 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+}
+
+.system-health {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  max-width: 260px;
+  padding: 0 10px;
+  border: 1px solid #dde3ed;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #172033;
+  font: inherit;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.system-health__dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 999px;
+  background: #9aa4b2;
+}
+
+.system-health[data-status='UP'] .system-health__dot {
+  background: #11845b;
+}
+
+.system-health[data-status='DEGRADED'] .system-health__dot {
+  background: #b7791f;
+}
+
+.system-health[data-status='DOWN'] .system-health__dot,
+.system-health[data-status='ERROR'] .system-health__dot {
+  background: #c2413b;
+}
+
+.system-health__label {
+  min-width: 0;
+  overflow: hidden;
+  color: #344054;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-overflow: ellipsis;
+}
+
+.system-health__checks {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.system-health__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #eef1f5;
+  color: #465266;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.system-health__check[data-status='UP'] {
+  background: #e4f6ee;
+  color: #0f6b49;
+}
+
+.system-health__check[data-status='DEGRADED'] {
+  background: #fff3d7;
+  color: #8a5a12;
+}
+
+.system-health__check[data-status='DOWN'],
+.system-health__check[data-status='ERROR'] {
+  background: #ffe9e7;
+  color: #a5342f;
+}
+
+.system-health--compact {
+  width: 38px;
+  justify-content: center;
+  padding: 0;
+}
+
+.system-health__icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+@media (max-width: 1120px) {
+  .system-health {
+    width: 38px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .system-health__label,
+  .system-health__checks {
+    display: none;
+  }
+}
