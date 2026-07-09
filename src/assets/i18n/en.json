@@ -2580,17 +2580,6 @@
     "REMEMBERME": "Remember me for 24 hours",
     "REMEMBERME_EXPIRY_ERROR": "Your remembered session has expired. Please sign in again.",
     "SERVICE_UNAVAILABLE": "Service unavailable please try again later",
-    "BACKEND_STATUS": {
-      "CHECKING": "Checking API…",
-      "WAKING": "Starting API…",
-      "WAKE": "Start API",
-      "UP": "API available",
-      "DEGRADED": "API reachable — some services degraded",
-      "DOWN": "API unavailable",
-      "UNREACHABLE": "Cannot reach API",
-      "DATABASE_DOWN": "Database check failed",
-      "LATENCY": "Database {{ms}} ms"
-    },
     "TITLE": "Login with your username",
     "UNEXPECTED_ERROR": "An unexpected error occurred",
     "UPDATEPASSWORD": "Update your password",

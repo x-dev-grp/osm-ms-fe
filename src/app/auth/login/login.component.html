@@ -15,52 +15,6 @@
           </a>
         </div>
         <p class="auth-slogan">{{ 'BRANDING.SLOGAN' | translate }}</p>
-        @if (showBackendStatus) {
-          <div class="backend-status-panel">
-            <div
-              class="backend-status"
-              [class.backend-status--up]="backendHealthState === 'up'"
-              [class.backend-status--degraded]="backendHealthState === 'degraded'"
-              [class.backend-status--down]="backendHealthState === 'down' || backendHealthState === 'unreachable'"
-              [class.backend-status--checking]="backendHealthState === 'checking'"
-              role="status"
-              [attr.aria-live]="'polite'"
-            >
-              <mat-icon class="backend-status__icon">
-                {{
-                  backendHealthState === 'up'
-                    ? 'cloud_done'
-                    : backendHealthState === 'degraded'
-                      ? 'cloud_queue'
-                      : backendHealthState === 'checking'
-                        ? 'sync'
-                        : 'cloud_off'
-                }}
-              </mat-icon>
-              <span class="backend-status__label">{{ backendStatusLabelKey() | translate }}</span>
-              @if (backendHealthDetail) {
-                <span class="backend-status__detail">{{ backendHealthDetail }}</span>
-              }
-            </div>
-            @if (showWakeBackendButton()) {
-              <button
-                type="button"
-                mat-stroked-button
-                color="primary"
-                class="backend-status-wake"
-                [disabled]="backendWaking"
-                (click)="wakeBackend()"
-              >
-                @if (backendWaking) {
-                  <mat-spinner diameter="18"></mat-spinner>
-                } @else {
-                  <mat-icon>play_arrow</mat-icon>
-                }
-                <span>{{ 'LOGIN.BACKEND_STATUS.WAKE' | translate }}</span>
-              </button>
-            }
-          </div>
-        }
         <h2 class="text-center">{{ 'LOGIN.TITLE' | translate }}</h2>
         <div *ngIf="errorMessage" class="mat-alert mat-error" role="alert">{{ errorMessage?.message }}</div>
         <form [formGroup]="form" class="form-container">
