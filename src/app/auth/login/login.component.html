@@ -19,9 +19,15 @@
         <div *ngIf="errorMessage" class="mat-alert mat-error" role="alert">{{ errorMessage?.message }}</div>
         <form [formGroup]="form" class="form-container">
           <div class="form-group">
-            <label for="username" class="form-label">{{ 'LOGIN.USERNAME' | translate }}</label>
+            <label for="username" class="form-label">{{ 'LOGIN.IDENTIFIER' | translate }}</label>
             <mat-form-field appearance="outline" class="w-full">
-              <input matInput formControlName="username" id="username" />
+              <input
+                matInput
+                formControlName="username"
+                id="username"
+                autocomplete="username"
+                [placeholder]="'LOGIN.IDENTIFIER_PLACEHOLDER' | translate"
+              />
               <mat-error *ngIf="form.controls['username'].invalid">{{ getUserNameErrorMessage() }}</mat-error>
             </mat-form-field>
           </div>

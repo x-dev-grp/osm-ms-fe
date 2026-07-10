@@ -37,9 +37,9 @@ export class LoginComponent implements OnInit {
 
   getUserNameErrorMessage() {
     if (this.form.controls['username'].hasError('required')) {
-      return this.translateService.instant('LOGIN.USERNAME_REQUIRED');
+      return this.translateService.instant('LOGIN.IDENTIFIER_REQUIRED');
     }
-    return this.form.controls['username'].hasError('email') ? this.translateService.instant('LOGIN.USERNAME_INVALID') : '';
+    return '';
   }
 
   getPasswordErrorMessage() {
@@ -91,9 +91,13 @@ export class LoginComponent implements OnInit {
     }
     this.loading = true;
     const rememberMe = this.form.get('rememberMe')?.value === true;
+    const loginPayload = {
+      ...this.form.value,
+      username: (this.form.get('username')?.value as string)?.trim()
+    };
 
     this.authenticationService
-      .login(this.form.value)
+      .login(loginPayload)
       .pipe(
         first(),
         catchError((err: any) => {
