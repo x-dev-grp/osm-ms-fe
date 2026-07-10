@@ -2,7 +2,7 @@
 
 Full stack guide (backend + Postgres + variables): **[../oosm/RAILWAY_TESTING.md](../oosm/RAILWAY_TESTING.md)** in the backend repo.
 
-**Hybrid (Railway frontend/backend + Render Postgres):** see **[../oosm/RAILWAY_RENDER_DB.md](../oosm/RAILWAY_RENDER_DB.md)** and paste [`.env.railway.render-db`](.env.railway.render-db).
+**Hybrid (Render frontend + Railway backend + Render Postgres):** see **[../oosm/RAILWAY_RENDER_DB.md](../oosm/RAILWAY_RENDER_DB.md)**. On Render set `BACKEND_URL` from [`.env.render.railway-api.example`](.env.render.railway-api.example) — do not deploy this frontend on Railway for that setup.
 
 ## This service
 

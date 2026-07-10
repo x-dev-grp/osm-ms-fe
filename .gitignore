@@ -74,6 +74,7 @@ typings/
 .env.test
 .env.*
 !.env.render.example
+!.env.render.railway-api.example
 !.env.railway.example
 !.env.railway.render-db.example
 

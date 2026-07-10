@@ -1,5 +1,22 @@
 # Render Deployment
 
+## Hybrid: Render frontend + Railway backend + Render Postgres
+
+Keep **oosm-web** on Render and point nginx at the Railway API:
+
+```text
+BACKEND_URL=https://<backend>.up.railway.app
+```
+
+Template: [`.env.render.railway-api.example`](.env.render.railway-api.example).  
+Full guide: [../oosm/RAILWAY_RENDER_DB.md](../oosm/RAILWAY_RENDER_DB.md).
+
+Suspend the old Render `oosm-api` if you want; keep **Postgres** and **oosm-web**.
+
+---
+
+## Full stack on Render
+
 Create the service from the `render.yaml` Blueprint. It defines a Web Service
 with the Docker runtime. Do not create a Static Site or a native Node Web
 Service.
