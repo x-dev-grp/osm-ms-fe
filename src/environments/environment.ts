@@ -7,7 +7,9 @@ import packageInfo from '../../package.json';
 export const environment = {
   appVersion: packageInfo.version,
   production: false,
-  apiUrl: ''
+  apiUrl: '',
+  /** Public OneSignal App ID (safe in the browser). REST API key stays on the backend only. */
+  oneSignalAppId: '937e982c-31ae-46c4-8537-030deed9b2aa'
 };
 
 export const AppConfig={

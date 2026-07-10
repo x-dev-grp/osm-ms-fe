@@ -215,8 +215,8 @@
     "NOTIFICATIONS": {
       "TEST_BUTTON": "Send test notification",
       "TEST_TITLE": "Send test notification",
-      "TEST_HINT": "Sends a OneSignal push using the current app ID, API key, and endpoint. Paste a device Player ID from OneSignal.",
-      "TEST_PLAYER_ID": "OneSignal player ID",
+      "TEST_HINT": "Sends a OneSignal push using the current app ID, API key, and endpoint. After login, open the site, allow notifications, then paste your Subscription ID from the browser console: OneSignal.User.PushSubscription.id",
+      "TEST_PLAYER_ID": "OneSignal subscription ID",
       "TEST_TITLE_FIELD": "Title",
       "TEST_MESSAGE": "Message",
       "TEST_SUBMIT": "Send test",
