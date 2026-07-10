@@ -2,6 +2,8 @@
 
 Full stack guide (backend + Postgres + variables): **[../oosm/RAILWAY_TESTING.md](../oosm/RAILWAY_TESTING.md)** in the backend repo.
 
+**Hybrid (Railway frontend/backend + Render Postgres):** see **[../oosm/RAILWAY_RENDER_DB.md](../oosm/RAILWAY_RENDER_DB.md)** and paste [`.env.railway.render-db`](.env.railway.render-db).
+
 ## This service
 
 Deploy the **`osm-ms-fe`** root as a Railway service. Railway reads:

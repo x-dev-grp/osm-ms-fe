@@ -74,6 +74,8 @@ typings/
 .env.test
 .env.*
 !.env.render.example
+!.env.railway.example
+!.env.railway.render-db.example
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
