@@ -15,6 +15,19 @@
         @if (feature.missingKeys?.length) {
           <span class="category-missing">{{ 'ADMIN_SETTINGS.MAIL.MISSING_HINT' | translate }}: {{ feature.missingKeys.join(', ') }}</span>
         }
+        @if (isNotificationsCategory()) {
+          <button
+            mat-stroked-button
+            color="primary"
+            type="button"
+            class="notification-test-btn"
+            (click)="openNotificationTestDialog()"
+            [disabled]="!feature.configured"
+          >
+            <mat-icon>notifications_active</mat-icon>
+            <span class="ms-1">{{ 'ADMIN_SETTINGS.NOTIFICATIONS.TEST_BUTTON' | translate }}</span>
+          </button>
+        }
       </div>
     }
 

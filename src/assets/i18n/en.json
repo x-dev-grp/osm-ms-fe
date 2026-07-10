@@ -212,6 +212,17 @@
       "STATUS_PARTIAL": "Partially configured",
       "STATUS_MISSING": "Not configured"
     },
+    "NOTIFICATIONS": {
+      "TEST_BUTTON": "Send test notification",
+      "TEST_TITLE": "Send test notification",
+      "TEST_HINT": "Sends a OneSignal push using the current app ID, API key, and endpoint. Paste a device Player ID from OneSignal.",
+      "TEST_PLAYER_ID": "OneSignal player ID",
+      "TEST_TITLE_FIELD": "Title",
+      "TEST_MESSAGE": "Message",
+      "TEST_SUBMIT": "Send test",
+      "TEST_SUCCESS": "Test notification sent.",
+      "TEST_ERROR": "Notification test failed."
+    },
     "SOURCE": {
       "DATABASE": "Database",
       "DEFAULT": "Default",

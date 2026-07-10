@@ -18,6 +18,7 @@ import { ConfirmationDialogService, ConfirmationType } from 'src/app/shared/serv
 import { AdminSetting, AdminSettingsStatus, FeatureStatus } from '../models/admin-setting.model';
 import { AdminSettingsService } from '../services/admin-settings.service';
 import { RotateSecretDialogComponent } from '../dialogs/rotate-secret-dialog.component';
+import { NotificationTestDialogComponent } from '../dialogs/notification-test-dialog.component';
 import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
 @Component({
@@ -177,6 +178,24 @@ export class AdminSettingsCategoryComponent implements OnChanges {
 
     dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updated) => {
       if (updated) {
+        this.changed.emit();
+      }
+    });
+  }
+
+  isNotificationsCategory(): boolean {
+    return this.featureKey === 'notifications';
+  }
+
+  openNotificationTestDialog(): void {
+    const dialogRef = this.dialog.open(NotificationTestDialogComponent, {
+      width: '520px',
+      maxWidth: '95vw',
+      data: {}
+    });
+
+    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((sent) => {
+      if (sent) {
         this.changed.emit();
       }
     });

@@ -212,6 +212,17 @@
       "STATUS_PARTIAL": "Partiellement configuré",
       "STATUS_MISSING": "Non configuré"
     },
+    "NOTIFICATIONS": {
+      "TEST_BUTTON": "Envoyer une notification test",
+      "TEST_TITLE": "Envoyer une notification test",
+      "TEST_HINT": "Envoie une notification OneSignal avec l'app ID, la clé API et l'endpoint actuels. Collez un Player ID OneSignal.",
+      "TEST_PLAYER_ID": "OneSignal player ID",
+      "TEST_TITLE_FIELD": "Titre",
+      "TEST_MESSAGE": "Message",
+      "TEST_SUBMIT": "Envoyer le test",
+      "TEST_SUCCESS": "Notification test envoyée.",
+      "TEST_ERROR": "Échec du test de notification."
+    },
     "SOURCE": {
       "DATABASE": "Base de données",
       "DEFAULT": "Défaut",

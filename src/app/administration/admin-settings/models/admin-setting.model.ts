@@ -75,6 +75,19 @@ export interface MailTestRequest {
   to: string;
 }
 
+export interface NotificationTestRequest {
+  playerId: string;
+  title?: string;
+  message?: string;
+}
+
+export interface NotificationTestResponse {
+  success: boolean;
+  provider?: string;
+  result?: string;
+  error?: string;
+}
+
 export interface PagedAuditResponse {
   content: AdminSettingAuditEntry[];
   totalElements: number;

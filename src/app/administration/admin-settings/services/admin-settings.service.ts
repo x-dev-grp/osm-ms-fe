@@ -8,6 +8,8 @@ import {
   AdminSettingsStatus,
   MailTestRequest,
   MailTestResponse,
+  NotificationTestRequest,
+  NotificationTestResponse,
   PagedAuditResponse,
   RotateSecretRequest,
   UpdateSettingRequest
@@ -45,6 +47,10 @@ export class AdminSettingsService {
 
   sendMailTest(request: MailTestRequest): Observable<MailTestResponse> {
     return this.http.post<MailTestResponse>(`${this.baseUrl}/mail/test`, request);
+  }
+
+  sendNotificationTest(request: NotificationTestRequest): Observable<NotificationTestResponse> {
+    return this.http.post<NotificationTestResponse>(`${this.baseUrl}/notifications/test`, request);
   }
 
   listAudit(key?: string, page = 0, size = 20): Observable<PagedAuditResponse> {
