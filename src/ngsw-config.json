@@ -27,22 +27,10 @@
       }
     }
   ],
-  "dataGroups": [
-    {
-      "name": "api-freshness",
-      "urls": [
-        "/api/*"
-      ],
-      "cacheConfig": {
-        "strategy": "freshness",
-        "maxSize": 100,
-        "maxAge": "1h",
-        "timeout": "10s"
-      }
-    }
-  ],
+  "dataGroups": [],
   "navigationUrls": [
     "/**",
-    "!/**/oauth2/token**"
+    "!/**/oauth2/token**",
+    "!/**/api/security/user/auth/**"
   ]
 }

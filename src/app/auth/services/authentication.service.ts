@@ -44,6 +44,7 @@ export class AuthenticationService {
   private photoRequestInFlight = false;
   private sessionRefreshRequest: Observable<SessionRefreshResponse> | null = null;
   private lastDocumentHiddenAt = 0;
+  private loggingOut = false;
   private static readonly SESSION_REFRESH_MIN_INTERVAL_MS = 2 * 60 * 1000;
   private static readonly SESSION_REFRESH_FAILURE_BACKOFF_MS = 5 * 60 * 1000;
   private static readonly SESSION_VISIBILITY_MIN_HIDDEN_MS = 30 * 1000;
@@ -482,7 +483,15 @@ export class AuthenticationService {
     );
   }
 
+  get isLoggingOut(): boolean {
+    return this.loggingOut;
+  }
+
   logout(queryParams?: string) {
+    if (this.loggingOut) {
+      return;
+    }
+    this.loggingOut = true;
     this.stopSessionSync();
     this.injector.get(NotificationService).stopPolling();
     this.permissionService.clearCache();
@@ -492,12 +501,21 @@ export class AuthenticationService {
     this.setUserPhotoPreview(null);
     this.photoRequestUserId = null;
     this.lastSessionRefreshAt = 0;
-    if (!queryParams) {
-      this.router.navigate(['/auth/login']);
-      return;
-    }
-    this.router.navigate(['/auth/login'], {
-      queryParams: { error: queryParams }
-    });
+    this.sessionRefreshRequest = null;
+
+    const navigate = () => {
+      if (!queryParams) {
+        void this.router.navigate(['/auth/login']).finally(() => {
+          this.loggingOut = false;
+        });
+        return;
+      }
+      void this.router.navigate(['/auth/login'], {
+        queryParams: { error: queryParams }
+      }).finally(() => {
+        this.loggingOut = false;
+      });
+    };
+    navigate();
   }
 }

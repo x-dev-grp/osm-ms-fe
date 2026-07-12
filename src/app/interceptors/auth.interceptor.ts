@@ -7,7 +7,13 @@ import { AppConfig } from 'src/environments/environment';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private readonly tokenService = inject(TokenService);
-  private readonly excludedUrls: string[] = [AppConfig.authentication.authorization, 'assets/'];
+  private readonly excludedUrls: string[] = [
+    AppConfig.authentication.authorization,
+    'assets/',
+    '/oauth2/token',
+    'oauth2/token',
+    '/api/security/user/auth/'
+  ];
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (this.isUrlExcluded(request.url)) {
@@ -34,6 +40,12 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private isUrlExcluded(url: string): boolean {
-    return this.excludedUrls.some((excludedUrl) => url.startsWith(excludedUrl));
+    return this.excludedUrls.some((excludedUrl) => {
+      if (!excludedUrl) {
+        return false;
+      }
+      const normalized = excludedUrl.replace(/^\//, '');
+      return url.includes(normalized) || url.startsWith(excludedUrl);
+    });
   }
 }
