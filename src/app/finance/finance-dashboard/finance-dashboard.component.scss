@@ -1,103 +1,48 @@
-@import '../../../app/shared/styles/dashboard-common.scss';
+@import '../../shared/styles/dashboard-common.scss';
 @import '../shared/finance-ablepro';
 
-.toolbar {
-  display: flex;
-  align-items: center;
+.finance-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background: var(--surface, #fff);
+  margin-bottom: 1.25rem;
+}
+
+.finance-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
   border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(16, 24, 40, 0.05);
 
-  &.toolbar--split {
-    justify-content: space-between;
-    flex-wrap: wrap;
+  &--primary {
+    border-color: rgba(21, 101, 192, 0.25);
+    background: linear-gradient(180deg, rgba(21, 101, 192, 0.08), #fff 55%);
   }
 
-  &__left,
-  &__right {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  &__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #667085;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
-}
 
-.expense-categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-  padding: 1rem 0;
+  &__value {
+    font-size: 1.35rem;
+    line-height: 1.2;
+    color: #111827;
+  }
 
-  .category-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    background: #fff;
-    border-radius: 14px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(16, 24, 40, 0.08);
-    }
-
-    .category-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex: 1;
-
-      .category-icon {
-        color: #1565c0;
-        font-size: 1.5rem;
-        height: 1.5rem;
-        width: 1.5rem;
-      }
-
-      .category-details {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-
-        .category-name {
-          font-weight: 600;
-          color: #111827;
-          font-size: 0.9rem;
-        }
-
-        .category-value {
-          font-size: 0.75rem;
-          color: #667085;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-      }
-    }
-
-    .category-amount .amount {
-      font-weight: 700;
-      color: #2e7d32;
-      font-size: 0.9rem;
-    }
+  &__hint {
+    font-size: 0.78rem;
+    color: #98a2b3;
   }
 }
 
-@media (max-width: 768px) {
-  .toolbar {
-    flex-direction: column;
-    align-items: stretch;
-
-    &__left,
-    &__right {
-      justify-content: center;
-    }
-  }
-
-  .expense-categories-grid {
-    grid-template-columns: 1fr;
-  }
-}
+.text-success { color: #2e7d32; }
+.text-danger { color: #c62828; }
+.text-warning { color: #ed6c02; }

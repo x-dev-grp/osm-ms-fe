@@ -1,0 +1,91 @@
+<div class="dashboard-hub">
+  <header class="dashboard-hub__header page-header page-header--hub">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hub">
+        <mat-icon>dashboard</mat-icon>
+      </div>
+      <div>
+        <h1 class="m-0 f-w-600">{{ 'DASHBOARD_HUB.TITLE' | translate }}</h1>
+        <p class="m-0 text-muted dashboard-hub__subtitle">{{ 'DASHBOARD_HUB.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+  </header>
+
+  @if (!visibleTabs.length) {
+    <section class="dashboard-hub__empty">
+      <mat-icon>lock</mat-icon>
+      <h2>{{ 'DASHBOARD_HUB.NO_ACCESS_TITLE' | translate }}</h2>
+      <p>{{ 'DASHBOARD_HUB.NO_ACCESS' | translate }}</p>
+    </section>
+  } @else {
+    <nav class="dashboard-hub__tabs" role="tablist" [attr.aria-label]="'DASHBOARD_HUB.TABS_ARIA' | translate">
+      @for (tab of visibleTabs; track tab.id) {
+        <button
+          type="button"
+          class="dashboard-hub-tab"
+          [class]="tab.accentClass"
+          [class.active]="activeTabId === tab.id"
+          [attr.aria-selected]="activeTabId === tab.id"
+          [attr.aria-label]="tab.labelKey | translate"
+          [matTooltip]="tab.labelKey | translate"
+          matTooltipShowDelay="200"
+          role="tab"
+          (click)="selectTab(tab.id)"
+        >
+          <mat-icon aria-hidden="true">{{ tab.icon }}</mat-icon>
+          <span class="dashboard-hub-tab__label">{{ tab.labelKey | translate }}</span>
+        </button>
+      }
+    </nav>
+
+    <section class="dashboard-hub__panel" role="tabpanel">
+      @if (activeTabId && loadedTabs.has('overview') && activeTabId === 'overview') {
+        <div class="dashboard-hub__embedded">
+          <app-home-dashboard />
+        </div>
+      }
+
+      @if (activeTabId && loadedTabs.has('reception') && activeTabId === 'reception') {
+        <div class="dashboard-hub__embedded">
+          <app-reception-dashboard />
+        </div>
+      }
+
+      @if (activeTabId && loadedTabs.has('finance') && activeTabId === 'finance') {
+        <div class="dashboard-hub__embedded">
+          <app-finance-dashboard />
+        </div>
+      }
+
+      @if (activeTabId && loadedTabs.has('storage') && activeTabId === 'storage') {
+        <div class="dashboard-hub__embedded">
+          <app-storage-units-board />
+        </div>
+      }
+
+      @if (activeTabId && loadedTabs.has('inventory') && activeTabId === 'inventory') {
+        <div class="dashboard-hub__embedded">
+          <app-stock-dashboard />
+        </div>
+      }
+
+      @if (activeTabId && loadedTabs.has('hr') && activeTabId === 'hr') {
+        <div class="dashboard-hub__embedded">
+          <app-hr-dashboard />
+        </div>
+      }
+
+      @if (activeTabId && loadedTabs.has('analytics') && activeTabId === 'analytics') {
+        <div class="dashboard-hub__embedded">
+          <app-analytics-dashboard />
+        </div>
+      }
+
+      @if (activeTabId && loadedTabs.has('administration') && activeTabId === 'administration') {
+        <div class="dashboard-hub__embedded">
+          <app-administration-dashboard />
+        </div>
+      }
+    </section>
+  }
+</div>

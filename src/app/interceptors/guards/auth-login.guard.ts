@@ -21,5 +21,5 @@ export const AuthGuardLogin: CanActivateFn = () => {
     return router.createUrlTree(['/auth/user/update-password']);
   }
 
-  return router.createUrlTree([currentUser?.role === Role.OosmAdmin ? '/administration/dashboard' : '/welcome']);
+  return router.createUrlTree([currentUser?.role === Role.OosmAdmin ? '/dashboard/administration' : '/dashboard']);
 };

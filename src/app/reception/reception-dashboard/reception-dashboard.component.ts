@@ -7,10 +7,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -32,9 +28,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { DailyMetricClient, normalizeMetricValue } from '../../shared/services/DailyMetricPayload';
 import { DailyMetricDialogComponent } from '../../shared/components/daily-metric-dialog/daily-metric-dialog.component';
 import { OperationType } from '../../shared/models/operation-type.enum';
+import { DashboardShellComponent } from '../../shared/components/dashboard/dashboard-shell.component';
+import { createKpiSheet, DashboardExportPayload } from '../../shared/components/dashboard/dashboard-export.models';
+import { DashboardDateRange, getDashboardPresetDateRange } from '../../shared/components/dashboard/dashboard-preset.util';
 
 type TrendGranularity = 'daily' | 'weekly' | 'monthly' | 'yearly';
-type PresetPeriod = 'today' | 'yesterday' | 'thisWeek' | 'lastWeek' | 'thisMonth' | 'lastMonth' | 'thisYear' | 'lastYear' | 'custom';
+
+const defaultReceptionRange = getDashboardPresetDateRange('thisMonth');
 
 @Component({
   selector: 'app-reception-dashboard',
@@ -50,10 +50,6 @@ type PresetPeriod = 'today' | 'yesterday' | 'thisWeek' | 'lastWeek' | 'thisMonth
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    MatProgressSpinnerModule,
-    MatDatepickerModule,
-    MatInputModule,
-    MatNativeDateModule,
     MatSelectModule,
     FormsModule,
     RouterModule,
@@ -61,7 +57,8 @@ type PresetPeriod = 'today' | 'yesterday' | 'thisWeek' | 'lastWeek' | 'thisMonth
     CardComponent,
     NgApexchartsModule,
     SharedModule,
-    TranslateModule
+    TranslateModule,
+    DashboardShellComponent
   ]
 })
 export class ReceptionDashboardComponent implements OnInit, OnDestroy {
@@ -74,26 +71,10 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   // Daily base-price metric (DAILY_OIL_METRIC parameter)
   private readonly DAILY_METRIC_CODE = 'DAILY_OIL_METRIC';
   canEditToday$ = new BehaviorSubject(true);
-  // Quick period configuration for compact pills
-  quickPeriods = [
-    { value: 'today' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.TODAY' },
-    { value: 'yesterday' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.YESTERDAY' },
-    { value: 'thisWeek' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.THIS_WEEK' },
-    { value: 'lastWeek' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.LAST_WEEK' },
-    { value: 'thisMonth' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.THIS_MONTH' },
-    { value: 'lastMonth' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.LAST_MONTH' },
-    { value: 'thisYear' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.THIS_YEAR' },
-    { value: 'lastYear' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.LAST_YEAR' }
-  ];
   // Date Range & Filtering
-  rangeStart!: Date;
-  rangeEnd!: Date;
+  rangeStart = defaultReceptionRange.start;
+  rangeEnd = defaultReceptionRange.end;
   trendGranularity: TrendGranularity = 'monthly';
-  selectedPreset: PresetPeriod = 'thisMonth';
-  customStartDate: Date | null = null;
-  customEndDate: Date | null = null;
-  maxDate = new Date();
-  selectedPeriodDisplay: string | null = null;
   // Operation Type Filter
   selectedOperationType: string;
   operationTypes = [
@@ -155,7 +136,6 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private dailyMetric: DailyMetricClient
   ) {
-    this.initializeDefaultDateRange();
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => this.updateChartLabels());
   }
 
@@ -178,6 +158,31 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
 
   get formattedTotalUnpaidAmount(): string {
     return this.totalUnpaidAmount.toFixed(2) + ' TND';
+  }
+
+  get filtersSummary(): string | null {
+    const selected = this.operationTypes.find((op) => op.value === this.selectedOperationType);
+    return selected ? this.translate.instant(selected.labelKey) : null;
+  }
+
+  get exportPayload(): DashboardExportPayload | null {
+    return {
+      fileName: 'reception-dashboard',
+      title: this.translate.instant('DASHBOARD.TITLE.RECEPTION'),
+      sheets: [
+        createKpiSheet('KPIs', [
+          { label: this.translate.instant('DASHBOARD.KPIS.TOTAL_RECEPTIONS'), value: this.totalReceptions },
+          { label: this.translate.instant('DASHBOARD.KPIS.PENDING_RECEPTIONS'), value: this.pendingReceptions },
+          { label: this.translate.instant('DASHBOARD.KPIS.COMPLETED_RECEPTIONS'), value: this.completedReceptions },
+          { label: this.translate.instant('DASHBOARD.KPIS.AVG_VOLUME'), value: this.avgVolumePerReception },
+          { label: this.translate.instant('DASHBOARD.KPIS.AVG_UNIT_PRICE'), value: this.avgUnitPrice },
+          { label: this.translate.instant('DASHBOARD.KPIS.TOTAL_PAID'), value: this.totalPaidAmount },
+          { label: this.translate.instant('DASHBOARD.KPIS.TOTAL_UNPAID'), value: this.totalUnpaidAmount },
+          { label: this.translate.instant('DASHBOARD.KPIS.UNIQUE_SUPPLIERS'), value: this.uniqueSuppliers },
+          { label: this.translate.instant('DASHBOARD.KPIS.TOTAL_VOLUME'), value: this.totalVolume }
+        ])
+      ]
+    };
   }
 
   ngOnInit(): void {
@@ -231,37 +236,12 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     this.refresh();
   }
 
-  selectPresetPeriod(preset: PresetPeriod): void {
-    this.selectedPreset = preset;
-    this.customStartDate = null;
-    this.customEndDate = null;
-
-    const dates = this.getPresetDateRange(preset);
-    this.rangeStart = dates.start;
-    this.rangeEnd = dates.end;
-
-    this.updateSelectedPeriodDisplay();
-    this.applyFiltersAndRebuild();
-  }
-
-  applyCustomDateRange(): void {
-    if (!this.customStartDate || !this.customEndDate) return;
-
-    this.selectedPreset = 'custom';
-    this.rangeStart = this.stripTime(this.customStartDate);
-    this.rangeEnd = this.stripTime(this.customEndDate);
-
-    this.updateSelectedPeriodDisplay();
-    this.applyFiltersAndRebuild();
-  }
-
-  clearDateRange(): void {
-    this.selectedPreset = 'thisMonth';
-    this.customStartDate = null;
-    this.customEndDate = null;
-    this.selectedPeriodDisplay = null;
-    this.initializeDefaultDateRange();
-    this.applyFiltersAndRebuild();
+  onDateRangeChange(range: DashboardDateRange): void {
+    this.rangeStart = range.start;
+    this.rangeEnd = range.end;
+    if (this.allReceptions.length) {
+      this.applyFiltersAndRebuild();
+    }
   }
 
   openDailyMetricDialog(): void {
@@ -334,93 +314,6 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
 
     // Calculate KPIs and update charts
     this.prepareStatsAndCharts();
-  }
-
-  // === Date Range Management ===
-  private initializeDefaultDateRange(): void {
-    const now = new Date();
-    this.rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    this.rangeEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    this.updateSelectedPeriodDisplay();
-  }
-
-  private getPresetDateRange(preset: PresetPeriod): { start: Date; end: Date } {
-    const now = new Date();
-    const today = this.stripTime(now);
-
-    switch (preset) {
-      case 'today':
-        return { start: new Date(today), end: new Date(today) };
-
-      case 'yesterday':
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        return { start: yesterday, end: yesterday };
-
-      case 'thisWeek':
-        const startOfWeek = new Date(today);
-        const dayOfWeek = startOfWeek.getDay();
-        const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-        startOfWeek.setDate(diff);
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
-        return { start: startOfWeek, end: endOfWeek };
-
-      case 'lastWeek':
-        const lastWeekStart = new Date(today);
-        const lastWeekDay = lastWeekStart.getDay();
-        const lastWeekDiff = lastWeekStart.getDate() - lastWeekDay + (lastWeekDay === 0 ? -6 : 1) - 7;
-        lastWeekStart.setDate(lastWeekDiff);
-        const lastWeekEnd = new Date(lastWeekStart);
-        lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
-        return { start: lastWeekStart, end: lastWeekEnd };
-
-      case 'thisMonth':
-        return {
-          start: new Date(now.getFullYear(), now.getMonth(), 1),
-          end: new Date(now.getFullYear(), now.getMonth() + 1, 0)
-        };
-
-      case 'lastMonth':
-        return {
-          start: new Date(now.getFullYear(), now.getMonth() - 1, 1),
-          end: new Date(now.getFullYear(), now.getMonth(), 0)
-        };
-
-      case 'thisYear':
-        return {
-          start: new Date(now.getFullYear(), 0, 1),
-          end: new Date(now.getFullYear(), 11, 31)
-        };
-
-      case 'lastYear':
-        return {
-          start: new Date(now.getFullYear() - 1, 0, 1),
-          end: new Date(now.getFullYear() - 1, 11, 31)
-        };
-
-      default:
-        return { start: this.rangeStart, end: this.rangeEnd };
-    }
-  }
-
-  private updateSelectedPeriodDisplay(): void {
-    if (this.selectedPreset === 'custom' && this.customStartDate && this.customEndDate) {
-      this.selectedPeriodDisplay = `${this.customStartDate.toLocaleDateString()} - ${this.customEndDate.toLocaleDateString()}`;
-    } else {
-      const presetLabels: Record<PresetPeriod, string> = {
-        today: "Aujourd'hui",
-        yesterday: 'Hier',
-        thisWeek: 'Cette semaine',
-        lastWeek: 'Semaine dernière',
-        thisMonth: 'Ce mois',
-        lastMonth: 'Mois dernier',
-        thisYear: 'Cette année',
-        lastYear: 'Année dernière',
-        custom: 'Période personnalisée'
-      };
-      this.selectedPeriodDisplay = presetLabels[this.selectedPreset] || '';
-    }
   }
 
   // === KPIs & Charts ===

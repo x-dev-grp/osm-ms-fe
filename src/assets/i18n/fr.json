@@ -1953,6 +1953,19 @@
       "TO_DATE": "Date de fin",
       "YESTERDAY": "Hier"
     },
+    "FILTERS": {
+      "TITLE": "Filtres",
+      "ALL": "Tous les filtres"
+    },
+    "EXPORT": {
+      "TITLE": "Exporter",
+      "EXCEL": "Excel (.xlsx)",
+      "CSV": "CSV",
+      "PDF": "PDF",
+      "SUCCESS": "Export généré avec succès",
+      "ERROR": "Échec de l'export",
+      "NO_DATA": "Aucune donnée à exporter"
+    },
     "KPIS": {
       "AVG_UNIT_PRICE": "Prix unitaire moyen",
       "AVG_VOLUME": "Volume ⌀",
@@ -4670,7 +4683,8 @@
       "CREATED_DATE": "Date de création",
       "CURRENT_VOLUME": "Volume actuel",
       "DASHBOARD": {
-        "TITLE": "Tableau de bord de stockage"
+        "TITLE": "Tableau de bord de stockage",
+        "SUBTITLE": "Vue d'ensemble des cuves et capacités"
       },
       "FILTERED": "Filtré",
       "LOCATION": "Emplacement",
@@ -7194,6 +7208,23 @@
     "FILTRATION_COMPLETED": "Terminee",
     "FILTRATION_CANCELLED": "Annulee",
     "MATERIEL_SUPPLIER": "Fournisseur matériel"
+  },
+  "DASHBOARD_HUB": {
+    "TITLE": "Tableaux de bord",
+    "SUBTITLE": "Basculer entre les tableaux de bord des modules",
+    "TABS_ARIA": "Tableaux de bord par module",
+    "NO_ACCESS_TITLE": "Aucun tableau de bord disponible",
+    "NO_ACCESS": "Votre compte n'a pas la permission d'afficher un tableau de bord. Contactez un administrateur.",
+    "TABS": {
+      "OVERVIEW": "Vue d'ensemble",
+      "RECEPTION": "Réception",
+      "FINANCE": "Finance",
+      "STORAGE": "Stockage",
+      "INVENTORY": "Inventaire",
+      "HR": "Ressources humaines",
+      "ANALYTICS": "Analytique",
+      "ADMINISTRATION": "Admin plateforme"
+    }
   },
   "HOME_DASHBOARD": {
     "TITLE": "Accueil",

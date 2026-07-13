@@ -18,8 +18,8 @@ export const OOSM_MOBILE_NAV_TABS: MobileNavTab[] = [
     id: 'home',
     labelKey: 'MOBILE_NAV.HOME',
     icon: 'home',
-    url: '/welcome',
-    routePrefixes: ['/welcome', '/home']
+    url: '/dashboard',
+    routePrefixes: ['/dashboard', '/welcome', '/home']
   },
   {
     id: 'reception',
@@ -51,10 +51,10 @@ export const OOSM_MOBILE_PRIMARY_GROUP_IDS = OOSM_MOBILE_NAV_TABS.map((tab) => t
 export const ADMIN_MOBILE_NAV_TABS: MobileNavTab[] = [
   {
     id: 'dashboard',
-    labelKey: 'MENU.ADMINISTRATION.DASHBOARD',
-    icon: 'admin_panel_settings',
-    url: '/administration/dashboard',
-    routePrefixes: ['/administration/dashboard']
+    labelKey: 'DASHBOARD_HUB.TITLE',
+    icon: 'dashboard',
+    url: '/dashboard/administration',
+    routePrefixes: ['/dashboard', '/administration/dashboard']
   },
   {
     id: 'companies',

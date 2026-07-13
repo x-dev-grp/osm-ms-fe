@@ -1,276 +1,186 @@
-<!-- ========= Reception Dashboard ========= -->
-<div class="dashboard-shell reception-dashboard">
-
-<div class="page-header sticky-actions page-header--reception">
-  <div class="page-header__left">
-    <div class="header-icon-wrap header-icon-wrap--reception">
-      <mat-icon>spa</mat-icon>
-    </div>
-    <div>
-      <h2 class="m-0 f-w-600">{{ 'DASHBOARD.TITLE.RECEPTION' | translate }}</h2>
-    </div>
-    <span *ngIf="lastUpdated" class="d-none d-lg-inline ms-2 page-header__updated">
-      <mat-icon class="me-1" inline>update</mat-icon>
-      {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
-    </span>
-  </div>
-
-  <div class="page-header__right">
+<app-dashboard-shell
+  titleKey="DASHBOARD.TITLE.RECEPTION"
+  icon="spa"
+  theme="reception"
+  [loading]="isLoading"
+  [loadErrorText]="error"
+  [lastUpdated]="lastUpdated"
+  [showDateFilter]="true"
+  [filtersSummary]="filtersSummary"
+  [exportPayload]="exportPayload"
+  loadingMessageKey="DASHBOARD.LOADING.TEXT"
+  (refresh)="refresh()"
+  (dateRangeChange)="onDateRangeChange($event)"
+>
+  <div dashboardHeaderActions>
     <button
       (click)="openDailyMetricDialog()"
       [disabled]="isLoading"
       [matTooltip]="((canEditToday$ | async) ? 'DASHBOARD.DAILY_METRIC.BUTTON' : 'DASHBOARD.DAILY_METRIC.BUTTON_VIEW') | translate"
       color="accent"
-      mat-stroked-button>
+      mat-stroked-button
+      type="button"
+    >
       <mat-icon>trending_up</mat-icon>
       <span class="d-none d-sm-inline ms-1">{{ ((canEditToday$ | async) ? 'DASHBOARD.DAILY_METRIC.BUTTON' : 'DASHBOARD.DAILY_METRIC.BUTTON_VIEW') | translate }}</span>
     </button>
-
-    <button
-      (click)="refresh()"
-      [disabled]="isLoading"
-      color="primary"
-      mat-stroked-button>
-      <mat-icon [class.spinning]="isLoading">refresh</mat-icon>
-      <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
-    </button>
   </div>
-</div>
 
-<section class="dashboard-section">
-  <app-card
-    [cardTitle]="'DASHBOARD.DATE_FILTER.TITLE' | translate"
-    [icon]="'date_range'"
-    class="date-filter-card panel-card">
-    <div [class.loading]="isLoading" class="reception-filters">
-      <div class="filter-group period-pills">
-        <button
-          (click)="selectPresetPeriod(period.value)"
-          *ngFor="let period of quickPeriods"
-          [class.active]="selectedPreset === period.value"
-          [disabled]="isLoading"
-          class="period-pill"
-          mat-stroked-button>
-          {{ period.label | translate }}
-        </button>
-      </div>
+  <div dashboardFilterExtras class="reception-filter-extras">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>{{ 'BASE_TYPE.OPERATION_TYPE' | translate }}</mat-label>
+      <mat-select
+        (selectionChange)="onOperationTypeChange($event.value)"
+        [(value)]="selectedOperationType"
+      >
+        <mat-option *ngFor="let op of operationTypes" [value]="op.value">
+          {{ op.labelKey | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-      <div class="filter-group date-range">
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>{{ 'DASHBOARD.DATE_FILTER.FROM_DATE' | translate }}</mat-label>
-          <input
-            [(ngModel)]="customStartDate"
-            [disabled]="isLoading"
-            [matDatepicker]="startPicker"
-            [max]="customEndDate || maxDate"
-            matInput
-          />
-          <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
-
-        <span class="date-separator">→</span>
-
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>{{ 'DASHBOARD.DATE_FILTER.TO_DATE' | translate }}</mat-label>
-          <input
-            [(ngModel)]="customEndDate"
-            [disabled]="isLoading"
-            [matDatepicker]="endPicker"
-            [max]="maxDate"
-            [min]="customStartDate"
-            matInput
-          />
-          <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-        </mat-form-field>
-
-        <button
-          (click)="applyCustomDateRange()"
-          [disabled]="!customStartDate || !customEndDate || isLoading"
-          color="primary"
-          mat-icon-button
-          matTooltip="{{ 'DASHBOARD.DATE_FILTER.APPLY' | translate }}">
-          <mat-icon>check</mat-icon>
-        </button>
-      </div>
-
-      <div class="filter-group type-and-info">
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>{{ 'BASE_TYPE.OPERATION_TYPE' | translate }}</mat-label>
-          <mat-select
-            (selectionChange)="onOperationTypeChange($event.value)"
-            [(value)]="selectedOperationType">
-            <mat-option *ngFor="let op of operationTypes" [value]="op.value">
-              {{ op.labelKey | translate }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <div *ngIf="selectedPeriodDisplay && selectedPreset !== 'thisMonth'" class="period-badge">
-          <mat-icon>event</mat-icon>
-          <span>{{ selectedPeriodDisplay }}</span>
-          <button
-            (click)="clearDateRange()"
-            [disabled]="isLoading"
-            mat-icon-button>
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-      </div>
-    </div>
-  </app-card>
-</section>
-
-<!-- ========= Loading State ========= -->
-<div *ngIf="isLoading" class="loading-container">
-  <mat-spinner diameter="56"></mat-spinner>
-  <p>{{ 'DASHBOARD.LOADING.TEXT' | translate }}</p>
-</div>
-
-<!-- ========= Dashboard Content ========= -->
-<ng-container *ngIf="!isLoading">
   <section class="dashboard-section">
     <div class="dashboard-kpis row g-3">
-    <!-- First Row: Earning Charts -->
-    <div class="col-md-6 col-xxl-4">
-      <app-earning-chart
-        [color]="primaryColor"
-        [data]="receptionsPerDay"
-        [earningValue]="totalReceptions?.toString() || '0'"
-        [headerTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate"
-        background="bg-primary-50"
-        class="kpi-card"
-        iconImage="#wallet-2"
-        percentageValue=""
-        textColor="text-primary-500">
-      </app-earning-chart>
-    </div>
+      <div class="col-md-6 col-xxl-4">
+        <app-earning-chart
+          [color]="primaryColor"
+          [data]="receptionsPerDay"
+          [earningValue]="totalReceptions?.toString() || '0'"
+          [headerTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate"
+          background="bg-primary-50"
+          class="kpi-card"
+          iconImage="#wallet-2"
+          percentageValue=""
+          textColor="text-primary-500"
+        />
+      </div>
 
-    <div class="col-md-6 col-xxl-4">
-      <app-earning-chart
-        [color]="warningColor"
-        [data]="pendingReceptionsPerDay"
-        [earningValue]="pendingReceptions?.toString() || '0'"
-        [headerTitle]="'DASHBOARD.KPIS.PENDING_RECEPTIONS' | translate"
-        background="bg-warning-50"
-        class="kpi-card"
-        iconImage="#calendar"
-        percentageValue=""
-        textColor="text-warning-500">
-      </app-earning-chart>
-    </div>
+      <div class="col-md-6 col-xxl-4">
+        <app-earning-chart
+          [color]="warningColor"
+          [data]="pendingReceptionsPerDay"
+          [earningValue]="pendingReceptions?.toString() || '0'"
+          [headerTitle]="'DASHBOARD.KPIS.PENDING_RECEPTIONS' | translate"
+          background="bg-warning-50"
+          class="kpi-card"
+          iconImage="#calendar"
+          percentageValue=""
+          textColor="text-warning-500"
+        />
+      </div>
 
-    <div class="col-md-6 col-xxl-4">
-      <app-earning-chart
-        [color]="successColor"
-        [data]="completedReceptionsPerDay"
-        [earningValue]="completedReceptions?.toString() || '0'"
-        [headerTitle]="'DASHBOARD.KPIS.COMPLETED_RECEPTIONS' | translate"
-        background="bg-success-50"
-        class="kpi-card"
-        iconImage="#book"
-        percentageValue=""
-        textColor="text-success-500">
-      </app-earning-chart>
-    </div>
+      <div class="col-md-6 col-xxl-4">
+        <app-earning-chart
+          [color]="successColor"
+          [data]="completedReceptionsPerDay"
+          [earningValue]="completedReceptions?.toString() || '0'"
+          [headerTitle]="'DASHBOARD.KPIS.COMPLETED_RECEPTIONS' | translate"
+          background="bg-success-50"
+          class="kpi-card"
+          iconImage="#book"
+          percentageValue=""
+          textColor="text-success-500"
+        />
+      </div>
 
-    <!-- Second Row: Mini KPI Cards -->
-    <div class="col-md-3 col-xxl-3">
-      <app-card
-        [cardTitle]="'DASHBOARD.KPIS.TOTAL_VOLUME' | translate"
-        [icon]="'stacked_bar_chart'"
-        class="mini-kpi">
-        <div class="mini-kpi__body">
-          <mat-icon>stacked_bar_chart</mat-icon>
-          <span class="value">{{ totalVolume?.toFixed(2) || '0.00' }}</span>
-        </div>
-      </app-card>
-    </div>
-    <div class="col-md-3 col-xxl-3">
-      <app-card
-        [cardTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate"
-        [icon]="'paid'"
-        class="mini-kpi">
-        <div class="mini-kpi__body">
-          <mat-icon>paid</mat-icon>
-          <span class="value">{{ formattedTotalPaidAmount || '0' }}</span>
-        </div>
-      </app-card>
-    </div>
-    <div class="col-md-3 col-xxl-3">
-      <app-card
-        [cardTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate"
-        [icon]="'paid'"
-        class="mini-kpi">
-        <div class="mini-kpi__body">
-          <mat-icon>paid</mat-icon>
-          <span class="value">{{ formattedTotalPaidAmount || '0' }}</span>
-        </div>
-      </app-card>
-    </div>
+      <div class="col-md-3 col-xxl-3">
+        <app-card
+          [cardTitle]="'DASHBOARD.KPIS.TOTAL_VOLUME' | translate"
+          [icon]="'stacked_bar_chart'"
+          class="mini-kpi"
+        >
+          <div class="mini-kpi__body">
+            <mat-icon>stacked_bar_chart</mat-icon>
+            <span class="value">{{ totalVolume?.toFixed(2) || '0.00' }}</span>
+          </div>
+        </app-card>
+      </div>
 
+      <div class="col-md-3 col-xxl-3">
+        <app-card
+          [cardTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate"
+          [icon]="'paid'"
+          class="mini-kpi"
+        >
+          <div class="mini-kpi__body">
+            <mat-icon>paid</mat-icon>
+            <span class="value">{{ formattedTotalPaidAmount || '0' }}</span>
+          </div>
+        </app-card>
+      </div>
 
-    <div class="col-md-3 col-xxl-3">
-      <app-card
-        [cardTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate"
-        [icon]="'hourglass_bottom'"
-        class="mini-kpi">
-        <div class="mini-kpi__body">
-          <mat-icon>hourglass_bottom</mat-icon>
-          <span class="value">{{ formattedTotalUnpaidAmount || '0' }}</span>
-        </div>
-      </app-card>
-    </div>
+      <div class="col-md-3 col-xxl-3">
+        <app-card
+          [cardTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate"
+          [icon]="'paid'"
+          class="mini-kpi"
+        >
+          <div class="mini-kpi__body">
+            <mat-icon>paid</mat-icon>
+            <span class="value">{{ formattedTotalPaidAmount || '0' }}</span>
+          </div>
+        </app-card>
+      </div>
+
+      <div class="col-md-3 col-xxl-3">
+        <app-card
+          [cardTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate"
+          [icon]="'hourglass_bottom'"
+          class="mini-kpi"
+        >
+          <div class="mini-kpi__body">
+            <mat-icon>hourglass_bottom</mat-icon>
+            <span class="value">{{ formattedTotalUnpaidAmount || '0' }}</span>
+          </div>
+        </app-card>
+      </div>
     </div>
   </section>
 
-  <!-- Charts Row -->
   <section class="dashboard-section">
     <div class="section-heading">
       <mat-icon>show_chart</mat-icon>
       <h3>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate }}</h3>
     </div>
     <div class="row g-3 mt-1">
-    <!-- Base Unit Price Trend Chart -->
-    <div class="col-12" *ngIf="selectedOperationType==OperationType.BASE">
-      <app-card
-        [cardTitle]="'DASHBOARD.ANALYTICS.BASE_UNIT_PRICE_TREND.TITLE' | translate"
-        [icon]="'timeline'"
-        class="card--chart">
-        <div class="chart-container wide">
-          <apx-chart
-            [chart]="baseUnitPriceTrendChartOptions.chart"
-            [colors]="baseUnitPriceTrendChartOptions.colors"
-            [markers]="baseUnitPriceTrendChartOptions.markers"
-            [series]="baseUnitPriceTrendChartOptions.series"
-            [stroke]="baseUnitPriceTrendChartOptions.stroke"
-            [tooltip]="baseUnitPriceTrendChartOptions.tooltip"
-            [xaxis]="baseUnitPriceTrendChartOptions.xaxis"
-            [yaxis]="baseUnitPriceTrendChartOptions.yaxis">
-          </apx-chart>
-        </div>
-      </app-card>
-    </div>
+      <div class="col-12" *ngIf="selectedOperationType === OperationType.BASE">
+        <app-card
+          [cardTitle]="'DASHBOARD.ANALYTICS.BASE_UNIT_PRICE_TREND.TITLE' | translate"
+          [icon]="'timeline'"
+          class="card--chart"
+        >
+          <div class="chart-container wide">
+            <apx-chart
+              [chart]="baseUnitPriceTrendChartOptions.chart"
+              [colors]="baseUnitPriceTrendChartOptions.colors"
+              [markers]="baseUnitPriceTrendChartOptions.markers"
+              [series]="baseUnitPriceTrendChartOptions.series"
+              [stroke]="baseUnitPriceTrendChartOptions.stroke"
+              [tooltip]="baseUnitPriceTrendChartOptions.tooltip"
+              [xaxis]="baseUnitPriceTrendChartOptions.xaxis"
+              [yaxis]="baseUnitPriceTrendChartOptions.yaxis"
+            />
+          </div>
+        </app-card>
+      </div>
 
-    <!-- Reception Trend Chart -->
-    <div class="col-12">
-      <app-card
-        [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate"
-        [icon]="'timeline'"
-        class="card--chart">
-        <div [ngClass]="currentChartSize" class="chart-container wide">
-          <apx-chart
-            [chart]="receptionsTrendChartOptions.chart"
-            [colors]="receptionsTrendChartOptions.colors"
-            [series]="receptionsTrendChartOptions.series"
-            [xaxis]="receptionsTrendChartOptions.xaxis">
-          </apx-chart>
-        </div>
-      </app-card>
-    </div>
+      <div class="col-12">
+        <app-card
+          [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate"
+          [icon]="'timeline'"
+          class="card--chart"
+        >
+          <div [ngClass]="currentChartSize" class="chart-container wide">
+            <apx-chart
+              [chart]="receptionsTrendChartOptions.chart"
+              [colors]="receptionsTrendChartOptions.colors"
+              [series]="receptionsTrendChartOptions.series"
+              [xaxis]="receptionsTrendChartOptions.xaxis"
+            />
+          </div>
+        </app-card>
+      </div>
     </div>
   </section>
-</ng-container>
-
-</div>
+</app-dashboard-shell>

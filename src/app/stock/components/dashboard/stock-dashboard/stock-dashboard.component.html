@@ -1,42 +1,29 @@
-<div class="dashboard-shell stock-dashboard">
-  <div class="page-header sticky-actions page-header--stock">
-    <div class="page-header__left">
-      <div class="header-icon-wrap header-icon-wrap--stock">
-        <mat-icon>inventory_2</mat-icon>
-      </div>
-      <div>
-        <h2 class="m-0 f-w-600">{{ 'AUTO.TABLEAU_DE_BORD_STOCK' | translate }}</h2>
-        <p class="header-subtitle">{{ 'AUTO.APERCU_GENERAL_DES_STOCKS_ET_ALERTES' | translate }}</p>
-      </div>
-    </div>
-    <div class="page-header__right">
-      <button
-        mat-stroked-button
-        type="button"
-        (click)="exportData()"
-        [disabled]="loading || !stats">
-        <mat-icon>download</mat-icon>
-        <span class="d-none d-sm-inline ms-1">{{ 'OSM_DASHBOARD.ACTIONS.EXPORT' | translate }}</span>
-      </button>
-      <button
-        mat-stroked-button
-        color="warn"
-        type="button"
-        (click)="verifierSeuils()"
-        [disabled]="loading || refreshingThresholds">
-        <mat-icon>{{ refreshingThresholds ? 'hourglass_empty' : 'warning' }}</mat-icon>
-        <span class="d-none d-sm-inline ms-1">{{ refreshingThresholds ? 'Vérification…' : 'Vérifier les seuils' }}</span>
-      </button>
-    </div>
-  </div>
+<app-dashboard-shell
+  titleKey="AUTO.TABLEAU_DE_BORD_STOCK"
+  subtitleKey="AUTO.APERCU_GENERAL_DES_STOCKS_ET_ALERTES"
+  icon="inventory_2"
+  theme="inventory"
+  [loading]="loading"
+  [loadErrorText]="loadError"
+  [lastUpdated]="lastUpdated"
+  loadingMessageKey="AUTO.CHARGEMENT_DU_TABLEAU_DE_BORD"
+  [exportPayload]="exportPayload"
+  (refresh)="refresh()"
+>
+  <ng-container dashboardHeaderActions>
+    <button
+      mat-stroked-button
+      color="warn"
+      type="button"
+      (click)="verifierSeuils()"
+      [disabled]="loading || refreshingThresholds"
+    >
+      <mat-icon>{{ refreshingThresholds ? 'hourglass_empty' : 'warning' }}</mat-icon>
+      <span class="d-none d-sm-inline ms-1">{{ refreshingThresholds ? 'Vérification…' : 'Vérifier les seuils' }}</span>
+    </button>
+  </ng-container>
 
-  <div class="error-banner" *ngIf="loadError && !loading">
-    <mat-icon>error_outline</mat-icon>
-    <span>{{ loadError }}</span>
-    <button mat-stroked-button type="button" (click)="loadDashboardData()">{{ 'STANDARD.BTNS.RETRY' | translate }}</button>
-  </div>
-
-  <section class="hero-summary" *ngIf="!loading && stats">
+  <section class="hero-summary" *ngIf="stats">
     <div class="hero-card hero-card--success">
       <div class="hero-card__icon"><mat-icon>inventory</mat-icon></div>
       <div class="hero-card__content">
@@ -71,18 +58,13 @@
     </div>
   </section>
 
-  <div *ngIf="loading" class="loading-container">
-    <mat-spinner diameter="56"></mat-spinner>
-    <p>{{ 'AUTO.CHARGEMENT_DU_TABLEAU_DE_BORD' | translate }}</p>
-  </div>
-
-  <div *ngIf="!loading && !stats" class="empty-state">
+  <div *ngIf="!stats" class="empty-state">
     <mat-icon>insights</mat-icon>
     <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
     <button mat-flat-button color="primary" type="button" (click)="loadDashboardData()">{{ 'STANDARD.BTNS.RETRY' | translate }}</button>
   </div>
 
-  <div class="dashboard-grid" *ngIf="!loading && stats">
+  <div class="dashboard-grid" *ngIf="stats">
     <div class="dashboard-panel chart-card">
       <div class="dashboard-panel__header">
         <h5>{{ 'AUTO.MOUVEMENTS_PAR_MOIS' | translate }}</h5>
@@ -199,4 +181,4 @@
       </div>
     </div>
   </div>
-</div>
+</app-dashboard-shell>

@@ -172,28 +172,28 @@ const MODULE_META: Record<
     subtitleKey: 'HOME_DASHBOARD.SECTIONS.RECEPTION.SUBTITLE',
     icon: 'assignment',
     accentClass: 'module-card--reception',
-    route: '/reception'
+    route: '/dashboard/reception'
   },
   finance: {
     titleKey: 'HOME_DASHBOARD.SECTIONS.FINANCE.TITLE',
     subtitleKey: 'HOME_DASHBOARD.SECTIONS.FINANCE.SUBTITLE',
     icon: 'account_balance_wallet',
     accentClass: 'module-card--finance',
-    route: '/finance/dashboard'
+    route: '/dashboard/finance'
   },
   storage: {
     titleKey: 'HOME_DASHBOARD.SECTIONS.STORAGE.TITLE',
     subtitleKey: 'HOME_DASHBOARD.SECTIONS.STORAGE.SUBTITLE',
     icon: 'water_drop',
     accentClass: 'module-card--storage',
-    route: '/storage/storage_recap'
+    route: '/dashboard/storage'
   },
   inventory: {
     titleKey: 'HOME_DASHBOARD.SECTIONS.INVENTORY.TITLE',
     subtitleKey: 'HOME_DASHBOARD.SECTIONS.INVENTORY.SUBTITLE',
     icon: 'inventory_2',
     accentClass: 'module-card--inventory',
-    route: '/stock/dashboard'
+    route: '/dashboard/inventory'
   },
   conditioning: {
     titleKey: 'HOME_DASHBOARD.SECTIONS.CONDITIONING.TITLE',

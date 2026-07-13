@@ -1,0 +1,70 @@
+<div class="dashboard-filters">
+  <div class="filter-group period-pills">
+    @for (period of quickPeriods; track period.value) {
+      <button
+        mat-stroked-button
+        type="button"
+        class="period-pill"
+        [class.active]="selectedPreset === period.value"
+        [disabled]="disabled()"
+        (click)="selectPresetPeriod(period.value)"
+      >
+        {{ period.label | translate }}
+      </button>
+    }
+  </div>
+
+  <div class="filter-group date-range">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="date-field">
+      <mat-label>{{ 'DASHBOARD.DATE_FILTER.FROM_DATE' | translate }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="startPicker"
+        [(ngModel)]="customStartDate"
+        [max]="customEndDate || maxDate"
+        [disabled]="disabled()"
+      />
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <span class="date-separator">→</span>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="date-field">
+      <mat-label>{{ 'DASHBOARD.DATE_FILTER.TO_DATE' | translate }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="endPicker"
+        [(ngModel)]="customEndDate"
+        [min]="customStartDate"
+        [max]="maxDate"
+        [disabled]="disabled()"
+      />
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <div class="date-range__actions">
+      <button
+        mat-icon-button
+        type="button"
+        color="primary"
+        (click)="applyCustomDateRange()"
+        [disabled]="!customStartDate || !customEndDate || disabled()"
+        [matTooltip]="'DASHBOARD.DATE_FILTER.APPLY' | translate"
+      >
+        <mat-icon>check</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        type="button"
+        (click)="clearDateRange()"
+        [disabled]="disabled()"
+        [matTooltip]="'DASHBOARD.DATE_FILTER.CLEAR' | translate"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

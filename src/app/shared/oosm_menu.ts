@@ -18,6 +18,21 @@ import {
  * Flow: Réception → Production huile → Conditionnement → Inventaire → Finance → Paramètres
  */
 export const oosm_menus: Navigation[] = [
+  {
+    id: 'group-dashboard-hub',
+    title: 'DASHBOARD_HUB.TITLE',
+    type: 'group',
+    children: [
+      {
+        id: 'item-dashboard-hub',
+        title: 'DASHBOARD_HUB.TITLE',
+        type: 'item',
+        url: '/dashboard',
+        icon: 'dashboard',
+        breadcrumbs: false
+      }
+    ]
+  },
   // ─── RÉCEPTION ─────────────────────────────────────────────────────────────
   {
     id: 'group-reception',
@@ -25,15 +40,6 @@ export const oosm_menus: Navigation[] = [
     type: 'group',
     modulePermission: 'RECEPTION',
     children: [
-      {
-        id: 'item-reception-overview',
-        title: 'MENU.RECEPTION.OVERVIEW',
-        type: 'item',
-        url: '/reception',
-        icon: 'dashboard',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)]
-      },
       {
         id: 'collapse-reception-operations',
         title: 'MENU.RECEPTION.OPERATIONS',
@@ -214,15 +220,6 @@ export const oosm_menus: Navigation[] = [
     modulePermission: 'PRODUCTION',
     children: [
       {
-        id: 'item-production-storage-recap',
-        title: 'MENU.PRODUCTION.STORAGE_OVERVIEW',
-        type: 'item',
-        url: '/storage/storage_recap',
-        icon: 'analytics',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)]
-      },
-      {
         id: 'collapse-production-quality',
         title: 'MENU.PRODUCTION.QUALITY',
         type: 'collapse',
@@ -380,15 +377,6 @@ export const oosm_menus: Navigation[] = [
         permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ)],
         children: [
           {
-            id: 'item-analytics-dashboard',
-            title: 'AUTO.VUE_GLOBALE_OF',
-            type: 'item',
-            url: '/analytics/dashboard',
-            icon: 'dashboard',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ)]
-          },
-          {
             id: 'item-analytics-of-yield',
             title: 'AUTO.RENDEMENTS_DES_OF',
             type: 'item',
@@ -436,15 +424,6 @@ export const oosm_menus: Navigation[] = [
     type: 'group',
     modulePermission: 'INVENTAIR',
     children: [
-      {
-        id: 'item-inventory-dashboard',
-        title: 'MENU.STOCKS_INV.DASHBOARD',
-        type: 'item',
-        url: '/stock/dashboard',
-        icon: 'analytics',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
-      },
       {
         id: 'collapse-stock-catalog',
         title: 'MENU.STOCKS_INV.ITEMS',
@@ -561,15 +540,6 @@ export const oosm_menus: Navigation[] = [
     modulePermission: 'FINANCE',
     children: [
       {
-        id: 'item-finance-dashboard',
-        title: 'MENU.FINANCE.DASHBOARD_OVERVIEW',
-        type: 'item',
-        url: '/finance/dashboard',
-        icon: 'show_chart',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)]
-      },
-      {
         id: 'collapse-finance-treasury',
         title: 'MENU.FINANCE.TREASURY',
         type: 'collapse',
@@ -668,15 +638,6 @@ export const oosm_menus: Navigation[] = [
     type: 'group',
     modulePermission: 'HR',
     children: [
-      {
-        id: 'item-hr-dashboard',
-        title: 'HR.DASHBOARD.TITLE',
-        type: 'item',
-        url: '/hr',
-        icon: 'people',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ)]
-      },
       {
         id: 'item-hr-employees',
         title: 'HR.QUICK_NAV.EMPLOYEES',

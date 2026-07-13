@@ -1177,6 +1177,19 @@
       "TO_DATE": "إلى التاريخ",
       "YESTERDAY": "أمس"
     },
+    "FILTERS": {
+      "TITLE": "الفلاتر",
+      "ALL": "كل الفلاتر"
+    },
+    "EXPORT": {
+      "TITLE": "تصدير",
+      "EXCEL": "Excel (.xlsx)",
+      "CSV": "CSV",
+      "PDF": "PDF",
+      "SUCCESS": "تم إنشاء التصدير بنجاح",
+      "ERROR": "فشل التصدير",
+      "NO_DATA": "لا توجد بيانات للتصدير"
+    },
     "KPIS": {
       "AVG_UNIT_PRICE": "متوسط سعر الوحدة",
       "AVG_VOLUME": "المتوسط الحجمي",
@@ -3794,7 +3807,8 @@
       "CREATED_DATE": "تاريخ الإنشاء",
       "CURRENT_VOLUME": "الحجم الحالي",
       "DASHBOARD": {
-        "TITLE": "لوحة تحكم التخزين"
+        "TITLE": "لوحة تحكم التخزين",
+        "SUBTITLE": "نظرة عامة على وحدات التخزين والسعات"
       },
       "FILTERED": "مفلتر",
       "MAX_CAPACITY": "السعة القصوى",
@@ -4506,6 +4520,23 @@
       "POMACE": "الفاكهة",
       "SOLID": "صلب",
       "VEGETAL_SOLIDS": "مواد نباتية صلبة"
+    }
+  },
+  "DASHBOARD_HUB": {
+    "TITLE": "لوحات التحكم",
+    "SUBTITLE": "التبديل بين لوحات تحكم الوحدات في مكان واحد",
+    "TABS_ARIA": "لوحات تحكم الوحدات",
+    "NO_ACCESS_TITLE": "لا توجد لوحات متاحة",
+    "NO_ACCESS": "حسابك لا يملك صلاحية عرض أي لوحة تحكم. تواصل مع المسؤول.",
+    "TABS": {
+      "OVERVIEW": "نظرة عامة",
+      "RECEPTION": "الاستقبال",
+      "FINANCE": "المالية",
+      "STORAGE": "التخزين",
+      "INVENTORY": "المخزون",
+      "HR": "الموارد البشرية",
+      "ANALYTICS": "التحليلات",
+      "ADMINISTRATION": "إدارة المنصة"
     }
   },
   "HOME_DASHBOARD": {

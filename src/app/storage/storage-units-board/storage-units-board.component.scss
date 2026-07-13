@@ -4,28 +4,27 @@
   gap: 1rem;
 }
 
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+.storage-filter-extras {
+  width: 100%;
 
-  .filters {
+  .search-panel {
     display: flex;
-    gap: 0.75rem;
     flex-wrap: wrap;
     align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 100%;
 
-    .filter {
-      min-width: 180px;
-    }
-
-    mat-slide-toggle {
-      margin-left: 0;
-      white-space: nowrap;
+    .search-field {
+      flex: 1 1 180px;
+      min-width: 0;
+      max-width: 280px;
     }
   }
+}
+
+.search-error {
+  color: #b00020;
+  font-size: 0.875rem;
 }
 
 .loading-container {

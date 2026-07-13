@@ -21,7 +21,22 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/welcome',
+        redirectTo: '/dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./dashboard-hub/dashboard-hub.component').then((m) => m.DashboardHubComponent),
+        canActivate: [AuthGuardChild]
+      },
+      {
+        path: 'dashboard/:tabId',
+        loadComponent: () => import('./dashboard-hub/dashboard-hub.component').then((m) => m.DashboardHubComponent),
+        canActivate: [AuthGuardChild]
+      },
+      {
+        path: 'welcome',
+        redirectTo: 'dashboard',
         pathMatch: 'full'
       },
       {
@@ -41,10 +56,6 @@ const routes: Routes = [
         path: 'projets',
         loadChildren: () => import('./projet/projet.module').then((m) => m.ProjetModule),
         canActivate: [moduleGuard([OOSMModule.CONDITIONING])]
-      },
-      {
-        path: 'welcome',
-        loadComponent: () => import('./home-dashboard/home-dashboard.component').then((m) => m.HomeDashboardComponent)
       },
       {
         path: 'help',
@@ -126,6 +137,11 @@ const routes: Routes = [
       {
         path: 'administration',
         loadChildren: () => import('./administration/administration-routing.module').then((m) => m.AdministrationRoutingModule)
+      },
+      {
+        path: 'administration/dashboard',
+        redirectTo: '/dashboard/administration',
+        pathMatch: 'full'
       },
       {
         path: 'maintenance',

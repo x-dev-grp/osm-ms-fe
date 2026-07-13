@@ -1,48 +1,17 @@
-<div class="dashboard-shell home-dashboard">
-  <div class="page-header sticky-actions page-header--home home-dashboard__header">
-    <div class="page-header__left">
-      <div class="header-icon-wrap header-icon-wrap--home">
-        <mat-icon>dashboard</mat-icon>
-      </div>
-      <div>
-        <h2 class="m-0 f-w-600">{{ 'HOME_DASHBOARD.TITLE' | translate }}</h2>
-        <p class="header-subtitle">
-          <ng-container *ngIf="userDisplayName; else genericGreeting">
-            {{ 'HOME_DASHBOARD.GREETING_NAMED' | translate:{ name: userDisplayName } }}
-          </ng-container>
-          <ng-template #genericGreeting>{{ 'HOME_DASHBOARD.GREETING' | translate }}</ng-template>
-        </p>
-      </div>
-      <span *ngIf="lastUpdated" class="text-muted d-none d-lg-inline ms-2 page-header__updated">
-        <mat-icon class="me-1" inline>update</mat-icon>
-        {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
-      </span>
-    </div>
-    <div class="page-header__right">
-      <button mat-stroked-button color="primary" (click)="refresh()" [disabled]="loading">
-        <mat-icon [class.spinning]="loading">refresh</mat-icon>
-        <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
-      </button>
-    </div>
-  </div>
-
-  <ng-container *ngIf="loading">
-    <div class="loading-container">
-      <mat-spinner diameter="56"></mat-spinner>
-      <p>{{ 'HOME_DASHBOARD.LOADING' | translate }}</p>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="!loading && loadError">
-    <div class="error-state">
-      <mat-icon>cloud_off</mat-icon>
-      <p>{{ 'HOME_DASHBOARD.LOAD_ERROR' | translate }}</p>
-      <button mat-flat-button color="primary" (click)="refresh()">{{ 'COMMON.REFRESH' | translate }}</button>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="!loading && !loadError">
-    <section class="hero-summary" *ngIf="sections.length">
+<app-dashboard-shell
+  titleKey="HOME_DASHBOARD.TITLE"
+  [subtitleText]="headerSubtitle"
+  icon="dashboard"
+  theme="home"
+  [loading]="loading"
+  [loadErrorKey]="loadError ? 'HOME_DASHBOARD.LOAD_ERROR' : null"
+  [lastUpdated]="lastUpdated"
+  loadingMessageKey="HOME_DASHBOARD.LOADING"
+  [exportPayload]="exportPayload"
+  (refresh)="refresh()"
+>
+  @if (sections.length) {
+    <section class="hero-summary">
       <div class="hero-card hero-card--attention">
         <div class="hero-card__icon"><mat-icon>notifications_active</mat-icon></div>
         <div class="hero-card__content">
@@ -60,55 +29,65 @@
         </div>
       </div>
     </section>
+  }
 
-    <section class="dashboard-section" *ngIf="quickLinks.length">
+  @if (quickLinks.length) {
+    <section class="dashboard-section">
       <div class="section-heading">
         <mat-icon>bolt</mat-icon>
         <h3>{{ 'HOME_DASHBOARD.QUICK_LINKS.TITLE' | translate }}</h3>
       </div>
       <div class="quick-links">
-        <a *ngFor="let link of quickLinks" [routerLink]="link.route" class="quick-link-card" [ngClass]="link.accentClass">
-          <span class="quick-link-card__badge"><mat-icon>{{ link.icon }}</mat-icon></span>
-          <div class="quick-link-card__text">
-            <strong>{{ link.titleKey | translate }}</strong>
-            <span>{{ link.hintKey | translate }}</span>
-          </div>
-          <mat-icon class="quick-link-card__arrow">arrow_forward</mat-icon>
-        </a>
+        @for (link of quickLinks; track link.route) {
+          <a [routerLink]="link.route" class="quick-link-card" [ngClass]="link.accentClass">
+            <span class="quick-link-card__badge"><mat-icon>{{ link.icon }}</mat-icon></span>
+            <div class="quick-link-card__text">
+              <strong>{{ link.titleKey | translate }}</strong>
+              <span>{{ link.hintKey | translate }}</span>
+            </div>
+            <mat-icon class="quick-link-card__arrow">arrow_forward</mat-icon>
+          </a>
+        }
       </div>
     </section>
+  }
 
-    <section class="dashboard-section" *ngIf="sections.length">
+  @if (sections.length) {
+    <section class="dashboard-section">
       <div class="section-heading">
         <mat-icon>insights</mat-icon>
         <h3>{{ 'HOME_DASHBOARD.SECTIONS.TITLE' | translate }}</h3>
       </div>
       <div class="module-grid">
-        <a *ngFor="let section of sections" [routerLink]="section.route" class="module-card" [ngClass]="section.accentClass">
-          <div class="module-card__head">
-            <span class="module-card__icon"><mat-icon>{{ section.icon }}</mat-icon></span>
-            <div>
-              <h4>{{ section.titleKey | translate }}</h4>
-              <p>{{ section.subtitleKey | translate }}</p>
+        @for (section of sections; track section.id) {
+          <a [routerLink]="section.route" class="module-card" [ngClass]="section.accentClass">
+            <div class="module-card__head">
+              <span class="module-card__icon"><mat-icon>{{ section.icon }}</mat-icon></span>
+              <div>
+                <h4>{{ section.titleKey | translate }}</h4>
+                <p>{{ section.subtitleKey | translate }}</p>
+              </div>
             </div>
-          </div>
-          <div class="module-card__metrics">
-            <div *ngFor="let metric of section.metrics" class="metric" [class.metric--attention]="metric.attention && +metric.value > 0">
-              <span class="metric__value">{{ metric.value }}</span>
-              <span class="metric__label">{{ metric.labelKey | translate }}</span>
+            <div class="module-card__metrics">
+              @for (metric of section.metrics; track metric.labelKey) {
+                <div class="metric" [class.metric--attention]="metric.attention && +metric.value > 0">
+                  <span class="metric__value">{{ metric.value }}</span>
+                  <span class="metric__label">{{ metric.labelKey | translate }}</span>
+                </div>
+              }
             </div>
-          </div>
-          <div class="module-card__footer">
-            <span>{{ 'HOME_DASHBOARD.OPEN_MODULE' | translate }}</span>
-            <mat-icon>arrow_forward</mat-icon>
-          </div>
-        </a>
+            <div class="module-card__footer">
+              <span>{{ 'HOME_DASHBOARD.OPEN_MODULE' | translate }}</span>
+              <mat-icon>arrow_forward</mat-icon>
+            </div>
+          </a>
+        }
       </div>
     </section>
-
-    <section class="empty-state" *ngIf="!sections.length">
+  } @else {
+    <section class="empty-state">
       <mat-icon>lock</mat-icon>
       <p>{{ 'HOME_DASHBOARD.NO_MODULES' | translate }}</p>
     </section>
-  </ng-container>
-</div>
+  }
+</app-dashboard-shell>

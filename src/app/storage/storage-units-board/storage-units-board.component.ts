@@ -14,7 +14,8 @@ import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
-import { CardComponent } from '../../theme/components/card/card.component';
+import { DashboardShellComponent } from '../../shared/components/dashboard/dashboard-shell.component';
+import { DashboardExportPayload } from '../../shared/components/dashboard/dashboard-export.models';
 import { Router } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 
@@ -42,7 +43,7 @@ export type status = 'AVAILABLE' | 'FULL' | 'FILLING' | 'MAINTENANCE' | 'IN_USE'
     MatInputModule,
     MatSlideToggleModule,
     TranslateModule,
-    CardComponent
+    DashboardShellComponent
   ],
   templateUrl: './storage-units-board.component.html',
   styleUrls: ['./storage-units-board.component.scss'],
@@ -58,6 +59,7 @@ export class StorageUnitsBoardComponent implements OnInit {
 
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
+  lastUpdated = signal<Date | null>(null);
   searchCode = signal('');
   searchingByCode = signal(false);
   searchError = signal<string | null>(null);
@@ -103,6 +105,7 @@ export class StorageUnitsBoardComponent implements OnInit {
           this.oilVarietys.set(this.distinctOilTypes(units));
           this.applyFilters();
           this.loading.set(false);
+          this.lastUpdated.set(new Date());
         },
         error: (err) => {
           const errorMessage = err?.message || this.translate.instant('STORAGE.ERROR.FAILED_TO_LOAD_UNITS');
@@ -122,6 +125,62 @@ export class StorageUnitsBoardComponent implements OnInit {
   refresh(): void {
     this.searchError.set(null);
     this.reload$.next();
+  }
+
+  get filtersSummary(): string | null {
+    const parts: string[] = [];
+    const code = this.searchCode().trim();
+    if (code) {
+      parts.push(code);
+    }
+    if (this.filters.controls.showOnlyPaid.value) {
+      parts.push(this.translate.instant('STORAGE.VIEW.SHOW_ONLY_PAID'));
+    }
+    if (this.filters.controls.showOnlyFiltered.value) {
+      parts.push(this.translate.instant('STORAGE.VIEW.SHOW_ONLY_FILTERED'));
+    }
+    return parts.length ? parts.join(' · ') : null;
+  }
+
+  get exportPayload(): DashboardExportPayload | null {
+    const units = this.filteredUnits();
+    if (!units.length) {
+      return null;
+    }
+
+    return {
+      fileName: 'storage-dashboard',
+      title: this.translate.instant('STORAGE.VIEW.DASHBOARD.TITLE'),
+      sheets: [
+        {
+          name: this.translate.instant('STORAGE.VIEW.DASHBOARD.TITLE'),
+          columns: [
+            { key: 'name', label: this.translate.instant('STORAGE.VIEW.PUBLIC_CODE') },
+            { key: 'status', label: 'Status' },
+            { key: 'currentVolume', label: this.translate.instant('STORAGE.VIEW.CURRENT_VOLUME') },
+            { key: 'maxCapacity', label: this.translate.instant('STORAGE.VIEW.MAX_CAPACITY') },
+            { key: 'available', label: this.translate.instant('STORAGE.VIEW.AVAILABLECAPACITY') },
+            { key: 'avgCost', label: this.translate.instant('STORAGE.VIEW.AVGCOST') },
+            { key: 'totalCost', label: this.translate.instant('STORAGE.VIEW.TOTALCOST') },
+            { key: 'oilVariety', label: this.translate.instant('STORAGE.VIEW.OIL_VARIETY') },
+            { key: 'paid', label: this.translate.instant('STORAGE.VIEW.PAID_STORAGE') },
+            { key: 'filtered', label: this.translate.instant('STORAGE.VIEW.FILTERED') }
+          ],
+          rows: units.map((unit) => ({
+            name: unit.name,
+            status: unit.status,
+            currentVolume: unit.currentVolume,
+            maxCapacity: unit.maxCapacity,
+            available: this.availableCapacity(unit),
+            avgCost: unit.avgCost,
+            totalCost: unit.totalCost,
+            oilVariety: unit.oilVariety?.name ?? '',
+            paid: unit.paidStorage ? 'Yes' : 'No',
+            filtered: unit.filteredOil ? 'Yes' : 'No'
+          }))
+        }
+      ]
+    };
   }
 
   searchByPublicCode(): void {

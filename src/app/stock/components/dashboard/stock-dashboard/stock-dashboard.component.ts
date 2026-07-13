@@ -9,10 +9,12 @@ import { BonCommande, StatutBonCommande } from '../../../models/bon-commande.mod
 import { StatistiquesStock } from '../../../models/statistiques.model';
 import { ArticleCritique, MouvementRecent } from '../../../models/stock-dashboard-payload.model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DashboardShellComponent } from '../../../../shared/components/dashboard/dashboard-shell.component';
+import { createKpiSheet, DashboardExportPayload } from '../../../../shared/components/dashboard/dashboard-export.models';
 
 interface DashboardLoadOptions {
   notifyThresholdCheck?: boolean;
@@ -21,6 +23,7 @@ interface DashboardLoadOptions {
 
 @Component({
   selector: 'app-stock-dashboard',
+  standalone: true,
   templateUrl: './stock-dashboard.component.html',
   imports: [
     TranslateModule,
@@ -31,7 +34,8 @@ interface DashboardLoadOptions {
     NgClass,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    DashboardShellComponent
   ],
   styleUrls: ['./stock-dashboard.component.scss']
 })
@@ -49,6 +53,7 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
   loading = true;
   refreshingThresholds = false;
   loadError: string | null = null;
+  lastUpdated: Date | null = null;
 
   private chart: Chart | null = null;
 
@@ -56,8 +61,85 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
     private statistiqueService: StatistiqueService,
     private bonCommandeService: BonCommandeService,
     private cdr: ChangeDetectorRef,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private translate: TranslateService
   ) {}
+
+  get exportPayload(): DashboardExportPayload | null {
+    if (!this.stats) {
+      return null;
+    }
+
+    return {
+      fileName: 'stock-dashboard',
+      title: this.translate.instant('AUTO.TABLEAU_DE_BORD_STOCK'),
+      sheets: [
+        createKpiSheet(this.translate.instant('AUTO.APERCU_GENERAL_DES_STOCKS_ET_ALERTES'), [
+          { label: this.translate.instant('AUTO.TOTAL_STOCK'), value: this.stats.valeurTotaleStock },
+          { label: 'Articles actifs', value: this.stats.totalArticles },
+          { label: this.translate.instant('AUTO.ARTICLES_EN_ALERTE'), value: this.stats.articlesEnAlerte },
+          { label: 'Taux de rupture', value: `${Number(this.stats.tauxRupture ?? 0).toFixed(1)}%` },
+          { label: 'Bons en attente', value: this.stats.bonsEnAttente },
+          { label: 'Délai moyen de validation (h)', value: this.stats.delaiValidationMoyen }
+        ]),
+        {
+          name: 'Articles critiques',
+          columns: [
+            { key: 'sku', label: 'SKU' },
+            { key: 'nom', label: 'Nom' },
+            { key: 'stockActuel', label: 'Stock actuel' },
+            { key: 'stockMinimum', label: 'Stock minimum' },
+            { key: 'stockDisponible', label: 'Stock disponible' },
+            { key: 'categorie', label: 'Catégorie' }
+          ],
+          rows: this.articlesCritiques.map((article) => ({
+            sku: article.sku,
+            nom: article.nom,
+            stockActuel: article.stockActuel,
+            stockMinimum: article.stockMinimum,
+            stockDisponible: article.stockDisponible,
+            categorie: article.categorie
+          }))
+        },
+        {
+          name: 'Mouvements récents',
+          columns: [
+            { key: 'sku', label: 'SKU' },
+            { key: 'article', label: 'Article' },
+            { key: 'type', label: 'Type' },
+            { key: 'quantite', label: 'Quantité' },
+            { key: 'unite', label: 'Unité' },
+            { key: 'date', label: 'Date' }
+          ],
+          rows: this.mouvementsRecents.map((mvt) => ({
+            sku: this.movementArticleSku(mvt),
+            article: this.movementArticleName(mvt),
+            type: mvt.typeMouvement,
+            quantite: mvt.quantite,
+            unite: this.movementUnit(mvt),
+            date: this.formatExportDate(mvt.dateMouvement)
+          }))
+        },
+        {
+          name: 'Bons en attente',
+          columns: [
+            { key: 'numero', label: 'Numéro' },
+            { key: 'statut', label: 'Statut' },
+            { key: 'fournisseur', label: 'Fournisseur' },
+            { key: 'date', label: 'Date' },
+            { key: 'progression', label: 'Progression' }
+          ],
+          rows: this.bonsEnAttente.map((bon) => ({
+            numero: bon.numeroBC,
+            statut: bon.status,
+            fournisseur: bon.materielSupplierName || 'Non spécifié',
+            date: this.formatExportDate(bon.createdDate),
+            progression: `${this.getReceptionProgress(bon)}%`
+          }))
+        }
+      ].filter((sheet) => sheet.rows.length > 0)
+    };
+  }
 
   ngOnInit(): void {
     this.loadDashboardData();
@@ -65,6 +147,10 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyChart();
+  }
+
+  refresh(): void {
+    this.loadDashboardData();
   }
 
   loadDashboardData(options: DashboardLoadOptions = {}): void {
@@ -116,6 +202,9 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
   private finishLoading(options: DashboardLoadOptions, thresholdCheckSucceeded: boolean): void {
     this.loading = false;
     this.refreshingThresholds = false;
+    if (thresholdCheckSucceeded && this.stats) {
+      this.lastUpdated = new Date();
+    }
     this.cdr.detectChanges();
 
     if (options.notifyThresholdCheck) {
@@ -211,18 +300,6 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
-
-  exportData(): void {
-    if (!this.stats) {
-      this.toastService.warning('Aucune donnée disponible à exporter.');
-      return;
-    }
-
-    const csvContent = this.buildExportContent();
-    const filename = `stock-dashboard-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
-    this.downloadFile(csvContent, filename, 'text/csv;charset=utf-8;');
-    this.toastService.success('Export du tableau de bord généré.');
   }
 
   getStatutClass(statut: string): string {

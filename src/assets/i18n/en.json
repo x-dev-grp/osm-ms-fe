@@ -1953,6 +1953,19 @@
       "TO_DATE": "To Date",
       "YESTERDAY": "Yesterday"
     },
+    "FILTERS": {
+      "TITLE": "Filters",
+      "ALL": "All filters"
+    },
+    "EXPORT": {
+      "TITLE": "Export",
+      "EXCEL": "Excel (.xlsx)",
+      "CSV": "CSV",
+      "PDF": "PDF",
+      "SUCCESS": "Export generated successfully",
+      "ERROR": "Export failed",
+      "NO_DATA": "No data available to export"
+    },
     "KPIS": {
       "AVG_UNIT_PRICE": "Average Unit Price",
       "AVG_VOLUME": "Avg Volume",
@@ -4677,7 +4690,8 @@
       "CREATED_DATE": "Created Date",
       "CURRENT_VOLUME": "Current Volume",
       "DASHBOARD": {
-        "TITLE": "Storage Dashboard"
+        "TITLE": "Storage Dashboard",
+        "SUBTITLE": "Overview of storage units and capacities"
       },
       "FILTERED": "Filtered",
       "LOCATION": "Location",
@@ -5385,6 +5399,23 @@
       "POMACE": "Pomace",
       "SOLID": "Solide",
       "VEGETAL_SOLIDS": "Solide"
+    }
+  },
+  "DASHBOARD_HUB": {
+    "TITLE": "Dashboards",
+    "SUBTITLE": "Switch between module dashboards in one place",
+    "TABS_ARIA": "Module dashboards",
+    "NO_ACCESS_TITLE": "No dashboards available",
+    "NO_ACCESS": "Your account does not have permission to view any module dashboard. Contact an administrator.",
+    "TABS": {
+      "OVERVIEW": "Overview",
+      "RECEPTION": "Reception",
+      "FINANCE": "Finance",
+      "STORAGE": "Storage",
+      "INVENTORY": "Inventory",
+      "HR": "Human resources",
+      "ANALYTICS": "Analytics",
+      "ADMINISTRATION": "Platform admin"
     }
   },
   "HOME_DASHBOARD": {

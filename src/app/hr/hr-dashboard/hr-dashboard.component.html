@@ -1,16 +1,12 @@
-<div class="dashboard-shell hr-dashboard-page">
-  <div class="page-header sticky-actions page-header--hr">
-    <div class="page-header__left">
-      <div class="header-icon-wrap header-icon-wrap--hr">
-        <mat-icon>people</mat-icon>
-      </div>
-      <div>
-        <h2 class="m-0 f-w-600">{{ 'HR.DASHBOARD.TITLE' | translate }}</h2>
-        <p class="header-subtitle">{{ 'HR.DASHBOARD.SUBTITLE' | translate }}</p>
-      </div>
-    </div>
-  </div>
-
+<app-dashboard-shell
+  titleKey="HR.DASHBOARD.TITLE"
+  subtitleKey="HR.DASHBOARD.SUBTITLE"
+  icon="groups"
+  theme="hr"
+  [loading]="false"
+  [exportPayload]="exportPayload"
+  (refresh)="noopRefresh()"
+>
   <div class="hr-nav-grid">
     @for (item of navItems; track item.route) {
       <a [routerLink]="item.route" class="hr-nav-card" [ngClass]="'hr-nav-card--' + item.themeKey">
@@ -24,4 +20,4 @@
       </a>
     }
   </div>
-</div>
+</app-dashboard-shell>

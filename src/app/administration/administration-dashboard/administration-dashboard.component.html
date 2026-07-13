@@ -1,40 +1,16 @@
-<div class="dashboard-shell admin-dashboard">
-  <div class="page-header sticky-actions page-header--admin">
-    <div class="page-header__left">
-      <div class="header-icon-wrap header-icon-wrap--admin">
-        <mat-icon>admin_panel_settings</mat-icon>
-      </div>
-      <div>
-        <h2 class="m-0 f-w-600">{{ 'ADMIN_DASHBOARD.TITLE' | translate }}</h2>
-        <p class="header-subtitle">{{ 'ADMIN_DASHBOARD.SUBTITLE' | translate }}</p>
-      </div>
-      @if (lastUpdated) {
-        <span class="text-muted d-none d-lg-inline ms-2 page-header__updated">
-          <mat-icon class="me-1" inline>update</mat-icon>
-          {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
-        </span>
-      }
-    </div>
-    <div class="page-header__right">
-      <button mat-stroked-button color="primary" (click)="refresh()" [disabled]="loading">
-        <mat-icon [class.spinning]="loading">refresh</mat-icon>
-        <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
-      </button>
-    </div>
-  </div>
-
-  @if (loading) {
-    <div class="loading-container">
-      <mat-spinner diameter="56"></mat-spinner>
-      <p>{{ 'ADMIN_DASHBOARD.LOADING' | translate }}</p>
-    </div>
-  } @else if (loadError) {
-    <div class="error-state">
-      <mat-icon>cloud_off</mat-icon>
-      <p>{{ 'ADMIN_DASHBOARD.LOAD_ERROR' | translate }}</p>
-      <button mat-flat-button color="primary" (click)="refresh()">{{ 'COMMON.REFRESH' | translate }}</button>
-    </div>
-  } @else if (stats) {
+<app-dashboard-shell
+  titleKey="ADMIN_DASHBOARD.TITLE"
+  subtitleKey="ADMIN_DASHBOARD.SUBTITLE"
+  icon="admin_panel_settings"
+  theme="admin"
+  [loading]="loading"
+  [loadErrorKey]="loadError ? 'ADMIN_DASHBOARD.LOAD_ERROR' : null"
+  [lastUpdated]="lastUpdated"
+  loadingMessageKey="ADMIN_DASHBOARD.LOADING"
+  [exportPayload]="exportPayload"
+  (refresh)="refresh()"
+>
+  @if (stats) {
     <section class="hero-summary admin-hero-summary">
       <div class="hero-card hero-card--tenants">
         <div class="hero-card__icon"><mat-icon>business</mat-icon></div>
@@ -344,4 +320,4 @@
       </div>
     </section>
   }
-</div>
+</app-dashboard-shell>

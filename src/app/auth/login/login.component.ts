@@ -141,9 +141,9 @@ export class LoginComponent implements OnInit {
               next: () => {
                 const role = this.authenticationService.currentUserValue?.role;
                 if (role === Role.OosmAdmin) {
-                  this.router.navigate(['/administration/dashboard']);
+                  this.router.navigate(['/dashboard/administration']);
                 } else {
-                  this.router.navigate(['/welcome']);
+                  this.router.navigate(['/dashboard']);
                 }
               },
               error: () => {

@@ -1,0 +1,130 @@
+<div class="dashboard-shell" [ngClass]="'dashboard-shell--' + theme()">
+  <header class="dashboard-header-card" [ngClass]="'dashboard-header-card--' + theme()">
+    <div class="dashboard-header-card__content">
+      <div class="dashboard-header-card__identity">
+        <div class="dashboard-header-card__icon" aria-hidden="true">
+          <mat-icon>{{ icon() }}</mat-icon>
+        </div>
+
+        <div class="dashboard-header-card__meta">
+          <h2 class="dashboard-header-card__title">{{ titleKey() | translate }}</h2>
+
+          @if (subtitleText()) {
+            <p class="dashboard-header-card__subtitle">{{ subtitleText() }}</p>
+          } @else if (subtitleKey()) {
+            <p class="dashboard-header-card__subtitle">{{ subtitleKey()! | translate }}</p>
+          }
+
+          @if (lastUpdated()) {
+            <p class="dashboard-header-card__updated">
+              <mat-icon inline>schedule</mat-icon>
+              <span>{{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated() | date:'short' }}</span>
+            </p>
+          }
+        </div>
+      </div>
+
+      <div class="dashboard-header-card__toolbar">
+        <ng-content select="[dashboardHeaderActions]"></ng-content>
+
+        @if (showExport()) {
+          <button
+            class="dashboard-header-card__btn dashboard-header-card__btn--export"
+            mat-stroked-button
+            type="button"
+            [matMenuTriggerFor]="exportMenu"
+            [disabled]="loading() || exporting() || !canExport()"
+            [matTooltip]="'DASHBOARD.EXPORT.TITLE' | translate"
+          >
+            <mat-icon [class.spinning]="exporting()">download</mat-icon>
+            <span class="dashboard-header-card__btn-label">{{ 'DASHBOARD.EXPORT.TITLE' | translate }}</span>
+            <mat-icon class="dashboard-header-card__btn-caret">arrow_drop_down</mat-icon>
+          </button>
+          <mat-menu #exportMenu="matMenu">
+            <button mat-menu-item type="button" (click)="exportAs('excel')" [disabled]="!canExport()">
+              <mat-icon>table_view</mat-icon>
+              <span>{{ 'DASHBOARD.EXPORT.EXCEL' | translate }}</span>
+            </button>
+            <button mat-menu-item type="button" (click)="exportAs('csv')" [disabled]="!canExport()">
+              <mat-icon>grid_on</mat-icon>
+              <span>{{ 'DASHBOARD.EXPORT.CSV' | translate }}</span>
+            </button>
+            <button mat-menu-item type="button" (click)="exportAs('pdf')" [disabled]="!canExport()">
+              <mat-icon>picture_as_pdf</mat-icon>
+              <span>{{ 'DASHBOARD.EXPORT.PDF' | translate }}</span>
+            </button>
+          </mat-menu>
+        }
+
+        <button
+          class="dashboard-header-card__btn dashboard-header-card__btn--refresh"
+          mat-stroked-button
+          color="primary"
+          type="button"
+          (click)="refresh.emit()"
+          [disabled]="loading()"
+          [matTooltip]="'COMMON.REFRESH' | translate"
+        >
+          <mat-icon [class.spinning]="loading()">refresh</mat-icon>
+          <span class="dashboard-header-card__btn-label">{{ 'COMMON.REFRESH' | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  @if (showDateFilter() || showFiltersPanel()) {
+    <section class="dashboard-filters-panel">
+      <button
+        type="button"
+        class="dashboard-filters-panel__toggle"
+        [attr.aria-expanded]="filtersExpanded()"
+        (click)="toggleFilters()"
+      >
+        <mat-icon class="dashboard-filters-panel__icon">tune</mat-icon>
+        <span class="dashboard-filters-panel__title">{{ 'DASHBOARD.FILTERS.TITLE' | translate }}</span>
+        <span class="dashboard-filters-panel__summary">
+          @if (dateFilterSummary() || filtersSummary()) {
+            {{ dateFilterSummary() }}{{ dateFilterSummary() && filtersSummary() ? ' · ' : '' }}{{ filtersSummary() }}
+          } @else {
+            {{ 'DASHBOARD.FILTERS.ALL' | translate }}
+          }
+        </span>
+        <mat-icon class="dashboard-filters-panel__chevron">
+          {{ filtersExpanded() ? 'expand_less' : 'expand_more' }}
+        </mat-icon>
+      </button>
+
+      <div class="dashboard-filters-panel__body" [class.is-expanded]="filtersExpanded()">
+        <div class="dashboard-filters-panel__inner" [class.loading]="loading()">
+          @if (showDateFilter()) {
+            <app-dashboard-date-filter
+              [disabled]="loading()"
+              [defaultPreset]="defaultPreset()"
+              (rangeChange)="onDateRangeChange($event)"
+              (summaryChange)="onDateFilterSummaryChange($event)"
+            />
+          }
+
+          <ng-content select="[dashboardFilterExtras]"></ng-content>
+        </div>
+      </div>
+    </section>
+  }
+
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="56"></mat-spinner>
+      <p>{{ loadingMessageKey() | translate }}</p>
+    </div>
+  } @else if (loadErrorKey() || loadErrorText()) {
+    <div class="error-state">
+      <mat-icon>cloud_off</mat-icon>
+      <p>{{ loadErrorText() ?? (loadErrorKey()! | translate) }}</p>
+      <button mat-flat-button color="primary" type="button" (click)="refresh.emit()">
+        {{ 'COMMON.REFRESH' | translate }}
+      </button>
+    </div>
+  } @else {
+    <ng-content></ng-content>
+  }
+</div>

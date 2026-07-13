@@ -4,6 +4,14 @@
   display: block;
 }
 
+.reception-filter-extras {
+  mat-form-field {
+    min-width: 180px;
+    flex: 1 1 180px;
+    max-width: 260px;
+  }
+}
+
 .reception-filters {
   display: flex;
   flex-direction: column;

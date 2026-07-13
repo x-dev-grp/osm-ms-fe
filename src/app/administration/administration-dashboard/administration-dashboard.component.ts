@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 
@@ -21,13 +21,15 @@ import { AdminDashboardService } from '../services/admin-dashboard.service';
 import { AdminDashboardStats } from '../models/admin-dashboard-stats.model';
 
 import { AdminSettingsService } from '../admin-settings/services/admin-settings.service';
+import { DashboardShellComponent } from '../../shared/components/dashboard/dashboard-shell.component';
+import { createKpiSheet, DashboardExportPayload } from '../../shared/components/dashboard/dashboard-export.models';
 
 @Component({
   selector: 'app-administration-dashboard',
 
   standalone: true,
 
-  imports: [CommonModule, SharedModule, RouterLink, MatButtonModule, MatIconModule, MatProgressSpinnerModule, TranslateModule, DatePipe],
+  imports: [CommonModule, SharedModule, RouterLink, MatButtonModule, MatIconModule, MatProgressSpinnerModule, TranslateModule, DatePipe, DashboardShellComponent],
 
   templateUrl: './administration-dashboard.component.html',
 
@@ -36,6 +38,7 @@ import { AdminSettingsService } from '../admin-settings/services/admin-settings.
 export class AdministrationDashboardComponent implements OnInit {
   private readonly adminDashboardService = inject(AdminDashboardService);
   private readonly adminSettingsService = inject(AdminSettingsService);
+  private readonly translate = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
 
   stats: AdminDashboardStats | null = null;
@@ -85,6 +88,68 @@ export class AdministrationDashboardComponent implements OnInit {
         this.loadError = true;
       }
     });
+  }
+
+  get exportPayload(): DashboardExportPayload | null {
+    if (!this.stats) {
+      return null;
+    }
+
+    return {
+      fileName: 'admin-dashboard',
+      title: this.translate.instant('ADMIN_DASHBOARD.TITLE'),
+      sheets: [
+        createKpiSheet('KPIs', [
+          { label: this.translate.instant('ADMIN_DASHBOARD.HERO.TENANTS'), value: this.stats.totalTenants },
+          { label: this.translate.instant('ADMIN_DASHBOARD.HERO.ACTIVE'), value: this.stats.activeTenants },
+          { label: this.translate.instant('ADMIN_DASHBOARD.HERO.USERS'), value: this.stats.totalUsers },
+          { label: this.translate.instant('ADMIN_DASHBOARD.KPIS.NEW_USERS_30D'), value: this.stats.newUsersLast30Days },
+          { label: 'Locked users', value: this.stats.lockedUsers },
+          { label: 'Users without tenant', value: this.stats.usersWithoutTenant }
+        ]),
+        {
+          name: 'Users by role',
+          columns: [
+            { key: 'role', label: 'Role' },
+            { key: 'count', label: 'Count' }
+          ],
+          rows: (this.stats.usersByRole ?? []).map((role) => ({
+            role: role.roleName,
+            count: role.count
+          }))
+        },
+        {
+          name: 'Top tenants',
+          columns: [
+            { key: 'tenant', label: 'Tenant' },
+            { key: 'users', label: 'Users' },
+            { key: 'active', label: 'Active' }
+          ],
+          rows: (this.stats.topTenantsByUsers ?? []).map((tenant) => ({
+            tenant: tenant.tenantName,
+            users: tenant.userCount,
+            active: tenant.active ? 'Yes' : 'No'
+          }))
+        },
+        {
+          name: 'Recent users',
+          columns: [
+            { key: 'username', label: 'Username' },
+            { key: 'email', label: 'Email' },
+            { key: 'role', label: 'Role' },
+            { key: 'tenant', label: 'Tenant' },
+            { key: 'locked', label: 'Locked' }
+          ],
+          rows: (this.stats.recentUsers ?? []).map((user) => ({
+            username: user.username,
+            email: user.email,
+            role: user.roleName,
+            tenant: user.tenantName,
+            locked: user.locked ? 'Yes' : 'No'
+          }))
+        }
+      ].filter((sheet) => sheet.rows.length > 0)
+    };
   }
 
   roleBarWidth(count: number): number {

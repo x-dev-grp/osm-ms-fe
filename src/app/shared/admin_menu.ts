@@ -3,19 +3,27 @@ import { Role } from 'src/app/theme/types/role';
 
 export const admin_menus: Navigation[] = [
   {
+    id: 'group-dashboard-hub',
+    title: 'DASHBOARD_HUB.TITLE',
+    type: 'group',
+    role: [Role.OosmAdmin],
+    children: [
+      {
+        id: 'item-dashboard-hub',
+        title: 'DASHBOARD_HUB.TABS.ADMINISTRATION',
+        type: 'item',
+        url: '/dashboard/administration',
+        icon: 'dashboard',
+        breadcrumbs: false
+      }
+    ]
+  },
+  {
     id: 'oosmAdminGroup',
     title: 'MENU.ADMINISTRATION.TITLE',
     type: 'group',
     role: [Role.OosmAdmin],
     children: [
-      {
-        id: 'adminDashboard',
-        title: 'MENU.ADMINISTRATION.DASHBOARD',
-        type: 'item',
-        url: '/administration/dashboard',
-        icon: 'admin_panel_settings',
-        breadcrumbs: false
-      },
       {
         id: 'adminCompanies',
         title: 'MENU.ADMINISTRATION.COMPANY_PROFILES',

@@ -3,11 +3,13 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
+import { DashboardShellComponent } from '../../../shared/components/dashboard/dashboard-shell.component';
+import { createKpiSheet, DashboardExportPayload } from '../../../shared/components/dashboard/dashboard-export.models';
 
 @Component({
   selector: 'app-analytics-dashboard',
   standalone: true,
-  imports: [TranslateModule, CommonModule, NgApexchartsModule],
+  imports: [TranslateModule, CommonModule, NgApexchartsModule, DashboardShellComponent],
   templateUrl: './Rapport-Global-OF.component.html',
   styleUrls: ['./Rapport-Global-OF.component.scss']
 })
@@ -46,6 +48,28 @@ export class RapportGlobalOFComponent implements OnInit {
     return Object.values(this.data).some((value) => Number(value || 0) > 0);
   }
 
+  get exportPayload(): DashboardExportPayload | null {
+    if (!this.data) {
+      return null;
+    }
+
+    return {
+      fileName: 'analytics-global-of',
+      title: this.i18n.instant('AUTO.RAPPORT_GLOBAL_DES_OF'),
+      sheets: [
+        createKpiSheet('KPIs', [
+          { label: this.i18n.instant('AUTO.TOTAL_OF'), value: this.data.totalOf },
+          { label: this.i18n.instant('DELIVERIES.STATUS.IN_PROGRESS'), value: this.data.inProgressOf },
+          { label: this.i18n.instant('AUTO.TERMINES'), value: this.data.completedOf },
+          { label: this.i18n.instant('AUTO.PLANIFIES'), value: this.data.plannedOf },
+          { label: this.i18n.instant('AUTO.CLOTURES'), value: this.data.canceledOf },
+          { label: this.i18n.instant('AUTO.CIBLE_GLOBALE'), value: this.data.totalTargetQuantity },
+          { label: this.i18n.instant('AUTO.PRODUCTION_GLOBALE'), value: this.data.totalProducedQuantity }
+        ])
+      ]
+    };
+  }
+
   loadData(): void {
     this.loading = true;
     this.errorMessage = '';
@@ -74,29 +98,6 @@ export class RapportGlobalOFComponent implements OnInit {
         this.statusChartOptions = null;
         this.volumeChartOptions = null;
         this.errorMessage = err?.error?.message || err?.message || this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_LE_RAPPORT_GLOBAL');
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  exportPdf(): void {
-    this.loading = true;
-
-    this.analyticsService.exportGlobalOfPdf({}).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Rapport_Global_OF.pdf';
-        a.click();
-        window.URL.revokeObjectURL(url);
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error exporting PDF', err);
-        this.errorMessage = err?.error?.message || err?.message || this.i18n.instant('AUTO.IMPOSSIBLE_D_EXPORTER_LE_PDF');
         this.loading = false;
         this.cdr.detectChanges();
       }
