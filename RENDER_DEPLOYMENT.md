@@ -1,8 +1,19 @@
 # Render Deployment
 
-## Hybrid: Render frontend + Railway backend + Render Postgres
+## ZitFlow (new): Blueprint FE + Postgres
 
-Keep **oosm-web** on Render and point nginx at the Railway API:
+Branch **`deploy/zitflow-xdev-pro`**. Apply [`render.zitflow.yaml`](render.zitflow.yaml) from the Render Dashboard (New → Blueprint). That creates:
+
+- **zitflow-web** — Docker/nginx frontend (`BACKEND_URL` → Railway)
+- **zitflow-postgres** — Frankfurt Postgres 17 (restore from `oosm_fawv`)
+
+Domain: **`zitflow.xdev.pro`**. Full steps: [`../oosm/ZITFLOW_RENDER.md`](../oosm/ZITFLOW_RENDER.md).
+
+Do not use the legacy root [`render.yaml`](render.yaml) for this cutover (it still points at the old Render API).
+
+## Hybrid (current prod): Render frontend + Railway backend + Render Postgres
+
+Keep **oosm-web** / **osm-ms-fe-1** on Render and point nginx at the Railway API:
 
 ```text
 BACKEND_URL=https://<backend>.up.railway.app
