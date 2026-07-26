@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 const username = process.env.E2E_USERNAME || 'oosmAdmin';
 const password = process.env.E2E_PASSWORD || 'osmAdmin123';
 
-test.describe('OOSM smoke', () => {
-  test('login page shows OOSM branding', async ({ page }) => {
+test.describe('ZitFlow smoke', () => {
+  test('login page shows ZitFlow branding', async ({ page }) => {
     await page.goto('/auth/login');
     await expect(page.locator('.auth-slogan')).toBeVisible();
     await expect(page.locator('input#username')).toBeVisible();

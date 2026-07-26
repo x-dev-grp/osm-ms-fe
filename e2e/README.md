@@ -1,6 +1,6 @@
-# OOSM E2E tests (Playwright)
+# ZitFlow E2E tests (Playwright)
 
-End-to-end tests for OOSM frontend flows, including mobile bottom navigation and dashboard card view.
+End-to-end tests for ZitFlow frontend flows, including mobile bottom navigation and dashboard card view.
 
 ## Prerequisites
 
@@ -24,6 +24,7 @@ cd osm-ms-fe
 .\e2e\scripts\run-e2e.ps1 -Suite mobile      # mobile nav + cards (needs BE)
 .\e2e\scripts\run-e2e.ps1 -Suite full        # all authenticated tests
 .\e2e\scripts\run-e2e.ps1 -Suite all        # smoke then full
+npm run e2e:auth                            # password reset (mocked APIs)
 ```
 
 **Linux / macOS:**
@@ -34,6 +35,7 @@ chmod +x e2e/scripts/run-e2e.sh
 ./e2e/scripts/run-e2e.sh smoke
 ./e2e/scripts/run-e2e.sh mobile
 ./e2e/scripts/run-e2e.sh full
+npm run e2e:auth
 ```
 
 ## npm scripts
@@ -42,6 +44,7 @@ chmod +x e2e/scripts/run-e2e.sh
 |--------|-------------|
 | `npm run e2e:install` | Install Playwright Chromium |
 | `npm run e2e:smoke` | Login page branding (no backend) |
+| `npm run e2e:auth` | Password reset flows (mocked APIs; admin gated by `E2E_RUN_LOGIN`) |
 | `npm run e2e:mobile` | Mobile bottom nav + dashboard cards |
 | `npm run e2e:full` | Full suite (all spec files) |
 | `npm run e2e` | Same as full suite |
@@ -71,6 +74,8 @@ Playwright auto-starts the frontend when it is not already running on port 4200.
 | File | Scope |
 |------|--------|
 | `smoke.spec.ts` | Login page branding, login, help |
+| `password-reset.spec.ts` | Forgot / reset-confirm UI with mocked reset APIs (no mailbox) |
+| `admin-password-reset.spec.ts` | Admin `RESET_PASSWORD` → temporary password (needs `E2E_RUN_LOGIN=1`) |
 | `mobile-experience.spec.ts` | Bottom nav, dashboard cards, config toggles |
 | `reception.spec.ts` | Reception dashboard, olive/oil lists, suppliers, QC, machines |
 | `navigation.spec.ts` | All main modules + welcome + help workflows |
@@ -81,6 +86,7 @@ Playwright auto-starts the frontend when it is not already running on port 4200.
 | File | Purpose |
 |------|---------|
 | `helpers/auth.ts` | Login and authenticated shell checks |
+| `helpers/password-reset.ts` | Route mocks for reset / validate / update / admin temp password |
 | `helpers/theme-config.ts` | Seed/persist theme config for mobile UI tests |
 
 ## Environment variables

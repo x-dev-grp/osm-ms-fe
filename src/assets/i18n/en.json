@@ -360,7 +360,7 @@
   "USER_GUIDE": {
     "TITLE": "Help & user guide",
     "INTRO": "ZitFlow helps you manage reception, oil production, conditioning, inventory, finance and human resources for your olive oil mill.",
-    "WELCOME_USER": "Hello, {{name}} â€” here is how to get the most from ZitFlow.",
+    "WELCOME_USER": "Hello, {{name}} — here is how to get the most from ZitFlow.",
     "MY_ACCOUNT": "My account",
     "NO_MODULES": "No modules are visible for your role. Contact your administrator to assign permissions.",
     "MODULES_TITLE": "Your modules",
@@ -6885,7 +6885,7 @@
     "CHOOSE_FULL_OR_CONTAINER_LAYOUT": "Choose Full or Container Layout",
     "FULL_LAYOUT": "Full Layout",
     "CONTAINER_LAYOUT": "Container Layout",
-    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "ZitFlow crafted with â™¥ by team XDEV",
+    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "ZitFlow crafted with ♥ by team XDEV",
     "RECHERCHE_GLOBALE": "Global search",
     "LANCER_LA_RECHERCHE_GLOBALE": "Start global search",
     "MODE": "mode",
