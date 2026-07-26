@@ -87,13 +87,16 @@ export class PayslipFormComponent implements OnInit {
     this.payrollPeriodService.getAllList().subscribe({ next: (r) => (this.payrollPeriods = r.data ?? []), error: () => (this.payrollPeriods = []) });
     prefillEmployeeIdFromQuery(this.route, this.form, this.editing, this.entityId);
 
-    merge(
-      this.form.get('baseSalary')!.valueChanges,
-      this.form.get('bonuses')!.valueChanges,
-      this.form.get('grossSalary')!.valueChanges
-    )
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.recalculateAmounts());
+    // Provisional client preview for new drafts only — backend amounts are authoritative when editing/viewing.
+    if (!this.entityId) {
+      merge(
+        this.form.get('baseSalary')!.valueChanges,
+        this.form.get('bonuses')!.valueChanges,
+        this.form.get('grossSalary')!.valueChanges
+      )
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.recalculateAmounts());
+    }
 
     if (this.entityId) {
       this.loading = true;
@@ -131,7 +134,7 @@ export class PayslipFormComponent implements OnInit {
   }
 
   recalculateAmounts(): void {
-    if (this.readOnly) {
+    if (this.readOnly || this.editing || this.entityId) {
       return;
     }
     const raw = this.form.getRawValue();
@@ -157,7 +160,9 @@ export class PayslipFormComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-    this.recalculateAmounts();
+    if (!this.editing) {
+      this.recalculateAmounts();
+    }
     const raw = this.form.getRawValue();
     const { employeeId, payrollPeriodId, ...rest } = raw;
     const payload: Payslip = {

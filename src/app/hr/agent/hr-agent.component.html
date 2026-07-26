@@ -1,0 +1,37 @@
+<app-dashboard-shell
+  titleKey="HR.PAGE.AGENT.TITLE"
+  subtitleKey="HR.PAGE.AGENT.SUBTITLE"
+  icon="smart_toy"
+  theme="hr"
+  [loading]="false"
+>
+  <div class="agent-chat">
+    <div class="agent-messages">
+      @for (message of messages; track $index) {
+        <div class="agent-bubble" [class.agent-bubble--user]="message.role === 'user'" [class.agent-bubble--assistant]="message.role === 'assistant'">
+          {{ message.text }}
+        </div>
+      } @empty {
+        <p class="text-muted">{{ 'HR.AGENT.EMPTY' | translate }}</p>
+      }
+    </div>
+
+    <form class="agent-form" [formGroup]="form" (ngSubmit)="send()">
+      <mat-form-field appearance="outline" class="agent-prompt">
+        <mat-label>{{ 'HR.AGENT.PROMPT' | translate }}</mat-label>
+        <textarea matInput rows="3" formControlName="prompt" required></textarea>
+      </mat-form-field>
+      <mat-checkbox formControlName="confirmWriteActions">{{ 'HR.AGENT.CONFIRM_WRITE' | translate }}</mat-checkbox>
+      <div class="form-actions">
+        <button mat-flat-button color="primary" type="submit" [disabled]="sending">
+          @if (sending) {
+            <mat-spinner diameter="18"></mat-spinner>
+          } @else {
+            <mat-icon>send</mat-icon>
+          }
+          <span class="ms-1">{{ 'HR.AGENT.SEND' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</app-dashboard-shell>

@@ -65,11 +65,14 @@ export class EmployeeFormComponent implements OnInit {
   salaryTypes = ['MONTHLY', 'HOURLY', 'DAILY'];
   paymentModes = ['BANK_TRANSFER', 'CASH', 'CHECK'];
   workRegimes = ['HOURS_48', 'HOURS_40', 'AGRICULTURAL'];
+  genders = ['MALE', 'FEMALE', 'OTHER'];
+  maritalStatuses = ['SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED'];
 
   ngOnInit(): void {
     this.form = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
+      employeeNumber: [''],
       cin: [''],
       cnssMatricule: [''],
       email: ['', Validators.email],
@@ -77,8 +80,14 @@ export class EmployeeFormComponent implements OnInit {
       address: [''],
       birthDate: [null],
       hireDate: [null],
+      terminationDate: [null],
       jobTitle: [''],
       department: [''],
+      gender: [null],
+      maritalStatus: [null],
+      numberOfChildren: [null, Validators.min(0)],
+      taxIdentifier: [''],
+      rib: [''],
       status: ['ACTIVE'],
       salaryType: ['MONTHLY'],
       paymentMode: ['BANK_TRANSFER'],
@@ -138,7 +147,8 @@ export class EmployeeFormComponent implements OnInit {
           this.form.patchValue({
             ...this.employee,
             birthDate: parseDate(this.employee.birthDate),
-            hireDate: parseDate(this.employee.hireDate)
+            hireDate: parseDate(this.employee.hireDate),
+            terminationDate: parseDate(this.employee.terminationDate)
           });
           if (this.employee.activeContract) {
             this.form.get('jobTitle')?.disable();
@@ -162,7 +172,8 @@ export class EmployeeFormComponent implements OnInit {
       ...raw,
       id: this.entityId ?? undefined,
       birthDate: toIsoDate(raw.birthDate),
-      hireDate: toIsoDate(raw.hireDate)
+      hireDate: toIsoDate(raw.hireDate),
+      terminationDate: toIsoDate(raw.terminationDate)
     };
 
     this.saving = true;

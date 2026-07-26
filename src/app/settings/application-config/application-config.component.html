@@ -384,12 +384,35 @@
 
     <!-- Action buttons -->
     <div class="col-12">
+      <div class="mb-4 liquid-glass-section">
+        <div class="liquid-glass-section__head">
+          <div>
+            <h6 class="fw-semibold mb-1">{{ 'GENERAL_CONFIG_UI.PWA.TITLE' | translate }}</h6>
+            <p class="text-muted mb-0">{{ 'GENERAL_CONFIG_UI.PWA.DESCRIPTION' | translate }}</p>
+          </div>
+          <button
+            mat-stroked-button
+            color="primary"
+            type="button"
+            [disabled]="!canInstallPwa"
+            (click)="installPwa()"
+          >
+            <mat-icon class="me-1">install_mobile</mat-icon>
+            {{ 'GENERAL_CONFIG_UI.PWA.INSTALL' | translate }}
+          </button>
+        </div>
+        <p class="liquid-glass-section__hint text-muted" *ngIf="!canInstallPwa">
+          {{ 'GENERAL_CONFIG_UI.PWA.NOT_AVAILABLE' | translate }}
+        </p>
+      </div>
+
       <div class="actions full-width mt-3">
         <button
           mat-flat-button
           color="primary"
           [matTooltip]="'AUTO.APPLY_THEME_SETTINGS' | translate"
           (click)="applySettings()"
+          [disabled]="savingTenantTheme"
           [attr.aria-label]="'AUTO.APPLY_SETTINGS' | translate"
         >
           <mat-icon class="me-1">save</mat-icon>

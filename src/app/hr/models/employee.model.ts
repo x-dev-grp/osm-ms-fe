@@ -8,6 +8,7 @@ export interface Employee {
   id?: string;
   firstName: string;
   lastName: string;
+  employeeNumber?: string;
   cin?: string;
   cnssMatricule?: string;
   email?: string;
@@ -15,8 +16,14 @@ export interface Employee {
   address?: string;
   birthDate?: string;
   hireDate?: string;
+  terminationDate?: string;
   jobTitle?: string;
   department?: string;
+  gender?: 'MALE' | 'FEMALE' | 'OTHER';
+  maritalStatus?: 'SINGLE' | 'MARRIED' | 'DIVORCED' | 'WIDOWED';
+  numberOfChildren?: number;
+  taxIdentifier?: string;
+  rib?: string;
   status?: EmployeeStatus;
   salaryType?: SalaryType;
   paymentMode?: PaymentMode;

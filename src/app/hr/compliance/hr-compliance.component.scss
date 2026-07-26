@@ -1,0 +1,68 @@
+@import '../shared/hr-form.scss';
+
+.compliance-actions {
+  margin-bottom: 1rem;
+}
+
+.hr-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hr-kpi {
+  background: var(--bs-body-bg, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.hr-kpi__label {
+  display: block;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.hr-kpi__value {
+  font-size: 1.5rem;
+}
+
+.compliance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.violation-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.severity {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.severity--critical {
+  color: #c62828;
+}
+
+.severity--high {
+  color: #ef6c00;
+}
+
+.severity--warning {
+  color: #f9a825;
+}
+
+.violation-card__action {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  opacity: 0.85;
+}

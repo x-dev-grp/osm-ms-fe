@@ -171,7 +171,7 @@ export class OilSaleInvoicePreviewComponent implements OnInit, OnDestroy {
 
   private applyCompanyProfile(profile: CompanyProfile): void {
     this.companyProfile = profile;
-    this.logoUrl = this.companyProfileService.getLogoDataUrlFromCache() ?? 'assets/images/logo-dark.svg';
+    this.logoUrl = this.companyProfileService.getLogoDataUrlFromCache() ?? 'assets/images/logo-dark.png';
   }
 
   private loadOilSale(id: string): void {

@@ -44,8 +44,8 @@ export class NotificationTestDialogComponent {
 
   readonly form = this.fb.group({
     playerId: [this.data?.defaultPlayerId ?? '', [Validators.required, Validators.minLength(8)]],
-    title: ['OOSM notification test'],
-    message: ['This is a test push notification from OOSM administration settings.']
+    title: ['ZitFlow notification test'],
+    message: ['This is a test push notification from ZitFlow administration settings.']
   });
 
   cancel(): void {

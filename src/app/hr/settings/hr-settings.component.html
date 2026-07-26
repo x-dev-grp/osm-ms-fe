@@ -1,0 +1,21 @@
+<app-dashboard-shell
+  titleKey="HR.PAGE.SETTINGS.TITLE"
+  subtitleKey="HR.PAGE.SETTINGS.SUBTITLE"
+  icon="settings"
+  theme="hr"
+  [loading]="false"
+>
+  <div class="hr-nav-grid">
+    @for (card of cards; track card.route) {
+      <a [routerLink]="card.route" class="hr-nav-card">
+        <div class="hr-nav-card__icon">
+          <mat-icon>{{ card.icon }}</mat-icon>
+        </div>
+        <div class="hr-nav-card__body">
+          <h3>{{ card.titleKey | translate }}</h3>
+          <p>{{ card.subtitleKey | translate }}</p>
+        </div>
+      </a>
+    }
+  </div>
+</app-dashboard-shell>

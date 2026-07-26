@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,10 +8,17 @@ import { SharedModule } from '../../shared/shared.module';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ThemeConfig, ThemeConfigService } from '../../shared/services/theme-config.service';
 import { LIQUID_GLASS_TARGETS } from '../../shared/constants/liquid-glass.constants';
+import { CompanyProfileService } from '../../shared/services/company-profile.service';
+import { ToastService } from '../../shared/services/toast.service';
 
 type ThemeMode = ThemeConfig['layoutType'];
 type LayoutType = ThemeConfig['layout'];
 type ThemeColor = ThemeConfig['bodyColor'];
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
 
 @Component({
   selector: 'app-application-config',
@@ -24,6 +31,8 @@ export class ApplicationConfigComponent implements OnInit {
   private readonly themeConfig = inject(ThemeConfigService);
   private readonly translate = inject(TranslateService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly companyProfileService = inject(CompanyProfileService);
+  private readonly toast = inject(ToastService);
 
   layoutType: ThemeMode = 'light';
   contrast = false;
@@ -35,15 +44,35 @@ export class ApplicationConfigComponent implements OnInit {
   liquidGlass = false;
   mobileBottomNav = true;
   mobileDashboardCards = true;
+  canInstallPwa = false;
+  savingTenantTheme = false;
+
+  private deferredInstallPrompt: BeforeInstallPromptEvent | null = null;
 
   readonly liquidGlassTargets = LIQUID_GLASS_TARGETS;
 
   ngOnInit(): void {
     this.loadFromService();
+    this.hydrateThemeFromCompanyProfile();
 
     this.translate.onLangChange.subscribe(() => {
       this.cdr.detectChanges();
     });
+  }
+
+  @HostListener('window:beforeinstallprompt', ['$event'])
+  onBeforeInstallPrompt(event: Event): void {
+    event.preventDefault();
+    this.deferredInstallPrompt = event as BeforeInstallPromptEvent;
+    this.canInstallPwa = true;
+    this.cdr.markForCheck();
+  }
+
+  @HostListener('window:appinstalled')
+  onAppInstalled(): void {
+    this.deferredInstallPrompt = null;
+    this.canInstallPwa = false;
+    this.cdr.markForCheck();
   }
 
   setLayouts(type: ThemeMode): void {
@@ -101,12 +130,51 @@ export class ApplicationConfigComponent implements OnInit {
 
   applySettings(): void {
     this.persistThemeConfig();
+    this.persistTenantThemeAccent();
+  }
+
+  async installPwa(): Promise<void> {
+    if (!this.deferredInstallPrompt) {
+      this.toast.info('GENERAL_CONFIG_UI.PWA.NOT_AVAILABLE');
+      return;
+    }
+    await this.deferredInstallPrompt.prompt();
+    await this.deferredInstallPrompt.userChoice;
+    this.deferredInstallPrompt = null;
+    this.canInstallPwa = false;
+    this.cdr.markForCheck();
   }
 
   private persistThemeConfig(): void {
     const cfg = this.buildConfig();
     this.themeConfig.saveConfig(cfg);
     this.themeConfig.applyConfig(cfg);
+  }
+
+  private persistTenantThemeAccent(): void {
+    const current = this.companyProfileService.getProfileFromCache();
+    if (!current?.legalName) {
+      return;
+    }
+    if (current.preferredThemeColor === this.bodyColor) {
+      return;
+    }
+    this.savingTenantTheme = true;
+    this.companyProfileService
+      .saveProfile({
+        ...current,
+        preferredThemeColor: this.bodyColor
+      })
+      .subscribe({
+        next: () => {
+          this.savingTenantTheme = false;
+          this.toast.success('GENERAL_CONFIG_UI.PWA.THEME_SAVED');
+        },
+        error: () => {
+          this.savingTenantTheme = false;
+          this.toast.error('CONTROLE_QUALITE.MESSAGES.ERROR.SAVE');
+        }
+      });
   }
 
   resetLayout(): void {
@@ -118,6 +186,26 @@ export class ApplicationConfigComponent implements OnInit {
     const cfg = this.themeConfig.loadConfig();
     this.syncState(cfg);
     this.themeConfig.applyConfig(cfg);
+  }
+
+  private hydrateThemeFromCompanyProfile(): void {
+    const applyPreferred = (preferred?: string | null) => {
+      if (!preferred || preferred === this.bodyColor) {
+        return;
+      }
+      this.bodyColor = preferred as ThemeColor;
+      this.applyPreview();
+    };
+
+    const cached = this.companyProfileService.getProfileFromCache();
+    if (cached?.preferredThemeColor) {
+      applyPreferred(cached.preferredThemeColor);
+    }
+
+    this.companyProfileService.getProfile().subscribe({
+      next: (profile) => applyPreferred(profile?.preferredThemeColor),
+      error: () => undefined
+    });
   }
 
   private applyPreview(): void {

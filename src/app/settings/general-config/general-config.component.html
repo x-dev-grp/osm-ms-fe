@@ -3,74 +3,83 @@
   <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="onTabChange($event)">
 
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.TAB_TITLE' | translate }}">
-
       <div class="company-config-tab">
-
         <app-company-profile></app-company-profile>
-
       </div>
-
     </mat-tab>
-
-
 
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.PRODUCTION_TAB' | translate }}">
-
       <div class="production-config-tab">
-
         <app-production-config></app-production-config>
-
       </div>
-
     </mat-tab>
-
-
 
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.FINANCE_TAB' | translate }}">
-
       <div class="category-config-tab">
-
         <app-category-parameters-tab
-
           categoryFilter="FINANCE"
-
           coverIcon="ti-currency-dollar"
-
           titleKey="GENERAL_CONFIG_UI.FINANCE_CONFIG.TITLE"
-
           subtitleKey="GENERAL_CONFIG_UI.FINANCE_CONFIG.SUBTITLE"
-
           highlightCode="PRIX_TRITURATION_KG"
-
         ></app-category-parameters-tab>
-
       </div>
-
     </mat-tab>
-
-
 
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.HR_TAB' | translate }}">
-
       <div class="category-config-tab">
-
         <app-category-parameters-tab
-
           categoryFilter="HR"
-
           coverIcon="ti-users"
-
           titleKey="GENERAL_CONFIG_UI.HR_CONFIG.TITLE"
-
           subtitleKey="GENERAL_CONFIG_UI.HR_CONFIG.SUBTITLE"
-
         ></app-category-parameters-tab>
-
       </div>
-
     </mat-tab>
 
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.RECEPTION_TAB' | translate }}">
+      <div class="category-config-tab">
+        <app-category-parameters-tab
+          categoryFilter="RECEPTION"
+          coverIcon="ti-truck-delivery"
+          titleKey="GENERAL_CONFIG_UI.RECEPTION_CONFIG.TITLE"
+          subtitleKey="GENERAL_CONFIG_UI.RECEPTION_CONFIG.SUBTITLE"
+        ></app-category-parameters-tab>
+      </div>
+    </mat-tab>
 
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.LOCALE_TAB' | translate }}">
+      <div class="category-config-tab">
+        <app-category-parameters-tab
+          categoryFilter="LOCALE"
+          coverIcon="ti-world"
+          titleKey="GENERAL_CONFIG_UI.LOCALE_CONFIG.TITLE"
+          subtitleKey="GENERAL_CONFIG_UI.LOCALE_CONFIG.SUBTITLE"
+        ></app-category-parameters-tab>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.PRINT_TAB' | translate }}">
+      <div class="category-config-tab">
+        <app-category-parameters-tab
+          categoryFilter="PRINT"
+          coverIcon="ti-printer"
+          titleKey="GENERAL_CONFIG_UI.PRINT_CONFIG.TITLE"
+          subtitleKey="GENERAL_CONFIG_UI.PRINT_CONFIG.SUBTITLE"
+        ></app-category-parameters-tab>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.NOTIFICATIONS_TAB' | translate }}">
+      <div class="category-config-tab">
+        <app-category-parameters-tab
+          categoryFilter="NOTIFICATIONS"
+          coverIcon="ti-bell"
+          titleKey="GENERAL_CONFIG_UI.NOTIFICATIONS_CONFIG.TITLE"
+          subtitleKey="GENERAL_CONFIG_UI.NOTIFICATIONS_CONFIG.SUBTITLE"
+        ></app-category-parameters-tab>
+      </div>
+    </mat-tab>
 
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.TYPES_PARAMS_TAB' | translate }}">
       <div class="types-params-tab">
@@ -79,16 +88,11 @@
     </mat-tab>
 
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.OTHER_TAB' | translate }}">
-
       <div class="other-config-tab">
-
         <app-application-config></app-application-config>
-
       </div>
-
     </mat-tab>
 
   </mat-tab-group>
 
 </app-card>
-

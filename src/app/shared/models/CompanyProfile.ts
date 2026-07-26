@@ -1,13 +1,12 @@
-// src/app/shared/models/company-profile.ts
-
 export interface CompanyProfile {
   id?: string;
-  legalName: string; // Raison sociale
-  registrationNumber: string; // RC
-  taxId: string; // Matricule fiscale
-  cnssNumber?: string; // CNSS ID
+  legalName: string;
+  registrationNumber: string;
+  taxId: string;
+  cnssNumber?: string;
   legalForm: 'SARL' | 'SUARL' | 'SA' | 'SNC' | 'Autre';
-  capital: number; // en TND
+  capital: number;
+  creationDate?: string | null;
 
   email?: string;
   phone?: string;
@@ -18,17 +17,23 @@ export interface CompanyProfile {
   postalCode?: string;
   governorate?: string;
   campaignStartAt?: string;
-  campaignEndAt?: string;
+  campaignEndAt?: string | null;
   campaignStartMonth?: number;
   campaignStartDay?: number;
   campaignEndMonth?: number;
   campaignEndDay?: number;
-  /** Base64‑encoded image data for logo */
   logoData?: string;
-  /** MIME type of the logo (e.g. "image/png") */
   logoContentType?: string;
 
-  enabledModules?: string[];
+  invoiceFooterNote?: string;
+  invoiceLegalMentions?: string;
+  preferredThemeColor?: string;
+  defaultLanguage?: string;
+  timezone?: string;
+  pwaShortName?: string;
+  invoiceBankName?: string;
+  invoiceBankIban?: string;
+  invoiceBankSwift?: string;
 
-  // read‑only list of bank accounts
- }
+  enabledModules?: string[];
+}

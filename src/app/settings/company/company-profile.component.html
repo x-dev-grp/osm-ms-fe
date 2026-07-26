@@ -306,7 +306,87 @@
               </div>
             </mat-tab>
 
-            <mat-tab *ngIf="bankAccounts?.length">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="ti ti-file-invoice m-r-10"></i>
+                {{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.TITLE' | translate }}
+              </ng-template>
+              <div class="profile-tab-panel">
+                <div class="profile-form-card">
+                  <div class="profile-form-header">{{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.TITLE' | translate }}</div>
+                  <div class="profile-form-body">
+                    <div class="row g-3">
+                      <div class="col-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>{{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.FOOTER_NOTE' | translate }}</mat-label>
+                          <textarea matInput rows="3" formControlName="invoiceFooterNote"></textarea>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>{{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.LEGAL_MENTIONS' | translate }}</mat-label>
+                          <textarea matInput rows="3" formControlName="invoiceLegalMentions"></textarea>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>{{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.BANK_NAME' | translate }}</mat-label>
+                          <input matInput formControlName="invoiceBankName" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>{{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.BANK_IBAN' | translate }}</mat-label>
+                          <input matInput formControlName="invoiceBankIban" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>{{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.BANK_SWIFT' | translate }}</mat-label>
+                          <input matInput formControlName="invoiceBankSwift" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>{{ 'GENERAL_CONFIG_UI.LOCALE.DEFAULT_LANGUAGE' | translate }}</mat-label>
+                          <mat-select formControlName="defaultLanguage">
+                            <mat-option value="fr">Français</mat-option>
+                            <mat-option value="en">English</mat-option>
+                            <mat-option value="ar">العربية</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>{{ 'GENERAL_CONFIG_UI.LOCALE.TIMEZONE' | translate }}</mat-label>
+                          <input matInput formControlName="timezone" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>{{ 'GENERAL_CONFIG_UI.LOCALE.PWA_SHORT_NAME' | translate }}</mat-label>
+                          <input matInput formControlName="pwaShortName" maxlength="40" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>{{ 'GENERAL_CONFIG_UI.LOCALE.THEME_COLOR' | translate }}</mat-label>
+                          <mat-select formControlName="preferredThemeColor">
+                            <mat-option value="blue-theme">Blue</mat-option>
+                            <mat-option value="teal-theme">Teal</mat-option>
+                            <mat-option value="green-theme">Green</mat-option>
+                            <mat-option value="indigo-theme">Indigo</mat-option>
+                            <mat-option value="orange-theme">Orange</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+
+            <mat-tab>
               <ng-template mat-tab-label>
                 <i class="ti ti-building-bank m-r-10"></i>
                 {{ 'BANK_ACCOUNTS.TITLE' | translate }}
@@ -314,14 +394,36 @@
 
               <div class="profile-tab-panel">
                 <div class="profile-form-card">
-                  <div class="profile-form-header">{{ 'BANK_ACCOUNTS.TITLE' | translate }}</div>
-                  <mat-list class="bank-accounts-list">
-                    <mat-list-item *ngFor="let acc of bankAccounts" class="bank-account-item">
-                      <mat-icon matListItemIcon>account_balance</mat-icon>
-                      <div matListItemTitle>{{ acc.bankName }}</div>
-                      <div matListItemLine class="text-muted">{{ acc.rib }}</div>
-                    </mat-list-item>
-                  </mat-list>
+                  <div class="profile-form-header d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                    <span>{{ 'BANK_ACCOUNTS.TITLE' | translate }}</span>
+                    <a mat-stroked-button color="primary" routerLink="/finance/banks">
+                      <i class="ti ti-external-link m-r-5"></i>
+                      {{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.MANAGE_BANKS' | translate }}
+                    </a>
+                  </div>
+                  @if (bankAccounts.length === 0) {
+                    <div class="profile-form-body text-muted">
+                      {{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.NO_BANKS' | translate }}
+                    </div>
+                  } @else {
+                    <mat-list class="bank-accounts-list">
+                      @for (acc of bankAccounts; track acc.id || acc.rib) {
+                        <mat-list-item class="bank-account-item">
+                          <mat-icon matListItemIcon>account_balance</mat-icon>
+                          <div matListItemTitle>{{ acc.bankName }}</div>
+                          <div matListItemLine class="text-muted">{{ acc.rib || acc.iban }}</div>
+                          <button
+                            mat-button
+                            color="primary"
+                            type="button"
+                            (click)="useBankForInvoices(acc)"
+                          >
+                            {{ 'GENERAL_CONFIG_UI.INVOICE_BRANDING.USE_FOR_INVOICES' | translate }}
+                          </button>
+                        </mat-list-item>
+                      }
+                    </mat-list>
+                  }
                 </div>
               </div>
             </mat-tab>

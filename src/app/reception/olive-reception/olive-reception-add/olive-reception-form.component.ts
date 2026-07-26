@@ -18,7 +18,7 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Data, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { deliveryType } from '../../../shared/models/deleveryType';
@@ -35,6 +35,7 @@ import { map, startWith } from 'rxjs/operators';
 import { OperationType } from '../../../shared/models/operation-type.enum';
 import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
 import { ToastService } from '../../../shared/services/toast.service';
+import { TenantParameterClient } from '../../../shared/services/tenant-parameter.client';
 import { Olive_Oil_Type } from '../../../shared/models/olive-type.enum';
 import {
   GenericTypeDialogComponent
@@ -146,6 +147,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     private genericTypeService: GenericTypeService,
     private supplierService: SupplierTypeService,
     private toastService: ToastService,
+    private tenantParams: TenantParameterClient,
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
@@ -251,6 +253,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         complete: () => this.markCallDone()
       });
       this.subscriptions.push(numbersSub);
+      this.applyDefaultOliveVariety();
     }
 
     // party label by operationType (watch form control)
@@ -347,6 +350,8 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.REQUIRED_DATE'), 'warning');
       return;
     }
+
+    await this.warnReceptionLimitsIfNeeded(Number(formValue.poidsNet) || 0);
 
     const deliveryId = this.route.snapshot.paramMap.get('id');
     const payload: Partial<UnifiedDelivery> = {
@@ -521,6 +526,92 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     const n = (s.name ?? '').toLowerCase();
     const l = (s.lastname ?? '').toLowerCase();
     return n.includes(q) || l.includes(q);
+  }
+
+  private applyDefaultOliveVariety(): void {
+    this.tenantParams.getString('DEFAULT_OLIVE_VARIETY', '').subscribe((defaultName) => {
+      if (!defaultName || this.receptionForm.get('oliveVariety')?.value?.id) {
+        return;
+      }
+      this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY).subscribe({
+        next: (res) => {
+          const match = (res.data ?? []).find((item) => (item.name ?? '').trim().toLowerCase() === defaultName.trim().toLowerCase());
+          if (match) {
+            this.receptionForm.patchValue({ oliveVariety: match });
+          }
+        }
+      });
+    });
+  }
+
+  private async warnReceptionLimitsIfNeeded(incomingNetKg: number): Promise<void> {
+    try {
+      const [open, close, maxKg] = await Promise.all([
+        firstValueFrom(this.tenantParams.getString('RECEPTION_OPEN_TIME', '07:00')),
+        firstValueFrom(this.tenantParams.getString('RECEPTION_CLOSE_TIME', '18:00')),
+        firstValueFrom(this.tenantParams.getNumber('MAX_DAILY_TONNAGE_KG', 0))
+      ]);
+
+      if (!this.isWithinReceptionHours(open, close)) {
+        this.showToast(
+          this.translate.instant('GENERAL_CONFIG_UI.RECEPTION_RUNTIME.OUTSIDE_HOURS', { open, close }),
+          'warning'
+        );
+      }
+
+      if (maxKg > 0) {
+        const todayTotal = await this.sumTodayOliveNetKg();
+        if (todayTotal + incomingNetKg > maxKg) {
+          this.showToast(
+            this.translate.instant('GENERAL_CONFIG_UI.RECEPTION_RUNTIME.TONNAGE_EXCEEDED', {
+              max: maxKg,
+              current: Math.round(todayTotal + incomingNetKg)
+            }),
+            'warning'
+          );
+        }
+      }
+    } catch {
+      // non-blocking advisories
+    }
+  }
+
+  private isWithinReceptionHours(openRaw: string, closeRaw: string): boolean {
+    const now = new Date();
+    const current = now.getHours() * 60 + now.getMinutes();
+    const open = this.parseMinutes(openRaw, 7 * 60);
+    const close = this.parseMinutes(closeRaw, 18 * 60);
+    if (open === close) {
+      return true;
+    }
+    if (open < close) {
+      return current >= open && current <= close;
+    }
+    return current >= open || current <= close;
+  }
+
+  private parseMinutes(raw: string, fallback: number): number {
+    const match = /^(\d{1,2}):(\d{2})$/.exec((raw || '').trim());
+    if (!match) {
+      return fallback;
+    }
+    return Number(match[1]) * 60 + Number(match[2]);
+  }
+
+  private async sumTodayOliveNetKg(): Promise<number> {
+    try {
+      const res = await firstValueFrom(this.deliveryService.getAllDeliveriesList());
+      const today = new Date().toISOString().slice(0, 10);
+      return (res.data ?? [])
+        .filter((d) => d?.deliveryType === 'OLIVE')
+        .filter((d) => {
+          const raw = d.deliveryDate ? new Date(d.deliveryDate).toISOString().slice(0, 10) : '';
+          return raw === today;
+        })
+        .reduce((sum, d) => sum + (Number(d.poidsNet) || 0), 0);
+    } catch {
+      return 0;
+    }
   }
 
   private recomputeNet(): void {

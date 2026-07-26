@@ -11,6 +11,7 @@ import {
   normalizeMetricValue,
   parseDailyMetricPayload
 } from '../../shared/services/DailyMetricPayload';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-parameter',
@@ -31,6 +32,9 @@ export class ParameterComponent implements OnInit {
   @Input() codeFilter: string[] = [];
   @Input() excludeCategories: string[] = [];
 
+  seeding = false;
+  loading = false;
+
   private readonly dailyMetricCodes = new Set(['DAILY_OIL_METRIC']);
 
   constructor(
@@ -40,13 +44,53 @@ export class ParameterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.service.getAll().subscribe((res) => {
-      this.parameters = res.data;
-      this.categories = [...new Set(this.parameters.map((p) => p.category))];
-      this.buildForm(this.parameters);
-      this.applyFilters();
-      this.loadMetricPayloads();
+    this.reloadParameters();
+  }
+
+  seedAllDefaults(): void {
+    if (this.seeding) {
+      return;
+    }
+    this.seeding = true;
+    this.service
+      .seedDefaults()
+      .pipe(finalize(() => (this.seeding = false)))
+      .subscribe({
+        next: (result) => {
+          this.toast.success('GENERAL_CONFIG_UI.PARAMETERS.SEED_SUCCESS', {
+            created: result.created ?? 0,
+            total: result.catalogSize ?? 0,
+            existing: result.alreadyPresent ?? 0
+          });
+          this.reloadParameters();
+        },
+        error: () => {
+          this.toast.error('GENERAL_CONFIG_UI.PARAMETERS.SEED_ERROR');
+        }
+      });
+  }
+
+  private reloadParameters(): void {
+    this.loading = true;
+    this.service.getAll().subscribe({
+      next: (res) => {
+        this.parameters = res.data ?? [];
+        this.categories = [...new Set(this.parameters.map((p) => p.category))];
+        this.rebuildForm(this.parameters);
+        this.applyFilters();
+        this.loadMetricPayloads();
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+        this.toast.error('GENERAL_CONFIG.MESSAGES.LOAD_ERROR');
+      }
     });
+  }
+
+  private rebuildForm(params: Parameter[]): void {
+    Object.keys(this.paramForm.controls).forEach((key) => this.paramForm.removeControl(key));
+    this.buildForm(params);
   }
 
   buildForm(params: Parameter[]) {

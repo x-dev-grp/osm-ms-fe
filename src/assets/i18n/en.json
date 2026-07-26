@@ -56,7 +56,7 @@
     "PRODUCTION": "Production",
     "RECEPTION": "Reception",
     "REQUIRED": "Select at least one module.",
-    "SECTION_HINT": "Choose which OOSM modules this tenant can access. None are enabled by default.",
+    "SECTION_HINT": "Choose which ZitFlow modules this tenant can access. None are enabled by default.",
     "SECTION_TITLE": "Licensed modules",
     "VIEW_TITLE": "Company profile"
   },
@@ -64,11 +64,11 @@
     "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",
     "ADD_COMPANY_CREATED": "Company and admin user created successfully.",
     "ADD_COMPANY_INITIAL_PASSWORD": "Company created. Share these credentials with the admin â€” Username: {{username}}, Password: {{password}}",
-    "ADD_OOSM_ADMIN_BUTTON": "Add OOSM Admin",
+    "ADD_OOSM_ADMIN_BUTTON": "Add ZitFlow Admin",
     "ADD_OOSM_ADMIN_ROLE": "Role",
-    "ADD_OOSM_ADMIN_ROLE_VALUE": "OOSM Admin",
-    "ADD_OOSM_ADMIN_SAVE": "Create OOSM Admin",
-    "ADD_OOSM_ADMIN_TITLE": "Create OOSM Admin User",
+    "ADD_OOSM_ADMIN_ROLE_VALUE": "ZitFlow Admin",
+    "ADD_OOSM_ADMIN_SAVE": "Create ZitFlow Admin",
+    "ADD_OOSM_ADMIN_TITLE": "Create ZitFlow Admin User",
     "CANCEL": "Cancel",
     "DOWNLOAD_PDF": "Download contract (PDF)",
     "COMPANY_NAME": "Company name",
@@ -92,7 +92,7 @@
   "ADMIN_DASHBOARD": {
     "ADD_COMPANY_LINK": "Create a new tenant and its admin user.",
     "ADD_OOSM_ADMIN_LINK": "Create a new platform administrator account.",
-    "API_DOCS_LINK": "Browse and test OOSM REST endpoints with your admin JWT.",
+    "API_DOCS_LINK": "Browse and test ZitFlow REST endpoints with your admin JWT.",
     "COMPANIES_LINK": "Browse and manage all company profiles.",
     "HERO": {
       "ACTIVE": "active",
@@ -180,7 +180,7 @@
     "LOAD_ERROR": "Unable to load API documentation. Ensure SPRINGDOC_ENABLED is true, the backend has been restarted, and you are logged in as OOSMADMIN.",
     "OPEN_DOCS": "Open API documentation",
     "OPEN_SETTINGS": "Open settings",
-    "SUBTITLE": "Browse and test OOSM REST endpoints with your admin JWT.",
+    "SUBTITLE": "Browse and test ZitFlow REST endpoints with your admin JWT.",
     "TITLE": "API documentation"
   },
   "ADMIN_SETTINGS": {
@@ -359,8 +359,8 @@
   },
   "USER_GUIDE": {
     "TITLE": "Help & user guide",
-    "INTRO": "OOSM helps you manage reception, oil production, conditioning, inventory, finance and human resources for your olive oil mill.",
-    "WELCOME_USER": "Hello, {{name}} â€” here is how to get the most from OOSM.",
+    "INTRO": "ZitFlow helps you manage reception, oil production, conditioning, inventory, finance and human resources for your olive oil mill.",
+    "WELCOME_USER": "Hello, {{name}} â€” here is how to get the most from ZitFlow.",
     "MY_ACCOUNT": "My account",
     "NO_MODULES": "No modules are visible for your role. Contact your administrator to assign permissions.",
     "MODULES_TITLE": "Your modules",
@@ -616,7 +616,7 @@
     "COMPANY_TICKETS": "Company tickets",
     "NO_TICKETS": "No support tickets yet.",
     "VIEW_TICKET": "View details",
-    "HELP_TITLE": "Need help from OOSM?",
+    "HELP_TITLE": "Need help from ZitFlow?",
     "HELP_DESC": "Report a bug, ask a question, or request a change. Your ticket includes your user and company context automatically.",
     "HELP_TIP1": "Open the ticket from the screen where the issue happens â€” we capture the page URL automatically.",
     "HELP_TIP2": "Describe steps to reproduce and expected vs actual behaviour.",
@@ -659,7 +659,7 @@
   "SIDEBAR": {
     "BRAND_HOME": "Go to home",
     "DEFAULT_COMPANY": "My company",
-    "PLATFORM": "OOSM Platform"
+    "PLATFORM": "ZitFlow Platform"
   },
   "NOTIFICATIONS": {
     "TITLE": "Notifications",
@@ -881,7 +881,7 @@
     },
     "MOBILE_DASHBOARD_CARDS": {
       "TITLE": "Mobile Dashboard Cards",
-      "DESCRIPTION": "Show OOSM dashboard list rows as cards instead of a table on screens up to 1024px wide."
+      "DESCRIPTION": "Show ZitFlow dashboard list rows as cards instead of a table on screens up to 1024px wide."
     },
     "TITLE": "Theme Configuration"
   },
@@ -1237,7 +1237,21 @@
       "CONTRACTS": "Employment agreements",
       "PAYROLL": "Payslips & CNSS",
       "LEAVE": "Absences & approvals",
-      "POINTAGE": "Daily attendance"
+      "POINTAGE": "Daily attendance",
+      "DEPARTMENTS": "Departments",
+      "GRADES": "Grades",
+      "DOCUMENTS": "Employee documents",
+      "WORK_SCHEDULES": "Work schedules",
+      "TIMESHEETS": "Timesheets",
+      "OVERTIME": "Overtime requests",
+      "LEAVE_TYPES": "Leave types",
+      "PUBLIC_HOLIDAYS": "Public holidays",
+      "SALARY_ADVANCES": "Salary advances",
+      "EMPLOYEE_LOANS": "Employee loans",
+      "PAYROLL_VARIABLES": "Payroll variables",
+      "SETTINGS": "HR settings",
+      "COMPLIANCE": "Compliance",
+      "AGENT": "HR agent"
     },
     "EMPLOYMENT": {
       "ACTIVE_DERIVED": "Active status is set automatically when a valid contract is in force.",
@@ -1293,6 +1307,134 @@
       },
       "CONTRACT_FORM": {
         "SUBTITLE": "Set contract type, dates, salary, and linked position."
+      },
+      "DEPARTMENTS": {
+        "TITLE": "Departments",
+        "SUBTITLE": "Organize company structure and teams."
+      },
+      "DEPARTMENT_FORM": {
+        "SUBTITLE": "Create or update a department."
+      },
+      "GRADES": {
+        "TITLE": "Grades",
+        "SUBTITLE": "Define career grades and levels."
+      },
+      "GRADE_FORM": {
+        "SUBTITLE": "Create or update a grade."
+      },
+      "WORK_SCHEDULES": {
+        "TITLE": "Work schedules",
+        "SUBTITLE": "Weekly hours and shift patterns."
+      },
+      "WORK_SCHEDULE_FORM": {
+        "SUBTITLE": "Define a work schedule."
+      },
+      "TIMESHEETS": {
+        "TITLE": "Timesheets",
+        "SUBTITLE": "Monthly worked time by employee."
+      },
+      "TIMESHEET_FORM": {
+        "SUBTITLE": "Create or update a timesheet."
+      },
+      "OVERTIME_REQUESTS": {
+        "TITLE": "Overtime requests",
+        "SUBTITLE": "Review overtime submissions."
+      },
+      "OVERTIME_REQUEST_FORM": {
+        "SUBTITLE": "Submit an overtime request."
+      },
+      "LEAVE_TYPES": {
+        "TITLE": "Leave types",
+        "SUBTITLE": "Configure leave categories and allowances."
+      },
+      "LEAVE_TYPE_FORM": {
+        "SUBTITLE": "Define a leave type."
+      },
+      "PUBLIC_HOLIDAYS": {
+        "TITLE": "Public holidays",
+        "SUBTITLE": "Legal and company holidays."
+      },
+      "PUBLIC_HOLIDAY_FORM": {
+        "SUBTITLE": "Add a public holiday."
+      },
+      "SALARY_ADVANCES": {
+        "TITLE": "Salary advances",
+        "SUBTITLE": "Track salary advance requests."
+      },
+      "SALARY_ADVANCE_FORM": {
+        "SUBTITLE": "Record a salary advance."
+      },
+      "EMPLOYEE_LOANS": {
+        "TITLE": "Employee loans",
+        "SUBTITLE": "Manage loans and installments."
+      },
+      "EMPLOYEE_LOAN_FORM": {
+        "SUBTITLE": "Create an employee loan."
+      },
+      "SALARY_COMPONENTS": {
+        "TITLE": "Salary components",
+        "SUBTITLE": "Earnings and deduction definitions."
+      },
+      "SALARY_COMPONENT_FORM": {
+        "SUBTITLE": "Define a salary component."
+      },
+      "LEGAL_RULES": {
+        "TITLE": "Legal rules",
+        "SUBTITLE": "Tunisian labour-law parameters."
+      },
+      "LEGAL_RULE_FORM": {
+        "SUBTITLE": "Configure a legal rule."
+      },
+      "SOCIAL_SECURITY": {
+        "TITLE": "Social security",
+        "SUBTITLE": "CNSS / CSS contribution rates."
+      },
+      "SOCIAL_SECURITY_FORM": {
+        "SUBTITLE": "Configure social security rates."
+      },
+      "TAX_CONFIG": {
+        "TITLE": "Tax configurations",
+        "SUBTITLE": "IRPP brackets and fiscal years."
+      },
+      "TAX_CONFIG_FORM": {
+        "SUBTITLE": "Configure tax parameters."
+      },
+      "MINIMUM_WAGE": {
+        "TITLE": "Minimum wage rules",
+        "SUBTITLE": "SMIG / SMAG profiles."
+      },
+      "MINIMUM_WAGE_FORM": {
+        "SUBTITLE": "Define a minimum wage rule."
+      },
+      "EMPLOYEE_DOCUMENTS": {
+        "TITLE": "Employee documents",
+        "SUBTITLE": "Store and track HR documents."
+      },
+      "EMPLOYEE_DOCUMENT_FORM": {
+        "SUBTITLE": "Register an employee document."
+      },
+      "PAYROLL_VARIABLES": {
+        "TITLE": "Payroll variables",
+        "SUBTITLE": "Monthly variable pay inputs."
+      },
+      "PAYROLL_VARIABLE_FORM": {
+        "SUBTITLE": "Add a payroll variable."
+      },
+      "SETTINGS": {
+        "TITLE": "HR settings",
+        "SUBTITLE": "Legal, tax, and payroll configuration hub."
+      },
+      "COMPANY_LEGAL_PROFILE": {
+        "TITLE": "Company legal profile",
+        "SUBTITLE": "Employer CNSS and sector settings."
+      },
+      "COMPLIANCE": {
+        "TITLE": "Compliance",
+        "SUBTITLE": "Score and violations from HR compliance scan."
+      },
+      "AGENT": {
+        "TITLE": "HR agent",
+        "SUBTITLE": "Ask questions about HR data and rules."
       }
     },
     "DASHBOARD": {
@@ -1306,7 +1448,10 @@
         "ACTIVE_CONTRACTS": "Active contracts",
         "PENDING_LEAVES": "Pending leave",
         "OPEN_PAYROLL": "Open periods",
-        "DRAFT_PAYSLIPS": "Draft payslips"
+        "DRAFT_PAYSLIPS": "Draft payslips",
+        "ON_LEAVE": "On leave",
+        "COMPLIANCE_SCORE": "Compliance score",
+        "CONTRACTS_EXPIRING": "Contracts expiring"
       },
       "CHART": {
         "TITLE": "HR breakdown"
@@ -1332,7 +1477,14 @@
         "BASE_SALARY": "Base salary",
         "SALARY_TYPE": "Salary type",
         "PAYMENT_MODE": "Payment mode",
-        "BANK_ACCOUNT": "Bank account"
+        "BANK_ACCOUNT": "Bank account",
+        "EMPLOYEE_NUMBER": "Employee number",
+        "GENDER": "Gender",
+        "MARITAL_STATUS": "Marital status",
+        "NUMBER_OF_CHILDREN": "Number of children",
+        "TAX_IDENTIFIER": "Tax identifier",
+        "RIB": "RIB",
+        "TERMINATION_DATE": "Termination date"
       },
       "FORM": {
         "IDENTITY": "Identity",
@@ -1380,6 +1532,17 @@
         "HOURS_48": "48 hours / week",
         "HOURS_40": "40 hours / week",
         "AGRICULTURAL": "Agricultural"
+      },
+      "GENDER": {
+        "MALE": "Male",
+        "FEMALE": "Female",
+        "OTHER": "Other"
+      },
+      "MARITAL_STATUS": {
+        "SINGLE": "Single",
+        "MARRIED": "Married",
+        "DIVORCED": "Divorced",
+        "WIDOWED": "Widowed"
       }
     },
     "CONTRACTS": {
@@ -1391,19 +1554,37 @@
         "START_DATE": "Start date",
         "END_DATE": "End date",
         "SALARY": "Salary",
-        "STATUS": "Status"
+        "STATUS": "Status",
+        "CONTRACT_NUMBER": "Contract number",
+        "BASE_SALARY": "Base salary",
+        "WEEKLY_HOURS": "Weekly hours",
+        "CDD_LEGAL_REASON": "CDD legal reason",
+        "PROBATION_START": "Probation start",
+        "PROBATION_END": "Probation end"
       },
       "TYPE": {
         "CDI": "Permanent (CDI)",
         "CDD": "Fixed-term (CDD)",
         "INTERNSHIP": "Internship",
-        "TEMPORARY": "Temporary"
+        "TEMPORARY": "Temporary",
+        "SEASONAL": "Seasonal",
+        "PART_TIME": "Part-time",
+        "OTHER_LEGAL_TYPE": "Other legal type"
       },
       "STATUS": {
         "DRAFT": "Draft",
         "ACTIVE": "Active",
         "EXPIRED": "Expired",
-        "TERMINATED": "Terminated"
+        "TERMINATED": "Terminated",
+        "SUSPENDED": "Suspended",
+        "CANCELLED": "Cancelled"
+      },
+      "CDD_REASON": {
+        "TEMPORARY_REPLACEMENT": "Temporary replacement",
+        "SEASONAL_WORK": "Seasonal work",
+        "TEMPORARY_INCREASE_ACTIVITY": "Temporary increase of activity",
+        "TEMPORARY_NATURE_OF_WORK": "Temporary nature of work",
+        "OTHER_LEGAL_EXCEPTION": "Other legal exception"
       }
     },
     "ATTENDANCE": {
@@ -1611,6 +1792,93 @@
       "EXIT_MARKED": "Check-out recorded at {{time}}.",
       "PUNCH": "Punch",
       "OPEN_PUNCH": "Open check-in — mark exit first"
+    },
+    "MENU": {
+      "ORGANIZATION": "Organization",
+      "TIME": "Time & attendance",
+      "PAYROLL": "Payroll"
+    },
+    "FIELDS": {
+      "CODE": "Code",
+      "NAME": "Name",
+      "DESCRIPTION": "Description",
+      "ACTIVE": "Active",
+      "LEVEL": "Level",
+      "WEEKLY_HOURS": "Weekly hours",
+      "WORKING_DAYS": "Working days",
+      "START_TIME": "Start time",
+      "END_TIME": "End time",
+      "BREAK_MINUTES": "Break (minutes)",
+      "NIGHT_SHIFT": "Night shift",
+      "ROTATING_SHIFT": "Rotating shift",
+      "STATUS": "Status",
+      "WORKED_MINUTES": "Worked minutes",
+      "DATE": "Date",
+      "MINUTES": "Minutes",
+      "REASON": "Reason",
+      "AMOUNT": "Amount",
+      "NAME_FR": "Name (FR)",
+      "NAME_AR": "Name (AR)",
+      "ANNUAL_ALLOWANCE": "Annual allowance",
+      "PAID": "Paid",
+      "REQUIRES_APPROVAL": "Requires approval",
+      "LEGAL": "Legal",
+      "RECURRING": "Recurring",
+      "REQUEST_DATE": "Request date",
+      "PRINCIPAL": "Principal",
+      "MONTHLY_INSTALLMENT": "Monthly installment",
+      "REMAINING": "Remaining balance",
+      "LABEL_FR": "Label (FR)",
+      "LABEL_AR": "Label (AR)",
+      "COMPONENT_TYPE": "Component type",
+      "CALCULATION_TYPE": "Calculation type",
+      "TAXABLE": "Taxable",
+      "CNSS_APPLICABLE": "CNSS applicable",
+      "CATEGORY": "Category",
+      "EFFECTIVE_FROM": "Effective from",
+      "VALUE": "Value",
+      "LEGAL_REFERENCE": "Legal reference",
+      "REGIME": "Regime",
+      "EMPLOYEE_RATE": "Employee rate",
+      "EMPLOYER_RATE": "Employer rate",
+      "CSS_RATE": "CSS rate",
+      "FISCAL_YEAR": "Fiscal year",
+      "PROFILE": "Profile",
+      "SECTOR": "Sector",
+      "WEEKLY_REGIME": "Weekly regime",
+      "MONTHLY_MINIMUM": "Monthly minimum",
+      "HOURLY_MINIMUM": "Hourly minimum",
+      "DOCUMENT_TYPE": "Document type",
+      "TITLE": "Title",
+      "FILE_NAME": "File name",
+      "EXPIRY_DATE": "Expiry date",
+      "NOTES": "Notes",
+      "TYPE": "Type",
+      "QUANTITY": "Quantity",
+      "BUSINESS_ACTIVITY": "Business activity",
+      "CNSS_EMPLOYER_NUMBER": "CNSS employer number",
+      "ACCIDENT_RISK_RATE": "Accident risk rate",
+      "MINIMUM_WAGE_PROFILE": "Minimum wage profile",
+      "FISCAL_REGIME": "Fiscal regime"
+    },
+    "COMPLIANCE": {
+      "SCAN": "Run compliance scan",
+      "SCORE": "Compliance score",
+      "CRITICAL": "Critical",
+      "WARNING": "Warnings",
+      "OPEN": "Open issues",
+      "VIOLATIONS": "Violations",
+      "NO_VIOLATIONS": "No violations loaded yet. Run a scan.",
+      "LOAD_ERROR": "Unable to load compliance summary.",
+      "SCAN_SUCCESS": "Compliance scan completed.",
+      "SCAN_ERROR": "Compliance scan failed."
+    },
+    "AGENT": {
+      "PROMPT": "Ask the HR agent",
+      "SEND": "Send",
+      "CONFIRM_WRITE": "Confirm write / critical actions",
+      "EMPTY": "Ask a question about employees, contracts, leave, or payroll.",
+      "SEND_ERROR": "Unable to reach the HR agent."
     }
   },
   "CONTRACT": {
@@ -2545,6 +2813,14 @@
       "CONFIRM_RESET": "Are you sure you want to reset the form? All unsaved changes will be lost."
     },
     "OTHER_TAB": "Other Config",
+    "PARAMETERS": {
+      "TITLE": "System parameters",
+      "SEED_ALL": "Seed all defaults",
+      "SEEDING": "Seeding…",
+      "SEED_HINT": "Creates any missing catalog parameters. Existing values are kept.",
+      "SEED_SUCCESS": "Seeded {{created}} new parameter(s) ({{existing}} already present, catalog {{total}}).",
+      "SEED_ERROR": "Failed to seed default parameters."
+    },
     "PRODUCTION_CONFIG": {
       "DAILY_METRIC_HINT": "Current reference value. History is preserved when you save.",
       "EDIT_CAMPAIGN": "Campaign schedule",
@@ -2555,10 +2831,64 @@
       "HISTORY_SEARCH": "Search…",
       "HISTORY_VALUE": "Value",
       "PARAMETERS": "Production parameters",
+      "ROLLOVER_ACTION": "Start new season",
+      "ROLLOVER_HINT": "Sets campaign start to today, clears the end date, and optionally resets the daily oil price reference.",
+      "ROLLOVER_RESET_METRIC": "Reset daily oil metric (keep history)",
+      "ROLLOVER_SUCCESS": "New season started successfully.",
+      "ROLLOVER_TITLE": "Season rollover",
+      "CAMPAIGN_ENDING_SOON": "Campaign ends in {{days}} day(s).",
       "START_FROM": "Starts",
       "SUMMARY": "Campaign summary"
     },
     "PRODUCTION_TAB": "Production Config",
+    "RECEPTION_TAB": "Reception",
+    "RECEPTION_CONFIG": {
+      "SUBTITLE": "Reception desk hours, tonnage limits, and defaults",
+      "TITLE": "Reception configuration"
+    },
+    "RECEPTION_RUNTIME": {
+      "OUTSIDE_HOURS": "Outside reception hours ({{open}} – {{close}}). You can still save.",
+      "TONNAGE_EXCEEDED": "Daily tonnage would reach {{current}} kg (limit {{max}} kg)."
+    },
+    "LOCALE_TAB": "Locale",
+    "LOCALE_CONFIG": {
+      "SUBTITLE": "Default language, currency, and timezone",
+      "TITLE": "Locale configuration"
+    },
+    "PRINT_TAB": "Print",
+    "PRINT_CONFIG": {
+      "SUBTITLE": "Default paper size, copies, and QR options",
+      "TITLE": "Print presets"
+    },
+    "NOTIFICATIONS_TAB": "Notifications",
+    "NOTIFICATIONS_CONFIG": {
+      "SUBTITLE": "Staff alerts for QC, stock, and campaign events",
+      "TITLE": "Notification preferences"
+    },
+    "INVOICE_BRANDING": {
+      "TITLE": "Documents & invoices",
+      "FOOTER_NOTE": "Invoice footer note",
+      "LEGAL_MENTIONS": "Legal mentions",
+      "BANK_NAME": "Bank name",
+      "BANK_IBAN": "IBAN / RIB",
+      "BANK_SWIFT": "BIC / SWIFT",
+      "MANAGE_BANKS": "Manage bank accounts",
+      "NO_BANKS": "No bank accounts yet. Create one in Finance → Banks.",
+      "USE_FOR_INVOICES": "Use for invoices"
+    },
+    "LOCALE": {
+      "DEFAULT_LANGUAGE": "Default language",
+      "TIMEZONE": "Timezone",
+      "PWA_SHORT_NAME": "PWA short name",
+      "THEME_COLOR": "Preferred theme color"
+    },
+    "PWA": {
+      "TITLE": "Install app",
+      "DESCRIPTION": "Install ZitFlow on this device for faster access.",
+      "INSTALL": "Install",
+      "NOT_AVAILABLE": "Install is available only in a supported browser when the app is not already installed.",
+      "THEME_SAVED": "Tenant theme accent saved."
+    },
     "TAB_TITLE": "General Configuration",
     "TYPES_PARAMS_TAB": "Types Params"
   },
@@ -2640,7 +2970,7 @@
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Add Company & User",
-      "ADD_OOSM_ADMIN": "Add OOSM Admin",
+      "ADD_OOSM_ADMIN": "Add ZitFlow Admin",
       "COMPANY_PROFILES": "Company Profiles",
       "DASHBOARD": "Admin Dashboard",
       "TITLE": "Administration",
@@ -3854,7 +4184,7 @@
       "OIL_QUALITY": "Oil Quality Control",
       "OIL_RECEPTION": "Oil Reception",
       "OLIVE_QUALITY": "Olive Quality Control",
-      "OOSMUSER": "OOSM User",
+      "OOSMUSER": "ZitFlow User",
       "PARAMETER": "Parameter",
       "PAUSE": "Pause",
       "PAY": "Pay",
@@ -3978,7 +4308,7 @@
       "WASTE_TITLE": "Waste disposal and sales (pomace, margine, grignon, etc.).",
       "EXPENSES_TITLE": "Operating expenses and outgoing payments.",
       "BANK_ACCOUNTS_TITLE": "Bank accounts used for payments and financial reconciliation.",
-      "ADMIN_USERS_TITLE": "Platform administrator accounts (OOSM admin scope).",
+      "ADMIN_USERS_TITLE": "Platform administrator accounts (ZitFlow admin scope).",
       "BASE_TYPE_TITLE": "Generic reference types and configurable base data.",
       "SUPPLIER_DETAILS_OIL_CREDIT_TOTAL": "Oil credit totals and history for this supplier.",
       "OSM_DASHBOARD_ACTIONS_OLIVE_QUALITY": "Olive quality control results pending review or update.",
@@ -5420,7 +5750,7 @@
   },
   "HOME_DASHBOARD": {
     "TITLE": "Home",
-    "GREETING": "Welcome back to OOSM",
+    "GREETING": "Welcome back to ZitFlow",
     "GREETING_NAMED": "Welcome back, {{name}}",
     "LOADING": "Loading your overview",
     "LOAD_ERROR": "Could not load the dashboard overview.",
@@ -5487,7 +5817,7 @@
       "START": "Start a Reception"
     },
     "DESCRIPTION": "Manage receptions, production, inventory and finance from one place.",
-    "HEADLINE": "Welcome to OOSM",
+    "HEADLINE": "Welcome to ZitFlow",
     "SLOGAN": "Olive Oil Management System",
     "LINKS": {
       "FINANCE": "Finance",
@@ -6555,7 +6885,7 @@
     "CHOOSE_FULL_OR_CONTAINER_LAYOUT": "Choose Full or Container Layout",
     "FULL_LAYOUT": "Full Layout",
     "CONTAINER_LAYOUT": "Container Layout",
-    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "OOSM crafted with â™¥ by team XDEV",
+    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "ZitFlow crafted with â™¥ by team XDEV",
     "RECHERCHE_GLOBALE": "Global search",
     "LANCER_LA_RECHERCHE_GLOBALE": "Start global search",
     "MODE": "mode",
@@ -7078,7 +7408,7 @@
     "ERREUR_LORS_DE_LA_CREATION_DU_FOURNISSEUR": "Error creating supplier",
     "ERROR_LOADING_STORAGE_UNIT": "Error loading storage unit.",
     "ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_STORAGE_UNIT": "Are you sure you want to delete this storage unit?",
-    "OOSM": "| OOSM",
+    "OOSM": "| ZitFlow",
     "LA_QUANTITE_DEPASSE_LE_RESTE_A_PRODUIRE_DU_PROJET": "The quantity ({{value0}}) exceeds the remainder of the project to be produced ({{value1}} {{value2}})",
     "QUANTITE_DEPASSEE_MAXIMUM_AUTORISE": "Quantity exceeded. Maximum allowed: {{value0}}.",
     "QUANTITE_DEPASSEE_MAXIMUM_RESTANT_PROJET": "Quantity exceeded. Maximum remaining project: {{value0}}.",

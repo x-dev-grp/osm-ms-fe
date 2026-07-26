@@ -15,6 +15,7 @@ import { ConfirmationDialogData, ConfirmationDialogResult, ConfirmationType } fr
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppParameterService } from '../../../shared/services/AppParameterService';
 import { ToastService } from '../../../shared/services/toast.service';
+import { TenantParameterClient } from '../../../shared/services/tenant-parameter.client';
 
 interface ChildLotWithRendement extends PlanningItem {
   calculatedRendement?: number;
@@ -66,6 +67,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
     private translate: TranslateService,
     private toast: ToastService,
     private parameterService: AppParameterService,
+    private tenantParams: TenantParameterClient,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       item: PlanningItem | GlobalLot;
@@ -221,15 +223,27 @@ export class CompletionDetailsDialogComponent implements OnInit {
   }
 
   loadTriturationPriceFromParam(): void {
-    this.parameterService.getByCode(this.prixtriturationkg).subscribe({
-      next: (param) => {
-        const value = parseFloat(param.value);
+    const item: any = this.item;
+    const varietyName =
+      item?.oliveVariety?.name ||
+      item?.data?.oliveVariety?.name ||
+      item?.childLots?.[0]?.data?.oliveVariety?.name ||
+      null;
+    this.tenantParams.resolveTriturationPrice(this.getCompletionDateTime(), varietyName).subscribe({
+      next: (value) => {
         if (!isNaN(value)) {
           this.triturationPricePerKg = value;
         }
       },
       error: () => {
-        console.warn('Prix de trituration introuvable');
+        this.parameterService.getByCode(this.prixtriturationkg).subscribe({
+          next: (param) => {
+            const parsed = parseFloat(param.value);
+            if (!isNaN(parsed)) {
+              this.triturationPricePerKg = parsed;
+            }
+          }
+        });
       }
     });
   }

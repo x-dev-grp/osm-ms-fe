@@ -3,10 +3,22 @@
   subtitleKey="HR.DASHBOARD.SUBTITLE"
   icon="groups"
   theme="hr"
-  [loading]="false"
+  [loading]="loading"
   [exportPayload]="exportPayload"
-  (refresh)="noopRefresh()"
+  (refresh)="refreshStats()"
 >
+  <div class="hr-kpi-grid">
+    @for (kpi of kpiCards; track kpi.labelKey) {
+      <article class="hr-kpi">
+        <div class="hr-kpi__icon"><mat-icon>{{ kpi.icon }}</mat-icon></div>
+        <div>
+          <span class="hr-kpi__label">{{ kpi.labelKey | translate }}</span>
+          <strong class="hr-kpi__value">{{ kpi.value }}</strong>
+        </div>
+      </article>
+    }
+  </div>
+
   <div class="hr-nav-grid">
     @for (item of navItems; track item.route) {
       <a [routerLink]="item.route" class="hr-nav-card" [ngClass]="'hr-nav-card--' + item.themeKey">

@@ -91,7 +91,8 @@ export class CampaignService {
     const source: CompanyProfile = {
       ...(profile ?? {}),
       campaignStartAt: campaignStartAt ?? profile?.campaignStartAt,
-      campaignEndAt: campaignEndAt ?? profile?.campaignEndAt
+      // Explicit null clears an existing end timestamp; undefined keeps profile value.
+      campaignEndAt: campaignEndAt === undefined ? profile?.campaignEndAt : campaignEndAt ?? undefined
     } as CompanyProfile;
 
     const startAt = this.resolveStartAt(source);
@@ -105,9 +106,22 @@ export class CampaignService {
     };
   }
 
-  formatDateTime(value: Date | string): string {
+  formatDateTime(value: Date | string, timeZone?: string | null): string {
     const date = value instanceof Date ? value : new Date(value);
-    return `${this.pad(date.getDate())}/${this.pad(date.getMonth() + 1)}/${date.getFullYear()} ${this.pad(date.getHours())}:${this.pad(date.getMinutes())}`;
+    const zone = timeZone || this.companyProfileService.getProfileFromCache()?.timezone || undefined;
+    try {
+      return new Intl.DateTimeFormat(undefined, {
+        timeZone: zone || undefined,
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }).format(date);
+    } catch {
+      return `${this.pad(date.getDate())}/${this.pad(date.getMonth() + 1)}/${date.getFullYear()} ${this.pad(date.getHours())}:${this.pad(date.getMinutes())}`;
+    }
   }
 
   resolveStartDate(profile?: CompanyProfile | null, referenceDate: Date = new Date()): Date {

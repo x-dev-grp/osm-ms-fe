@@ -1,0 +1,66 @@
+:host {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+  display: block;
+}
+
+:host.flowing-bg--fade-down {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 35%,
+    rgba(0, 0, 0, 0.55) 62%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 35%,
+    rgba(0, 0, 0, 0.55) 62%,
+    transparent 100%
+  );
+}
+
+.flowing-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.flowing-bg__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  border-radius: inherit;
+  /* Soften motion under light UI */
+  filter: saturate(0.85) brightness(1.08);
+}
+
+.flowing-bg__wash {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  /* Light cover so chrome stays bright like the screenshots */
+  background: color-mix(in srgb, var(--accent-50, #fafafa) 88%, #ffffff);
+  opacity: var(--flowing-wash-opacity, 0.78);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flowing-bg__video {
+    display: none;
+  }
+
+  .flowing-bg__wash {
+    opacity: 1;
+  }
+}
