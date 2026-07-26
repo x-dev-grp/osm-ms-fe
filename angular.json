@@ -42,8 +42,10 @@
               "src/apple-touch-icon.png",
               "src/web-app-manifest-192x192.png",
               "src/web-app-manifest-512x512.png",
+              "src/browserconfig.xml",
               "src/assets",
               "src/manifest.webmanifest",
+              "src/site.webmanifest",
               {
                 "glob": "OneSignalSDKWorker.js",
                 "input": "src",
@@ -160,8 +162,10 @@
               "src/apple-touch-icon.png",
               "src/web-app-manifest-192x192.png",
               "src/web-app-manifest-512x512.png",
+              "src/browserconfig.xml",
               "src/assets",
-              "src/manifest.webmanifest"
+              "src/manifest.webmanifest",
+              "src/site.webmanifest"
             ],
             "styles": [
               "src/styles.scss",

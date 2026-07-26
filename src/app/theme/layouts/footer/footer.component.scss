@@ -32,6 +32,23 @@
       }
     }
   }
+  .footer-credit {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+  }
+  .footer-credit__mark {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .footer-credit__text {
+    color: var(--accent-800, #4a5568);
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
   .footer-link {
     .list-inline-item:not(:last-child) {
       margin-right: 0.9rem;

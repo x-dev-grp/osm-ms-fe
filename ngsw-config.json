@@ -1,4 +1,5 @@
 {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
   "index": "/index.html",
   "assetGroups": [
     {
@@ -8,8 +9,28 @@
         "files": [
           "/favicon.ico",
           "/index.html",
+          "/manifest.webmanifest",
+          "/browserconfig.xml",
           "/*.css",
           "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "zitflow-pwa-assets",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/pwa/icons/**",
+          "/assets/pwa/favicon/**",
+          "/assets/logos/**",
+          "/apple-touch-icon.png",
+          "/favicon-16.png",
+          "/favicon-32.png",
+          "/favicon-96x96.png",
+          "/web-app-manifest-192x192.png",
+          "/web-app-manifest-512x512.png"
         ]
       }
     },
@@ -20,9 +41,18 @@
       "resources": {
         "files": [
           "/assets/**",
-          "/*.(png|jpg|jpeg|svg|webp)"
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
         ]
       }
     }
+  ],
+  "dataGroups": [],
+  "navigationUrls": [
+    "/**",
+    "!/**/oauth2/token**",
+    "!/**/api/security/user/auth/**",
+    "!/**/*.*",
+    "!/**/*__*",
+    "!/**/*__*/**"
   ]
 }

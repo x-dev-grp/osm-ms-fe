@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 // project import
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { APP_LOGO_MARK } from 'src/app/shared/config/logo.config';
 
 @Component({
   selector: 'app-footer',
@@ -13,4 +14,6 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent {}
+export class FooterComponent {
+  readonly appLogoMark = APP_LOGO_MARK;
+}

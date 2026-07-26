@@ -1,11 +1,16 @@
 <footer class="theme-footer">
   <div class="footer-wrapper">
-    <div class="flex align-item-center">
-      <div class="col m-y-5">
-        <p class="m-0">
-
-          {{ 'AUTO.OOSM_CRAFTED_WITH_BY_TEAM_XDEV' | translate }}        </p>
-      </div>
+    <div class="footer-credit">
+      <img
+        class="footer-credit__mark"
+        [src]="appLogoMark"
+        alt="ZitFlow"
+        width="28"
+        height="28"
+      />
+      <p class="footer-credit__text m-0">
+        {{ 'AUTO.OOSM_CRAFTED_WITH_BY_TEAM_XDEV' | translate }}
+      </p>
     </div>
   </div>
 </footer>

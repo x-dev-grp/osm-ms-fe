@@ -1,5 +1,6 @@
 /**
- * Generate ZitFlow brand + PWA assets from src/assets/brand/zitflow-logo-source.png
+ * Generate ZitFlow brand + PWA assets.
+ * Prefer the kit master when present (highest quality), else brand source.
  * Run: npm run generate-brand
  *
  * Splash uses sharp (Windows-safe). Optional puppeteer path: ENABLE_PWA_ASSET_GEN=1
@@ -10,7 +11,14 @@ const sharp = require('sharp');
 const { generateImages } = require('pwa-asset-generator');
 
 const ROOT = path.join(__dirname, '..');
-const SRC = path.join(ROOT, 'src/assets/brand/zitflow-logo-source.png');
+const KIT_SOURCE = path.join(
+  ROOT,
+  '../oosm/ZitFlow_PWA_Complete_Kit/public/assets/pwa/branding/zitflow-logo-source-original.png'
+);
+const BRAND_SOURCE = path.join(ROOT, 'src/assets/brand/zitflow-logo-source.png');
+const SRC = fs.existsSync(KIT_SOURCE)
+  ? KIT_SOURCE
+  : BRAND_SOURCE;
 const CANVAS = '#F7F6F2';
 /** Cream / near-white key for UI transparent PNGs */
 const CREAM = { r: 247, g: 246, b: 242 };
