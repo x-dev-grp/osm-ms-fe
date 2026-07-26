@@ -41,8 +41,12 @@
   }
 
   &--admin {
-    background: linear-gradient(135deg, rgba(25, 118, 210, 0.08), rgba(255, 255, 255, 0.95));
-    border: 1px solid rgba(25, 118, 210, 0.12);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--primary-500, #1976d2) 8%, #fff),
+      rgba(255, 255, 255, 0.95)
+    );
+    border: 1px solid color-mix(in srgb, var(--primary-500, #1976d2) 12%, transparent);
   }
 
   &__left {
@@ -102,8 +106,8 @@
   }
 
   &--admin {
-    background: #1976d2;
-    box-shadow: 0 8px 20px rgba(25, 118, 210, 0.25);
+    background: var(--primary-500, #1976d2);
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--primary-500, #1976d2) 25%, transparent);
   }
 }
 

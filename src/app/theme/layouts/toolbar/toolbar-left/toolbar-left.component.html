@@ -1,9 +1,19 @@
 <div class="header-button">
   @if (showToggleMenu && !isMobileNav()) {
-    <button mat-button class="header-item sidebar-collapse" (click)="toggleMenu()">
-      <a class="pc-head-link">
-        <i class="ti ti-menu-2"></i>
-      </a>
+    <button
+      mat-button
+      class="header-item sidebar-collapse"
+      type="button"
+      (click)="toggleMenu()"
+      aria-label="Menu"
+    >
+      <img
+        class="sidebar-toggle-logo"
+        [src]="appLogoMark"
+        alt="ZitFlow"
+        width="28"
+        height="28"
+      />
     </button>
   }
 </div>

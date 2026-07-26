@@ -62,15 +62,15 @@
   }
 
   &--admin {
-    --dash-accent: #1976d2;
-    --dash-accent-soft: rgba(25, 118, 210, 0.1);
-    --dash-accent-border: rgba(25, 118, 210, 0.16);
+    --dash-accent: var(--primary-500, #1976d2);
+    --dash-accent-soft: color-mix(in srgb, var(--primary-500, #1976d2) 10%, transparent);
+    --dash-accent-border: color-mix(in srgb, var(--primary-500, #1976d2) 16%, transparent);
   }
 
   &--hub {
-    --dash-accent: #1565c0;
-    --dash-accent-soft: rgba(21, 101, 192, 0.1);
-    --dash-accent-border: rgba(21, 101, 192, 0.16);
+    --dash-accent: var(--primary-700, #1565c0);
+    --dash-accent-soft: color-mix(in srgb, var(--primary-700, #1565c0) 10%, transparent);
+    --dash-accent-border: color-mix(in srgb, var(--primary-700, #1565c0) 16%, transparent);
   }
 }
 

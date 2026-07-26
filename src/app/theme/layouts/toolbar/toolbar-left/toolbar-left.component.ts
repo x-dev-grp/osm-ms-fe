@@ -2,6 +2,7 @@ import { Component, effect, inject } from '@angular/core';
 import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { COMPACT, HORIZONTAL, VERTICAL } from 'src/app/theme/const';
+import { APP_LOGO_MARK } from 'src/app/shared/config/logo.config';
 
 @Component({
   selector: 'app-nav-left',
@@ -13,6 +14,7 @@ import { COMPACT, HORIZONTAL, VERTICAL } from 'src/app/theme/const';
 export class NavLeftComponent {
   private themeService = inject(ThemeLayoutService);
 
+  readonly appLogoMark = APP_LOGO_MARK;
   showToggleMenu = true;
   readonly isMobileNav = this.themeService.isMobileNav;
 

@@ -7,5 +7,22 @@
 ::ng-deep.header-item {
   &.mdc-button {
     background-color: transparent;
+    min-width: 44px;
+    padding: 0 8px;
+  }
+}
+
+.sidebar-collapse {
+  .sidebar-toggle-logo {
+    display: block;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 6px;
+  }
+
+  &:hover .sidebar-toggle-logo,
+  &:focus-visible .sidebar-toggle-logo {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-500, #1976d2) 35%, transparent);
   }
 }
