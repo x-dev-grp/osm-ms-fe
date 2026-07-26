@@ -11,6 +11,8 @@
           "/index.html",
           "/manifest.webmanifest",
           "/browserconfig.xml",
+          "/robots.txt",
+          "/sitemap.xml",
           "/*.css",
           "/*.js"
         ]

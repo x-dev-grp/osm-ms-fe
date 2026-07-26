@@ -43,6 +43,8 @@
               "src/web-app-manifest-192x192.png",
               "src/web-app-manifest-512x512.png",
               "src/browserconfig.xml",
+              "src/robots.txt",
+              "src/sitemap.xml",
               "src/assets",
               "src/manifest.webmanifest",
               "src/site.webmanifest",
@@ -163,6 +165,8 @@
               "src/web-app-manifest-192x192.png",
               "src/web-app-manifest-512x512.png",
               "src/browserconfig.xml",
+              "src/robots.txt",
+              "src/sitemap.xml",
               "src/assets",
               "src/manifest.webmanifest",
               "src/site.webmanifest"

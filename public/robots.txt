@@ -1,0 +1,24 @@
+# ZitFlow — https://zitflow.x-dev.pro
+User-agent: *
+Allow: /
+Allow: /auth/login
+Disallow: /dashboard
+Disallow: /stock
+Disallow: /of
+Disallow: /labels
+Disallow: /projets
+Disallow: /reception
+Disallow: /finance
+Disallow: /hr
+Disallow: /administration
+Disallow: /settings
+Disallow: /storage
+Disallow: /maintenance
+Disallow: /mill-equipment
+Disallow: /equipment-missions
+Disallow: /analytics
+Disallow: /auth/forgot-password
+Disallow: /auth/reset
+Disallow: /auth/user
+
+Sitemap: https://zitflow.x-dev.pro/sitemap.xml
