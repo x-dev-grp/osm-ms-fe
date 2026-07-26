@@ -18,10 +18,10 @@ body.light {
   --submenu-bg: var(--accent-100);
   --table-header-bg: var(--accent-100);
   --table-row-hover: var(--accent-50);
-  /* Top bar + sidebar chrome — follow Autre theme color */
-  --shell-chrome: color-mix(in srgb, var(--primary-500) 12%, var(--accent-50));
-  --shell-chrome-strong: color-mix(in srgb, var(--primary-500) 18%, var(--accent-100));
-  --shell-chrome-border: color-mix(in srgb, var(--primary-500) 28%, var(--accent-400));
+  /* Top bar + sidebar chrome — clearly follow Autre theme color */
+  --shell-chrome: color-mix(in srgb, var(--primary-500) 22%, #ffffff);
+  --shell-chrome-strong: color-mix(in srgb, var(--primary-500) 30%, #ffffff);
+  --shell-chrome-border: color-mix(in srgb, var(--primary-500) 36%, transparent);
 }
 
 body.dark {
@@ -37,9 +37,9 @@ body.dark {
   --submenu-bg: var(--accent-100);
   --table-header-bg: var(--accent-100);
   --table-row-hover: rgba(255, 255, 255, 0.03);
-  --shell-chrome: color-mix(in srgb, var(--primary-500) 18%, var(--accent-50));
-  --shell-chrome-strong: color-mix(in srgb, var(--primary-500) 24%, var(--accent-100));
-  --shell-chrome-border: color-mix(in srgb, var(--primary-500) 32%, var(--accent-400));
+  --shell-chrome: color-mix(in srgb, var(--primary-500) 28%, var(--accent-50));
+  --shell-chrome-strong: color-mix(in srgb, var(--primary-500) 36%, var(--accent-100));
+  --shell-chrome-border: color-mix(in srgb, var(--primary-500) 40%, transparent);
 
   color: var(--text-primary);
 

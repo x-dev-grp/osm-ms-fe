@@ -21,7 +21,7 @@
     min-height: 54px;
     border: 1px solid var(--shell-chrome-border, color-mix(in srgb, var(--primary-500) 28%, var(--accent-400)));
     border-radius: 16px;
-    background: var(--shell-chrome, color-mix(in srgb, var(--primary-500) 12%, var(--accent-50)));
+    background: var(--shell-chrome, color-mix(in srgb, var(--primary-500) 22%, #ffffff));
     box-shadow: 0 10px 28px color-mix(in srgb, var(--accent-900) 8%, transparent);
     backdrop-filter: blur(12px);
   }

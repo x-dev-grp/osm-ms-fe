@@ -60,7 +60,7 @@
     height: 100%;
     border-top: 0;
     border-radius: inherit;
-    background: var(--shell-chrome, color-mix(in srgb, var(--primary-500) 12%, var(--accent-50)));
+    background: var(--shell-chrome, color-mix(in srgb, var(--primary-500) 22%, #ffffff));
     box-shadow: none;
   }
 
@@ -101,7 +101,7 @@
     overflow: hidden;
     border: 1px solid var(--shell-chrome-border, color-mix(in srgb, var(--primary-500) 28%, var(--accent-400)));
     border-radius: var(--layout-block-radius);
-    background: var(--shell-chrome, color-mix(in srgb, var(--primary-500) 12%, var(--accent-50)));
+    background: var(--shell-chrome, color-mix(in srgb, var(--primary-500) 22%, #ffffff));
     box-shadow: var(--layout-block-shadow);
   }
 
