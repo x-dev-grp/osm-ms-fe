@@ -1,3 +1,20 @@
+<div class="parameter-toolbar">
+  <div class="parameter-toolbar-copy">
+    <span class="parameter-toolbar-title">{{ 'GENERAL_CONFIG_UI.PARAMETERS.TITLE' | translate }}</span>
+    <span class="parameter-toolbar-hint text-muted">{{ 'GENERAL_CONFIG_UI.PARAMETERS.SEED_HINT' | translate }}</span>
+  </div>
+  <button
+    mat-stroked-button
+    color="primary"
+    type="button"
+    (click)="seedAllDefaults()"
+    [disabled]="seeding || loading"
+  >
+    <i class="ti ti-database-import m-r-5"></i>
+    {{ seeding ? ('GENERAL_CONFIG_UI.PARAMETERS.SEEDING' | translate) : ('GENERAL_CONFIG_UI.PARAMETERS.SEED_ALL' | translate) }}
+  </button>
+</div>
+
 <form [formGroup]="paramForm" class="parameter-form">
   <div *ngIf="filtered.length === 0" class="parameter-empty">
     {{ 'AUTO.AUCUN_PARAMETRE_TROUVE_POUR_CETTE_CONFIGURATION' | translate }}

@@ -19,6 +19,9 @@ import { BaseTypeComponent } from '../../shared/modules/base-type/base-type.comp
 import { QcEntryStudioComponent } from '../../shared/qc/components/qc-entry-studio/qc-entry-studio.component';
 import { QcEntryContext } from '../../shared/qc/models/qc-context.model';
 import { OperationType } from '../../shared/models/operation-type.enum';
+import { TenantParameterClient } from '../../shared/services/tenant-parameter.client';
+import { GenericTypeService } from '../../shared/services/generic-type.service';
+import { TypeCategory } from '../../shared/models/type-category.enum';
 
 function requiredEntitySelectionValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -76,6 +79,8 @@ export class ControleQualiteComponent implements OnInit, OnDestroy {
     private readonly toast: ToastService,
     private readonly storageUnitService: StorageUnitDtoService,
     private readonly translate: TranslateService,
+    private readonly tenantParams: TenantParameterClient,
+    private readonly genericTypeService: GenericTypeService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: Record<string, unknown> | null = null,
     @Optional() private readonly dialogRef: MatDialogRef<ControleQualiteComponent> | null = null
   ) {
@@ -257,6 +262,23 @@ export class ControleQualiteComponent implements OnInit, OnDestroy {
     this.storageunitForm.disable({ emitEvent: false });
   }
 
+  private applyDefaultOliveVariety(): void {
+    this.tenantParams.getString('DEFAULT_OLIVE_VARIETY', '').subscribe((defaultName) => {
+      if (!defaultName || this.qualityForm.get('oliveVariety')?.value?.id) {
+        return;
+      }
+      this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY).subscribe({
+        next: (res) => {
+          const match = (res.data ?? []).find((item) => (item.name ?? '').trim().toLowerCase() === defaultName.trim().toLowerCase());
+          if (match) {
+            this.qualityForm.patchValue({ oliveVariety: match }, { emitEvent: false });
+            this.cdr.markForCheck();
+          }
+        }
+      });
+    });
+  }
+
   private loadReception(): void {
     if (!this.receptionId) {
       this.message = 'ID de réception manquant';
@@ -271,6 +293,8 @@ export class ControleQualiteComponent implements OnInit, OnDestroy {
         this.isQualityControlDone = !!this.deliveryData?.hasQualityControl || (this.deliveryData?.qualityControlResults?.length ?? 0) > 0;
         if (this.deliveryData?.oliveVariety) {
           this.qualityForm.patchValue({ oliveVariety: this.deliveryData.oliveVariety }, { emitEvent: false });
+        } else {
+          this.applyDefaultOliveVariety();
         }
         this.applyReadOnlyState();
         this.isLoading = false;

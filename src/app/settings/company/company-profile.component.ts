@@ -5,7 +5,10 @@ import { CompanyProfileService } from '../../shared/services/company-profile.ser
 import { ToastService } from '../../shared/services/toast.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
 import { BankAccount } from '../../finance/models/BankAccount';
+import { BankAccountService } from '../../finance/service/bankAccount.service';
+import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../shared/services/language.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -37,7 +40,8 @@ import { CardComponent } from '../../theme/components/card/card.component';
     MatTabsModule,
     MatProgressSpinnerModule,
     TranslateModule,
-    CardComponent
+    CardComponent,
+    RouterModule
   ]
 })
 export class CompanyProfileComponent implements OnInit {
@@ -48,6 +52,7 @@ export class CompanyProfileComponent implements OnInit {
   protected profile: CompanyProfile | null = null;
   private originalProfile: CompanyProfile | null = null;
   private translate = inject(TranslateService);
+  private languageService = inject(LanguageService);
 
   governorates: string[] = [
     'Ariana',
@@ -82,7 +87,8 @@ export class CompanyProfileComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private toastService: ToastService,
-    private companyProfileService: CompanyProfileService
+    private companyProfileService: CompanyProfileService,
+    private bankAccountService: BankAccountService
   ) {}
 
   get displayName(): string {
@@ -134,7 +140,16 @@ export class CompanyProfileComponent implements OnInit {
       postalCode: ['', Validators.required],
       governorate: ['', Validators.required],
       logoData: [null, Validators.required],
-      logoContentType: [null, Validators.required]
+      logoContentType: [null, Validators.required],
+      invoiceFooterNote: [''],
+      invoiceLegalMentions: [''],
+      preferredThemeColor: ['blue-theme'],
+      defaultLanguage: ['fr'],
+      timezone: ['Africa/Tunis'],
+      pwaShortName: [''],
+      invoiceBankName: [''],
+      invoiceBankIban: [''],
+      invoiceBankSwift: ['']
     });
 
     this.profileForm.disable();
@@ -180,9 +195,12 @@ export class CompanyProfileComponent implements OnInit {
 
     this.loading = true;
     const formValue = this.profileForm.getRawValue();
-    const { creationDate: _creationDate, ...profileFields } = formValue;
+    const creationDate = formValue.creationDate
+      ? new Date(formValue.creationDate).toISOString().slice(0, 10)
+      : null;
     const profileToSave: CompanyProfile = {
-      ...profileFields,
+      ...formValue,
+      creationDate,
       id: this.profile?.id,
       campaignStartAt: this.profile?.campaignStartAt,
       campaignEndAt: this.profile?.campaignEndAt,
@@ -198,6 +216,9 @@ export class CompanyProfileComponent implements OnInit {
         this.formEnabled = false;
         this.profileForm.disable();
         this.applyProfile(saved);
+        if (saved.defaultLanguage) {
+          this.languageService.applyLanguage(saved.defaultLanguage, true);
+        }
         this.toastService.success('CONTROLE_QUALITE.MESSAGES.SUCCESS.SAVE');
       },
       error: () => {
@@ -273,6 +294,7 @@ export class CompanyProfileComponent implements OnInit {
       cnssNumber: profileData.cnssNumber,
       legalForm: profileData.legalForm,
       capital: profileData.capital,
+      creationDate: profileData.creationDate ? new Date(profileData.creationDate) : null,
       email: profileData.email,
       phone: profileData.phone,
       website: profileData.website,
@@ -281,7 +303,16 @@ export class CompanyProfileComponent implements OnInit {
       postalCode: profileData.postalCode,
       governorate: profileData.governorate,
       logoData: profileData.logoData,
-      logoContentType: profileData.logoContentType
+      logoContentType: profileData.logoContentType,
+      invoiceFooterNote: profileData.invoiceFooterNote ?? '',
+      invoiceLegalMentions: profileData.invoiceLegalMentions ?? '',
+      preferredThemeColor: profileData.preferredThemeColor ?? 'blue-theme',
+      defaultLanguage: profileData.defaultLanguage ?? 'fr',
+      timezone: profileData.timezone ?? 'Africa/Tunis',
+      pwaShortName: profileData.pwaShortName ?? '',
+      invoiceBankName: profileData.invoiceBankName ?? '',
+      invoiceBankIban: profileData.invoiceBankIban ?? '',
+      invoiceBankSwift: profileData.invoiceBankSwift ?? ''
     });
 
     if (profileData.logoData && profileData.logoContentType) {
@@ -289,6 +320,32 @@ export class CompanyProfileComponent implements OnInit {
     } else {
       this.logoPreview = null;
     }
+
+    this.loadBankAccounts();
+  }
+
+  useBankForInvoices(acc: BankAccount): void {
+    if (!this.formEnabled) {
+      this.enableForm();
+    }
+    this.profileForm.patchValue({
+      invoiceBankName: acc.bankName ?? '',
+      invoiceBankIban: acc.iban || acc.rib || '',
+      invoiceBankSwift: acc.bicSwift ?? ''
+    });
+    this.profileForm.markAsDirty();
+  }
+
+  private loadBankAccounts(): void {
+    this.bankAccountService.getAllBanksList().subscribe({
+      next: (res) => {
+        const list = Array.isArray(res?.data) ? res.data : [];
+        this.bankAccounts = list.filter((a) => a && (a.active ?? true));
+      },
+      error: () => {
+        this.bankAccounts = [];
+      }
+    });
   }
 
   private handleFile(file: File): void {

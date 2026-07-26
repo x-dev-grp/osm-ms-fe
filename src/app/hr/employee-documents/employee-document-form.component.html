@@ -1,0 +1,76 @@
+<div class="dashboard-shell hr-form-page hr-form-page--documents">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>folder_shared</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'HR.PAGE.EMPLOYEE_DOCUMENTS.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.EMPLOYEE_DOCUMENT_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <app-card [icon]="'folder_shared'" [cardTitle]="'HR.PAGE.EMPLOYEE_DOCUMENTS.TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.EMPLOYEE' | translate }}</mat-label>
+            <mat-select formControlName="employeeId" required>
+              @for (employee of employees; track employee.id) {
+                <mat-option [value]="employee.id">{{ employeeLabel(employee) }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.DOCUMENT_TYPE' | translate }}</mat-label>
+            <mat-select formControlName="documentType" required>
+              @for (opt of documentTypeOptions; track opt) {
+                <mat-option [value]="opt">{{ opt }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.TITLE' | translate }}</mat-label>
+            <input matInput formControlName="title" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.FILE_NAME' | translate }}</mat-label>
+            <input matInput formControlName="fileName" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.EXPIRY_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="expiryDatePicker" formControlName="expiryDate" />
+            <mat-datepicker-toggle matSuffix [for]="expiryDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #expiryDatePicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.STATUS' | translate }}</mat-label>
+            <mat-select formControlName="status">
+              @for (opt of statusOptions; track opt) {
+                <mat-option [value]="opt">{{ opt }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>{{ 'HR.FIELDS.NOTES' | translate }}</mat-label>
+            <textarea matInput rows="3" formControlName="notes"></textarea>
+          </mat-form-field>
+        </div>
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

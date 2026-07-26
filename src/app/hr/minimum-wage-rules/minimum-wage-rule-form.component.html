@@ -1,0 +1,69 @@
+<div class="dashboard-shell hr-form-page hr-form-page--smig">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>trending_up</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'HR.PAGE.MINIMUM_WAGE.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.MINIMUM_WAGE_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <app-card [icon]="'trending_up'" [cardTitle]="'HR.PAGE.MINIMUM_WAGE.TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.PROFILE' | translate }}</mat-label>
+            <input matInput formControlName="profile" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.SECTOR' | translate }}</mat-label>
+            <input matInput formControlName="sector" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.WEEKLY_REGIME' | translate }}</mat-label>
+            <mat-select formControlName="weeklyRegime" required>
+              @for (opt of weeklyRegimeOptions; track opt) {
+                <mat-option [value]="opt">{{ opt }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.MONTHLY_MINIMUM' | translate }}</mat-label>
+            <input matInput type="number" formControlName="monthlyMinimum" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.HOURLY_MINIMUM' | translate }}</mat-label>
+            <input matInput type="number" formControlName="hourlyMinimum" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.EFFECTIVE_FROM' | translate }}</mat-label>
+            <input matInput [matDatepicker]="effectiveFromPicker" formControlName="effectiveFrom" required />
+            <mat-datepicker-toggle matSuffix [for]="effectiveFromPicker"></mat-datepicker-toggle>
+            <mat-datepicker #effectiveFromPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.LEGAL_REFERENCE' | translate }}</mat-label>
+            <input matInput formControlName="legalReference" />
+          </mat-form-field>
+          <mat-checkbox formControlName="active">{{ 'HR.FIELDS.ACTIVE' | translate }}</mat-checkbox>
+        </div>
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

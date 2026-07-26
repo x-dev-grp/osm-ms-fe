@@ -24,7 +24,7 @@
 @import './app/theme/styles/theme-palette-colors.scss';
 @import './app/theme/styles/theme-dark-palette-colors.scss';
 @import './app/theme/styles/theme.scss';
-@include mat.all-component-typographies(theme-typography("'Inter var', sans-serif")); // theme typography
+@include mat.all-component-typographies(theme-typography("'Quicksand', 'Nunito', sans-serif")); // ZitFlow brand typography
 
 // default theme
 @include mat.all-component-themes(get-light-theme($blue-theme));

@@ -66,7 +66,7 @@ export class DashboardExportService {
 
   private async exportExcel(payload: DashboardExportPayload, baseName: string): Promise<void> {
     const workbook = new ExcelJS.Workbook();
-    workbook.creator = 'OOSM';
+    workbook.creator = 'ZitFlow';
     workbook.created = new Date();
 
     for (const sheet of payload.sheets) {

@@ -25,7 +25,8 @@
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "prettier": "prettier --write ./src",
-    "generate-pwa": "node generate-pwa-assets.js"
+    "generate-pwa": "node scripts/generate-zitflow-brand-assets.cjs",
+    "generate-brand": "node scripts/generate-zitflow-brand-assets.cjs"
   },
   "private": true,
   "dependencies": {
@@ -41,6 +42,7 @@
     "@angular/platform-browser-dynamic": "19.0.5",
     "@angular/router": "19.0.5",
     "@angular/service-worker": "19.0.5",
+    "@fontsource/quicksand": "^5.3.0",
     "@iplab/ngx-file-upload": "19.0.3",
     "@ngrx/signals": "^19.1.0",
     "@ngrx/store": "^19.1.0",
@@ -110,6 +112,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "prettier": "3.4.2",
     "pwa-asset-generator": "^8.0.5",
+    "sharp": "^0.35.3",
     "tslib": "2.8.1",
     "typescript": "5.6.3"
   }

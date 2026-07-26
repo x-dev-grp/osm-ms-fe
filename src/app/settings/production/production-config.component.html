@@ -110,6 +110,25 @@
                                 {{ 'AUTO.MARQUER_DATE_FIN' | translate }}
                               </button>
                             </div>
+                            <div class="col-12 m-t-15">
+                              <div class="profile-form-header">{{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.ROLLOVER_TITLE' | translate }}</div>
+                              <p class="text-muted m-b-10">{{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.ROLLOVER_HINT' | translate }}</p>
+                              <mat-checkbox [(ngModel)]="resetDailyMetricOnRollover" [ngModelOptions]="{ standalone: true }">
+                                {{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.ROLLOVER_RESET_METRIC' | translate }}
+                              </mat-checkbox>
+                              <div class="m-t-10">
+                                <button
+                                  mat-flat-button
+                                  color="accent"
+                                  type="button"
+                                  (click)="startNewSeason()"
+                                  [disabled]="rollingOver"
+                                >
+                                  <i class="ti ti-refresh m-r-5"></i>
+                                  {{ 'GENERAL_CONFIG_UI.PRODUCTION_CONFIG.ROLLOVER_ACTION' | translate }}
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>

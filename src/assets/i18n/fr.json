@@ -56,7 +56,7 @@
     "PRODUCTION": "Production",
     "RECEPTION": "Réception",
     "REQUIRED": "Sélectionnez au moins un module.",
-    "SECTION_HINT": "Choisissez les modules OOSM accessibles pour ce tenant. Aucun n'est activé par défaut.",
+    "SECTION_HINT": "Choisissez les modules ZitFlow accessibles pour ce tenant. Aucun n'est activé par défaut.",
     "SECTION_TITLE": "Modules licenciés",
     "VIEW_TITLE": "Profil société"
   },
@@ -64,11 +64,11 @@
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
     "ADD_COMPANY_CREATED": "Société et utilisateur admin créés avec succès.",
     "ADD_COMPANY_INITIAL_PASSWORD": "Société créée. Communiquez ces identifiants à l'admin — Utilisateur : {{username}}, Mot de passe : {{password}}",
-    "ADD_OOSM_ADMIN_BUTTON": "Ajouter un admin OOSM",
+    "ADD_OOSM_ADMIN_BUTTON": "Ajouter un admin ZitFlow",
     "ADD_OOSM_ADMIN_ROLE": "Rôle",
-    "ADD_OOSM_ADMIN_ROLE_VALUE": "Admin OOSM",
-    "ADD_OOSM_ADMIN_SAVE": "Créer l'admin OOSM",
-    "ADD_OOSM_ADMIN_TITLE": "Créer un utilisateur admin OOSM",
+    "ADD_OOSM_ADMIN_ROLE_VALUE": "Admin ZitFlow",
+    "ADD_OOSM_ADMIN_SAVE": "Créer l'admin ZitFlow",
+    "ADD_OOSM_ADMIN_TITLE": "Créer un utilisateur admin ZitFlow",
     "CANCEL": "Annuler",
     "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
     "COMPANY_NAME": "Nom de la société",
@@ -92,7 +92,7 @@
   "ADMIN_DASHBOARD": {
     "ADD_COMPANY_LINK": "Créer un nouveau tenant et son utilisateur admin.",
     "ADD_OOSM_ADMIN_LINK": "Créer un nouveau compte administrateur de la plateforme.",
-    "API_DOCS_LINK": "Parcourir et tester les endpoints REST OOSM avec votre JWT administrateur.",
+    "API_DOCS_LINK": "Parcourir et tester les endpoints REST ZitFlow avec votre JWT administrateur.",
     "COMPANIES_LINK": "Parcourir et gérer tous les profils entreprise.",
     "HERO": {
       "ACTIVE": "actifs",
@@ -180,7 +180,7 @@
     "LOAD_ERROR": "Impossible de charger la documentation API. Vérifiez que SPRINGDOC_ENABLED est activé, que le backend a été redémarré et que vous êtes connecté en tant qu'OOSMADMIN.",
     "OPEN_DOCS": "Ouvrir la documentation API",
     "OPEN_SETTINGS": "Ouvrir les paramètres",
-    "SUBTITLE": "Parcourez et testez les endpoints REST OOSM avec votre JWT administrateur.",
+    "SUBTITLE": "Parcourez et testez les endpoints REST ZitFlow avec votre JWT administrateur.",
     "TITLE": "Documentation API"
   },
   "ADMIN_SETTINGS": {
@@ -359,8 +359,8 @@
   },
   "USER_GUIDE": {
     "TITLE": "Aide & guide utilisateur",
-    "INTRO": "OOSM vous aide à gérer la réception, la production huile, le conditionnement, l'inventaire, la finance et les ressources humaines de votre moulin.",
-    "WELCOME_USER": "Bonjour {{name}} — voici comment tirer le meilleur parti d'OOSM.",
+    "INTRO": "ZitFlow vous aide à gérer la réception, la production huile, le conditionnement, l'inventaire, la finance et les ressources humaines de votre moulin.",
+    "WELCOME_USER": "Bonjour {{name}} — voici comment tirer le meilleur parti d'ZitFlow.",
     "MY_ACCOUNT": "Mon compte",
     "NO_MODULES": "Aucun module visible pour votre rôle. Contactez votre administrateur pour obtenir les permissions.",
     "MODULES_TITLE": "Vos modules",
@@ -616,7 +616,7 @@
     "COMPANY_TICKETS": "Tickets de l'entreprise",
     "NO_TICKETS": "Aucun ticket support pour le moment.",
     "VIEW_TICKET": "Voir le détail",
-    "HELP_TITLE": "Besoin d'aide OOSM ?",
+    "HELP_TITLE": "Besoin d'aide ZitFlow ?",
     "HELP_DESC": "Signalez un bug, posez une question ou demandez une évolution. Votre ticket inclut automatiquement votre utilisateur et société.",
     "HELP_TIP1": "Ouvrez le ticket depuis l'écran concerné — nous enregistrons l'URL de la page automatiquement.",
     "HELP_TIP2": "Décrivez les étapes pour reproduire et le comportement attendu vs réel.",
@@ -659,7 +659,7 @@
   "SIDEBAR": {
     "BRAND_HOME": "Aller à l'accueil",
     "DEFAULT_COMPANY": "Mon entreprise",
-    "PLATFORM": "Plateforme OOSM"
+    "PLATFORM": "Plateforme ZitFlow"
   },
   "NOTIFICATIONS": {
     "TITLE": "Notifications",
@@ -881,7 +881,7 @@
     },
     "MOBILE_DASHBOARD_CARDS": {
       "TITLE": "Cartes tableau de bord mobile",
-      "DESCRIPTION": "Affiche les listes OOSM sous forme de cartes au lieu d'un tableau sur les écrans jusqu'à 1024 px de large."
+      "DESCRIPTION": "Affiche les listes ZitFlow sous forme de cartes au lieu d'un tableau sur les écrans jusqu'à 1024 px de large."
     },
     "TITLE": "Configuration du Thème"
   },
@@ -1237,7 +1237,21 @@
       "CONTRACTS": "Contrats de travail",
       "PAYROLL": "Bulletins & CNSS",
       "LEAVE": "Absences & validations",
-      "POINTAGE": "Présence quotidienne"
+      "POINTAGE": "Présence quotidienne",
+      "DEPARTMENTS": "Départements",
+      "GRADES": "Grades",
+      "DOCUMENTS": "Documents employés",
+      "WORK_SCHEDULES": "Horaires de travail",
+      "TIMESHEETS": "Feuilles de temps",
+      "OVERTIME": "Heures supplémentaires",
+      "LEAVE_TYPES": "Types de congé",
+      "PUBLIC_HOLIDAYS": "Jours fériés",
+      "SALARY_ADVANCES": "Avances sur salaire",
+      "EMPLOYEE_LOANS": "Prêts employés",
+      "PAYROLL_VARIABLES": "Variables de paie",
+      "SETTINGS": "Paramètres RH",
+      "COMPLIANCE": "Conformité",
+      "AGENT": "Agent RH"
     },
     "EMPLOYMENT": {
       "ACTIVE_DERIVED": "Le statut actif est défini automatiquement lorsqu'un contrat valide est en cours.",
@@ -1293,6 +1307,134 @@
       },
       "CONTRACT_FORM": {
         "SUBTITLE": "Renseignez type, dates, salaire et poste associé."
+      },
+      "DEPARTMENTS": {
+        "TITLE": "Départements",
+        "SUBTITLE": "Organiser la structure de l’entreprise."
+      },
+      "DEPARTMENT_FORM": {
+        "SUBTITLE": "Créer ou modifier un département."
+      },
+      "GRADES": {
+        "TITLE": "Grades",
+        "SUBTITLE": "Définir les grades et niveaux."
+      },
+      "GRADE_FORM": {
+        "SUBTITLE": "Créer ou modifier un grade."
+      },
+      "WORK_SCHEDULES": {
+        "TITLE": "Horaires de travail",
+        "SUBTITLE": "Heures hebdomadaires et équipes."
+      },
+      "WORK_SCHEDULE_FORM": {
+        "SUBTITLE": "Définir un horaire de travail."
+      },
+      "TIMESHEETS": {
+        "TITLE": "Feuilles de temps",
+        "SUBTITLE": "Temps travaillé mensuel par employé."
+      },
+      "TIMESHEET_FORM": {
+        "SUBTITLE": "Créer ou modifier une feuille de temps."
+      },
+      "OVERTIME_REQUESTS": {
+        "TITLE": "Heures supplémentaires",
+        "SUBTITLE": "Examiner les demandes d’heures sup."
+      },
+      "OVERTIME_REQUEST_FORM": {
+        "SUBTITLE": "Soumettre une demande d’heures supplémentaires."
+      },
+      "LEAVE_TYPES": {
+        "TITLE": "Types de congé",
+        "SUBTITLE": "Configurer les catégories et droits."
+      },
+      "LEAVE_TYPE_FORM": {
+        "SUBTITLE": "Définir un type de congé."
+      },
+      "PUBLIC_HOLIDAYS": {
+        "TITLE": "Jours fériés",
+        "SUBTITLE": "Jours fériés légaux et entreprise."
+      },
+      "PUBLIC_HOLIDAY_FORM": {
+        "SUBTITLE": "Ajouter un jour férié."
+      },
+      "SALARY_ADVANCES": {
+        "TITLE": "Avances sur salaire",
+        "SUBTITLE": "Suivre les demandes d’avance."
+      },
+      "SALARY_ADVANCE_FORM": {
+        "SUBTITLE": "Enregistrer une avance."
+      },
+      "EMPLOYEE_LOANS": {
+        "TITLE": "Prêts employés",
+        "SUBTITLE": "Gérer les prêts et échéances."
+      },
+      "EMPLOYEE_LOAN_FORM": {
+        "SUBTITLE": "Créer un prêt employé."
+      },
+      "SALARY_COMPONENTS": {
+        "TITLE": "Composantes salariales",
+        "SUBTITLE": "Gains et retenues."
+      },
+      "SALARY_COMPONENT_FORM": {
+        "SUBTITLE": "Définir une composante salariale."
+      },
+      "LEGAL_RULES": {
+        "TITLE": "Règles légales",
+        "SUBTITLE": "Paramètres du droit du travail tunisien."
+      },
+      "LEGAL_RULE_FORM": {
+        "SUBTITLE": "Configurer une règle légale."
+      },
+      "SOCIAL_SECURITY": {
+        "TITLE": "Sécurité sociale",
+        "SUBTITLE": "Taux CNSS / CSS."
+      },
+      "SOCIAL_SECURITY_FORM": {
+        "SUBTITLE": "Configurer les taux sociaux."
+      },
+      "TAX_CONFIG": {
+        "TITLE": "Configurations fiscales",
+        "SUBTITLE": "Barèmes IRPP et années fiscales."
+      },
+      "TAX_CONFIG_FORM": {
+        "SUBTITLE": "Configurer la fiscalité."
+      },
+      "MINIMUM_WAGE": {
+        "TITLE": "Salaire minimum",
+        "SUBTITLE": "Profils SMIG / SMAG."
+      },
+      "MINIMUM_WAGE_FORM": {
+        "SUBTITLE": "Définir une règle de salaire minimum."
+      },
+      "EMPLOYEE_DOCUMENTS": {
+        "TITLE": "Documents employés",
+        "SUBTITLE": "Stocker et suivre les documents RH."
+      },
+      "EMPLOYEE_DOCUMENT_FORM": {
+        "SUBTITLE": "Enregistrer un document."
+      },
+      "PAYROLL_VARIABLES": {
+        "TITLE": "Variables de paie",
+        "SUBTITLE": "Entrées variables mensuelles."
+      },
+      "PAYROLL_VARIABLE_FORM": {
+        "SUBTITLE": "Ajouter une variable de paie."
+      },
+      "SETTINGS": {
+        "TITLE": "Paramètres RH",
+        "SUBTITLE": "Hub légal, fiscal et paie."
+      },
+      "COMPANY_LEGAL_PROFILE": {
+        "TITLE": "Profil légal entreprise",
+        "SUBTITLE": "CNSS employeur et secteur."
+      },
+      "COMPLIANCE": {
+        "TITLE": "Conformité",
+        "SUBTITLE": "Score et écarts du scan RH."
+      },
+      "AGENT": {
+        "TITLE": "Agent RH",
+        "SUBTITLE": "Poser des questions sur les données RH."
       }
     },
     "DASHBOARD": {
@@ -1306,7 +1448,10 @@
         "ACTIVE_CONTRACTS": "Contrats actifs",
         "PENDING_LEAVES": "Congés en attente",
         "OPEN_PAYROLL": "Périodes ouvertes",
-        "DRAFT_PAYSLIPS": "Bulletins brouillon"
+        "DRAFT_PAYSLIPS": "Bulletins brouillon",
+        "ON_LEAVE": "En congé",
+        "COMPLIANCE_SCORE": "Score conformité",
+        "CONTRACTS_EXPIRING": "Contrats à échéance"
       },
       "CHART": {
         "TITLE": "Répartition RH"
@@ -1332,7 +1477,14 @@
         "BASE_SALARY": "Salaire de base",
         "SALARY_TYPE": "Type de salaire",
         "PAYMENT_MODE": "Mode de paiement",
-        "BANK_ACCOUNT": "Compte bancaire"
+        "BANK_ACCOUNT": "Compte bancaire",
+        "EMPLOYEE_NUMBER": "Matricule",
+        "GENDER": "Genre",
+        "MARITAL_STATUS": "Situation familiale",
+        "NUMBER_OF_CHILDREN": "Nombre d’enfants",
+        "TAX_IDENTIFIER": "Identifiant fiscal",
+        "RIB": "RIB",
+        "TERMINATION_DATE": "Date de fin"
       },
       "FORM": {
         "IDENTITY": "Identité",
@@ -1380,6 +1532,17 @@
         "HOURS_48": "48 h / semaine",
         "HOURS_40": "40 h / semaine",
         "AGRICULTURAL": "Agricole"
+      },
+      "GENDER": {
+        "MALE": "Homme",
+        "FEMALE": "Femme",
+        "OTHER": "Autre"
+      },
+      "MARITAL_STATUS": {
+        "SINGLE": "Célibataire",
+        "MARRIED": "Marié(e)",
+        "DIVORCED": "Divorcé(e)",
+        "WIDOWED": "Veuf(ve)"
       }
     },
     "CONTRACTS": {
@@ -1391,19 +1554,37 @@
         "START_DATE": "Date de début",
         "END_DATE": "Date de fin",
         "SALARY": "Salaire",
-        "STATUS": "Statut"
+        "STATUS": "Statut",
+        "CONTRACT_NUMBER": "N° contrat",
+        "BASE_SALARY": "Salaire de base",
+        "WEEKLY_HOURS": "Heures / semaine",
+        "CDD_LEGAL_REASON": "Motif légal CDD",
+        "PROBATION_START": "Début période d’essai",
+        "PROBATION_END": "Fin période d’essai"
       },
       "TYPE": {
         "CDI": "CDI",
         "CDD": "CDD",
         "INTERNSHIP": "Stage",
-        "TEMPORARY": "Temporaire"
+        "TEMPORARY": "Temporaire",
+        "SEASONAL": "Saisonnier",
+        "PART_TIME": "Temps partiel",
+        "OTHER_LEGAL_TYPE": "Autre type légal"
       },
       "STATUS": {
         "DRAFT": "Brouillon",
         "ACTIVE": "Actif",
         "EXPIRED": "Expiré",
-        "TERMINATED": "Résilié"
+        "TERMINATED": "Résilié",
+        "SUSPENDED": "Suspendu",
+        "CANCELLED": "Annulé"
+      },
+      "CDD_REASON": {
+        "TEMPORARY_REPLACEMENT": "Remplacement temporaire",
+        "SEASONAL_WORK": "Travail saisonnier",
+        "TEMPORARY_INCREASE_ACTIVITY": "Surcroît temporaire d’activité",
+        "TEMPORARY_NATURE_OF_WORK": "Nature temporaire du travail",
+        "OTHER_LEGAL_EXCEPTION": "Autre exception légale"
       }
     },
     "ATTENDANCE": {
@@ -1516,8 +1697,6 @@
         "CNSS_EMPLOYER": "CNSS employeur",
         "CSS": "CSS",
         "IRPP": "IRPP",
-        "CNSS_EMPLOYEE": "CNSS salarié",
-        "IRPP": "IRPP",
         "TOTAL_DEDUCTIONS": "Total retenues",
         "TOTAL_BONUSES": "Total primes",
         "STATUS": "Statut",
@@ -1611,6 +1790,93 @@
       "EXIT_MARKED": "Sortie enregistrée à {{time}}.",
       "PUNCH": "Pointage",
       "OPEN_PUNCH": "Entrée ouverte — pointez la sortie d'abord"
+    },
+    "MENU": {
+      "ORGANIZATION": "Organisation",
+      "TIME": "Temps & présence",
+      "PAYROLL": "Paie"
+    },
+    "FIELDS": {
+      "CODE": "Code",
+      "NAME": "Name",
+      "DESCRIPTION": "Description",
+      "ACTIVE": "Active",
+      "LEVEL": "Level",
+      "WEEKLY_HOURS": "Weekly hours",
+      "WORKING_DAYS": "Working days",
+      "START_TIME": "Start time",
+      "END_TIME": "End time",
+      "BREAK_MINUTES": "Break (minutes)",
+      "NIGHT_SHIFT": "Night shift",
+      "ROTATING_SHIFT": "Rotating shift",
+      "STATUS": "Status",
+      "WORKED_MINUTES": "Worked minutes",
+      "DATE": "Date",
+      "MINUTES": "Minutes",
+      "REASON": "Reason",
+      "AMOUNT": "Amount",
+      "NAME_FR": "Name (FR)",
+      "NAME_AR": "Name (AR)",
+      "ANNUAL_ALLOWANCE": "Annual allowance",
+      "PAID": "Paid",
+      "REQUIRES_APPROVAL": "Requires approval",
+      "LEGAL": "Legal",
+      "RECURRING": "Recurring",
+      "REQUEST_DATE": "Request date",
+      "PRINCIPAL": "Principal",
+      "MONTHLY_INSTALLMENT": "Monthly installment",
+      "REMAINING": "Remaining balance",
+      "LABEL_FR": "Label (FR)",
+      "LABEL_AR": "Label (AR)",
+      "COMPONENT_TYPE": "Component type",
+      "CALCULATION_TYPE": "Calculation type",
+      "TAXABLE": "Taxable",
+      "CNSS_APPLICABLE": "CNSS applicable",
+      "CATEGORY": "Category",
+      "EFFECTIVE_FROM": "Effective from",
+      "VALUE": "Value",
+      "LEGAL_REFERENCE": "Legal reference",
+      "REGIME": "Regime",
+      "EMPLOYEE_RATE": "Employee rate",
+      "EMPLOYER_RATE": "Employer rate",
+      "CSS_RATE": "CSS rate",
+      "FISCAL_YEAR": "Fiscal year",
+      "PROFILE": "Profile",
+      "SECTOR": "Sector",
+      "WEEKLY_REGIME": "Weekly regime",
+      "MONTHLY_MINIMUM": "Monthly minimum",
+      "HOURLY_MINIMUM": "Hourly minimum",
+      "DOCUMENT_TYPE": "Document type",
+      "TITLE": "Title",
+      "FILE_NAME": "File name",
+      "EXPIRY_DATE": "Expiry date",
+      "NOTES": "Notes",
+      "TYPE": "Type",
+      "QUANTITY": "Quantity",
+      "BUSINESS_ACTIVITY": "Business activity",
+      "CNSS_EMPLOYER_NUMBER": "CNSS employer number",
+      "ACCIDENT_RISK_RATE": "Accident risk rate",
+      "MINIMUM_WAGE_PROFILE": "Minimum wage profile",
+      "FISCAL_REGIME": "Fiscal regime"
+    },
+    "COMPLIANCE": {
+      "SCAN": "Lancer le scan de conformité",
+      "SCORE": "Score de conformité",
+      "CRITICAL": "Critiques",
+      "WARNING": "Avertissements",
+      "OPEN": "Ouverts",
+      "VIOLATIONS": "Écarts",
+      "NO_VIOLATIONS": "Aucun écart chargé. Lancez un scan.",
+      "LOAD_ERROR": "Impossible de charger le résumé de conformité.",
+      "SCAN_SUCCESS": "Scan de conformité terminé.",
+      "SCAN_ERROR": "Échec du scan de conformité."
+    },
+    "AGENT": {
+      "PROMPT": "Demander à l’agent RH",
+      "SEND": "Envoyer",
+      "CONFIRM_WRITE": "Confirmer les actions d’écriture / critiques",
+      "EMPTY": "Posez une question sur les employés, contrats, congés ou paie.",
+      "SEND_ERROR": "Impossible de joindre l’agent RH."
     }
   },
   "CONTRACT": {
@@ -2537,6 +2803,14 @@
       "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les modifications non enregistrées seront perdues."
     },
     "OTHER_TAB": "Autre Config",
+    "PARAMETERS": {
+      "TITLE": "Paramètres système",
+      "SEED_ALL": "Initialiser les défauts",
+      "SEEDING": "Initialisation…",
+      "SEED_HINT": "Crée les paramètres manquants du catalogue. Les valeurs existantes sont conservées.",
+      "SEED_SUCCESS": "{{created}} paramètre(s) créé(s) ({{existing}} déjà présents, catalogue {{total}}).",
+      "SEED_ERROR": "Échec de l'initialisation des paramètres."
+    },
     "PRODUCTION_CONFIG": {
       "DAILY_METRIC_HINT": "Valeur de référence actuelle. L'historique est conservé lors de l'enregistrement.",
       "EDIT_CAMPAIGN": "Calendrier de campagne",
@@ -2547,10 +2821,64 @@
       "HISTORY_SEARCH": "Rechercher…",
       "HISTORY_VALUE": "Valeur",
       "PARAMETERS": "Paramètres de production",
+      "ROLLOVER_ACTION": "Démarrer une nouvelle saison",
+      "ROLLOVER_HINT": "Fixe le début de campagne à aujourd'hui, efface la date de fin et peut réinitialiser le prix journalier de référence.",
+      "ROLLOVER_RESET_METRIC": "Réinitialiser le prix journalier (conserver l'historique)",
+      "ROLLOVER_SUCCESS": "Nouvelle saison démarrée avec succès.",
+      "ROLLOVER_TITLE": "Basculement de saison",
+      "CAMPAIGN_ENDING_SOON": "La campagne se termine dans {{days}} jour(s).",
       "START_FROM": "Début",
       "SUMMARY": "Résumé de campagne"
     },
     "PRODUCTION_TAB": "Config Production",
+    "RECEPTION_TAB": "Réception",
+    "RECEPTION_CONFIG": {
+      "SUBTITLE": "Horaires de réception, seuils de tonnage et valeurs par défaut",
+      "TITLE": "Configuration réception"
+    },
+    "RECEPTION_RUNTIME": {
+      "OUTSIDE_HOURS": "Hors horaires de réception ({{open}} – {{close}}). Vous pouvez quand même enregistrer.",
+      "TONNAGE_EXCEEDED": "Le tonnage journalier atteindrait {{current}} kg (limite {{max}} kg)."
+    },
+    "LOCALE_TAB": "Locale",
+    "LOCALE_CONFIG": {
+      "SUBTITLE": "Langue, devise et fuseau horaire par défaut",
+      "TITLE": "Configuration locale"
+    },
+    "PRINT_TAB": "Impression",
+    "PRINT_CONFIG": {
+      "SUBTITLE": "Format papier, copies et options QR par défaut",
+      "TITLE": "Préréglages d'impression"
+    },
+    "NOTIFICATIONS_TAB": "Notifications",
+    "NOTIFICATIONS_CONFIG": {
+      "SUBTITLE": "Alertes QC, stock et fin de campagne",
+      "TITLE": "Préférences de notification"
+    },
+    "INVOICE_BRANDING": {
+      "TITLE": "Documents et factures",
+      "FOOTER_NOTE": "Note de bas de facture",
+      "LEGAL_MENTIONS": "Mentions légales",
+      "BANK_NAME": "Banque",
+      "BANK_IBAN": "IBAN / RIB",
+      "BANK_SWIFT": "BIC / SWIFT",
+      "MANAGE_BANKS": "Gérer les comptes bancaires",
+      "NO_BANKS": "Aucun compte bancaire. Créez-en un dans Finance → Banques.",
+      "USE_FOR_INVOICES": "Utiliser pour les factures"
+    },
+    "LOCALE": {
+      "DEFAULT_LANGUAGE": "Langue par défaut",
+      "TIMEZONE": "Fuseau horaire",
+      "PWA_SHORT_NAME": "Nom court PWA",
+      "THEME_COLOR": "Couleur de thème préférée"
+    },
+    "PWA": {
+      "TITLE": "Installer l'application",
+      "DESCRIPTION": "Installez ZitFlow sur cet appareil pour un accès plus rapide.",
+      "INSTALL": "Installer",
+      "NOT_AVAILABLE": "L'installation n'est disponible que dans un navigateur compatible si l'app n'est pas déjà installée.",
+      "THEME_SAVED": "Couleur de thème du tenant enregistrée."
+    },
     "TAB_TITLE": "Configuration Générale",
     "TYPES_PARAMS_TAB": "Types Params"
   },
@@ -2632,7 +2960,7 @@
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Ajouter société & utilisateur",
-      "ADD_OOSM_ADMIN": "Ajouter admin OOSM",
+      "ADD_OOSM_ADMIN": "Ajouter admin ZitFlow",
       "COMPANY_PROFILES": "Profils de société",
       "DASHBOARD": "Tableau de bord admin",
       "TITLE": "Administration",
@@ -3845,7 +4173,7 @@
       "OIL_QUALITY": "Contrôle Qualité Huile",
       "OIL_RECEPTION": "Réception Huile",
       "OLIVE_QUALITY": "Contrôle Qualité Olives",
-      "OOSMUSER": "Utilisateur OOSM",
+      "OOSMUSER": "Utilisateur ZitFlow",
       "PARAMETER": "Paramètre",
       "PAUSE": "Mettre en pause",
       "PAY": "Paier",
@@ -3971,7 +4299,7 @@
       "WASTE_TITLE": "Élimination et vente des déchets (grignon, margine, tourteau, etc.).",
       "EXPENSES_TITLE": "Charges d'exploitation et paiements sortants.",
       "BANK_ACCOUNTS_TITLE": "Comptes bancaires pour paiements et rapprochement financier.",
-      "ADMIN_USERS_TITLE": "Comptes administrateurs plateforme (périmètre OOSM admin).",
+      "ADMIN_USERS_TITLE": "Comptes administrateurs plateforme (périmètre ZitFlow admin).",
       "BASE_TYPE_TITLE": "Types de référence génériques et données configurables.",
       "SUPPLIER_DETAILS_OIL_CREDIT_TOTAL": "Totaux et historique de crédit huile pour ce fournisseur.",
       "OSM_DASHBOARD_ACTIONS_OLIVE_QUALITY": "Résultats de contrôle qualité olive à examiner ou mettre à jour.",
@@ -5400,7 +5728,7 @@
       "START": "Démarrer une réception"
     },
     "DESCRIPTION": "Gérez réceptions, production, stocks et finances au même endroit.",
-    "HEADLINE": "Bienvenue sur OOSM",
+    "HEADLINE": "Bienvenue sur ZitFlow",
     "SLOGAN": "Système de Gestion de l'Huile d'Olive",
     "LINKS": {
       "FINANCE": "Finance",
@@ -6468,7 +6796,7 @@
     "CHOOSE_FULL_OR_CONTAINER_LAYOUT": "Choisissez une disposition complète ou conteneur",
     "FULL_LAYOUT": "Mise en page complète",
     "CONTAINER_LAYOUT": "Disposition du conteneur",
-    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "OOSM créé avec ♥ par l'équipe XDEV",
+    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "ZitFlow créé avec ♥ par l'équipe XDEV",
     "RECHERCHE_GLOBALE": "Recherche globale",
     "LANCER_LA_RECHERCHE_GLOBALE": "Démarrer la recherche globale",
     "MODE": "mode",
@@ -6991,7 +7319,7 @@
     "ERREUR_LORS_DE_LA_CREATION_DU_FOURNISSEUR": "Erreur lors de la création du fournisseur",
     "ERROR_LOADING_STORAGE_UNIT": "Erreur lors du chargement de l'unité de stockage.",
     "ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_STORAGE_UNIT": "Êtes-vous sûr de vouloir supprimer cette unité de stockage ?",
-    "OOSM": "| OOSM",
+    "OOSM": "| ZitFlow",
     "LA_QUANTITE_DEPASSE_LE_RESTE_A_PRODUIRE_DU_PROJET": "La quantité ({{value0}}) dépasse le reste du projet à produire ({{value1}} {{value2}})",
     "QUANTITE_DEPASSEE_MAXIMUM_AUTORISE": "Quantité dépassée. Maximum autorisé : {{value0}}.",
     "QUANTITE_DEPASSEE_MAXIMUM_RESTANT_PROJET": "Quantité dépassée. Projet restant maximum : {{value0}}.",

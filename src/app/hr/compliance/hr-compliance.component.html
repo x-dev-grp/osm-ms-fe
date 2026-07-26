@@ -1,0 +1,58 @@
+<app-dashboard-shell
+  titleKey="HR.PAGE.COMPLIANCE.TITLE"
+  subtitleKey="HR.PAGE.COMPLIANCE.SUBTITLE"
+  icon="verified_user"
+  theme="hr"
+  [loading]="loading"
+  (refresh)="loadSummary()"
+>
+  <div class="compliance-actions">
+    <button mat-flat-button color="primary" type="button" (click)="runScan()" [disabled]="scanning">
+      <mat-icon>radar</mat-icon>
+      <span class="ms-1">{{ 'HR.COMPLIANCE.SCAN' | translate }}</span>
+    </button>
+  </div>
+
+  @if (summary) {
+    <div class="hr-kpi-grid">
+      <article class="hr-kpi">
+        <span class="hr-kpi__label">{{ 'HR.COMPLIANCE.SCORE' | translate }}</span>
+        <strong class="hr-kpi__value">{{ summary.score ?? '—' }}</strong>
+      </article>
+      <article class="hr-kpi">
+        <span class="hr-kpi__label">{{ 'HR.COMPLIANCE.CRITICAL' | translate }}</span>
+        <strong class="hr-kpi__value">{{ summary.criticalCount ?? 0 }}</strong>
+      </article>
+      <article class="hr-kpi">
+        <span class="hr-kpi__label">{{ 'HR.COMPLIANCE.WARNING' | translate }}</span>
+        <strong class="hr-kpi__value">{{ summary.warningCount ?? 0 }}</strong>
+      </article>
+      <article class="hr-kpi">
+        <span class="hr-kpi__label">{{ 'HR.COMPLIANCE.OPEN' | translate }}</span>
+        <strong class="hr-kpi__value">{{ summary.openCount ?? 0 }}</strong>
+      </article>
+    </div>
+  }
+
+  <section class="compliance-list">
+    <h3>{{ 'HR.COMPLIANCE.VIOLATIONS' | translate }}</h3>
+    @if (!violations.length) {
+      <p class="text-muted">{{ 'HR.COMPLIANCE.NO_VIOLATIONS' | translate }}</p>
+    } @else {
+      @for (item of violations; track item.id || item.code) {
+        <mat-card class="violation-card">
+          <mat-card-content>
+            <div class="violation-card__header">
+              <strong>{{ item.title || item.code }}</strong>
+              <span class="severity severity--{{ (item.severity || 'INFO') | lowercase }}">{{ item.severity }}</span>
+            </div>
+            <p>{{ item.description }}</p>
+            @if (item.recommendedAction) {
+              <p class="violation-card__action"><mat-icon>lightbulb</mat-icon> {{ item.recommendedAction }}</p>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+    }
+  </section>
+</app-dashboard-shell>

@@ -28,7 +28,7 @@ export class GeneralConfigComponent implements OnInit {
   activeTab = 'company';
   selectedTabIndex = 0;
 
-  readonly knownCategories = ['PRODUCTION', 'FINANCE', 'HR'];
+  readonly knownCategories = ['PRODUCTION', 'FINANCE', 'HR', 'RECEPTION', 'LOCALE', 'PRINT', 'NOTIFICATIONS'];
 
   private readonly tabIndexByKey: Record<string, number> = {
     company: 0,
@@ -36,9 +36,13 @@ export class GeneralConfigComponent implements OnInit {
     production: 1,
     finance: 2,
     hr: 3,
-    types: 4,
-    'types-params': 4,
-    other: 5
+    reception: 4,
+    locale: 5,
+    print: 6,
+    notifications: 7,
+    types: 8,
+    'types-params': 8,
+    other: 9
   };
 
   constructor(private route: ActivatedRoute) {}
@@ -65,6 +69,14 @@ export class GeneralConfigComponent implements OnInit {
       this.activeTab = 'finance';
     } else if (tabLabel.includes('rh') || tabLabel.includes('hr')) {
       this.activeTab = 'hr';
+    } else if (tabLabel.includes('reception')) {
+      this.activeTab = 'reception';
+    } else if (tabLabel.includes('locale') || tabLabel.includes('langue')) {
+      this.activeTab = 'locale';
+    } else if (tabLabel.includes('print') || tabLabel.includes('impression')) {
+      this.activeTab = 'print';
+    } else if (tabLabel.includes('notif')) {
+      this.activeTab = 'notifications';
     } else if (tabLabel.includes('type') || tabLabel.includes('param')) {
       this.activeTab = 'types';
     } else {

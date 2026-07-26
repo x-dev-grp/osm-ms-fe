@@ -1,11 +1,11 @@
 {
-  "name": "SSM by XDEV",
-  "short_name": "SSSM",
-  "theme_color": "#4caf50",
-  "background_color": "#ffffff",
+  "name": "ZitFlow — Olive Oil Management System",
+  "short_name": "ZitFlow",
+  "theme_color": "#2F4F2F",
+  "background_color": "#F7F6F2",
   "display": "standalone",
-  "orientation": "portrait",
-  "start_url": "/dashboard/analytics",
+  "orientation": "any",
+  "start_url": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

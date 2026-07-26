@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DashboardShellComponent } from '../../../../shared/components/dashboard/dashboard-shell.component';
 import { createKpiSheet, DashboardExportPayload } from '../../../../shared/components/dashboard/dashboard-export.models';
+import { TenantParameterClient } from '../../../../shared/services/tenant-parameter.client';
 
 interface DashboardLoadOptions {
   notifyThresholdCheck?: boolean;
@@ -62,7 +63,8 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
     private bonCommandeService: BonCommandeService,
     private cdr: ChangeDetectorRef,
     private toastService: ToastService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private tenantParams: TenantParameterClient
   ) {}
 
   get exportPayload(): DashboardExportPayload | null {
@@ -238,16 +240,21 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
   }
 
   private showThresholdCheckResult(): void {
-    const alertCount = Math.max(Number(this.stats?.articlesEnAlerte ?? 0), this.articlesCritiques.length);
+    this.tenantParams.getBoolean('NOTIFY_ON_LOW_STOCK', true).subscribe((enabled) => {
+      if (!enabled) {
+        return;
+      }
+      const alertCount = Math.max(Number(this.stats?.articlesEnAlerte ?? 0), this.articlesCritiques.length);
 
-    if (alertCount > 0) {
-      this.toastService.warning(
-        `${alertCount} article${alertCount > 1 ? 's' : ''} sous seuil critique détecté${alertCount > 1 ? 's' : ''}.`
-      );
-      return;
-    }
+      if (alertCount > 0) {
+        this.toastService.warning(
+          `${alertCount} article${alertCount > 1 ? 's' : ''} sous seuil critique détecté${alertCount > 1 ? 's' : ''}.`
+        );
+        return;
+      }
 
-    this.toastService.success('Aucun article sous seuil critique.');
+      this.toastService.success('Aucun article sous seuil critique.');
+    });
   }
 
   chartHasData(): boolean {

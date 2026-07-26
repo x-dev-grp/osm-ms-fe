@@ -1,4 +1,4 @@
-@use '../../styles/report-layout';
+﻿@use '../../styles/report-layout';
 
 * { box-sizing: border-box; }
 // Modern Minimalist Design System
@@ -15,7 +15,7 @@ $border-color: #e2e8f0;
   min-height: 100vh;
   background-color: $bg-color;
   padding: 24px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Quicksand', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .modern-container {

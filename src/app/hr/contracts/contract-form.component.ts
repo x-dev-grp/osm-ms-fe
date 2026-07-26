@@ -18,10 +18,12 @@ import { ToastService } from '../../shared/services/toast.service';
 import { EmploymentContractService } from '../services/employment-contract.service';
 import { EmployeeService } from '../services/employee.service';
 import { PosteService } from '../services/poste.service';
-import { EmploymentContract } from '../models/employment-contract.model';
+import { CddLegalReason, EmploymentContract } from '../models/employment-contract.model';
 import { Employee } from '../models/employee.model';
 import { Poste } from '../models/poste.model';
 import { parseDate, prefillEmployeeIdFromQuery, toEmployeeRef, toIsoDate, toPosteRef } from '../shared/hr-form.utils';
+
+const CDD_REASON_REQUIRED_TYPES = new Set(['CDD', 'SEASONAL', 'TEMPORARY']);
 
 @Component({
   selector: 'app-contract-form',
@@ -62,17 +64,34 @@ export class ContractFormComponent implements OnInit {
   employees: Employee[] = [];
   postes: Poste[] = [];
 
-  contractTypes = ['CDI', 'CDD', 'INTERNSHIP', 'TEMPORARY'];
-  statuses = ['DRAFT', 'ACTIVE', 'EXPIRED', 'TERMINATED'];
+  contractTypes = ['CDI', 'CDD', 'INTERNSHIP', 'TEMPORARY', 'SEASONAL', 'PART_TIME', 'OTHER_LEGAL_TYPE'];
+  statuses = ['DRAFT', 'ACTIVE', 'SUSPENDED', 'EXPIRED', 'TERMINATED', 'CANCELLED'];
+  cddLegalReasons: CddLegalReason[] = [
+    'TEMPORARY_REPLACEMENT',
+    'SEASONAL_WORK',
+    'TEMPORARY_INCREASE_ACTIVITY',
+    'TEMPORARY_NATURE_OF_WORK',
+    'OTHER_LEGAL_EXCEPTION'
+  ];
+
+  get requiresCddReason(): boolean {
+    return CDD_REASON_REQUIRED_TYPES.has(this.form?.get('contractType')?.value);
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
       employeeId: [null, Validators.required],
       posteId: [null, Validators.required],
+      contractNumber: [''],
       contractType: ['CDI', Validators.required],
       startDate: [null, Validators.required],
       endDate: [null],
       salary: [null, Validators.min(0)],
+      baseSalary: [null, Validators.min(0)],
+      weeklyHours: [null, Validators.min(0)],
+      cddLegalReason: [null],
+      probationStart: [null],
+      probationEnd: [null],
       status: ['DRAFT']
     });
 
@@ -100,7 +119,9 @@ export class ContractFormComponent implements OnInit {
               employeeId: data.employee?.id,
               posteId: data.poste?.id,
               startDate: parseDate(data.startDate),
-              endDate: parseDate(data.endDate)
+              endDate: parseDate(data.endDate),
+              probationStart: parseDate(data.probationStart),
+              probationEnd: parseDate(data.probationEnd)
             });
             this.applyContractTypeRules(data.contractType);
           }
@@ -121,9 +142,11 @@ export class ContractFormComponent implements OnInit {
 
   private applyContractTypeRules(contractType: string | null | undefined): void {
     const endDateControl = this.form.get('endDate');
-    if (!endDateControl) {
+    const cddReasonControl = this.form.get('cddLegalReason');
+    if (!endDateControl || !cddReasonControl) {
       return;
     }
+
     if (contractType === 'CDI') {
       endDateControl.setValue(null);
       endDateControl.disable({ emitEvent: false });
@@ -133,6 +156,17 @@ export class ContractFormComponent implements OnInit {
       endDateControl.setValidators(Validators.required);
     }
     endDateControl.updateValueAndValidity({ emitEvent: false });
+
+    if (CDD_REASON_REQUIRED_TYPES.has(contractType ?? '')) {
+      cddReasonControl.setValidators(Validators.required);
+      if (!this.readOnly) {
+        cddReasonControl.enable({ emitEvent: false });
+      }
+    } else {
+      cddReasonControl.clearValidators();
+      cddReasonControl.setValue(null);
+    }
+    cddReasonControl.updateValueAndValidity({ emitEvent: false });
   }
 
   private loadLookups(): void {
@@ -164,7 +198,9 @@ export class ContractFormComponent implements OnInit {
       employee: toEmployeeRef(employeeId),
       poste: toPosteRef(posteId),
       startDate: toIsoDate(raw.startDate)!,
-      endDate: toIsoDate(raw.endDate)
+      endDate: toIsoDate(raw.endDate),
+      probationStart: toIsoDate(raw.probationStart),
+      probationEnd: toIsoDate(raw.probationEnd)
     };
 
     this.saving = true;

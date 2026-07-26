@@ -18,6 +18,16 @@ export class AppParameterService {
     return this.http.get<ApiResponse<Parameter>>(`${this.baseUrl}/fetchAll`).pipe(tap((res) => this.cacheAll(res.data)));
   }
 
+  /**
+   * Creates any missing catalog defaults for the current tenant (does not overwrite existing values).
+   */
+  seedDefaults(): Observable<{ created: number; alreadyPresent: number; catalogSize: number }> {
+    return this.http.post<{ created: number; alreadyPresent: number; catalogSize: number }>(
+      `${this.baseUrl}/seed-defaults`,
+      {}
+    );
+  }
+
   /** Get a parameter by code. Backend creates the default row when missing. */
   getByCode(code: string): Observable<Parameter> {
     const cached = this.getCachedParam(code);

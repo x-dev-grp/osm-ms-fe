@@ -639,67 +639,226 @@ export const oosm_menus: Navigation[] = [
     modulePermission: 'HR',
     children: [
       {
-        id: 'item-hr-employees',
-        title: 'HR.QUICK_NAV.EMPLOYEES',
+        id: 'item-hr-dashboard',
+        title: 'HR.DASHBOARD.TITLE',
         type: 'item',
-        url: '/hr/employees',
-        icon: 'groups',
+        url: '/hr',
+        icon: 'dashboard',
         breadcrumbs: false,
         permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ)]
       },
       {
-        id: 'item-hr-postes',
-        title: 'HR.QUICK_NAV.POSITIONS',
-        type: 'item',
-        url: '/hr/postes',
-        icon: 'badge',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.POSTE, Action.READ)]
+        id: 'collapse-hr-org',
+        title: 'HR.MENU.ORGANIZATION',
+        type: 'collapse',
+        icon: 'account_tree',
+        children: [
+          {
+            id: 'item-hr-employees',
+            title: 'HR.QUICK_NAV.EMPLOYEES',
+            type: 'item',
+            url: '/hr/employees',
+            icon: 'groups',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ)]
+          },
+          {
+            id: 'item-hr-departments',
+            title: 'HR.QUICK_NAV.DEPARTMENTS',
+            type: 'item',
+            url: '/hr/departments',
+            icon: 'account_tree',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.DEPARTMENT, Action.READ)]
+          },
+          {
+            id: 'item-hr-grades',
+            title: 'HR.QUICK_NAV.GRADES',
+            type: 'item',
+            url: '/hr/grades',
+            icon: 'military_tech',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.GRADE, Action.READ)]
+          },
+          {
+            id: 'item-hr-postes',
+            title: 'HR.QUICK_NAV.POSITIONS',
+            type: 'item',
+            url: '/hr/postes',
+            icon: 'badge',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.POSTE, Action.READ)]
+          },
+          {
+            id: 'item-hr-contracts',
+            title: 'HR.QUICK_NAV.CONTRACTS',
+            type: 'item',
+            url: '/hr/contracts',
+            icon: 'description',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.CONTRACT, Action.READ)]
+          },
+          {
+            id: 'item-hr-documents',
+            title: 'HR.QUICK_NAV.DOCUMENTS',
+            type: 'item',
+            url: '/hr/employee-documents',
+            icon: 'folder_shared',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEEDOCUMENT, Action.READ)]
+          }
+        ]
       },
       {
-        id: 'item-hr-contracts',
-        title: 'HR.QUICK_NAV.CONTRACTS',
-        type: 'item',
-        url: '/hr/contracts',
-        icon: 'description',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.CONTRACT, Action.READ)]
-      },
-      {
-        id: 'item-hr-pointages',
-        title: 'HR.QUICK_NAV.POINTAGE',
-        type: 'item',
-        url: '/hr/pointages',
+        id: 'collapse-hr-time',
+        title: 'HR.MENU.TIME',
+        type: 'collapse',
         icon: 'schedule',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.POINTAGE, Action.READ)]
+        children: [
+          {
+            id: 'item-hr-pointages',
+            title: 'HR.QUICK_NAV.POINTAGE',
+            type: 'item',
+            url: '/hr/pointages',
+            icon: 'schedule',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.POINTAGE, Action.READ)]
+          },
+          {
+            id: 'item-hr-work-schedules',
+            title: 'HR.QUICK_NAV.WORK_SCHEDULES',
+            type: 'item',
+            url: '/hr/work-schedules',
+            icon: 'event_repeat',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.WORKSCHEDULE, Action.READ)]
+          },
+          {
+            id: 'item-hr-timesheets',
+            title: 'HR.QUICK_NAV.TIMESHEETS',
+            type: 'item',
+            url: '/hr/timesheets',
+            icon: 'pending_actions',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.TIMESHEET, Action.READ)]
+          },
+          {
+            id: 'item-hr-overtime',
+            title: 'HR.QUICK_NAV.OVERTIME',
+            type: 'item',
+            url: '/hr/overtime-requests',
+            icon: 'more_time',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.OVERTIMEREQUEST, Action.READ)]
+          },
+          {
+            id: 'item-hr-leave',
+            title: 'HR.QUICK_NAV.LEAVE',
+            type: 'item',
+            url: '/hr/leave-requests',
+            icon: 'event_busy',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.LEAVEREQUEST, Action.READ)]
+          },
+          {
+            id: 'item-hr-leave-types',
+            title: 'HR.QUICK_NAV.LEAVE_TYPES',
+            type: 'item',
+            url: '/hr/leave-types',
+            icon: 'category',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.LEAVETYPE, Action.READ)]
+          },
+          {
+            id: 'item-hr-holidays',
+            title: 'HR.QUICK_NAV.PUBLIC_HOLIDAYS',
+            type: 'item',
+            url: '/hr/public-holidays',
+            icon: 'celebration',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.PUBLICHOLIDAY, Action.READ)]
+          }
+        ]
       },
       {
-        id: 'item-hr-leave',
-        title: 'HR.QUICK_NAV.LEAVE',
-        type: 'item',
-        url: '/hr/leave-requests',
-        icon: 'event_busy',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.LEAVEREQUEST, Action.READ)]
+        id: 'collapse-hr-payroll',
+        title: 'HR.MENU.PAYROLL',
+        type: 'collapse',
+        icon: 'payments',
+        children: [
+          {
+            id: 'item-hr-payroll',
+            title: 'HR.QUICK_NAV.PAYROLL',
+            type: 'item',
+            url: '/hr/payroll-periods',
+            icon: 'calendar_month',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.PAYROLLPERIOD, Action.READ)]
+          },
+          {
+            id: 'item-hr-payslips',
+            title: 'HR.PAYSLIPS.LIST_TITLE',
+            type: 'item',
+            url: '/hr/payslips',
+            icon: 'receipt_long',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.PAYSLIP, Action.READ)]
+          },
+          {
+            id: 'item-hr-advances',
+            title: 'HR.QUICK_NAV.SALARY_ADVANCES',
+            type: 'item',
+            url: '/hr/salary-advances',
+            icon: 'payments',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.SALARYADVANCE, Action.READ)]
+          },
+          {
+            id: 'item-hr-loans',
+            title: 'HR.QUICK_NAV.EMPLOYEE_LOANS',
+            type: 'item',
+            url: '/hr/employee-loans',
+            icon: 'account_balance',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEELOAN, Action.READ)]
+          },
+          {
+            id: 'item-hr-variables',
+            title: 'HR.QUICK_NAV.PAYROLL_VARIABLES',
+            type: 'item',
+            url: '/hr/payroll-variables',
+            icon: 'tune',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.PAYROLLVARIABLE, Action.READ)]
+          }
+        ]
       },
       {
-        id: 'item-hr-payroll',
-        title: 'HR.QUICK_NAV.PAYROLL',
+        id: 'item-hr-settings',
+        title: 'HR.QUICK_NAV.SETTINGS',
         type: 'item',
-        url: '/hr/payroll-periods',
-        icon: 'calendar_month',
+        url: '/hr/settings',
+        icon: 'settings',
         breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.PAYROLLPERIOD, Action.READ)]
+        permissions: [permissionKey(OOSMModule.HR, HREntity.LEGALRULE, Action.READ)]
       },
       {
-        id: 'item-hr-payslips',
-        title: 'HR.PAYSLIPS.LIST_TITLE',
+        id: 'item-hr-compliance',
+        title: 'HR.QUICK_NAV.COMPLIANCE',
         type: 'item',
-        url: '/hr/payslips',
-        icon: 'receipt_long',
+        url: '/hr/compliance',
+        icon: 'verified_user',
         breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.PAYSLIP, Action.READ)]
+        permissions: [permissionKey(OOSMModule.HR, HREntity.COMPLIANCE, Action.READ)]
+      },
+      {
+        id: 'item-hr-agent',
+        title: 'HR.QUICK_NAV.AGENT',
+        type: 'item',
+        url: '/hr/agent',
+        icon: 'smart_toy',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ)]
       }
     ]
   },

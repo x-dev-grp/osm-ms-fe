@@ -1,0 +1,29 @@
+/**
+ * ZitFlow UI font — Quicksand (rounded geometric sans, aligned with logo wordmark).
+ * Loaded via Google Fonts in index.html; this file keeps the stack as a single source of truth.
+ */
+:root {
+  --zit-font-family: 'Quicksand', 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* Alias legacy Inter names so leftover component rules still resolve to Quicksand */
+@font-face {
+  font-family: 'Inter var';
+  font-weight: 300 700;
+  font-display: swap;
+  font-style: normal;
+  src: local('Quicksand');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-weight: 300 700;
+  font-display: swap;
+  font-style: normal;
+  src: local('Quicksand');
+}
+
+html,
+body {
+  font-family: var(--zit-font-family);
+}

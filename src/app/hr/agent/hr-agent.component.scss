@@ -1,0 +1,44 @@
+@import '../shared/hr-form.scss';
+
+.agent-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.agent-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 220px;
+  max-height: 420px;
+  overflow: auto;
+  padding: 0.5rem;
+}
+
+.agent-bubble {
+  max-width: 80%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  white-space: pre-wrap;
+}
+
+.agent-bubble--user {
+  align-self: flex-end;
+  background: rgba(25, 118, 210, 0.12);
+}
+
+.agent-bubble--assistant {
+  align-self: flex-start;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.agent-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.agent-prompt {
+  width: 100%;
+}

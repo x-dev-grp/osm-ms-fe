@@ -1,0 +1,65 @@
+<div class="dashboard-shell hr-form-page hr-form-page--components">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>toll</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'HR.PAGE.SALARY_COMPONENTS.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.SALARY_COMPONENT_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <app-card [icon]="'toll'" [cardTitle]="'HR.PAGE.SALARY_COMPONENTS.TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.CODE' | translate }}</mat-label>
+            <input matInput formControlName="code" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.LABEL_FR' | translate }}</mat-label>
+            <input matInput formControlName="labelFr" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.LABEL_AR' | translate }}</mat-label>
+            <input matInput formControlName="labelAr" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.COMPONENT_TYPE' | translate }}</mat-label>
+            <mat-select formControlName="type" required>
+              @for (opt of typeOptions; track opt) {
+                <mat-option [value]="opt">{{ opt }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.CALCULATION_TYPE' | translate }}</mat-label>
+            <mat-select formControlName="calculationType" required>
+              @for (opt of calculationTypeOptions; track opt) {
+                <mat-option [value]="opt">{{ opt }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-checkbox formControlName="taxable">{{ 'HR.FIELDS.TAXABLE' | translate }}</mat-checkbox>
+          <mat-checkbox formControlName="cnssApplicable">{{ 'HR.FIELDS.CNSS_APPLICABLE' | translate }}</mat-checkbox>
+          <mat-checkbox formControlName="active">{{ 'HR.FIELDS.ACTIVE' | translate }}</mat-checkbox>
+        </div>
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

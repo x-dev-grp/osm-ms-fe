@@ -3,8 +3,8 @@ export type SalaryType = 'MONTHLY' | 'HOURLY' | 'DAILY';
 export type PaymentMode = 'BANK_TRANSFER' | 'CASH' | 'CHECK';
 export type WorkRegime = 'HOURS_48' | 'HOURS_40' | 'AGRICULTURAL';
 
-export type ContractType = 'CDI' | 'CDD' | 'INTERNSHIP' | 'TEMPORARY';
-export type ContractStatus = 'DRAFT' | 'ACTIVE' | 'EXPIRED' | 'TERMINATED';
+export type ContractType = 'CDI' | 'CDD' | 'INTERNSHIP' | 'TEMPORARY' | 'SEASONAL' | 'PART_TIME' | 'OTHER_LEGAL_TYPE';
+export type ContractStatus = 'DRAFT' | 'ACTIVE' | 'SUSPENDED' | 'EXPIRED' | 'TERMINATED' | 'CANCELLED';
 
 export type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'HALF_DAY' | 'LEAVE' | 'PUBLIC_HOLIDAY';
 

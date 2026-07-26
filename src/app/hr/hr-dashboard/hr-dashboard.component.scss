@@ -1,1 +1,37 @@
 @import '../shared/hr-form.scss';
+
+.hr-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hr-kpi {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  background: var(--bs-body-bg, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.hr-kpi__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(25, 118, 210, 0.1);
+}
+
+.hr-kpi__label {
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.hr-kpi__value {
+  font-size: 1.35rem;
+}

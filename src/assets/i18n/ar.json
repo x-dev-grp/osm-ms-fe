@@ -14,11 +14,11 @@
     "ADD_COMPANY_USER_TITLE": "إنشاء شركة ومستخدم إداري لها",
     "ADD_COMPANY_CREATED": "تم إنشاء الشركة والمستخدم الإداري بنجاح.",
     "ADD_COMPANY_INITIAL_PASSWORD": "تم إنشاء الشركة. شارك بيانات الدخول مع المسؤول — المستخدم: {{username}}، كلمة المرور: {{password}}",
-    "ADD_OOSM_ADMIN_BUTTON": "إضافة مسؤول OOSM",
+    "ADD_OOSM_ADMIN_BUTTON": "إضافة مسؤول ZitFlow",
     "ADD_OOSM_ADMIN_ROLE": "الدور",
-    "ADD_OOSM_ADMIN_ROLE_VALUE": "مسؤول OOSM",
-    "ADD_OOSM_ADMIN_SAVE": "إنشاء مسؤول OOSM",
-    "ADD_OOSM_ADMIN_TITLE": "إنشاء مستخدم مسؤول OOSM",
+    "ADD_OOSM_ADMIN_ROLE_VALUE": "مسؤول ZitFlow",
+    "ADD_OOSM_ADMIN_SAVE": "إنشاء مسؤول ZitFlow",
+    "ADD_OOSM_ADMIN_TITLE": "إنشاء مستخدم مسؤول ZitFlow",
     "CANCEL": "إلغاء",
     "COMPANY_NAME": "اسم الشركة",
     "COMPANY_NAME_REQUIRED": "اسم الشركة مطلوب",
@@ -154,8 +154,8 @@
   },
   "USER_GUIDE": {
     "TITLE": "المساعدة ودليل المستخدم",
-    "INTRO": "OOSM يساعدكم على إدارة الاستقبال، إنتاج الزيت، التعبئة، المخزون، المالية والموارد البشرية في معصرتكم.",
-    "WELCOME_USER": "مرحباً {{name}} — إليك كيفية الاستفادة القصوى من OOSM.",
+    "INTRO": "ZitFlow يساعدكم على إدارة الاستقبال، إنتاج الزيت، التعبئة، المخزون، المالية والموارد البشرية في معصرتكم.",
+    "WELCOME_USER": "مرحباً {{name}} — إليك كيفية الاستفادة القصوى من ZitFlow.",
     "MY_ACCOUNT": "حسابي",
     "NO_MODULES": "لا توجد وحدات مرئية لدوركم. اتصلوا بمسؤول الشركة لمنح الصلاحيات.",
     "MODULES_TITLE": "وحداتكم",
@@ -411,7 +411,7 @@
     "COMPANY_TICKETS": "تذاكر الشركة",
     "NO_TICKETS": "لا توجد تذاكر دعم بعد.",
     "VIEW_TICKET": "عرض التفاصيل",
-    "HELP_TITLE": "تحتاج مساعدة من OOSM؟",
+    "HELP_TITLE": "تحتاج مساعدة من ZitFlow؟",
     "HELP_DESC": "أبلغ عن خطأ، اطرح سؤالاً، أو اطلب تعديلاً. التذكرة تتضمن سياق المستخدم والشركة تلقائياً.",
     "HELP_TIP1": "افتح التذكرة من الشاشة التي ظهر فيها الخطأ — نلتقط رابط الصفحة تلقائياً.",
     "HELP_TIP2": "صف خطوات إعادة الإنتاج والسلوك المتوقع مقابل الفعلي.",
@@ -454,7 +454,7 @@
   "SIDEBAR": {
     "BRAND_HOME": "الذهاب إلى الصفحة الرئيسية",
     "DEFAULT_COMPANY": "شركتي",
-    "PLATFORM": "منصة OOSM"
+    "PLATFORM": "منصة ZitFlow"
   },
   "NOTIFICATIONS": {
     "TITLE": "الإشعارات",
@@ -575,7 +575,7 @@
     },
     "MOBILE_DASHBOARD_CARDS": {
       "TITLE": "بطاقات لوحة التحكم للجوال",
-      "DESCRIPTION": "يعرض قوائم OOSM كبطاقات بدلًا من جدول على الشاشات حتى 1024 بكسل عرضًا."
+      "DESCRIPTION": "يعرض قوائم ZitFlow كبطاقات بدلًا من جدول على الشاشات حتى 1024 بكسل عرضًا."
     },
     "TITLE": "تكوين الموضوع"
   },
@@ -1747,8 +1747,84 @@
       "CONFIRM_RESET": "هل أنت متأكد أنك تريد إعادة ضبط النموذج؟ سيتم فقدان جميع التغييرات غير المحفوظة."
     },
     "OTHER_TAB": "تكوين آخر",
+    "PARAMETERS": {
+      "TITLE": "معلمات النظام",
+      "SEED_ALL": "تهيئة القيم الافتراضية",
+      "SEEDING": "جارٍ التهيئة…",
+      "SEED_HINT": "ينشئ المعلمات الناقصة من الكتالوج دون تغيير القيم الحالية.",
+      "SEED_SUCCESS": "تم إنشاء {{created}} معلمة ({{existing}} موجودة مسبقًا، الكتالوج {{total}}).",
+      "SEED_ERROR": "فشل تهيئة المعلمات الافتراضية."
+    },
+    "PRODUCTION_CONFIG": {
+      "DAILY_METRIC_HINT": "القيمة المرجعية الحالية. يتم الحفاظ على السجل عند الحفظ.",
+      "EDIT_CAMPAIGN": "جدول الحملة",
+      "ENDED": "انتهت",
+      "HISTORY": "السجل",
+      "HISTORY_DATE": "التاريخ",
+      "HISTORY_NO_MATCH": "لا توجد نتائج",
+      "HISTORY_SEARCH": "بحث…",
+      "HISTORY_VALUE": "القيمة",
+      "PARAMETERS": "معلمات الإنتاج",
+      "ROLLOVER_ACTION": "بدء موسم جديد",
+      "ROLLOVER_HINT": "يضبط بداية الحملة على اليوم، ويمسح تاريخ النهاية، ويمكنه إعادة تعيين سعر الزيت اليومي.",
+      "ROLLOVER_RESET_METRIC": "إعادة تعيين المقياس اليومي (مع الاحتفاظ بالسجل)",
+      "ROLLOVER_SUCCESS": "تم بدء الموسم الجديد بنجاح.",
+      "ROLLOVER_TITLE": "ترحيل الموسم",
+      "CAMPAIGN_ENDING_SOON": "تنتهي الحملة خلال {{days}} يوم/أيام.",
+      "START_FROM": "تبدأ",
+      "SUMMARY": "ملخص الحملة"
+    },
     "PRODUCTION_TAB": "تكوين الإنتاج",
-    "TAB_TITLE": "التكوين العام"
+    "RECEPTION_TAB": "الاستقبال",
+    "RECEPTION_CONFIG": {
+      "SUBTITLE": "ساعات الاستقبال وحدود الحمولة والقيم الافتراضية",
+      "TITLE": "تكوين الاستقبال"
+    },
+    "RECEPTION_RUNTIME": {
+      "OUTSIDE_HOURS": "خارج ساعات الاستقبال ({{open}} – {{close}}). يمكنك الحفظ مع ذلك.",
+      "TONNAGE_EXCEEDED": "سيصل وزن اليوم إلى {{current}} كغ (الحد {{max}} كغ)."
+    },
+    "LOCALE_TAB": "اللغة والمنطقة",
+    "LOCALE_CONFIG": {
+      "SUBTITLE": "اللغة والعملة والمنطقة الزمنية الافتراضية",
+      "TITLE": "تكوين اللغة والمنطقة"
+    },
+    "PRINT_TAB": "الطباعة",
+    "PRINT_CONFIG": {
+      "SUBTITLE": "حجم الورق والنسخ وخيارات QR",
+      "TITLE": "إعدادات الطباعة"
+    },
+    "NOTIFICATIONS_TAB": "الإشعارات",
+    "NOTIFICATIONS_CONFIG": {
+      "SUBTITLE": "تنبيهات الجودة والمخزون ونهاية الحملة",
+      "TITLE": "تفضيلات الإشعارات"
+    },
+    "INVOICE_BRANDING": {
+      "TITLE": "المستندات والفواتير",
+      "FOOTER_NOTE": "ملاحظة تذييل الفاتورة",
+      "LEGAL_MENTIONS": "الإشارات القانونية",
+      "BANK_NAME": "اسم البنك",
+      "BANK_IBAN": "IBAN / RIB",
+      "BANK_SWIFT": "BIC / SWIFT",
+      "MANAGE_BANKS": "إدارة الحسابات البنكية",
+      "NO_BANKS": "لا توجد حسابات بنكية بعد. أنشئ واحدًا من المالية ← البنوك.",
+      "USE_FOR_INVOICES": "استخدام للفواتير"
+    },
+    "LOCALE": {
+      "DEFAULT_LANGUAGE": "اللغة الافتراضية",
+      "TIMEZONE": "المنطقة الزمنية",
+      "PWA_SHORT_NAME": "الاسم القصير للتطبيق",
+      "THEME_COLOR": "لون السمة المفضل"
+    },
+    "PWA": {
+      "TITLE": "تثبيت التطبيق",
+      "DESCRIPTION": "ثبّت ZitFlow على هذا الجهاز للوصول الأسرع.",
+      "INSTALL": "تثبيت",
+      "NOT_AVAILABLE": "التثبيت متاح فقط في متصفح مدعوم عندما لا يكون التطبيق مثبتًا بالفعل.",
+      "THEME_SAVED": "تم حفظ لون سمة المستأجر."
+    },
+    "TAB_TITLE": "التكوين العام",
+    "TYPES_PARAMS_TAB": "أنواع المعلمات"
   },
   "GENERAL_CONFIG_UI_GENERAL_CONFIG": {
     "CONFIGURATIONS": "التكوينات",
@@ -1828,7 +1904,7 @@
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "إضافة شركة ومستخدم",
-      "ADD_OOSM_ADMIN": "إضافة مسؤول OOSM",
+      "ADD_OOSM_ADMIN": "إضافة مسؤول ZitFlow",
       "COMPANY_PROFILES": "ملفات الشركات",
       "DASHBOARD": "لوحة تحكم الإدارة",
       "TITLE": "الإدارة",
@@ -2996,7 +3072,7 @@
       "OIL_QUALITY": "مراقبة جودة الزيت",
       "OIL_RECEPTION": "استقبال الزيت",
       "OLIVE_QUALITY": "مراقبة جودة الزيتون",
-      "OOSMUSER": "مستخدم OOSM",
+      "OOSMUSER": "مستخدم ZitFlow",
       "PARAMETER": "إعداد",
       "PAUSE": "إيقاف مؤقت",
       "PAY": "دفع",
@@ -4541,7 +4617,7 @@
   },
   "HOME_DASHBOARD": {
     "TITLE": "الرئيسية",
-    "GREETING": "مرحبًا بعودتك إلى OOSM",
+    "GREETING": "مرحبًا بعودتك إلى ZitFlow",
     "GREETING_NAMED": "مرحبًا بعودتك، {{name}}",
     "LOADING": "جاري تحميل الملخص…",
     "LOAD_ERROR": "تعذر تحميل ملخص لوحة التحكم.",
@@ -4608,7 +4684,7 @@
       "START": "بدء عملية الاستلام"
     },
     "DESCRIPTION": "إدارة الاستلام والإنتاج والمخزون والمالية من مكان واحد.",
-    "HEADLINE": "مرحبًا بك في OOSM",
+    "HEADLINE": "مرحبًا بك في ZitFlow",
     "SLOGAN": "نظام إدارة زيت الزيتون",
     "LINKS": {
       "FINANCE": "المالية",
@@ -5672,7 +5748,7 @@
     "CHOOSE_FULL_OR_CONTAINER_LAYOUT": "اختر تخطيط كامل أو حاوية",
     "FULL_LAYOUT": "تخطيط كامل",
     "CONTAINER_LAYOUT": "تخطيط الحاوية",
-    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "تم تصميم OOSM باستخدام ♥ بواسطة فريق XDEV",
+    "OOSM_CRAFTED_WITH_BY_TEAM_XDEV": "تم تصميم ZitFlow باستخدام ♥ بواسطة فريق XDEV",
     "RECHERCHE_GLOBALE": "بحث عالمي",
     "LANCER_LA_RECHERCHE_GLOBALE": "ابدأ البحث العالمي",
     "MODE": "وضع",
@@ -6195,7 +6271,7 @@
     "ERREUR_LORS_DE_LA_CREATION_DU_FOURNISSEUR": "حدث خطأ أثناء إنشاء المورد",
     "ERROR_LOADING_STORAGE_UNIT": "حدث خطأ أثناء تحميل وحدة التخزين.",
     "ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_STORAGE_UNIT": "هل أنت متأكد أنك تريد حذف وحدة التخزين هذه؟",
-    "OOSM": "| OOSM",
+    "OOSM": "| ZitFlow",
     "LA_QUANTITE_DEPASSE_LE_RESTE_A_PRODUIRE_DU_PROJET": "الكمية ({{value0}}) تتجاوز باقي المشروع المراد إنتاجه ({{value1}} {{value2}})",
     "QUANTITE_DEPASSEE_MAXIMUM_AUTORISE": "تجاوزت الكمية. الحد الأقصى المسموح به: {{value0}}.",
     "QUANTITE_DEPASSEE_MAXIMUM_RESTANT_PROJET": "تجاوزت الكمية. الحد الأقصى للمشروع المتبقي: {{value0}}.",
@@ -6466,7 +6542,21 @@
       "CONTRACTS": "عقود العمل",
       "PAYROLL": "كشوف الرواتب والضمان",
       "LEAVE": "الغيابات والموافقات",
-      "POINTAGE": "الحضور اليومي"
+      "POINTAGE": "الحضور اليومي",
+      "DEPARTMENTS": "الأقسام",
+      "GRADES": "الدرجات",
+      "DOCUMENTS": "وثائق الموظفين",
+      "WORK_SCHEDULES": "جداول العمل",
+      "TIMESHEETS": "جداول الدوام",
+      "OVERTIME": "طلبات الساعات الإضافية",
+      "LEAVE_TYPES": "أنواع الإجازات",
+      "PUBLIC_HOLIDAYS": "العطل الرسمية",
+      "SALARY_ADVANCES": "السلف على الأجر",
+      "EMPLOYEE_LOANS": "قروض الموظفين",
+      "PAYROLL_VARIABLES": "متغيرات الأجور",
+      "SETTINGS": "إعدادات الموارد البشرية",
+      "COMPLIANCE": "الامتثال",
+      "AGENT": "وكيل الموارد البشرية"
     },
     "EMPLOYMENT": {
       "ACTIVE_DERIVED": "يتم تفعيل الموظف تلقائياً عند وجود عقد ساري.",
@@ -6522,6 +6612,134 @@
       },
       "CONTRACT_FORM": {
         "SUBTITLE": "تحديد النوع والتواريخ والراتب والمنصب."
+      },
+      "DEPARTMENTS": {
+        "TITLE": "الأقسام",
+        "SUBTITLE": "تنظيم هيكل الشركة والفرق."
+      },
+      "DEPARTMENT_FORM": {
+        "SUBTITLE": "إنشاء أو تحديث قسم."
+      },
+      "GRADES": {
+        "TITLE": "الدرجات",
+        "SUBTITLE": "تعريف درجات ومستويات المسار المهني."
+      },
+      "GRADE_FORM": {
+        "SUBTITLE": "إنشاء أو تحديث درجة."
+      },
+      "WORK_SCHEDULES": {
+        "TITLE": "جداول العمل",
+        "SUBTITLE": "ساعات الأسبوع وأنماط الورديات."
+      },
+      "WORK_SCHEDULE_FORM": {
+        "SUBTITLE": "تعريف جدول عمل."
+      },
+      "TIMESHEETS": {
+        "TITLE": "جداول الدوام",
+        "SUBTITLE": "وقت العمل الشهري لكل موظف."
+      },
+      "TIMESHEET_FORM": {
+        "SUBTITLE": "إنشاء أو تحديث جدول دوام."
+      },
+      "OVERTIME_REQUESTS": {
+        "TITLE": "الساعات الإضافية",
+        "SUBTITLE": "مراجعة طلبات الساعات الإضافية."
+      },
+      "OVERTIME_REQUEST_FORM": {
+        "SUBTITLE": "تقديم طلب ساعات إضافية."
+      },
+      "LEAVE_TYPES": {
+        "TITLE": "أنواع الإجازات",
+        "SUBTITLE": "تهيئة فئات وحقوق الإجازة."
+      },
+      "LEAVE_TYPE_FORM": {
+        "SUBTITLE": "تعريف نوع إجازة."
+      },
+      "PUBLIC_HOLIDAYS": {
+        "TITLE": "العطل الرسمية",
+        "SUBTITLE": "عطل قانونية وخاصة بالشركة."
+      },
+      "PUBLIC_HOLIDAY_FORM": {
+        "SUBTITLE": "إضافة عطلة رسمية."
+      },
+      "SALARY_ADVANCES": {
+        "TITLE": "السلف على الأجر",
+        "SUBTITLE": "متابعة طلبات السلف."
+      },
+      "SALARY_ADVANCE_FORM": {
+        "SUBTITLE": "تسجيل سلفة."
+      },
+      "EMPLOYEE_LOANS": {
+        "TITLE": "قروض الموظفين",
+        "SUBTITLE": "إدارة القروض والأقساط."
+      },
+      "EMPLOYEE_LOAN_FORM": {
+        "SUBTITLE": "إنشاء قرض موظف."
+      },
+      "SALARY_COMPONENTS": {
+        "TITLE": "مكونات الأجر",
+        "SUBTITLE": "تعريفات الأرباح والخصوم."
+      },
+      "SALARY_COMPONENT_FORM": {
+        "SUBTITLE": "تعريف مكون أجر."
+      },
+      "LEGAL_RULES": {
+        "TITLE": "القواعد القانونية",
+        "SUBTITLE": "معاملات قانون الشغل التونسي."
+      },
+      "LEGAL_RULE_FORM": {
+        "SUBTITLE": "تهيئة قاعدة قانونية."
+      },
+      "SOCIAL_SECURITY": {
+        "TITLE": "الضمان الاجتماعي",
+        "SUBTITLE": "نسب CNSS / CSS."
+      },
+      "SOCIAL_SECURITY_FORM": {
+        "SUBTITLE": "تهيئة نسب الضمان الاجتماعي."
+      },
+      "TAX_CONFIG": {
+        "TITLE": "إعدادات الضرائب",
+        "SUBTITLE": "شرائح IRPP والسنوات الجبائية."
+      },
+      "TAX_CONFIG_FORM": {
+        "SUBTITLE": "تهيئة الضرائب."
+      },
+      "MINIMUM_WAGE": {
+        "TITLE": "الحد الأدنى للأجور",
+        "SUBTITLE": "ملفات SMIG / SMAG."
+      },
+      "MINIMUM_WAGE_FORM": {
+        "SUBTITLE": "تعريف قاعدة حد أدنى للأجور."
+      },
+      "EMPLOYEE_DOCUMENTS": {
+        "TITLE": "وثائق الموظفين",
+        "SUBTITLE": "تخزين ومتابعة وثائق الموارد البشرية."
+      },
+      "EMPLOYEE_DOCUMENT_FORM": {
+        "SUBTITLE": "تسجيل وثيقة موظف."
+      },
+      "PAYROLL_VARIABLES": {
+        "TITLE": "متغيرات الأجور",
+        "SUBTITLE": "مدخلات الأجر المتغيرة شهرياً."
+      },
+      "PAYROLL_VARIABLE_FORM": {
+        "SUBTITLE": "إضافة متغير أجر."
+      },
+      "SETTINGS": {
+        "TITLE": "إعدادات الموارد البشرية",
+        "SUBTITLE": "مركز الإعدادات القانونية والضريبية والأجور."
+      },
+      "COMPANY_LEGAL_PROFILE": {
+        "TITLE": "الملف القانوني للشركة",
+        "SUBTITLE": "رقم CNSS للمشغّل والقطاع."
+      },
+      "COMPLIANCE": {
+        "TITLE": "الامتثال",
+        "SUBTITLE": "الدرجة والمخالفات من فحص الامتثال."
+      },
+      "AGENT": {
+        "TITLE": "وكيل الموارد البشرية",
+        "SUBTITLE": "اطرح أسئلة حول بيانات الموارد البشرية."
       }
     },
     "DASHBOARD": {
@@ -6535,7 +6753,10 @@
         "ACTIVE_CONTRACTS": "العقود النشطة",
         "PENDING_LEAVES": "إجازات معلقة",
         "OPEN_PAYROLL": "فترات مفتوحة",
-        "DRAFT_PAYSLIPS": "كشوف مسودة"
+        "DRAFT_PAYSLIPS": "كشوف مسودة",
+        "ON_LEAVE": "في إجازة",
+        "COMPLIANCE_SCORE": "درجة الامتثال",
+        "CONTRACTS_EXPIRING": "عقود قاربت الانتهاء"
       },
       "CHART": {
         "TITLE": "توزيع الموارد البشرية"
@@ -6561,7 +6782,14 @@
         "BASE_SALARY": "الراتب الأساسي",
         "SALARY_TYPE": "نوع الراتب",
         "PAYMENT_MODE": "طريقة الدفع",
-        "BANK_ACCOUNT": "الحساب البنكي"
+        "BANK_ACCOUNT": "الحساب البنكي",
+        "EMPLOYEE_NUMBER": "رقم الموظف",
+        "GENDER": "الجنس",
+        "MARITAL_STATUS": "الحالة الاجتماعية",
+        "NUMBER_OF_CHILDREN": "عدد الأبناء",
+        "TAX_IDENTIFIER": "المعرف الجبائي",
+        "RIB": "RIB",
+        "TERMINATION_DATE": "تاريخ إنهاء العقد"
       },
       "FORM": {
         "IDENTITY": "الهوية",
@@ -6600,6 +6828,17 @@
         "NO_ATTENDANCE": "لا يوجد حضور.",
         "NO_LEAVES": "لا توجد طلبات إجازة.",
         "NO_PAYSLIPS": "لا توجد كشوف رواتب."
+      },
+      "GENDER": {
+        "MALE": "ذكر",
+        "FEMALE": "أنثى",
+        "OTHER": "آخر"
+      },
+      "MARITAL_STATUS": {
+        "SINGLE": "أعزب",
+        "MARRIED": "متزوج",
+        "DIVORCED": "مطلق",
+        "WIDOWED": "أرمل"
       }
     },
     "CONTRACTS": {
@@ -6610,19 +6849,37 @@
         "START_DATE": "تاريخ البداية",
         "END_DATE": "تاريخ النهاية",
         "SALARY": "الراتب",
-        "STATUS": "الحالة"
+        "STATUS": "الحالة",
+        "CONTRACT_NUMBER": "رقم العقد",
+        "BASE_SALARY": "الأجر الأساسي",
+        "WEEKLY_HOURS": "ساعات أسبوعية",
+        "CDD_LEGAL_REASON": "السبب القانوني للعقد محدد المدة",
+        "PROBATION_START": "بداية فترة التجربة",
+        "PROBATION_END": "نهاية فترة التجربة"
       },
       "TYPE": {
         "CDI": "دائم",
         "CDD": "محدد",
         "INTERNSHIP": "تدريب",
-        "TEMPORARY": "مؤقت"
+        "TEMPORARY": "مؤقت",
+        "SEASONAL": "موسمي",
+        "PART_TIME": "دوام جزئي",
+        "OTHER_LEGAL_TYPE": "نوع قانوني آخر"
       },
       "STATUS": {
         "DRAFT": "مسودة",
         "ACTIVE": "نشط",
         "EXPIRED": "منتهي",
-        "TERMINATED": "ملغى"
+        "TERMINATED": "ملغى",
+        "SUSPENDED": "موقوف",
+        "CANCELLED": "ملغى"
+      },
+      "CDD_REASON": {
+        "TEMPORARY_REPLACEMENT": "تعويض مؤقت",
+        "SEASONAL_WORK": "عمل موسمي",
+        "TEMPORARY_INCREASE_ACTIVITY": "زيادة مؤقتة في النشاط",
+        "TEMPORARY_NATURE_OF_WORK": "طبيعة العمل المؤقتة",
+        "OTHER_LEGAL_EXCEPTION": "استثناء قانوني آخر"
       }
     },
     "ATTENDANCE": {
@@ -6806,6 +7063,93 @@
       "EXIT_MARKED": "تم تسجيل الخروج في {{time}}.",
       "PUNCH": "تسجيل",
       "OPEN_PUNCH": "دخول مفتوح — سجّل الخروج أولاً"
+    },
+    "MENU": {
+      "ORGANIZATION": "التنظيم",
+      "TIME": "الوقت والحضور",
+      "PAYROLL": "الأجور"
+    },
+    "FIELDS": {
+      "CODE": "Code",
+      "NAME": "Name",
+      "DESCRIPTION": "Description",
+      "ACTIVE": "Active",
+      "LEVEL": "Level",
+      "WEEKLY_HOURS": "Weekly hours",
+      "WORKING_DAYS": "Working days",
+      "START_TIME": "Start time",
+      "END_TIME": "End time",
+      "BREAK_MINUTES": "Break (minutes)",
+      "NIGHT_SHIFT": "Night shift",
+      "ROTATING_SHIFT": "Rotating shift",
+      "STATUS": "Status",
+      "WORKED_MINUTES": "Worked minutes",
+      "DATE": "Date",
+      "MINUTES": "Minutes",
+      "REASON": "Reason",
+      "AMOUNT": "Amount",
+      "NAME_FR": "Name (FR)",
+      "NAME_AR": "Name (AR)",
+      "ANNUAL_ALLOWANCE": "Annual allowance",
+      "PAID": "Paid",
+      "REQUIRES_APPROVAL": "Requires approval",
+      "LEGAL": "Legal",
+      "RECURRING": "Recurring",
+      "REQUEST_DATE": "Request date",
+      "PRINCIPAL": "Principal",
+      "MONTHLY_INSTALLMENT": "Monthly installment",
+      "REMAINING": "Remaining balance",
+      "LABEL_FR": "Label (FR)",
+      "LABEL_AR": "Label (AR)",
+      "COMPONENT_TYPE": "Component type",
+      "CALCULATION_TYPE": "Calculation type",
+      "TAXABLE": "Taxable",
+      "CNSS_APPLICABLE": "CNSS applicable",
+      "CATEGORY": "Category",
+      "EFFECTIVE_FROM": "Effective from",
+      "VALUE": "Value",
+      "LEGAL_REFERENCE": "Legal reference",
+      "REGIME": "Regime",
+      "EMPLOYEE_RATE": "Employee rate",
+      "EMPLOYER_RATE": "Employer rate",
+      "CSS_RATE": "CSS rate",
+      "FISCAL_YEAR": "Fiscal year",
+      "PROFILE": "Profile",
+      "SECTOR": "Sector",
+      "WEEKLY_REGIME": "Weekly regime",
+      "MONTHLY_MINIMUM": "Monthly minimum",
+      "HOURLY_MINIMUM": "Hourly minimum",
+      "DOCUMENT_TYPE": "Document type",
+      "TITLE": "Title",
+      "FILE_NAME": "File name",
+      "EXPIRY_DATE": "Expiry date",
+      "NOTES": "Notes",
+      "TYPE": "Type",
+      "QUANTITY": "Quantity",
+      "BUSINESS_ACTIVITY": "Business activity",
+      "CNSS_EMPLOYER_NUMBER": "CNSS employer number",
+      "ACCIDENT_RISK_RATE": "Accident risk rate",
+      "MINIMUM_WAGE_PROFILE": "Minimum wage profile",
+      "FISCAL_REGIME": "Fiscal regime"
+    },
+    "COMPLIANCE": {
+      "SCAN": "تشغيل فحص الامتثال",
+      "SCORE": "درجة الامتثال",
+      "CRITICAL": "حرج",
+      "WARNING": "تحذيرات",
+      "OPEN": "مفتوحة",
+      "VIOLATIONS": "المخالفات",
+      "NO_VIOLATIONS": "لا توجد مخالفات بعد. شغّل الفحص.",
+      "LOAD_ERROR": "تعذر تحميل ملخص الامتثال.",
+      "SCAN_SUCCESS": "اكتمل فحص الامتثال.",
+      "SCAN_ERROR": "فشل فحص الامتثال."
+    },
+    "AGENT": {
+      "PROMPT": "اسأل وكيل الموارد البشرية",
+      "SEND": "إرسال",
+      "CONFIRM_WRITE": "تأكيد إجراءات الكتابة / الحرجة",
+      "EMPTY": "اطرح سؤالاً حول الموظفين أو العقود أو الإجازات أو الأجور.",
+      "SEND_ERROR": "تعذر الوصول إلى وكيل الموارد البشرية."
     }
   },
   "USER_PROFILE": {

@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NavRightComponent } from './toolbar-right/toolbar-right.component';
 import { NavLeftComponent } from './toolbar-left/toolbar-left.component';
+import { FlowingBackgroundMediaComponent } from '../shared/flowing-background-media/flowing-background-media.component';
 
 @Component({
   selector: 'app-nav-bar',
-  imports: [SharedModule, NavLeftComponent, NavRightComponent, CommonModule],
+  imports: [SharedModule, NavLeftComponent, NavRightComponent, CommonModule, FlowingBackgroundMediaComponent],
   templateUrl: './toolbar.component.html',
   standalone: true,
   styleUrls: ['./toolbar.component.scss']

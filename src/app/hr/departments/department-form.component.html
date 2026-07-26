@@ -1,0 +1,47 @@
+<div class="dashboard-shell hr-form-page hr-form-page--departments">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>account_tree</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'HR.PAGE.DEPARTMENTS.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.DEPARTMENT_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <app-card [icon]="'account_tree'" [cardTitle]="'HR.PAGE.DEPARTMENTS.TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.CODE' | translate }}</mat-label>
+            <input matInput formControlName="code" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.NAME' | translate }}</mat-label>
+            <input matInput formControlName="name" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>{{ 'HR.FIELDS.DESCRIPTION' | translate }}</mat-label>
+            <textarea matInput rows="3" formControlName="description"></textarea>
+          </mat-form-field>
+          <mat-checkbox formControlName="active">{{ 'HR.FIELDS.ACTIVE' | translate }}</mat-checkbox>
+        </div>
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

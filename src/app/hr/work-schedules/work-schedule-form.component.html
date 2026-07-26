@@ -1,0 +1,65 @@
+<div class="dashboard-shell hr-form-page hr-form-page--schedules">
+  <div class="page-header sticky-actions page-header--hr">
+    <div class="page-header__left">
+      <div class="header-icon-wrap header-icon-wrap--hr"><mat-icon>event_repeat</mat-icon></div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'HR.PAGE.WORK_SCHEDULES.TITLE' | translate }}</h2>
+        <p class="header-subtitle">{{ 'HR.PAGE.WORK_SCHEDULE_FORM.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+    <div class="page-header__right">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="ms-1">{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <app-card [icon]="'event_repeat'" [cardTitle]="'HR.PAGE.WORK_SCHEDULES.TITLE' | translate">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.NAME' | translate }}</mat-label>
+            <input matInput formControlName="name" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.CODE' | translate }}</mat-label>
+            <input matInput formControlName="scheduleCode" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.WEEKLY_HOURS' | translate }}</mat-label>
+            <input matInput type="number" formControlName="weeklyHours" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.WORKING_DAYS' | translate }}</mat-label>
+            <input matInput formControlName="workingDays" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.START_TIME' | translate }}</mat-label>
+            <input matInput formControlName="startTime" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.END_TIME' | translate }}</mat-label>
+            <input matInput formControlName="endTime" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.FIELDS.BREAK_MINUTES' | translate }}</mat-label>
+            <input matInput type="number" formControlName="breakDurationMinutes" />
+          </mat-form-field>
+          <mat-checkbox formControlName="nightShift">{{ 'HR.FIELDS.NIGHT_SHIFT' | translate }}</mat-checkbox>
+          <mat-checkbox formControlName="rotatingShift">{{ 'HR.FIELDS.ROTATING_SHIFT' | translate }}</mat-checkbox>
+          <mat-checkbox formControlName="active">{{ 'HR.FIELDS.ACTIVE' | translate }}</mat-checkbox>
+        </div>
+        @if (!readOnly) {
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</button>
+          </div>
+        }
+      </form>
+    </app-card>
+  }
+</div>

@@ -37,6 +37,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
 import { PushNotificationService } from '../../../shared/services/push-notification.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
+import { FlowingBackgroundMediaComponent } from '../shared/flowing-background-media/flowing-background-media.component';
 
 @Component({
   selector: 'app-admin',
@@ -52,7 +53,8 @@ import { TranslateModule } from '@ngx-translate/core';
     BreadcrumbComponent,
     FooterComponent,
     MobileBottomNavComponent,
-    TranslateModule
+    TranslateModule,
+    FlowingBackgroundMediaComponent
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']

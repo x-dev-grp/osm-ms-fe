@@ -38,6 +38,10 @@
             </mat-select>
           </mat-form-field>
           <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.CONTRACT_NUMBER' | translate }}</mat-label>
+            <input matInput formControlName="contractNumber" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
             <mat-label>{{ 'HR.CONTRACTS.FIELDS.TYPE' | translate }}</mat-label>
             <mat-select formControlName="contractType">
               @for (type of contractTypes; track type) {
@@ -45,6 +49,16 @@
               }
             </mat-select>
           </mat-form-field>
+          @if (requiresCddReason) {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'HR.CONTRACTS.FIELDS.CDD_LEGAL_REASON' | translate }}</mat-label>
+              <mat-select formControlName="cddLegalReason" required>
+                @for (reason of cddLegalReasons; track reason) {
+                  <mat-option [value]="reason">{{ 'HR.CONTRACTS.CDD_REASON.' + reason | translate }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
           <mat-form-field appearance="outline">
             <mat-label>{{ 'HR.CONTRACTS.FIELDS.STATUS' | translate }}</mat-label>
             <mat-select formControlName="status">
@@ -66,8 +80,28 @@
             <mat-datepicker #endPicker></mat-datepicker>
           </mat-form-field>
           <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.PROBATION_START' | translate }}</mat-label>
+            <input matInput [matDatepicker]="probStartPicker" formControlName="probationStart" />
+            <mat-datepicker-toggle matSuffix [for]="probStartPicker"></mat-datepicker-toggle>
+            <mat-datepicker #probStartPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.PROBATION_END' | translate }}</mat-label>
+            <input matInput [matDatepicker]="probEndPicker" formControlName="probationEnd" />
+            <mat-datepicker-toggle matSuffix [for]="probEndPicker"></mat-datepicker-toggle>
+            <mat-datepicker #probEndPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
             <mat-label>{{ 'HR.CONTRACTS.FIELDS.SALARY' | translate }}</mat-label>
             <input matInput type="number" formControlName="salary" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.BASE_SALARY' | translate }}</mat-label>
+            <input matInput type="number" formControlName="baseSalary" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'HR.CONTRACTS.FIELDS.WEEKLY_HOURS' | translate }}</mat-label>
+            <input matInput type="number" formControlName="weeklyHours" />
           </mat-form-field>
         </div>
         @if (!readOnly) {
