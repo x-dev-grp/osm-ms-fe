@@ -19,6 +19,7 @@
     "e2e": "playwright test --config=e2e/playwright.config.ts",
     "e2e:install": "playwright install chromium",
     "e2e:smoke": "playwright test e2e/smoke.spec.ts --config=e2e/playwright.config.ts --project=chromium",
+    "e2e:auth": "playwright test e2e/password-reset.spec.ts e2e/admin-password-reset.spec.ts --config=e2e/playwright.config.ts --project=chromium",
     "e2e:mobile": "playwright test e2e/mobile-experience.spec.ts --config=e2e/playwright.config.ts --project=mobile-chrome",
     "e2e:full": "playwright test --config=e2e/playwright.config.ts",
     "sync-user-guide-pdfs": "node ../docs/scripts/sync-pdfs-to-fe.mjs",
