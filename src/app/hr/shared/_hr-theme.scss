@@ -4,10 +4,10 @@ $hr-primary: #0d9488;
 $hr-primary-light: #14b8a6;
 $hr-primary-dark: #0f766e;
 $hr-primary-soft: #ccfbf1;
-$hr-surface: #ffffff;
-$hr-border: #e2e8f0;
-$hr-muted: #64748b;
-$hr-text: #0f172a;
+$hr-surface: var(--surface-card, #ffffff);
+$hr-border: var(--border-subtle, #e2e8f0);
+$hr-muted: var(--text-muted, #64748b);
+$hr-text: var(--text-primary, #0f172a);
 $hr-radius: 16px;
 $hr-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
 $hr-shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.1);
@@ -25,7 +25,11 @@ $hr-accents: (
 @mixin hr-accent-header($name) {
   $colors: map-get($hr-accents, $name);
   @if $colors {
-    background: linear-gradient(135deg, rgba(nth($colors, 1), 0.1), rgba(255, 255, 255, 0.97));
+    background: linear-gradient(
+      135deg,
+      rgba(nth($colors, 1), 0.1),
+      var(--surface-card, #ffffff)
+    );
     border-color: rgba(nth($colors, 1), 0.18);
 
     .header-icon-wrap {
@@ -210,7 +214,7 @@ $hr-accents: (
   border-radius: 14px !important;
   border: 1px solid $hr-border;
   box-shadow: none !important;
-  background: linear-gradient(180deg, #f8fafc 0%, $hr-surface 100%);
+  background: linear-gradient(180deg, var(--surface-muted, #f8fafc) 0%, $hr-surface 100%);
 
   .mat-mdc-card-content {
     display: flex;
@@ -253,7 +257,7 @@ $hr-accents: (
   padding: 0.55rem 1rem;
   font-size: 0.86rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--text-secondary, #334155);
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 

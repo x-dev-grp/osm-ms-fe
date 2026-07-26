@@ -13,10 +13,11 @@
 .dashboard-hub__subtitle {
   font-size: 0.875rem;
   margin-top: 0.2rem;
+  color: var(--text-muted, #667085);
 }
 
 .header-icon-wrap--hub {
-  background: linear-gradient(135deg, #1565c0, #42a5f5);
+  background: linear-gradient(135deg, var(--primary-700, #1565c0), var(--primary-400, #42a5f5));
   color: #fff;
 }
 
@@ -28,8 +29,8 @@
   gap: 0.35rem;
   padding: 0.35rem;
   border-radius: 16px;
-  background: #f8fafc;
-  border: 1px solid #eef2f6;
+  background: var(--surface-muted, #f8fafc);
+  border: 1px solid var(--border-subtle, #eef2f6);
 }
 
 .dashboard-hub-tab {
@@ -43,7 +44,7 @@
   border-radius: 999px;
   border: 1px solid transparent;
   background: transparent;
-  color: #344054;
+  color: var(--text-secondary, #344054);
   font-weight: 600;
   font-size: 0.8125rem;
   line-height: 1.2;
@@ -64,15 +65,15 @@
   }
 
   &:hover {
-    background: #fff;
-    border-color: #e4e7ec;
+    background: var(--surface-card, #fff);
+    border-color: var(--border-subtle, #e4e7ec);
   }
 
   &.active {
-    background: #fff;
-    border-color: #bfd7ff;
-    color: #1565c0;
-    box-shadow: 0 4px 12px rgba(21, 101, 192, 0.12);
+    background: var(--surface-card, #fff);
+    border-color: color-mix(in srgb, var(--primary-500, #1565c0) 35%, transparent);
+    color: var(--primary-700, #1565c0);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--primary-500, #1565c0) 18%, transparent);
   }
 }
 
@@ -96,20 +97,20 @@
   padding: 3rem 1.5rem;
   text-align: center;
   border-radius: 16px;
-  border: 1px dashed #d0d5dd;
-  background: #fcfcfd;
-  color: #667085;
+  border: 1px dashed var(--border-subtle, #d0d5dd);
+  background: var(--surface-muted, #fcfcfd);
+  color: var(--text-muted, #667085);
 
   mat-icon {
     width: 40px;
     height: 40px;
     font-size: 40px;
-    color: #98a2b3;
+    color: var(--text-muted, #98a2b3);
   }
 
   h2 {
     margin: 0;
-    color: #344054;
+    color: var(--text-secondary, #344054);
     font-size: 1.1rem;
   }
 

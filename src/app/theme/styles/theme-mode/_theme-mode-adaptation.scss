@@ -89,7 +89,12 @@ body.dark {
   .metric-card,
   .hero-card,
   .quick-link-card,
+  .module-card,
   .panel-card,
+  .dashboard-header-card,
+  .dashboard-filters-panel,
+  .summary-card,
+  .finance-kpi,
   .supplier-form,
   .add-oosm-admin-user-wrapper .main-card,
   .loading-container,
@@ -99,10 +104,68 @@ body.dark {
   .quality-control-container .quality-content,
   .quality-control-container .parameter-card,
   .quality-control-container .financial-card,
-  .customize-body .customize-button {
+  .customize-body .customize-button,
+  .confirmation-dialog-container,
+  .confirmation-dialog-container .dialog-header,
+  .confirmation-dialog-container .dialog-content,
+  .confirmation-dialog-container .dialog-actions {
     background: var(--section-bg) !important;
     border-color: var(--border-subtle) !important;
     color: var(--text-primary);
+  }
+
+  .dashboard-hub__tabs {
+    background: var(--surface-muted) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
+  .dashboard-hub-tab {
+    color: var(--text-secondary);
+
+    &:hover,
+    &.active {
+      background: var(--surface-card) !important;
+      border-color: var(--border-subtle);
+      color: var(--primary-300, var(--primary-500));
+    }
+  }
+
+  .page-tab-btn {
+    background: var(--surface-card) !important;
+    border-color: var(--border-subtle) !important;
+    color: var(--text-secondary) !important;
+
+    &.active {
+      color: var(--primary-300, var(--primary-500)) !important;
+    }
+  }
+
+  .module-card .metric,
+  .module-card__metrics .metric {
+    background: var(--surface-muted) !important;
+    color: var(--text-primary);
+  }
+
+  .metric-card strong,
+  .module-card__metrics .metric__value,
+  .summary-value,
+  .finance-kpi__value {
+    color: var(--text-primary) !important;
+  }
+
+  .status-pill {
+    background: var(--surface-muted) !important;
+    color: var(--text-muted) !important;
+
+    &.active {
+      background: color-mix(in srgb, #15803d 22%, var(--surface-muted)) !important;
+      color: #4ade80 !important;
+    }
+
+    &.warn {
+      background: color-mix(in srgb, #f59e0b 20%, var(--surface-muted)) !important;
+      color: #fbbf24 !important;
+    }
   }
 
   .hero-card--tenants {
@@ -131,6 +194,14 @@ body.dark {
     background: var(--table-header-bg) !important;
     color: var(--text-muted) !important;
     border-bottom-color: var(--border-subtle) !important;
+  }
+
+  .admin-table thead th:first-child {
+    border-top-left-radius: 12px;
+  }
+
+  .admin-table thead th:last-child {
+    border-top-right-radius: 12px;
   }
 
   .admin-table td {
@@ -178,7 +249,11 @@ body.dark {
     color: var(--text-primary);
   }
 
-  .mat-mdc-header-row,
+  /* Background on cells only — row bg would cancel header corner radius. */
+  .mat-mdc-header-row {
+    background: transparent !important;
+  }
+
   .mat-mdc-header-cell {
     background: var(--table-header-bg) !important;
     color: var(--text-muted) !important;
@@ -229,10 +304,6 @@ body.dark {
     .mat-drawer:not(.pc-sidebar) {
       background-color: var(--surface-card) !important;
     }
-  }
-
-  .mat-mdc-header-row {
-    background: var(--table-header-bg) !important;
   }
 
   .period-info {

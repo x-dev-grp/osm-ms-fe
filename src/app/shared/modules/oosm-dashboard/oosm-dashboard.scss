@@ -204,6 +204,22 @@ th.mat-mdc-header-cell {
   vertical-align: top !important;
 }
 
+/* Rounded header corners — no overflow:hidden so sticky headers stay intact */
+.mat-mdc-header-row .mat-mdc-header-cell:first-child,
+.mat-header-row .mat-header-cell:first-child {
+  border-top-left-radius: 12px;
+}
+
+.mat-mdc-header-row .mat-mdc-header-cell:last-child,
+.mat-header-row .mat-header-cell:last-child {
+  border-top-right-radius: 12px;
+}
+
+table.mat-mdc-table,
+table.mat-elevation-z8 {
+  border-radius: 12px;
+}
+
 /* Ensure header content stacks label (top) then total (below) */
 .col-header {
   display: flex;

@@ -129,12 +129,29 @@ body {
   /* -------------------------------------------------------------------------- */
   /*  @ mat table
   /* -------------------------------------------------------------------------- */
-  .mat-mdc-header-row {
-    background: #ffffff !important;
+  .mat-mdc-table {
+    border-radius: 12px;
+  }
 
+  .mat-mdc-header-row {
+    /* Transparent so first/last cell radii are visible (row bg would square them off). */
+    background: transparent !important;
+
+    .mat-mdc-header-cell,
     .mdc-data-table__header-cell {
       font-weight: 700;
       font-size: 14px;
+      background: var(--table-header-bg, #ffffff);
+    }
+
+    .mat-mdc-header-cell:first-child,
+    .mdc-data-table__header-cell:first-child {
+      border-top-left-radius: 12px;
+    }
+
+    .mat-mdc-header-cell:last-child,
+    .mdc-data-table__header-cell:last-child {
+      border-top-right-radius: 12px;
     }
   }
 

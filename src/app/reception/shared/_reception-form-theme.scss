@@ -4,10 +4,10 @@ $reception-primary: #2e7d32;
 $reception-primary-light: #43a047;
 $reception-oil: #1565c0;
 $reception-oil-light: #1e88e5;
-$reception-surface: #ffffff;
-$reception-border: #e2e8f0;
-$reception-muted: #64748b;
-$reception-text: #0f172a;
+$reception-surface: var(--surface-card, #ffffff);
+$reception-border: var(--border-subtle, #e2e8f0);
+$reception-muted: var(--text-muted, #64748b);
+$reception-text: var(--text-primary, #0f172a);
 $reception-radius: 16px;
 $reception-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
 
@@ -47,12 +47,12 @@ $reception-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
 }
 
 .reception-form-page--olive .page-header--reception {
-  background: linear-gradient(135deg, rgba($reception-primary, 0.1), rgba(255, 255, 255, 0.97));
+  background: linear-gradient(135deg, rgba($reception-primary, 0.1), var(--surface-card, #ffffff));
   border: 1px solid rgba($reception-primary, 0.14);
 }
 
 .reception-form-page--oil .page-header--reception {
-  background: linear-gradient(135deg, rgba($reception-oil, 0.1), rgba(255, 255, 255, 0.97));
+  background: linear-gradient(135deg, rgba($reception-oil, 0.1), var(--surface-card, #ffffff));
   border: 1px solid rgba($reception-oil, 0.14);
 
   .header-icon-wrap--reception {
@@ -99,7 +99,7 @@ $reception-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
     gap: 0.65rem;
     padding: 0.85rem 1.15rem;
     border-bottom: 1px solid #eef2f6;
-    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    background: linear-gradient(180deg, var(--surface-muted, #f8fafc) 0%, var(--surface-card, #ffffff) 100%);
 
     mat-icon {
       color: $reception-primary;
@@ -200,7 +200,7 @@ $reception-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
   margin-top: 0.25rem;
   padding: 1rem 1.15rem;
   border-radius: $reception-radius;
-  background: rgba(255, 255, 255, 0.92);
+  background: color-mix(in srgb, var(--surface-card, #ffffff) 92%, transparent);
   border: 1px solid $reception-border;
   box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.06);
   backdrop-filter: blur(8px);

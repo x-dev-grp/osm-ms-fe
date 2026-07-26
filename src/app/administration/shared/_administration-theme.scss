@@ -4,10 +4,10 @@
 $admin-primary: var(--primary-500, #1976d2);
 $admin-primary-dark: var(--primary-700, #1565c0);
 $admin-primary-soft: var(--primary-300, #64b5f6);
-$admin-surface: #ffffff;
-$admin-border: #e5e7eb;
-$admin-muted: #667085;
-$admin-text: #111827;
+$admin-surface: var(--surface-card, #ffffff);
+$admin-border: var(--border-subtle, #e5e7eb);
+$admin-muted: var(--text-muted, #667085);
+$admin-text: var(--text-primary, #111827);
 $admin-radius: 16px;
 $admin-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
 $admin-shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.1);
@@ -443,6 +443,14 @@ $admin-shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.1);
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: $admin-muted;
+
+    &:first-child {
+      border-top-left-radius: 12px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 12px;
+    }
   }
 
   tbody tr {
@@ -526,16 +534,16 @@ $admin-shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.1);
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 700;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--surface-muted, #f3f4f6);
+  color: var(--text-muted, #6b7280);
 
   &.active {
-    background: #dcfce7;
+    background: color-mix(in srgb, #15803d 16%, var(--surface-muted, #dcfce7));
     color: #15803d;
   }
 
   &.warn {
-    background: #fef3c7;
+    background: color-mix(in srgb, #92400e 14%, var(--surface-muted, #fef3c7));
     color: #92400e;
   }
 }
@@ -549,7 +557,7 @@ $admin-shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.1);
 .catalog-operations {
   margin: 0 0 1.125rem;
   padding-inline-start: 1.25rem;
-  color: #374151;
+  color: var(--text-secondary, #374151);
   line-height: 1.6;
 
   li + li {
