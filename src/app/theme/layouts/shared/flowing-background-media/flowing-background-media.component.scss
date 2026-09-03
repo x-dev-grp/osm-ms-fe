@@ -50,11 +50,8 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  /* Theme-tinted cover (Autre config primary) — no flat grey */
-  background: var(
-    --shell-chrome,
-    color-mix(in srgb, var(--primary-500, #4680ff) 22%, #ffffff)
-  );
+  /* Cream/white cover — do not tint chrome with Autre primary */
+  background: var(--shell-chrome, #ffffff);
   opacity: var(--flowing-wash-opacity, 0.88);
 }
 

@@ -19,9 +19,9 @@
     flex-grow: 1;
     gap: 0;
     min-height: 54px;
-    border: 1px solid var(--shell-chrome-border, color-mix(in srgb, var(--primary-500) 28%, var(--accent-400)));
+    border: 1px solid var(--shell-chrome-border, color-mix(in srgb, var(--accent-400) 55%, transparent));
     border-radius: 16px;
-    background: var(--shell-chrome, color-mix(in srgb, var(--primary-500) 22%, #ffffff));
+    background: var(--shell-chrome, #ffffff);
     box-shadow: 0 10px 28px color-mix(in srgb, var(--accent-900) 8%, transparent);
     backdrop-filter: blur(12px);
   }
@@ -140,8 +140,8 @@
     border-bottom: 0 !important;
 
     .header-wrapper {
-      background: color-mix(in srgb, var(--primary-500) 6%, #ffffff);
-      border-color: color-mix(in srgb, var(--primary-500) 18%, transparent);
+      background: var(--shell-chrome, #ffffff);
+      border-color: var(--shell-chrome-border, color-mix(in srgb, var(--accent-400) 55%, transparent));
     }
   }
 }
@@ -153,8 +153,8 @@
     border-bottom: 0 !important;
 
     .header-wrapper {
-      background: var(--shell-chrome-strong, color-mix(in srgb, var(--primary-500) 18%, var(--accent-100)));
-      border-color: var(--shell-chrome-border, color-mix(in srgb, var(--primary-500) 28%, var(--accent-400)));
+      background: var(--shell-chrome-strong, var(--accent-50, #f7f6f2));
+      border-color: var(--shell-chrome-border, color-mix(in srgb, var(--accent-400) 55%, transparent));
     }
   }
 }
