@@ -1,6 +1,6 @@
 # ZitFlow — Render Blueprint (frontend + new Postgres)
 # Apply in Render Dashboard → New → Blueprint → repo x-dev-grp/osm-ms-fe
-# Branch: deploy/zitflow-xdev-pro · Blueprint path: render.zitflow.yaml
+# Branch: pfe-v2-final (single production source; deploy/zitflow-xdev-pro is an alias tip) · Blueprint path: render.zitflow.yaml
 #
 # Backend stays on Railway. After DB is created, copy the External Database
 # URL into Railway DB_URL / DB_USER / DB_PASS (see oosm/ZITFLOW_RENDER.md).
@@ -21,7 +21,7 @@ services:
     name: zitflow-web
     runtime: docker
     repo: https://github.com/x-dev-grp/osm-ms-fe
-    branch: deploy/zitflow-xdev-pro
+    branch: pfe-v2-final
     region: frankfurt
     plan: starter
     dockerfilePath: ./Dockerfile

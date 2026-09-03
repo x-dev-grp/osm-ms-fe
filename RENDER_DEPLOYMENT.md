@@ -2,7 +2,7 @@
 
 ## ZitFlow (new): Blueprint FE + Postgres
 
-Branch **`deploy/zitflow-xdev-pro`**. Apply [`render.zitflow.yaml`](render.zitflow.yaml) from the Render Dashboard (New → Blueprint). That creates:
+Branch **`pfe-v2-final`** (single production source; `deploy/zitflow-xdev-pro` is an alias tip). Apply [`render.zitflow.yaml`](render.zitflow.yaml) from the Render Dashboard (New → Blueprint). That creates:
 
 - **zitflow-web** — Docker/nginx frontend (`BACKEND_URL` → Railway)
 - **zitflow-postgres** — Frankfurt Postgres 17 (restore from `oosm_fawv`)
