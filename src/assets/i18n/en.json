@@ -215,8 +215,8 @@
     "NOTIFICATIONS": {
       "TEST_BUTTON": "Send test notification",
       "TEST_TITLE": "Send test notification",
-      "TEST_HINT": "Sends a OneSignal push using the current app ID, API key, and endpoint. After login, open the site, allow notifications, then paste your Subscription ID from the browser console: OneSignal.User.PushSubscription.id",
-      "TEST_PLAYER_ID": "OneSignal subscription ID",
+      "TEST_HINT": "Sends an FCM push using the configured project ID, client email, and private key. After login, allow notifications, then paste your FCM device token (from browser Network tab on /register-device or messaging logs).",
+      "TEST_TOKEN": "FCM device token",
       "TEST_TITLE_FIELD": "Title",
       "TEST_MESSAGE": "Message",
       "TEST_SUBMIT": "Send test",

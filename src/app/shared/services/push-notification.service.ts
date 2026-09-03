@@ -1,32 +1,20 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { initializeApp, FirebaseApp, getApps } from 'firebase/app';
+import { getMessaging, getToken, isSupported, Messaging } from 'firebase/messaging';
 import { environment } from '../../../environments/environment';
 import { TokenService } from '../../auth/services/tokenService.service';
 import { UserNotification } from '../models/notification.model';
 
-declare global {
-  interface Window {
-    OneSignalDeferred?: Array<(OneSignal: OneSignalSdk) => void | Promise<void>>;
-    OneSignal?: OneSignalSdk;
-  }
-}
-
-interface OneSignalPushSubscription {
-  id?: string | null;
-  optedIn?: boolean;
-  addEventListener: (event: 'change', listener: (event: { current: OneSignalPushSubscription }) => void) => void;
-}
-
-interface OneSignalSdk {
-  init: (options: Record<string, unknown>) => Promise<void>;
-  login: (externalId: string) => Promise<void>;
-  Notifications: {
-    requestPermission: () => Promise<boolean>;
-    permissionNative?: NotificationPermission;
-  };
-  User: {
-    PushSubscription: OneSignalPushSubscription;
-  };
+interface FirebaseWebConfig {
+  apiKey?: string;
+  authDomain?: string;
+  projectId?: string;
+  storageBucket?: string;
+  messagingSenderId?: string;
+  appId?: string;
+  vapidKey?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -35,49 +23,53 @@ export class PushNotificationService {
   private readonly tokenService = inject(TokenService);
   private permissionRequested = false;
   private lastShownTitle = '';
-  private initialized = false;
-  private lastRegisteredSubscriptionId: string | null = null;
+  private lastRegisteredToken: string | null = null;
+  private messaging: Messaging | null = null;
 
   async initAfterLogin(): Promise<void> {
-    const appId = environment.oneSignalAppId?.trim();
-    if (!appId || typeof window === 'undefined') {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
       return;
     }
 
     try {
-      const oneSignal = await this.ensureOneSignalReady(appId);
-      const userId = this.currentUserId();
-      if (userId) {
-        try {
-          await oneSignal.login(userId);
-        } catch {
-          // login is best-effort; subscription registration still proceeds
-        }
+      const supported = await isSupported();
+      if (!supported) {
+        console.warn('[PushNotification] FCM messaging is not supported in this browser');
+        return;
+      }
+
+      const cfg = await this.loadFirebaseConfig();
+      if (!this.isConfigReady(cfg)) {
+        console.warn('[PushNotification] FCM web config is incomplete; skipping push registration');
+        return;
       }
 
       if (!this.permissionRequested) {
         this.permissionRequested = true;
-        await oneSignal.Notifications.requestPermission();
+        await Notification.requestPermission();
+      }
+      if (Notification.permission !== 'granted') {
+        return;
       }
 
-      const registerCurrent = (): void => {
-        const subscriptionId = oneSignal.User.PushSubscription.id;
-        if (subscriptionId) {
-          this.registerDevice(subscriptionId);
-        }
-      };
+      const app = this.ensureFirebaseApp(cfg);
+      this.messaging = getMessaging(app);
 
-      registerCurrent();
-      oneSignal.User.PushSubscription.addEventListener('change', (event) => {
-        const subscriptionId = event?.current?.id;
-        if (subscriptionId) {
-          this.registerDevice(subscriptionId);
-        }
+      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+        scope: '/firebase-cloud-messaging-push-scope'
       });
+
+      const token = await getToken(this.messaging, {
+        vapidKey: cfg.vapidKey,
+        serviceWorkerRegistration: registration
+      });
+
+      if (token) {
+        this.registerDevice(token);
+      }
     } catch (error) {
-      console.warn('[PushNotification] OneSignal init failed', error);
-      // Fallback: browser Notification permission only
-      if ('Notification' in window && Notification.permission === 'default' && !this.permissionRequested) {
+      console.warn('[PushNotification] FCM init failed', error);
+      if (Notification.permission === 'default' && !this.permissionRequested) {
         this.permissionRequested = true;
         await Notification.requestPermission();
       }
@@ -117,59 +109,66 @@ export class PushNotificationService {
     };
   }
 
-  registerDevice(playerId: string): void {
+  registerDevice(token: string): void {
     const userId = this.currentUserId();
-    if (!userId || !playerId) {
+    if (!userId || !token) {
       return;
     }
-    if (playerId === this.lastRegisteredSubscriptionId) {
+    if (token === this.lastRegisteredToken) {
       return;
     }
-    this.lastRegisteredSubscriptionId = playerId;
+    this.lastRegisteredToken = token;
     this.http
       .post(`${environment.apiUrl}/api/security/user/register-device`, {
         userId,
-        playerId
+        token
       })
       .subscribe({
         next: () => undefined,
         error: () => {
-          this.lastRegisteredSubscriptionId = null;
+          this.lastRegisteredToken = null;
         }
       });
+  }
+
+  private async loadFirebaseConfig(): Promise<FirebaseWebConfig> {
+    const fromEnv = environment.firebase || {};
+    try {
+      const remote = await firstValueFrom(this.http.get<FirebaseWebConfig>('assets/firebase-config.json'));
+      return { ...fromEnv, ...(remote || {}) };
+    } catch {
+      return fromEnv;
+    }
+  }
+
+  private isConfigReady(cfg: FirebaseWebConfig): boolean {
+    return !!(
+      cfg.apiKey?.trim() &&
+      cfg.projectId?.trim() &&
+      cfg.messagingSenderId?.trim() &&
+      cfg.appId?.trim() &&
+      cfg.vapidKey?.trim()
+    );
+  }
+
+  private ensureFirebaseApp(cfg: FirebaseWebConfig): FirebaseApp {
+    const existing = getApps()[0];
+    if (existing) {
+      return existing;
+    }
+    return initializeApp({
+      apiKey: cfg.apiKey,
+      authDomain: cfg.authDomain,
+      projectId: cfg.projectId,
+      storageBucket: cfg.storageBucket,
+      messagingSenderId: cfg.messagingSenderId,
+      appId: cfg.appId
+    });
   }
 
   private currentUserId(): string | null {
     const decoded = this.tokenService.decodeToken() as Record<string, unknown> | null;
     const nested = (decoded?.['oosmUser'] ?? decoded?.['osmUser']) as { id?: string } | undefined;
     return nested?.id ?? (typeof decoded?.['sub'] === 'string' ? decoded['sub'] : null);
-  }
-
-  private ensureOneSignalReady(appId: string): Promise<OneSignalSdk> {
-    return new Promise((resolve, reject) => {
-      const timeout = window.setTimeout(() => reject(new Error('OneSignal SDK load timeout')), 15000);
-
-      const boot = async (OneSignal: OneSignalSdk): Promise<void> => {
-        try {
-          if (!this.initialized) {
-            await OneSignal.init({
-              appId,
-              allowLocalhostAsSecureOrigin: !environment.production,
-              serviceWorkerPath: 'OneSignalSDKWorker.js',
-              serviceWorkerParam: { scope: '/' }
-            });
-            this.initialized = true;
-          }
-          window.clearTimeout(timeout);
-          resolve(OneSignal);
-        } catch (error) {
-          window.clearTimeout(timeout);
-          reject(error);
-        }
-      };
-
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      window.OneSignalDeferred.push(boot);
-    });
   }
 }

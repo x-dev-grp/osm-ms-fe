@@ -76,7 +76,7 @@ export interface MailTestRequest {
 }
 
 export interface NotificationTestRequest {
-  playerId: string;
+  token: string;
   title?: string;
   message?: string;
 }

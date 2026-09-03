@@ -8,8 +8,16 @@ export const environment = {
   appVersion: packageInfo.version,
   production: false,
   apiUrl: '',
-  /** Public OneSignal App ID (safe in the browser). REST API key stays on the backend only. */
-  oneSignalAppId: '937e982c-31ae-46c4-8537-030deed9b2aa'
+  /** Public Firebase web config (safe in browser). Service-account private key stays on backend only. */
+  firebase: {
+    apiKey: '',
+    authDomain: '',
+    projectId: '',
+    storageBucket: '',
+    messagingSenderId: '',
+    appId: '',
+    vapidKey: ''
+  }
 };
 
 export const AppConfig={

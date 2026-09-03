@@ -49,7 +49,7 @@
               "src/manifest.webmanifest",
               "src/site.webmanifest",
               {
-                "glob": "OneSignalSDKWorker.js",
+                "glob": "firebase-messaging-sw.js",
                 "input": "src",
                 "output": "/"
               }

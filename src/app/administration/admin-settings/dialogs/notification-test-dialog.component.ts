@@ -13,7 +13,7 @@ import { ToastService } from 'src/app/shared/services/toast.service';
 import { Component, DestroyRef, inject } from '@angular/core';
 
 export interface NotificationTestDialogData {
-  defaultPlayerId?: string;
+  defaultToken?: string;
 }
 
 @Component({
@@ -43,7 +43,7 @@ export class NotificationTestDialogComponent {
   submitting = false;
 
   readonly form = this.fb.group({
-    playerId: [this.data?.defaultPlayerId ?? '', [Validators.required, Validators.minLength(8)]],
+    token: [this.data?.defaultToken ?? '', [Validators.required, Validators.minLength(8)]],
     title: ['ZitFlow notification test'],
     message: ['This is a test push notification from ZitFlow administration settings.']
   });
@@ -62,7 +62,7 @@ export class NotificationTestDialogComponent {
     const raw = this.form.getRawValue();
     this.settingsService
       .sendNotificationTest({
-        playerId: (raw.playerId ?? '').trim(),
+        token: (raw.token ?? '').trim(),
         title: (raw.title ?? '').trim() || undefined,
         message: (raw.message ?? '').trim() || undefined
       })
