@@ -3,6 +3,9 @@
     <div>
       <h2>{{ 'TENANT_MODULES.VIEW_TITLE' | translate }}</h2>
       <p class="subtitle">{{ profile?.legalName || '…' }}</p>
+      @if (profile && isDeactivated) {
+        <p class="status-badge">{{ 'TENANT_MODULES.DANGER.STATUS_DEACTIVATED' | translate }}</p>
+      }
     </div>
     <button mat-stroked-button type="button" routerLink="/administration/companies">
       <mat-icon>arrow_back</mat-icon>
@@ -37,7 +40,7 @@
             }
           </div>
           <div class="actions">
-            <button mat-flat-button color="primary" type="submit" [disabled]="saving">
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving || isDeactivated">
               @if (saving) {
                 <mat-spinner diameter="20"></mat-spinner>
               } @else {
@@ -47,6 +50,47 @@
             </button>
           </div>
         </form>
+      </app-card>
+    </section>
+
+    <section class="danger-section">
+      <app-card [icon]="'warning'" [cardTitle]="'TENANT_MODULES.DANGER.TITLE' | translate" [showContent]="true">
+        <p class="hint">{{ 'TENANT_MODULES.DANGER.HINT' | translate }}</p>
+        <div class="danger-actions">
+          @if (!isDeactivated) {
+            <button
+              mat-stroked-button
+              color="warn"
+              type="button"
+              (click)="deactivateCompany()"
+              [disabled]="lifecycleBusy"
+            >
+              <mat-icon>block</mat-icon>
+              <span class="ms-1">{{ 'TENANT_MODULES.DANGER.DEACTIVATE' | translate }}</span>
+            </button>
+          } @else {
+            <button
+              mat-stroked-button
+              color="primary"
+              type="button"
+              (click)="reactivateCompany()"
+              [disabled]="lifecycleBusy"
+            >
+              <mat-icon>restart_alt</mat-icon>
+              <span class="ms-1">{{ 'TENANT_MODULES.DANGER.REACTIVATE' | translate }}</span>
+            </button>
+          }
+          <button
+            mat-flat-button
+            color="warn"
+            type="button"
+            (click)="purgeCompany()"
+            [disabled]="lifecycleBusy"
+          >
+            <mat-icon>delete_forever</mat-icon>
+            <span class="ms-1">{{ 'TENANT_MODULES.DANGER.PURGE' | translate }}</span>
+          </button>
+        </div>
       </app-card>
     </section>
   }

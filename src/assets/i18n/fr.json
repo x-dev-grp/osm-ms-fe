@@ -58,7 +58,32 @@
     "REQUIRED": "Sélectionnez au moins un module.",
     "SECTION_HINT": "Choisissez les modules ZitFlow accessibles pour ce tenant. Aucun n'est activé par défaut.",
     "SECTION_TITLE": "Modules licenciés",
-    "VIEW_TITLE": "Profil société"
+    "VIEW_TITLE": "Profil société",
+    "DANGER": {
+      "TITLE": "Zone sensible",
+      "HINT": "La désactivation bloque la connexion et soft-supprime les utilisateurs. La suppression définitive efface toutes les données de la société et est irréversible.",
+      "STATUS_DEACTIVATED": "Cette société est désactivée",
+      "DEACTIVATE": "Désactiver la société",
+      "DEACTIVATE_TITLE": "Désactiver la société ?",
+      "DEACTIVATE_MESSAGE": "Les utilisateurs seront bloqués et les modules licenciés désactivés. Les données opérationnelles sont conservées jusqu'à la suppression définitive.",
+      "DEACTIVATE_CONFIRM": "Désactiver",
+      "DEACTIVATE_SUCCESS": "Société désactivée.",
+      "DEACTIVATE_ERROR": "Impossible de désactiver la société.",
+      "REACTIVATE": "Réactiver la société",
+      "REACTIVATE_TITLE": "Réactiver la société ?",
+      "REACTIVATE_MESSAGE": "Rétablir l'accès pour cette société et ses utilisateurs.",
+      "REACTIVATE_CONFIRM": "Réactiver",
+      "REACTIVATE_SUCCESS": "Société réactivée.",
+      "REACTIVATE_ERROR": "Impossible de réactiver la société.",
+      "PURGE": "Supprimer définitivement",
+      "PURGE_TITLE": "Supprimer définitivement la société ?",
+      "PURGE_MESSAGE": "Cela supprime définitivement la société, ses utilisateurs et toutes les données liées. Tapez le nom de la société pour confirmer.",
+      "PURGE_CONFIRM": "Supprimer pour toujours",
+      "PURGE_PLACEHOLDER": "Raison sociale",
+      "PURGE_HINT": "Saisissez exactement la raison sociale pour activer la suppression.",
+      "PURGE_SUCCESS": "Société définitivement supprimée.",
+      "PURGE_ERROR": "Impossible de supprimer définitivement la société."
+    }
   },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",

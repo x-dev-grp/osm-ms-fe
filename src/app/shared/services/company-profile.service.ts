@@ -82,6 +82,20 @@ export class CompanyProfileService {
     return this.http.put<CompanyProfile>(`${this.baseUrl}/${tenantId}/modules`, { enabledModules });
   }
 
+  deactivateTenant(tenantId: string): Observable<CompanyProfile> {
+    return this.http.post<CompanyProfile>(`${this.baseUrl}/${tenantId}/deactivate`, {});
+  }
+
+  reactivateTenant(tenantId: string): Observable<CompanyProfile> {
+    return this.http.post<CompanyProfile>(`${this.baseUrl}/${tenantId}/reactivate`, {});
+  }
+
+  purgeTenant(tenantId: string, confirmationName: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${tenantId}/purge`, {
+      body: { confirmationName }
+    });
+  }
+
   clearCache(): void {
     const tenantId = this.getTenantId();
     localStorage.removeItem(this.STORAGE_KEY);

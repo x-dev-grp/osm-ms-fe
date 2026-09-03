@@ -58,7 +58,32 @@
     "REQUIRED": "Select at least one module.",
     "SECTION_HINT": "Choose which ZitFlow modules this tenant can access. None are enabled by default.",
     "SECTION_TITLE": "Licensed modules",
-    "VIEW_TITLE": "Company profile"
+    "VIEW_TITLE": "Company profile",
+    "DANGER": {
+      "TITLE": "Danger zone",
+      "HINT": "Deactivate blocks company login and soft-deletes users. Permanent delete removes all company data and cannot be undone.",
+      "STATUS_DEACTIVATED": "This company is deactivated",
+      "DEACTIVATE": "Deactivate company",
+      "DEACTIVATE_TITLE": "Deactivate company?",
+      "DEACTIVATE_MESSAGE": "Users will be locked out and licensed modules disabled. Operational data is kept until permanent delete.",
+      "DEACTIVATE_CONFIRM": "Deactivate",
+      "DEACTIVATE_SUCCESS": "Company deactivated.",
+      "DEACTIVATE_ERROR": "Unable to deactivate company.",
+      "REACTIVATE": "Reactivate company",
+      "REACTIVATE_TITLE": "Reactivate company?",
+      "REACTIVATE_MESSAGE": "Restore access for this company and its users.",
+      "REACTIVATE_CONFIRM": "Reactivate",
+      "REACTIVATE_SUCCESS": "Company reactivated.",
+      "REACTIVATE_ERROR": "Unable to reactivate company.",
+      "PURGE": "Permanently delete",
+      "PURGE_TITLE": "Permanently delete company?",
+      "PURGE_MESSAGE": "This permanently deletes the company, its users, and all related operational data. Type the company name to confirm.",
+      "PURGE_CONFIRM": "Delete forever",
+      "PURGE_PLACEHOLDER": "Company legal name",
+      "PURGE_HINT": "Type the exact company legal name to enable delete.",
+      "PURGE_SUCCESS": "Company permanently deleted.",
+      "PURGE_ERROR": "Unable to permanently delete company."
+    }
   },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",

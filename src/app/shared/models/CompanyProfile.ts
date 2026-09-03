@@ -36,4 +36,7 @@ export interface CompanyProfile {
   invoiceBankSwift?: string;
 
   enabledModules?: string[];
+  active?: boolean;
+  deleted?: boolean;
+  isDeleted?: boolean;
 }
