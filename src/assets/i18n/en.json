@@ -3019,7 +3019,12 @@
     "USERNAME": "Username",
     "USERNAME_INVALID": "Not a valid email",
     "USERNAME_MISSING": "Username missing for login",
-    "USERNAME_REQUIRED": "You must enter an email"
+    "USERNAME_REQUIRED": "You must enter an email",
+    "VISUAL_TITLE": "From grove to bottle, in one flow.",
+    "VISUAL_SUBTITLE": "Reception, mill, packaging and finance — connected in ZitFlow.",
+    "SUBTITLE": "Enter your credentials to continue",
+    "TOGGLE_PASSWORD": "Show or hide password",
+    "UPDATEPASSWORD_SUBTITLE": "Choose a strong new password for your account"
   },
   "LOGO": {
     "CLICK_BROWSE": "or click to browse",
@@ -3065,7 +3070,8 @@
       "PROJECTS": "Production projects",
       "TITLE": "Packaging & logistics",
       "WORKSHOP": "Packaging workshop",
-      "ANALYTICS": "Analytics & reports"
+      "ANALYTICS": "Analytics & reports",
+      "CATALOG": "Catalog"
     },
     "CUSTOMERS": {
       "ACTIONS": {
@@ -3260,7 +3266,8 @@
       "PAYROLL_LEAVE": "Contracts, payroll & leave",
       "POSITIONS": "Positions",
       "ROLES_PERMISSIONS": "Roles & Permissions",
-      "TITLE": "Human Resources"
+      "TITLE": "Human Resources",
+      "SETTINGS": "HR settings"
     },
     "PRODUCTION": {
       "ALL_OLIVE_RECEPTIONS": "All olive receptions",
@@ -3295,7 +3302,11 @@
       "QUALITY_CONTROL_HUILE": "Oil quality controle",
       "QUALITY_CONTROL_OLIVE": "Olive quality controle",
       "SUPPLIERS": "Suppliers",
-      "TITLE": "Reception"
+      "TITLE": "Reception",
+      "JOURNAL": "Journals",
+      "JOURNAL_OLIVE": "Olive reception journal",
+      "JOURNAL_OIL": "Oil reception journal",
+      "IMPORT": "Day import"
     },
     "SETTINGS": {
       "APP_UI": "Application settings",
@@ -3357,6 +3368,10 @@
     },
     "DASHBOARDS": {
       "TITLE": "Dashboards"
+    },
+    "PILOTAGE": {
+      "TITLE": "Operations cockpit",
+      "CONDITIONING": "Packaging analytics"
     }
   },
   "MILL_MACHINE": {
