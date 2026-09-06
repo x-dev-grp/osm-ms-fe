@@ -1928,7 +1928,12 @@
     "USERNAME": "اسم المستخدم",
     "USERNAME_INVALID": "ليس بريدًا إلكترونيًا صالحًا",
     "USERNAME_MISSING": "اسم المستخدم مفقود للدخول",
-    "USERNAME_REQUIRED": "يجب إدخال بريد إلكتروني"
+    "USERNAME_REQUIRED": "يجب إدخال بريد إلكتروني",
+    "VISUAL_TITLE": "من البستان إلى الزجاجة، في مسار واحد.",
+    "VISUAL_SUBTITLE": "الاستقبال، المطحنة، التعبئة والمالية — متصلة في ZitFlow.",
+    "SUBTITLE": "أدخل بيانات الدخول للمتابعة",
+    "TOGGLE_PASSWORD": "إظهار أو إخفاء كلمة المرور",
+    "UPDATEPASSWORD_SUBTITLE": "اختر كلمة مرور جديدة قوية لحسابك"
   },
   "LOGO": {
     "CLICK_BROWSE": "أو انقر للتصفح",
@@ -2103,7 +2108,9 @@
       "TITLE": "التمويل والمحاسبة",
       "TRANSACTIONS": "المعاملات المالية",
       "TREASURY": "الخزينة والبنوك",
-      "WASTE_MANAGEMENT": "إدارة النفايات"
+      "WASTE_MANAGEMENT": "إدارة النفايات",
+      "CASH_REGISTER": "الصندوق",
+      "SEASON_RECAP": "ملخص الموسم"
     },
     "CONDITIONNEMENT": {
       "EXPEDITIONS": "الشحنات وإذن التسليم",
@@ -2114,7 +2121,8 @@
       "PROJECTS": "مشاريع الإنتاج",
       "TITLE": "التعبئة واللوجستيات",
       "WORKSHOP": "ورشة التعبئة",
-      "ANALYTICS": "التحليلات والتقارير"
+      "ANALYTICS": "التحليلات والتقارير",
+      "CATALOG": "الكتالوج"
     },
     "HOME": {
       "ANALYTICS_REPORTS": "التقارير والتحليلات",
@@ -2139,7 +2147,8 @@
       "ORGANIZATION": "Organisation",
       "PAYROLL": "Paie & bulletins",
       "PAYROLL_LEAVE": "Contrats, paie & congés",
-      "POSITIONS": "Postes"
+      "POSITIONS": "Postes",
+      "SETTINGS": "إعدادات الموارد البشرية"
     },
     "PRODUCTION": {
       "ALL_OLIVE_RECEPTIONS": "جميع استقبالات الزيتون",
@@ -2173,7 +2182,12 @@
       "QUALITY_CONTROL_HUILE": "مراقبة جودة الزيت",
       "QUALITY_CONTROL_OLIVE": "مراقبة جودة الزيتون",
       "SUPPLIERS": "الموردون",
-      "TITLE": "الاستقبال"
+      "TITLE": "الاستقبال",
+      "JOURNAL": "السجلات",
+      "JOURNAL_OLIVE": "سجل استقبال الزيتون",
+      "JOURNAL_OIL": "سجل استقبال الزيت",
+      "PURCHASE_JOURNAL": "سجل المشتريات",
+      "IMPORT": "الاستيراد اليومي"
     },
     "SETTINGS": {
       "APP_UI": "إعدادات التطبيق",
@@ -2228,6 +2242,17 @@
     },
     "MAINTENANCE": {
       "WORK_ORDERS": "Maintenance"
+    },
+    "MAINTENANCE_EQUIPMENT": {
+      "TITLE": "الصيانة والمعدات"
+    },
+    "EQUIPMENT": {
+      "REGISTRY": "سجل المعدات",
+      "MISSIONS": "مهام المعدات"
+    },
+    "PILOTAGE": {
+      "TITLE": "لوحة القيادة",
+      "CONDITIONING": "تحليلات التعبئة"
     }
   },
   "MILL_MACHINE": {

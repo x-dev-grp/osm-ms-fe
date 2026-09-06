@@ -3009,7 +3009,12 @@
     "USERNAME": "Nom d'utilisateur",
     "USERNAME_INVALID": "Email non valide",
     "USERNAME_MISSING": "Nom d'utilisateur manquant pour la connexion",
-    "USERNAME_REQUIRED": "Vous devez entrer un email"
+    "USERNAME_REQUIRED": "Vous devez entrer un email",
+    "VISUAL_TITLE": "De l’oliveraie à la bouteille, en un seul flux.",
+    "VISUAL_SUBTITLE": "Réception, moulin, conditionnement et finance — reliés dans ZitFlow.",
+    "SUBTITLE": "Saisissez vos identifiants pour continuer",
+    "TOGGLE_PASSWORD": "Afficher ou masquer le mot de passe",
+    "UPDATEPASSWORD_SUBTITLE": "Choisissez un nouveau mot de passe sécurisé"
   },
   "LOGO": {
     "CLICK_BROWSE": "ou cliquez pour parcourir",
@@ -3055,7 +3060,8 @@
       "PROJECTS": "Projets de production",
       "TITLE": "Conditionnement & Logistique",
       "WORKSHOP": "Atelier de conditionnement",
-      "ANALYTICS": "Analyses & rapports"
+      "ANALYTICS": "Analyses & rapports",
+      "CATALOG": "Catalogue"
     },
     "CUSTOMERS": {
       "ACTIONS": {
@@ -3253,7 +3259,8 @@
       "PAYROLL_LEAVE": "Contrats, paie & congés",
       "POSITIONS": "Postes",
       "ROLES_PERMISSIONS": "Rôles & permissions",
-      "TITLE": "Ressources Humaines"
+      "TITLE": "Ressources Humaines",
+      "SETTINGS": "Paramètres RH"
     },
     "PRODUCTION": {
       "ACHAT_OLIVE": "Réception Olive - Achat Olive",
@@ -3288,7 +3295,11 @@
       "QUALITY_CONTROL_HUILE": "Quality control d'huile",
       "QUALITY_CONTROL_OLIVE": "Quality control d'olive",
       "SUPPLIERS": "Fournisseurs",
-      "TITLE": "Réception"
+      "TITLE": "Réception",
+      "JOURNAL": "Journaux",
+      "JOURNAL_OLIVE": "Journal réception olives",
+      "JOURNAL_OIL": "Journal réception huile",
+      "IMPORT": "Import journalier"
     },
     "SETTINGS": {
       "APP_UI": "Paramètres d'application",
@@ -3347,6 +3358,10 @@
       "DASHBOARD": "Tableau de bord fournisseurs",
       "HISTORY": "Historique fournisseurs",
       "TITLE": "Fournisseurs"
+    },
+    "PILOTAGE": {
+      "TITLE": "Pilotage",
+      "CONDITIONING": "Analytics conditionnement"
     }
   },
   "MILL_MACHINE": {
