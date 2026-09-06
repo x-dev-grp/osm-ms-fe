@@ -81,7 +81,7 @@ export class ClientDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/stock/clients']);
+    this.router.navigate(['/projets/clients']);
   }
 
   getAdresseComplete(): string {

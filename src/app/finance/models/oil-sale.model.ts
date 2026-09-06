@@ -31,6 +31,10 @@ export interface OilSale {
   createdBy?: string;
   lastModifiedBy?: string;
   containerSales?: OilContainerSaleLine[];
+  publicCode?: string | null;
+  qrHex?: string | null;
+  qrUrl?: string | null;
+  qrImageBase64?: string | null;
 }
 
 export interface OilContainerSaleLine {

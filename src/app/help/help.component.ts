@@ -35,6 +35,7 @@ import {
   HelpNavItem,
   HelpPdfGuide
 } from './help.models';
+import { MillPlanningConfigService } from '../shared/services/mill-planning-config.service';
 
 @Component({
   selector: 'app-help',
@@ -57,6 +58,7 @@ export class HelpComponent implements OnInit {
   private supportTicketService = inject(SupportTicketService);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
+  private millPlanningConfig = inject(MillPlanningConfigService);
 
   myTickets: SupportTicket[] = [];
   ticketsLoading = false;
@@ -66,6 +68,7 @@ export class HelpComponent implements OnInit {
   moduleTasks: Record<string, HelpModuleTask[]> = {};
   commonTasks: HelpCommonTask[] = [];
   navItems: HelpNavItem[] = [];
+  millPlanningEnabled = true;
 
   private readonly baseNavItems: HelpNavItem[] = [
     { id: 'help-start', labelKey: 'USER_GUIDE.NAV.START' },
@@ -124,6 +127,80 @@ export class HelpComponent implements OnInit {
     { labelKey: 'USER_GUIDE.HR.LINKS.PAYSLIPS', route: '/hr/payslips', icon: 'receipt_long' }
   ];
 
+  readonly receptionMasterKeys: string[] = [
+    'USER_GUIDE.RECEPTION.GUIDE.MASTER.STEP1',
+    'USER_GUIDE.RECEPTION.GUIDE.MASTER.STEP2',
+    'USER_GUIDE.RECEPTION.GUIDE.MASTER.STEP3',
+    'USER_GUIDE.RECEPTION.GUIDE.MASTER.STEP4',
+    'USER_GUIDE.RECEPTION.GUIDE.MASTER.STEP5',
+    'USER_GUIDE.RECEPTION.GUIDE.MASTER.STEP6'
+  ];
+
+  readonly receptionChecklistKeys: string[] = [
+    'USER_GUIDE.RECEPTION.GUIDE.CHECKLIST.ITEM1',
+    'USER_GUIDE.RECEPTION.GUIDE.CHECKLIST.ITEM2',
+    'USER_GUIDE.RECEPTION.GUIDE.CHECKLIST.ITEM3',
+    'USER_GUIDE.RECEPTION.GUIDE.CHECKLIST.ITEM4',
+    'USER_GUIDE.RECEPTION.GUIDE.CHECKLIST.ITEM5',
+    'USER_GUIDE.RECEPTION.GUIDE.CHECKLIST.ITEM6'
+  ];
+
+  readonly receptionFlowKeys: string[] = [
+    'USER_GUIDE.RECEPTION.GUIDE.FLOW.STEP1',
+    'USER_GUIDE.RECEPTION.GUIDE.FLOW.STEP2',
+    'USER_GUIDE.RECEPTION.GUIDE.FLOW.STEP3',
+    'USER_GUIDE.RECEPTION.GUIDE.FLOW.STEP4'
+  ];
+
+  readonly receptionOptionalKeys: string[] = [
+    'USER_GUIDE.RECEPTION.GUIDE.OPTIONAL.STORAGE',
+    'USER_GUIDE.RECEPTION.GUIDE.OPTIONAL.VARIETY',
+    'USER_GUIDE.RECEPTION.GUIDE.OPTIONAL.LIMITS'
+  ];
+
+  readonly receptionGuideLinks: HelpHrGuideLink[] = [
+    { labelKey: 'USER_GUIDE.RECEPTION.LINKS.DASHBOARD', route: '/reception', icon: 'dashboard' },
+    { labelKey: 'USER_GUIDE.RECEPTION.LINKS.SUPPLIERS', route: '/reception/fournisseur', icon: 'agriculture' },
+    { labelKey: 'USER_GUIDE.RECEPTION.LINKS.MILLS', route: '/reception/mill-machines', icon: 'precision_manufacturing' },
+    { labelKey: 'USER_GUIDE.RECEPTION.LINKS.SCHEDULES', route: '/reception/mill-schedules', icon: 'calendar_month' },
+    { labelKey: 'USER_GUIDE.RECEPTION.LINKS.QC_RULES', route: '/settings/quality-control', icon: 'rule' },
+    {
+      labelKey: 'USER_GUIDE.RECEPTION.LINKS.NEW_SIMPLE',
+      route: '/reception/reception-olive/simple_reception',
+      icon: 'add_circle'
+    },
+    { labelKey: 'USER_GUIDE.RECEPTION.LINKS.IMPORT', route: '/reception/import', icon: 'upload_file' }
+  ];
+
+  readonly dayImportWorkflowKeys: string[] = [
+    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP1',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP2',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP3',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP4',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP5'
+  ];
+
+  readonly dayImportRuleKeys: string[] = [
+    'USER_GUIDE.DAY_IMPORT.GUIDE.RULES.ITEM1',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.RULES.ITEM2',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.RULES.ITEM3',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.RULES.ITEM4'
+  ];
+
+  readonly dayImportDriveKeys: string[] = [
+    'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP1',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP2',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP3',
+    'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP4'
+  ];
+
+  readonly dayImportGuideLinks: HelpHrGuideLink[] = [
+    { labelKey: 'USER_GUIDE.DAY_IMPORT.LINKS.WIZARD', route: '/reception/import', icon: 'upload_file' },
+    { labelKey: 'USER_GUIDE.DAY_IMPORT.LINKS.RECEPTION', route: '/reception', icon: 'spa' },
+    { labelKey: 'USER_GUIDE.DAY_IMPORT.LINKS.QC_RULES', route: '/settings/quality-control', icon: 'rule' },
+    { labelKey: 'USER_GUIDE.DAY_IMPORT.LINKS.PARAMETERS', route: '/settings/general-config', icon: 'tune' }
+  ];
+
   readonly pdfGuides: HelpPdfGuide[] = [
     {
       id: 'fr',
@@ -165,6 +242,8 @@ export class HelpComponent implements OnInit {
     { questionKey: 'USER_GUIDE.FAQ.PASSWORD.Q', answerKey: 'USER_GUIDE.FAQ.PASSWORD.A' },
     { questionKey: 'USER_GUIDE.FAQ.LANGUAGE.Q', answerKey: 'USER_GUIDE.FAQ.LANGUAGE.A' },
     { questionKey: 'USER_GUIDE.FAQ.OIL_SALE.Q', answerKey: 'USER_GUIDE.FAQ.OIL_SALE.A' },
+    { questionKey: 'USER_GUIDE.FAQ.RECEPTION_MASTER.Q', answerKey: 'USER_GUIDE.FAQ.RECEPTION_MASTER.A' },
+    { questionKey: 'USER_GUIDE.FAQ.DAY_IMPORT.Q', answerKey: 'USER_GUIDE.FAQ.DAY_IMPORT.A' },
     { questionKey: 'USER_GUIDE.FAQ.HR_PAYROLL.Q', answerKey: 'USER_GUIDE.FAQ.HR_PAYROLL.A' },
     { questionKey: 'USER_GUIDE.FAQ.HR_LEAVE.Q', answerKey: 'USER_GUIDE.FAQ.HR_LEAVE.A' }
   ];
@@ -207,15 +286,35 @@ export class HelpComponent implements OnInit {
     return this.receptionTypes;
   }
 
+  get visibleReceptionGuideLinks(): HelpHrGuideLink[] {
+    if (this.millPlanningEnabled) {
+      return this.receptionGuideLinks;
+    }
+    return this.receptionGuideLinks.filter((link) => link.route !== '/reception/mill-schedules');
+  }
+
   ngOnInit(): void {
     this.navItems = [...this.baseNavItems];
+    const modulesIndex = this.navItems.findIndex((item) => item.id === 'help-modules');
+    let insertAt = modulesIndex + 1;
+    if (this.canAccessReception()) {
+      this.navItems.splice(insertAt, 0, { id: 'help-reception', labelKey: 'USER_GUIDE.RECEPTION.NAV' });
+      insertAt += 1;
+      this.navItems.splice(insertAt, 0, { id: 'help-day-import', labelKey: 'USER_GUIDE.DAY_IMPORT.NAV' });
+      insertAt += 1;
+    }
     if (this.canAccessHr()) {
-      const modulesIndex = this.navItems.findIndex((item) => item.id === 'help-modules');
-      this.navItems.splice(modulesIndex + 1, 0, { id: 'help-hr', labelKey: 'USER_GUIDE.HR.NAV' });
+      this.navItems.splice(insertAt, 0, { id: 'help-hr', labelKey: 'USER_GUIDE.HR.NAV' });
     }
     this.modules = this.buildVisibleModules();
     this.moduleTasks = this.buildModuleTasks();
     this.commonTasks = this.buildCommonTasks();
+    this.millPlanningConfig
+      .isEnabled()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((enabled) => {
+        this.millPlanningEnabled = enabled;
+      });
     this.loadTickets();
   }
 
@@ -284,7 +383,7 @@ export class HelpComponent implements OnInit {
     );
   }
 
-  private canAccessReception(): boolean {
+  canAccessReception(): boolean {
     return (
       this.auth.hasModule(OOSMModule.RECEPTION) &&
       this.auth.hasPermission(permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ))
@@ -440,6 +539,15 @@ export class HelpComponent implements OnInit {
         hintKey: 'USER_GUIDE.TASKS.NEW_OLIVE_HINT',
         route: '/reception/reception-olive/simple_reception',
         icon: 'add_circle',
+        visible:
+          this.auth.hasModule(OOSMModule.RECEPTION) &&
+          this.auth.hasPermission(permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE))
+      },
+      {
+        labelKey: 'USER_GUIDE.TASKS.DAY_IMPORT',
+        hintKey: 'USER_GUIDE.TASKS.DAY_IMPORT_HINT',
+        route: '/reception/import',
+        icon: 'upload_file',
         visible:
           this.auth.hasModule(OOSMModule.RECEPTION) &&
           this.auth.hasPermission(permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE))

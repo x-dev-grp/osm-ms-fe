@@ -89,6 +89,23 @@
 
 
       <div class="action-group">
+        <div class="qr-actions">
+  <button *ngIf="hasCompleteQrMetadata()" mat-stroked-button type="button"
+          [matTooltip]="'QR.TITLE' | translate" (click)="openExistingQrDialog()">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ 'AUTO.QR' | translate }}
+  </button>
+  <button mat-stroked-button color="primary" type="button" [disabled]="generatingQr || (hasQrCode() && !canRegenerateExistingQr())"
+          [matTooltip]="'QR.GENERATE' | translate" (click)="generateQr()">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ generatingQr ? '...' : ('QR.GENERATE' | translate) }}
+  </button>
+</div>
+      </div>
+
+
+
+      <div class="action-group">
 
         <span class="action-group-label">{{ 'OIL_SALES.ACTIONS.DOCUMENTS' | translate }}</span>
 

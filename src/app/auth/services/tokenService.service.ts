@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 
+/**
+ * Token + “remember me” storage.
+ *
+ * - Remember me ON  → tokens in localStorage (stay signed in) + save username for next visit
+ * - Remember me OFF → tokens in sessionStorage only; clear saved username
+ * - Logout           → clear tokens/session flags but keep saved username
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -11,16 +18,22 @@ export class TokenService {
   private static readonly PERSISTENT_REFRESH_KEY = 'auth_refresh_token_remember';
   private static readonly REMEMBER_ME_KEY = 'rememberMe';
   private static readonly REMEMBER_ME_EXPIRY_KEY = 'rememberMeExpiry';
-  private static readonly REMEMBERED_USERNAME_KEY = 'rememberedUsername';
-  private static readonly REMEMBER_ME_TTL_MS = 24 * 60 * 60 * 1000;
+  /** Survives logout; cleared only when user signs in with remember-me off. */
+  private static readonly SAVED_USERNAME_KEY = 'savedUsername';
+  /** Legacy key — migrated on read. */
+  private static readonly LEGACY_REMEMBERED_USERNAME_KEY = 'rememberedUsername';
+  private static readonly REMEMBER_ME_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
   persistLogin(accessToken: string, refreshToken: string, rememberMe: boolean, username?: string): void {
+    const trimmed = username?.trim();
+
     if (rememberMe) {
       const expiryDate = new Date(Date.now() + TokenService.REMEMBER_ME_TTL_MS);
       localStorage.setItem(TokenService.REMEMBER_ME_KEY, 'true');
       localStorage.setItem(TokenService.REMEMBER_ME_EXPIRY_KEY, expiryDate.toISOString());
-      if (username) {
-        localStorage.setItem(TokenService.REMEMBERED_USERNAME_KEY, username);
+      if (trimmed) {
+        localStorage.setItem(TokenService.SAVED_USERNAME_KEY, trimmed);
+        localStorage.removeItem(TokenService.LEGACY_REMEMBERED_USERNAME_KEY);
       }
       localStorage.setItem(TokenService.PERSISTENT_ACCESS_KEY, accessToken);
       localStorage.setItem(TokenService.PERSISTENT_REFRESH_KEY, refreshToken);
@@ -29,7 +42,8 @@ export class TokenService {
       return;
     }
 
-    this.clearRememberMe();
+    this.clearRememberMeSession();
+    this.clearSavedUsername();
     sessionStorage.setItem(TokenService.SESSION_ACCESS_KEY, accessToken);
     sessionStorage.setItem(TokenService.SESSION_REFRESH_KEY, refreshToken);
   }
@@ -47,16 +61,24 @@ export class TokenService {
     return Date.now() >= exp * 1000 - leewaySeconds * 1000;
   }
 
+  /** Username to prefill on the login form (independent of active session). */
   getRememberedUsername(): string | null {
-    if (!this.isRememberMeValid()) {
-      return null;
+    const saved = localStorage.getItem(TokenService.SAVED_USERNAME_KEY);
+    if (saved) {
+      return saved;
     }
-    return localStorage.getItem(TokenService.REMEMBERED_USERNAME_KEY);
+    const legacy = localStorage.getItem(TokenService.LEGACY_REMEMBERED_USERNAME_KEY);
+    if (legacy) {
+      localStorage.setItem(TokenService.SAVED_USERNAME_KEY, legacy);
+      localStorage.removeItem(TokenService.LEGACY_REMEMBERED_USERNAME_KEY);
+      return legacy;
+    }
+    return null;
   }
 
   purgeExpiredRememberMe(): void {
     if (localStorage.getItem(TokenService.REMEMBER_ME_KEY) === 'true' && !this.isRememberMeValid()) {
-      this.clearRememberMe();
+      this.clearRememberMeSession();
     }
   }
 
@@ -90,10 +112,11 @@ export class TokenService {
     return sessionStorage.getItem(TokenService.SESSION_REFRESH_KEY);
   }
 
+  /** Clears auth tokens / session remember flags. Keeps saved username for next login. */
   clearTokens(): void {
     sessionStorage.removeItem(TokenService.SESSION_ACCESS_KEY);
     sessionStorage.removeItem(TokenService.SESSION_REFRESH_KEY);
-    this.clearRememberMe();
+    this.clearRememberMeSession();
   }
 
   decodeToken(): Record<string, unknown> | null {
@@ -122,11 +145,15 @@ export class TokenService {
     return new Date(expiry) > new Date();
   }
 
-  private clearRememberMe(): void {
+  private clearRememberMeSession(): void {
     localStorage.removeItem(TokenService.REMEMBER_ME_KEY);
     localStorage.removeItem(TokenService.REMEMBER_ME_EXPIRY_KEY);
-    localStorage.removeItem(TokenService.REMEMBERED_USERNAME_KEY);
     localStorage.removeItem(TokenService.PERSISTENT_ACCESS_KEY);
     localStorage.removeItem(TokenService.PERSISTENT_REFRESH_KEY);
+  }
+
+  private clearSavedUsername(): void {
+    localStorage.removeItem(TokenService.SAVED_USERNAME_KEY);
+    localStorage.removeItem(TokenService.LEGACY_REMEMBERED_USERNAME_KEY);
   }
 }

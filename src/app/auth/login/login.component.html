@@ -1,58 +1,96 @@
-<div class="auth-main">
-  <div class="auth-wrapper">
-    <div class="auth-side-content">
-      <img src="assets/huile-d-olive.jpg" alt="Olive farm" class="img-auth-side" />
-    </div>
-    <div class="auth-form">
-      <mat-card class="auth-form-card">
-        <div class="logo-container">
-          <a href="#" class="logo-oosm">
-            <img [src]="appLogoFull" alt="ZitFlow — Olive Oil Management System" class="logo-banner" />
-          </a>
-          <span class="logo-divider" aria-hidden="true">|</span>
-          <a href="#">
-            <img src="assets/XDEV.svg" alt="Logo XDEV" class="logo" />
-          </a>
+<div class="auth-shell">
+  <div class="auth-shell__aurora" aria-hidden="true">
+    <span class="auth-shell__blob auth-shell__blob--a"></span>
+    <span class="auth-shell__blob auth-shell__blob--b"></span>
+    <span class="auth-shell__blob auth-shell__blob--c"></span>
+    <span class="auth-shell__blob auth-shell__blob--d"></span>
+  </div>
+  <div class="auth-shell__glow" aria-hidden="true"></div>
+
+  <div class="auth-shell__topbar">
+    <app-auth-lang-switcher />
+  </div>
+
+  <div class="auth-shell__panel">
+    <aside class="auth-visual">
+      <img src="assets/huile-d-olive.jpg" alt="" class="auth-visual__image" />
+      <div class="auth-visual__overlay">
+        <p class="auth-visual__eyebrow">{{ 'BRANDING.SLOGAN' | translate }}</p>
+        <h1 class="auth-visual__title">{{ 'LOGIN.VISUAL_TITLE' | translate }}</h1>
+        <p class="auth-visual__subtitle">{{ 'LOGIN.VISUAL_SUBTITLE' | translate }}</p>
+      </div>
+    </aside>
+
+    <main class="auth-panel">
+      <div class="auth-panel__card">
+        <header class="auth-brand">
+          <img [src]="appLogoFull" alt="ZitFlow" class="auth-brand__logo" />
+          <span class="auth-brand__divider" aria-hidden="true"></span>
+          <img src="assets/XDEV.svg" alt="XDEV" class="auth-brand__partner" />
+        </header>
+
+        <div class="auth-panel__heading">
+          <h2>{{ 'LOGIN.TITLE' | translate }}</h2>
+          <p>{{ 'LOGIN.SUBTITLE' | translate }}</p>
         </div>
-        <p class="auth-slogan">{{ 'BRANDING.SLOGAN' | translate }}</p>
-        <h2 class="text-center">{{ 'LOGIN.TITLE' | translate }}</h2>
-        <div *ngIf="errorMessage" class="mat-alert mat-error" role="alert">{{ errorMessage?.message }}</div>
-        <form [formGroup]="form" class="form-container">
-          <div class="form-group">
-            <label for="username" class="form-label">{{ 'LOGIN.IDENTIFIER' | translate }}</label>
-            <mat-form-field appearance="outline" class="w-full">
+
+        <div *ngIf="errorText" class="auth-alert auth-alert--error" role="alert">{{ errorText }}</div>
+
+        <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()">
+          <label class="auth-input" [class.auth-input--invalid]="form.controls['username'].touched && form.controls['username'].invalid">
+            <span class="auth-input__label">{{ 'LOGIN.IDENTIFIER' | translate }}</span>
+            <span class="auth-input__control">
+              <mat-icon class="auth-input__icon" aria-hidden="true">person_outline</mat-icon>
               <input
-                matInput
                 formControlName="username"
                 id="username"
                 autocomplete="username"
                 [placeholder]="'LOGIN.IDENTIFIER_PLACEHOLDER' | translate"
               />
-              <mat-error *ngIf="form.controls['username'].invalid">{{ getUserNameErrorMessage() }}</mat-error>
-            </mat-form-field>
-          </div>
-          <div class="form-group">
-            <label for="password" class="form-label">{{ 'LOGIN.PASSWORD' | translate }}</label>
-            <mat-form-field appearance="outline" class="w-full">
-              <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" id="password" />
-              <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Basculer la visibilité du mot de passe'" [attr.aria-pressed]="hide">
+            </span>
+            <span class="auth-input__error" *ngIf="form.controls['username'].touched && form.controls['username'].invalid">
+              {{ getUserNameErrorMessage() }}
+            </span>
+          </label>
+
+          <label class="auth-input" [class.auth-input--invalid]="form.controls['password'].touched && form.controls['password'].invalid">
+            <span class="auth-input__label">{{ 'LOGIN.PASSWORD' | translate }}</span>
+            <span class="auth-input__control">
+              <mat-icon class="auth-input__icon" aria-hidden="true">lock_outline</mat-icon>
+              <input
+                formControlName="password"
+                [type]="hide ? 'password' : 'text'"
+                id="password"
+                autocomplete="current-password"
+              />
+              <button
+                type="button"
+                class="auth-input__toggle"
+                (click)="hide = !hide"
+                [attr.aria-label]="'LOGIN.TOGGLE_PASSWORD' | translate"
+                [attr.aria-pressed]="!hide"
+              >
                 <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
-              <mat-error *ngIf="form.controls['password'].invalid">{{ getPasswordErrorMessage() }}</mat-error>
-            </mat-form-field>
+            </span>
+            <span class="auth-input__error" *ngIf="form.controls['password'].touched && form.controls['password'].invalid">
+              {{ getPasswordErrorMessage() }}
+            </span>
+          </label>
+
+          <div class="auth-form__row">
+            <mat-checkbox formControlName="rememberMe" color="primary" class="auth-remember">
+              {{ 'LOGIN.REMEMBERME' | translate }}
+            </mat-checkbox>
+            <a routerLink="/auth/forgot-password" class="auth-link">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
           </div>
-          <div class="form-options">
-            <mat-checkbox formControlName="rememberMe" color="primary">{{ 'LOGIN.REMEMBERME' | translate }}</mat-checkbox>
-            <a [routerLink]="['/auth/forgot-password']" class="forgot-password">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
-          </div>
-          <div class="button-container">
-            <button [disabled]="loading || form.invalid" (click)="submit()" mat-flat-button color="primary" class="login-button">
-              <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
-              <span *ngIf="!loading">{{ 'Login' | translate }}</span>
-            </button>
-          </div>
+
+          <button type="submit" mat-flat-button color="primary" class="auth-submit" [disabled]="loading || form.invalid">
+            <mat-spinner *ngIf="loading" diameter="22"></mat-spinner>
+            <span *ngIf="!loading">{{ 'Login' | translate }}</span>
+          </button>
         </form>
-      </mat-card>
-    </div>
+      </div>
+    </main>
   </div>
 </div>

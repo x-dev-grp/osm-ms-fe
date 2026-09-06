@@ -7,19 +7,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
 import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnement.model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { openQrDialog } from '../../../../shared/utils/open-qr-dialog.util';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
+import { AuthenticationService } from '../../../../auth/services/authentication.service';
+import { OOSMModule, InventoryEntity } from '../../../../theme/types/permissions';
+import { canRegenerateQr } from '../../../../shared/utils/qr-permission.util';
 
 @Component({
   selector: 'app-ligne-detail',
   standalone: true,
   imports: [
+    MatDialogModule,
     TranslateModule,
     CommonModule,
     RouterLink,
@@ -28,8 +32,7 @@ import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/
     MatCardModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    MatDialogModule
-  ],
+      ],
   templateUrl: './ligne-detail.component.html',
   styleUrls: ['./ligne-detail.component.scss']
 })
@@ -41,11 +44,14 @@ export class LigneDetailComponent implements OnInit {
   error = signal<string | null>(null);
 
   constructor(
+    private auth: AuthenticationService,
+    
+    private dialog: MatDialog,
+    
     private route: ActivatedRoute,
     private router: Router,
     private ligneService: LigneConditionnementService,
     private toast: ToastService,
-    private dialog: MatDialog,
     private confirmationDialog: ConfirmationDialogService
   ) {}
 
@@ -120,23 +126,29 @@ export class LigneDetailComponent implements OnInit {
     return !!this.getQrCodeText() && !!this.ligne()?.qrImageBase64?.trim();
   }
 
-  openExistingQrDialog(): void {
-    const current = this.ligne();
-    if (!this.hasCompleteQrMetadata() || !current) return;
 
-    this.dialog.open(QrDialogComponent, {
-      width: '400px',
-      data: {
-        qrText: this.getQrCodeText(),
-        qrImageBase64: current.qrImageBase64 || '',
-        encrypted: true,
-        payloadType: 'LIGNECONDITIONNEMENT',
-        payloadMode: 'PUBLIC_CODE'
-      }
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.ligne()) {
+      return;
+    }
+    openQrDialog(this.dialog, {
+      code: this.getQrCodeText(),
+      qrImageBase64: this.ligne()?.qrImageBase64 || '',
+      payloadType: 'LIGNECONDITIONNEMENT'
     });
   }
 
+
+  canRegenerateExistingQr(): boolean {
+    return canRegenerateQr(this.auth, OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT);
+  }
+
   generateQr(): void {
+    if (this.hasQrCode() && !this.canRegenerateExistingQr()) {
+      this.toast.error('QR.ERROR.NO_REGENERATE_PERMISSION');
+      return;
+    }
     const current = this.ligne();
     if (this.generatingQr() || !current?.id) return;
 
@@ -153,15 +165,10 @@ export class LigneDetailComponent implements OnInit {
             qrUrl: response.qrUrl,
             qrImageBase64: response.qrImageBase64
           });
-          this.dialog.open(QrDialogComponent, {
-            width: '400px',
-            data: {
-              qrText: response.publicCode,
-              qrImageBase64: response.qrImageBase64,
-              encrypted: true,
-              payloadType: 'LIGNECONDITIONNEMENT',
-              payloadMode: 'PUBLIC_CODE'
-            }
+          openQrDialog(this.dialog, {
+            code: response.publicCode,
+            qrImageBase64: response.qrImageBase64,
+            payloadType: 'LIGNECONDITIONNEMENT'
           });
         },
         error: () => {

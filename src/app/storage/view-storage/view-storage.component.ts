@@ -15,15 +15,19 @@ import { SearchOperation } from '../../shared/models/advanced-search/searchOpera
 import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
 import { OilTransaction } from '../../shared/models/OilTransaction';
 import { ToastService } from '../../shared/services/toast.service';
-import { MatDialog } from '@angular/material/dialog';
-import { QrDialogComponent } from '../../shared/components/qr-dialog/qr-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { openQrDialog } from '../../shared/utils/open-qr-dialog.util';
 import { ConfirmationDialogService, ConfirmationType } from '../../shared/services/confirmation-dialog.service';
 import { take } from 'rxjs/operators';
+import { AuthenticationService } from '../../auth/services/authentication.service';
+import { OOSMModule, ProductionEntity } from '../../theme/types/permissions';
+import { canRegenerateQr } from '../../shared/utils/qr-permission.util';
 
 @Component({
   selector: 'app-view-storage',
   standalone: true,
   imports: [
+    MatDialogModule,
     CommonModule,
     MatButtonModule,
     TranslateModule,
@@ -46,11 +50,14 @@ export class ViewStorageComponent implements OnInit {
   private storageUnitId: string | null;
 
   constructor(
+    private auth: AuthenticationService,
+    
+    private dialog: MatDialog,
+    
     private storageService: StorageUnitDtoService,
     private route: ActivatedRoute,
     private router: Router,
     private toastService: ToastService,
-    private dialog: MatDialog,
     private confirmationDialog: ConfirmationDialogService
   ) {}
 
@@ -130,20 +137,6 @@ export class ViewStorageComponent implements OnInit {
     return !!this.getQrCodeText() && !!this.getQrImageSrc();
   }
 
-  openExistingQrDialog(): void {
-    if (!this.hasCompleteQrMetadata()) return;
-
-    this.dialog.open(QrDialogComponent, {
-      width: '400px',
-      data: {
-        qrText: this.getQrCodeText(),
-        qrImageBase64: this.storageUnit?.qrImageBase64 || '',
-        encrypted: true,
-        payloadType: 'STORAGEUNIT',
-        payloadMode: 'PUBLIC_CODE'
-      }
-    });
-  }
 
   getQrImageSrc(): string {
     const value = this.storageUnit?.qrImageBase64?.trim();
@@ -186,7 +179,28 @@ export class ViewStorageComponent implements OnInit {
     });
   }
 
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.storageUnit) {
+      return;
+    }
+    openQrDialog(this.dialog, {
+      code: this.getQrCodeText(),
+      qrImageBase64: this.storageUnit.qrImageBase64 || '',
+      payloadType: 'STORAGEUNIT'
+    });
+  }
+
+
+  canRegenerateExistingQr(): boolean {
+    return canRegenerateQr(this.auth, OOSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT);
+  }
+
   generateQr(encrypted: boolean = true): void {
+    if (this.hasQrCode() && !this.canRegenerateExistingQr()) {
+      this.toastService.error('QR.ERROR.NO_REGENERATE_PERMISSION');
+      return;
+    }
     if (!this.storageUnitId) return;
     this.confirmQrRegeneration((confirmed) => {
       if (!confirmed) return;
@@ -210,18 +224,12 @@ export class ViewStorageComponent implements OnInit {
             qrUrl: response.qrUrl,
             qrImageBase64: response.qrImageBase64
           };
-        }
-
-        this.dialog.open(QrDialogComponent, {
-          width: '400px',
-          data: {
-            qrText: response.publicCode,
+          openQrDialog(this.dialog, {
+            code: response.publicCode,
             qrImageBase64: response.qrImageBase64,
-            encrypted: encrypted,
-            payloadType: 'STORAGEUNIT',
-            payloadMode: 'PUBLIC_CODE'
-          }
-        });
+            payloadType: 'STORAGEUNIT'
+          });
+        }
       },
       error: (error) => {
         this.generatingQr = false;

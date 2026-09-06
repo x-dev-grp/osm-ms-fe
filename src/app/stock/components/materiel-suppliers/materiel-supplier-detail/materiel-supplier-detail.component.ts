@@ -3,25 +3,30 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { take } from 'rxjs/operators';
 import { MaterielSupplierService } from '../../../services/materiel-supplier.service';
 import { MaterielSupplier, MaterielSupplierCategory, materielSupplierCategoryLabels } from '../../../models/materiel-supplier.model';
-import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { openQrDialog } from '../../../../shared/utils/open-qr-dialog.util';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { AuthenticationService } from '../../../../auth/services/authentication.service';
+import { OOSMModule, InventoryEntity } from '../../../../theme/types/permissions';
+import { canRegenerateQr } from '../../../../shared/utils/qr-permission.util';
 
 @Component({
   selector: 'app-materiel-supplier-detail',
   standalone: true,
-  imports: [TranslateModule, CommonModule, RouterLink, MatButtonModule, MatDialogModule, MatIconModule, MatTooltipModule],
+  imports: [
+    MatDialogModule,TranslateModule, CommonModule, RouterLink, MatButtonModule, MatIconModule, MatTooltipModule],
   templateUrl: './materiel-supplier-detail.component.html',
   styleUrls: ['./materiel-supplier-detail.component.scss']
 })
 export class MaterielSupplierDetailComponent implements OnInit {
   private readonly i18n = inject(TranslateService);
+  private readonly auth = inject(AuthenticationService);
   private readonly confirmationDialog = inject(ConfirmationDialogService);
   private readonly toastService = inject(ToastService);
 
@@ -32,10 +37,11 @@ export class MaterielSupplierDetailComponent implements OnInit {
   activeTab: 'info' | 'contact' | 'commercial' | 'finance' | 'category' = 'info';
 
   constructor(
+    private dialog: MatDialog,
+    
     private route: ActivatedRoute,
     private router: Router,
-    private materielSupplierService: MaterielSupplierService,
-    private dialog: MatDialog
+    private materielSupplierService: MaterielSupplierService
   ) {}
 
   ngOnInit(): void {
@@ -75,21 +81,29 @@ export class MaterielSupplierDetailComponent implements OnInit {
     return !!this.getQrCodeText() && !!this.supplier?.qrImageBase64?.trim();
   }
 
+
+
   openExistingQrDialog(): void {
-    if (!this.hasCompleteQrMetadata() || !this.supplier) return;
-    this.dialog.open(QrDialogComponent, {
-      width: '400px',
-      data: {
-        qrText: this.getQrCodeText(),
-        qrImageBase64: this.supplier.qrImageBase64 || '',
-        encrypted: true,
-        payloadType: 'MATERIEL_SUPPLIER',
-        payloadMode: 'PUBLIC_CODE'
-      }
+    if (!this.hasCompleteQrMetadata() || !this.supplier) {
+      return;
+    }
+    openQrDialog(this.dialog, {
+      code: this.getQrCodeText(),
+      qrImageBase64: this.supplier.qrImageBase64 || '',
+      payloadType: 'MATERIELSUPPLIER'
     });
   }
 
+
+  canRegenerateExistingQr(): boolean {
+    return canRegenerateQr(this.auth, OOSMModule.INVENTAIR, InventoryEntity.MATERIEL_SUPPLIER);
+  }
+
   generateQr(): void {
+    if (this.hasQrCode() && !this.canRegenerateExistingQr()) {
+      this.toastService.error('QR.ERROR.NO_REGENERATE_PERMISSION');
+      return;
+    }
     if (this.generatingQr || !this.supplier?.id) return;
     this.confirmQrRegeneration((confirmed) => {
       if (!confirmed) return;
@@ -104,15 +118,10 @@ export class MaterielSupplierDetailComponent implements OnInit {
             qrUrl: response.qrUrl,
             qrImageBase64: response.qrImageBase64
           };
-          this.dialog.open(QrDialogComponent, {
-            width: '400px',
-            data: {
-              qrText: response.publicCode,
-              qrImageBase64: response.qrImageBase64,
-              encrypted: true,
-              payloadType: 'MATERIEL_SUPPLIER',
-              payloadMode: 'PUBLIC_CODE'
-            }
+          openQrDialog(this.dialog, {
+            code: response.publicCode,
+            qrImageBase64: response.qrImageBase64,
+            payloadType: 'MATERIELSUPPLIER'
           });
         },
         error: () => {

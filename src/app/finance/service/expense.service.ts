@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Expense } from '../models/expense.model';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../shared/models/api-response';
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 
 @Injectable({ providedIn: 'root' })
 export class ExpenseService {
@@ -26,4 +27,13 @@ export class ExpenseService {
   updateExpense(expense: Expense): Observable<ApiResponse<Expense>> {
     return this.http.put<ApiResponse<Expense>>(`${this.baseUrl}`, expense);
   }
+
+  generateQr(expenseId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.baseUrl}/qr/EXPENSE/${expenseId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.baseUrl}/search/by-code`, { params: { code } });
+  }
+
 }

@@ -157,6 +157,7 @@ export enum Action {
   LIBERER_STOCK = 'LIBERER_STOCK',
   CHECK_STOCK = 'CHECK_STOCK',
   TRANSFERER_STOCK = 'TRANSFERER_STOCK',
+  REGENERATE_QR = 'REGENERATE_QR',
 }
 
 export function permissionKey(moduleName: OOSMModule, entity: string, action: Action): string {

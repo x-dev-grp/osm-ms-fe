@@ -116,6 +116,17 @@
       </div>
 
       <div class="input-content">
+        @if (shouldShowMillPicker) {
+          <mat-form-field appearance="outline" class="form-field dense-field">
+            <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.MILL_LABEL' | translate }}</mat-label>
+            <mat-select [(ngModel)]="selectedMillId" required>
+              @for (mill of mills; track mill.id) {
+                <mat-option [value]="mill.id">{{ mill.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+
         <div class="form-row form-row--split">
           <mat-form-field appearance="outline" class="form-field dense-field">
             <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.OIL_QUANTITY_LABEL' | translate }}</mat-label>
@@ -197,7 +208,7 @@
   </button>
   <button
     (click)="onConfirm()"
-    [disabled]="inputOilQuantity == null || inputOilQuantity < 0 || !isDurationValid()"
+    [disabled]="inputOilQuantity == null || inputOilQuantity < 0 || !isDurationValid() || (shouldShowMillPicker && !selectedMillId)"
     cdkFocusInitial
     color="primary"
     mat-raised-button

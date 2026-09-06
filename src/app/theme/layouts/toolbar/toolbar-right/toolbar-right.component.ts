@@ -24,6 +24,7 @@ import { UserNotification } from '../../../../shared/models/notification.model';
 import { NotificationTextPipe } from '../../../../shared/pipes/notification-text.pipe';
 import { SupportTicketService } from '../../../../shared/services/support-ticket.service';
 import { SystemHealthComponent } from '../../../../shared/components/system-health/system-health.component';
+import { ThemeConfig, ThemeConfigService } from '../../../../shared/services/theme-config.service';
 
 @Component({
   selector: 'app-nav-right',
@@ -53,12 +54,25 @@ export class NavRightComponent {
   private readonly notificationService = inject(NotificationService);
   readonly notificationTextService = inject(NotificationTextService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly themeConfig = inject(ThemeConfigService);
 
   readonly unreadCount = this.notificationService.unreadCount;
   readonly notifications = this.notificationService.notifications;
 
+  themeMode: ThemeConfig['layoutType'] = 'light';
+
   get currentLang(): string {
     return this.translate.currentLang || localStorage.getItem('app_language') || 'en';
+  }
+
+  get themeModeIcon(): string {
+    if (this.themeMode === 'dark') {
+      return 'dark_mode';
+    }
+    if (this.themeMode === 'auto') {
+      return 'brightness_auto';
+    }
+    return 'light_mode';
   }
 
   direction: string = 'ltr';
@@ -72,6 +86,7 @@ export class NavRightComponent {
   private globalSearchService = inject(GlobalSearchService);
 
   constructor() {
+    this.themeMode = this.themeConfig.loadConfig().layoutType;
     effect(() => {
       this.isRtlTheme(this.themeService.directionChange());
     });
@@ -95,6 +110,13 @@ export class NavRightComponent {
 
   useLanguage(language: string) {
     this.languageService.applyLanguage(language);
+  }
+
+  setThemeMode(mode: ThemeConfig['layoutType']): void {
+    const next: ThemeConfig = { ...this.themeConfig.loadConfig(), layoutType: mode };
+    this.themeConfig.saveConfig(next);
+    this.themeConfig.applyConfig(next);
+    this.themeMode = mode;
   }
 
   logout() {

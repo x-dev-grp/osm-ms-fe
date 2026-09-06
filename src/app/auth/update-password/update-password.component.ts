@@ -11,13 +11,14 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
 import { MatDialog } from '@angular/material/dialog';
 import { TokenService } from '../services/tokenService.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthLangSwitcherComponent } from '../auth-lang-switcher.component';
 
 @Component({
   selector: 'app-update-password',
   templateUrl: './update-password.component.html',
   styleUrls: ['../authentication.scss'],
   standalone: true,
-  imports: [TranslateModule, CommonModule, SharedModule, RouterModule]
+  imports: [TranslateModule, CommonModule, SharedModule, RouterModule, AuthLangSwitcherComponent]
 })
 export class UpdatePasswordComponent implements OnInit {
   @ViewChild('changePwdTpl') changePwdTpl: TemplateRef<unknown>;

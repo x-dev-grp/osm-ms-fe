@@ -6,6 +6,8 @@ import { QualityControlResultDto } from './QualityControlResultDto';
 import { OperationType } from './operation-type.enum';
 import { Olive_Oil_Type } from './olive-type.enum';
 
+import { MillMachine } from './millMachine';
+
 export class UnifiedDelivery {
   id!: string;
   deliveryNumber!: string;
@@ -42,6 +44,7 @@ export class UnifiedDelivery {
   hasQualityControl?: boolean;
   categoryOliveOil?: string;
   lotOliveNumber?: string | null;
+  millMachine?: MillMachine | null;
 
   publicCode?: string | null;
   qrHex?: string | null;

@@ -27,6 +27,12 @@
       </article>
 
       <article class="finance-kpi">
+        <span class="finance-kpi__label">{{ 'MENU.FINANCE.DASHBOARD.KPIS.COLLECTED_REVENUE' | translate }}</span>
+        <strong class="finance-kpi__value text-success">{{ formatAmount(kpis.collectedRevenue) }}</strong>
+        <span class="finance-kpi__hint">{{ 'MENU.FINANCE.DASHBOARD.KPIS.COLLECTED_REVENUE_HINT' | translate }}</span>
+      </article>
+
+      <article class="finance-kpi">
         <span class="finance-kpi__label">{{ 'MENU.FINANCE.DASHBOARD.CHART_LABELS.REVENUE' | translate }}</span>
         <strong class="finance-kpi__value text-success">{{ formatAmount(kpis.cashIn) }}</strong>
         <span class="finance-kpi__hint">{{ 'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_TRANSACTIONS' | translate }}: {{ kpis.transactionCount }}</span>

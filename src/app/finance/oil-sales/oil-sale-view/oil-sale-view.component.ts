@@ -30,8 +30,14 @@ import { OilSaleActionsService } from '../../service/oil-sale-actions.service';
 
 import { ConfirmationDialogService, ConfirmationType } from '../../../shared/services/confirmation-dialog.service';
 
-import { filter, switchMap } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs';
 import { buildTransactionsQueryParams } from '../../utils/finance-resource-links.util';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { openQrDialog } from '../../../shared/utils/open-qr-dialog.util';
+import { TranslateService } from '@ngx-translate/core';
+import { AuthenticationService } from '../../../auth/services/authentication.service';
+import { OOSMModule, FinanceEntity } from '../../../theme/types/permissions';
+import { canRegenerateQr } from '../../../shared/utils/qr-permission.util';
 
 @Component({
   selector: 'app-oil-sale-view',
@@ -43,6 +49,7 @@ import { buildTransactionsQueryParams } from '../../utils/finance-resource-links
   styleUrls: ['./oil-sale-view.component.scss'],
 
   imports: [
+    MatDialogModule,
     CommonModule,
 
     MatButtonModule,
@@ -57,8 +64,9 @@ import { buildTransactionsQueryParams } from '../../utils/finance-resource-links
 
     TranslateModule,
 
-    CardComponent
-  ]
+    CardComponent,
+
+      ]
 })
 export class OilSaleViewComponent implements OnInit {
   oilSale?: OilSale;
@@ -67,7 +75,13 @@ export class OilSaleViewComponent implements OnInit {
 
   oilSaleId?: string;
 
+  generatingQr = false;
+
   constructor(
+    private auth: AuthenticationService,
+    
+    private dialog: MatDialog,
+    
     private oilSaleService: OilSaleService,
 
     private oilSaleActions: OilSaleActionsService,
@@ -80,7 +94,9 @@ export class OilSaleViewComponent implements OnInit {
 
     private documentGenerationService: DocumentGenerationService,
 
-    private confirmationDialog: ConfirmationDialogService
+    private confirmationDialog: ConfirmationDialogService,
+
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -325,6 +341,98 @@ export class OilSaleViewComponent implements OnInit {
       return;
     }
     this.router.navigate(['/storage', storageUnitId, 'view']);
+  }
+
+
+  getQrCodeText(): string {
+    return this.oilSale?.publicCode?.trim() || this.oilSale?.qrHex?.trim() || '';
+  }
+
+  hasQrCode(): boolean {
+    return !!this.getQrCodeText();
+  }
+
+  hasCompleteQrMetadata(): boolean {
+    return !!this.getQrCodeText() && !!this.oilSale?.qrImageBase64?.trim();
+  }
+
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.oilSale) {
+      return;
+    }
+    openQrDialog(this.dialog, {
+      code: this.getQrCodeText(),
+      qrImageBase64: this.oilSale.qrImageBase64 || '',
+      payloadType: 'OILSALE'
+    });
+  }
+
+
+  canRegenerateExistingQr(): boolean {
+    return canRegenerateQr(this.auth, OOSMModule.FINANCE, FinanceEntity.OILSALE);
+  }
+
+  generateQr(): void {
+    if (this.hasQrCode() && !this.canRegenerateExistingQr()) {
+      this.toast.error('QR.ERROR.NO_REGENERATE_PERMISSION');
+      return;
+    }
+    if (this.generatingQr || !this.oilSale?.id) {
+      return;
+    }
+
+    this.confirmQrRegeneration((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+
+      this.generatingQr = true;
+      this.oilSaleService.generateQr(this.oilSale!.id!).subscribe({
+        next: (response) => {
+          this.generatingQr = false;
+          this.oilSale = {
+            ...this.oilSale!,
+            publicCode: response.publicCode,
+            qrHex: response.publicCode,
+            qrUrl: response.qrUrl,
+            qrImageBase64: response.qrImageBase64
+          };
+          openQrDialog(this.dialog, {
+            code: response.publicCode,
+            qrImageBase64: response.qrImageBase64,
+            payloadType: 'OILSALE'
+          });
+        },
+        error: () => {
+          this.generatingQr = false;
+          this.toast.error('QR.ERROR.GENERATE');
+        }
+      });
+    });
+  }
+
+  private confirmQrRegeneration(onResolved: (confirmed: boolean) => void): void {
+    if (!this.hasQrCode()) {
+      onResolved(true);
+      return;
+    }
+
+    this.confirmationDialog
+      .confirm({
+        title: this.translate.instant('AUTO.REGENERATE_QR_CODE'),
+        message: this.translate.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
+        type: ConfirmationType.WARNING,
+        confirmText: this.translate.instant('AUTO.REGENERATE'),
+        cancelText: this.translate.instant('COMMON.CANCEL'),
+        showIcon: true,
+        destructive: true,
+        requiredText: this.translate.instant('AUTO.OKAY'),
+        requiredTextHint: this.translate.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+        requiredTextPlaceholder: this.translate.instant('AUTO.TYPE_OKAY')
+      })
+      .pipe(take(1))
+      .subscribe((result) => onResolved(!!result?.confirmed));
   }
 
   private loadOilSale(id: string): void {

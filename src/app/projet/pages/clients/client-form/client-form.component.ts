@@ -80,7 +80,7 @@ export class ClientFormComponent implements OnInit {
       error: (err) => {
         console.error('Erreur chargement client', err);
         this.error = 'Impossible de charger le client';
-        setTimeout(() => this.router.navigate(['/stock/clients']), 2000);
+        setTimeout(() => this.router.navigate(['/projets/clients']), 2000);
       }
     });
   }
@@ -114,7 +114,7 @@ export class ClientFormComponent implements OnInit {
         next: () => {
           this.successMessage = this.i18n.instant('CUSTOMERS.MESSAGES.UPDATE_SUCCESS');
           setTimeout(() => {
-            this.router.navigate(['/stock/clients', this.clientId]);
+            this.router.navigate(['/projets/clients/detail', this.clientId]);
           }, 1500);
         },
         error: (err) => {
@@ -128,7 +128,7 @@ export class ClientFormComponent implements OnInit {
         next: (created) => {
           this.successMessage = this.i18n.instant('CUSTOMERS.MESSAGES.SAVE_SUCCESS');
           setTimeout(() => {
-            this.router.navigate(['/stock/clients', created.id]);
+            this.router.navigate(['/projets/clients/detail', created.id]);
           }, 1500);
         },
         error: (err) => {
@@ -145,9 +145,9 @@ export class ClientFormComponent implements OnInit {
 
   onCancel(): void {
     if (this.isEditMode) {
-      this.router.navigate(['/stock/clients', this.clientId]);
+      this.router.navigate(['/projets/clients/detail', this.clientId]);
     } else {
-      this.router.navigate(['/stock/clients']);
+      this.router.navigate(['/projets/clients']);
     }
   }
 

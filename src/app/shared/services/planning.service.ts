@@ -47,7 +47,8 @@ export class PlanningService {
     autoSetStorage: boolean,
     triturationDurationInMinutes?: number | null,
     trtDate?: string | null,
-    finalObservation?: string | null
+    finalObservation?: string | null,
+    millMachineId?: string | null
   ): Observable<string> {
     const payload: Record<string, unknown> = {
       oilQuantity,
@@ -62,6 +63,9 @@ export class PlanningService {
     if (finalObservation?.trim()) {
       payload['finalObservation'] = finalObservation.trim();
     }
+    if (millMachineId) {
+      payload['millMachineId'] = millMachineId;
+    }
     return this.http.post(`${this.API_BASE_URL}/lots/${lotNumber}/completed`, payload, { responseType: 'text' });
   }
 
@@ -74,7 +78,8 @@ export class PlanningService {
     totalTriturationPrice: number | null,
     triturationDurationInMinutes?: number | null,
     trtDate?: string | null,
-    finalObservation?: string | null
+    finalObservation?: string | null,
+    millMachineId?: string | null
   ): Observable<string> {
     const payload: Record<string, unknown> = {
       childLots,
@@ -88,6 +93,9 @@ export class PlanningService {
     }
     if (finalObservation?.trim()) {
       payload['finalObservation'] = finalObservation.trim();
+    }
+    if (millMachineId) {
+      payload['millMachineId'] = millMachineId;
     }
     return this.http.post(
       `${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`,

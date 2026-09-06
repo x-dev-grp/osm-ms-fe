@@ -23,11 +23,20 @@ import {
 import { OilTransactionFormService } from '../../../shared/services/oil-transaction-form.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { openQrDialog } from '../../../shared/utils/open-qr-dialog.util';
+import { OilTransactionService } from '../../../shared/services/OilTransactionService';
+import { ConfirmationDialogService, ConfirmationType } from '../../../shared/services/confirmation-dialog.service';
+import { take } from 'rxjs';
+import { AuthenticationService } from '../../../auth/services/authentication.service';
+import { OOSMModule, ProductionEntity } from '../../../theme/types/permissions';
+import { canRegenerateQr } from '../../../shared/utils/qr-permission.util';
 
 @Component({
   selector: 'app-view-oil-transaction',
   standalone: true,
   imports: [
+    MatDialogModule,
     CommonModule,
     MatCardModule,
     MatButtonModule,
@@ -39,8 +48,8 @@ import { MatTooltip } from '@angular/material/tooltip';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatTooltip
-  ],
+    MatTooltip,
+      ],
   templateUrl: './view-oil-transaction.component.html',
   styleUrls: ['./view-oil-transaction.component.scss']
 })
@@ -60,18 +69,25 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
   // UI state
   showExchangeForm = false;
   submitting = false;
+  generatingQr = false;
 
   // Enum references for template
   TransactionType = TransactionType;
   TransactionState = TransactionState;
 
   constructor(
+    private auth: AuthenticationService,
+    
+    private dialog: MatDialog,
+    
     private route: ActivatedRoute,
     private router: Router,
     private viewService: OilTransactionViewService,
     private formService: OilTransactionFormService,
     private toast: ToastService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private oilTransactionService: OilTransactionService,
+    private confirmationDialog: ConfirmationDialogService
   ) {}
 
   ngOnInit(): void {
@@ -367,6 +383,102 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
   }
 
   // Getters for template
+
+
+  getQrCodeText(): string {
+    const tx = this.oilTransaction;
+    return tx?.publicCode?.trim() || tx?.qrHex?.trim() || '';
+  }
+
+  hasQrCode(): boolean {
+    return !!this.getQrCodeText();
+  }
+
+  hasCompleteQrMetadata(): boolean {
+    return !!this.getQrCodeText() && !!this.oilTransaction?.qrImageBase64?.trim();
+  }
+
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.oilTransaction) {
+      return;
+    }
+    openQrDialog(this.dialog, {
+      code: this.getQrCodeText(),
+      qrImageBase64: this.oilTransaction.qrImageBase64 || '',
+      payloadType: 'OILTRANSACTION'
+    });
+  }
+
+
+  canRegenerateExistingQr(): boolean {
+    return canRegenerateQr(this.auth, OOSMModule.PRODUCTION, ProductionEntity.OILTRANSACTION);
+  }
+
+  generateQr(): void {
+    if (this.hasQrCode() && !this.canRegenerateExistingQr()) {
+      this.toast.error('QR.ERROR.NO_REGENERATE_PERMISSION');
+      return;
+    }
+    const tx = this.oilTransaction;
+    if (this.generatingQr || !tx?.id) {
+      return;
+    }
+    this.confirmQrRegeneration((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+      this.generatingQr = true;
+      this.oilTransactionService.generateQr(tx.id).subscribe({
+        next: (response) => {
+          this.generatingQr = false;
+          if (this.viewData?.transaction) {
+            this.viewData = {
+              ...this.viewData,
+              transaction: {
+                ...this.viewData.transaction,
+                publicCode: response.publicCode,
+                qrHex: response.publicCode,
+                qrUrl: response.qrUrl,
+                qrImageBase64: response.qrImageBase64
+              }
+            };
+          }
+          openQrDialog(this.dialog, {
+            code: response.publicCode,
+            qrImageBase64: response.qrImageBase64,
+            payloadType: 'OILTRANSACTION'
+          });
+        },
+        error: () => {
+          this.generatingQr = false;
+          this.toast.error('QR.ERROR.GENERATE');
+        }
+      });
+    });
+  }
+
+  private confirmQrRegeneration(onResolved: (confirmed: boolean) => void): void {
+    if (!this.hasQrCode()) {
+      onResolved(true);
+      return;
+    }
+    this.confirmationDialog
+      .confirm({
+        title: this.translate.instant('AUTO.REGENERATE_QR_CODE'),
+        message: this.translate.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
+        type: ConfirmationType.WARNING,
+        confirmText: this.translate.instant('AUTO.REGENERATE'),
+        cancelText: this.translate.instant('COMMON.CANCEL'),
+        showIcon: true,
+        destructive: true,
+        requiredText: this.translate.instant('AUTO.OKAY'),
+        requiredTextHint: this.translate.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+        requiredTextPlaceholder: this.translate.instant('AUTO.TYPE_OKAY')
+      })
+      .pipe(take(1))
+      .subscribe((result) => onResolved(!!result?.confirmed));
+  }
 
   get oilTransaction(): OilTransaction | null {
     return this.viewData?.transaction || null;

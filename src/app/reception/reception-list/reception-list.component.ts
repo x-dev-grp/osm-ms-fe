@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { OosmDashboard } from '../../shared/modules/oosm-dashboard/oosm-dashboard';
@@ -14,6 +14,7 @@ import { OilReceptionActionsService } from '../oil-reception/oil-reception-actio
   templateUrl: './reception-list.component.html'
 })
 export class ReceptionListComponent implements OnInit {
+  @ViewChild('dashboard') dashboard?: OosmDashboard;
   dashboardConfig = LIST_RECEPTION_DASHBOARD;
   private listDeliveryType: 'OLIVE' | 'OIL' | null = null;
 
@@ -72,6 +73,8 @@ export class ReceptionListComponent implements OnInit {
       this.oilActions.handleAction(event.action, event.row);
       return;
     }
-    this.oliveActions.handleAction(event.action, event.row);
+    this.oliveActions.handleAction(event.action, event.row, {
+      onRefresh: () => this.dashboard?.refrechData()
+    });
   }
 }

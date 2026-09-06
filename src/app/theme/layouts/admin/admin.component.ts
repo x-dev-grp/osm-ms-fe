@@ -38,6 +38,7 @@ import { PushNotificationService } from '../../../shared/services/push-notificat
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
 import { FlowingBackgroundMediaComponent } from '../shared/flowing-background-media/flowing-background-media.component';
+import { MillPlanningConfigService } from '../../../shared/services/mill-planning-config.service';
 
 @Component({
   selector: 'app-admin',
@@ -65,6 +66,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private themeConfig = inject(ThemeConfigService);
   private notificationService = inject(NotificationService);
   private pushNotificationService = inject(PushNotificationService);
+  private millPlanningConfig = inject(MillPlanningConfigService);
   private router = inject(Router);
 // public props
   readonly sidebar = viewChild<MatDrawer>('sidebar');
@@ -137,6 +139,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
     }
 
     this.buildMenus();
+    this.millPlanningConfig.changes$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.buildMenus();
+      this.cdr.detectChanges();
+    });
     this.authenticationService.permissionsChanged$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
@@ -164,27 +170,28 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private buildMenus(): void {
     const currentUser = this.authenticationService.currentUserValue;
     const isAdminSection = currentUser?.role === Role.OosmAdmin;
-    this.menus = structuredClone(isAdminSection ? admin_menus : oosm_menus);
+    const baseMenus = structuredClone(isAdminSection ? admin_menus : oosm_menus);
+    const bypassPermissionChecks = this.authenticationService.isAdmin();
+    const enabledModules = this.authenticationService.getTenantEnabledModules();
 
-    if (!this.authenticationService.isAdmin()) {
-      this.menus = filterMenuByPermissions(
-        this.menus,
-        currentUser?.permissions,
-        {
-          bypassPermissionChecks: false,
-          enabledModules: this.authenticationService.getTenantEnabledModules()
-        }
-      );
-    } else {
-      this.menus = filterMenuByPermissions(
-        this.menus,
-        currentUser?.permissions,
-        {
-          bypassPermissionChecks: true,
-          enabledModules: this.authenticationService.getTenantEnabledModules()
-        }
-      );
+    const applyFilter = (excludedItemIds: string[] = []) => {
+      this.menus = filterMenuByPermissions(baseMenus, currentUser?.permissions, {
+        bypassPermissionChecks,
+        enabledModules,
+        excludedItemIds
+      });
+    };
+
+    applyFilter();
+
+    if (isAdminSection) {
+      return;
     }
+
+    this.millPlanningConfig.isEnabled().subscribe((enabled) => {
+      applyFilter(enabled ? [] : ['item-reception-mill-schedules', 'collapse-reception-planning']);
+      this.cdr.markForCheck();
+    });
   }
 
   ngAfterViewInit() {

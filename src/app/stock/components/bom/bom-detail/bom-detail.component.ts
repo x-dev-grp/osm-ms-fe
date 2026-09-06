@@ -3,20 +3,24 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { take } from 'rxjs/operators';
 import { BomService } from '../../../services/BomService';
 import { Bom } from '../../../models/Bom';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
-import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { openQrDialog } from '../../../../shared/utils/open-qr-dialog.util';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
+import { AuthenticationService } from '../../../../auth/services/authentication.service';
+import { OOSMModule, InventoryEntity } from '../../../../theme/types/permissions';
+import { canRegenerateQr } from '../../../../shared/utils/qr-permission.util';
 
 @Component({
   selector: 'app-bom-detail',
   standalone: true,
-  imports: [TranslateModule, CommonModule, RouterLink, FormsModule, MaterialNeedsPreviewComponent, MatDialogModule, MatTooltipModule],
+  imports: [
+    MatDialogModule,TranslateModule, CommonModule, RouterLink, FormsModule, MaterialNeedsPreviewComponent, MatTooltipModule],
   templateUrl: './bom-detail.component.html',
   styleUrls: ['./bom-detail.component.scss']
 })
@@ -29,11 +33,14 @@ export class BomDetailComponent implements OnInit {
   previewQuantity = 1;
 
   constructor(
+    private auth: AuthenticationService,
+    
+    private dialog: MatDialog,
+    
     private route: ActivatedRoute,
     private router: Router,
     private bomService: BomService,
     private toast: ToastService,
-    private dialog: MatDialog,
     private confirmationDialog: ConfirmationDialogService
   ) {}
 
@@ -90,22 +97,29 @@ export class BomDetailComponent implements OnInit {
     return !!this.getQrCodeText() && !!this.bom?.qrImageBase64?.trim();
   }
 
-  openExistingQrDialog(): void {
-    if (!this.hasCompleteQrMetadata() || !this.bom) return;
 
-    this.dialog.open(QrDialogComponent, {
-      width: '400px',
-      data: {
-        qrText: this.getQrCodeText(),
-        qrImageBase64: this.bom.qrImageBase64 || '',
-        encrypted: true,
-        payloadType: 'BOM',
-        payloadMode: 'PUBLIC_CODE'
-      }
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.bom) {
+      return;
+    }
+    openQrDialog(this.dialog, {
+      code: this.getQrCodeText(),
+      qrImageBase64: this.bom.qrImageBase64 || '',
+      payloadType: 'BOM'
     });
   }
 
+
+  canRegenerateExistingQr(): boolean {
+    return canRegenerateQr(this.auth, OOSMModule.INVENTAIR, InventoryEntity.BOM);
+  }
+
   generateQr(): void {
+    if (this.hasQrCode() && !this.canRegenerateExistingQr()) {
+      this.toast.error('QR.ERROR.NO_REGENERATE_PERMISSION');
+      return;
+    }
     if (this.generatingQr || !this.bom?.id) return;
 
     this.confirmQrRegeneration((confirmed) => {
@@ -121,15 +135,10 @@ export class BomDetailComponent implements OnInit {
             qrUrl: response.qrUrl,
             qrImageBase64: response.qrImageBase64
           };
-          this.dialog.open(QrDialogComponent, {
-            width: '400px',
-            data: {
-              qrText: response.publicCode,
-              qrImageBase64: response.qrImageBase64,
-              encrypted: true,
-              payloadType: 'BOM',
-              payloadMode: 'PUBLIC_CODE'
-            }
+          openQrDialog(this.dialog, {
+            code: response.publicCode,
+            qrImageBase64: response.qrImageBase64,
+            payloadType: 'BOM'
           });
         },
         error: () => {

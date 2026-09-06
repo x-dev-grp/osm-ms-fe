@@ -16,32 +16,24 @@
             </div>
             <!--   generer qr code -->
               <div class="header-actions">
+                <div class="qr-actions">
+  <button *ngIf="hasCompleteQrMetadata()" mat-stroked-button type="button"
+          [matTooltip]="'QR.TITLE' | translate" (click)="openExistingQrDialog()">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ 'AUTO.QR' | translate }}
+  </button>
+  <button mat-stroked-button color="primary" type="button" [disabled]="generatingQr || (hasQrCode() && !canRegenerateExistingQr())"
+          [matTooltip]="'QR.GENERATE' | translate" (click)="generateQr(true)">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ generatingQr ? '...' : ('QR.GENERATE' | translate) }}
+  </button>
+</div>
                 <div [ngClass]="getStatusClass()" class="storage-status">
                   {{ 'STORAGE.VIEW.STATUS.' + storageUnit.status | translate }}
                 </div>
-                @if (hasCompleteQrMetadata()) {
-                  <button
-                    mat-stroked-button
-                    color="accent"
-                    [matTooltip]="'AUTO.VIEW_QR' | translate"
-                    (click)="openExistingQrDialog()">
-                    <mat-icon>qr_code_2</mat-icon>
-
-                    {{ 'AUTO.QR' | translate }}
-                  </button>
-                }
-                <button
-                  mat-stroked-button
-                  color="primary"
-                  [disabled]="generatingQr"
-                  (click)="generateQr(true)"
-                  matTooltip="{{ 'QR.GENERATE' | translate }}">
-                  <mat-icon>qr_code_2</mat-icon>
-                  {{ generatingQr ? 'Generation...' : 'Generer QR' }}
-                </button>
-                @if (hasCompleteQrMetadata()) {
-                  <span class="qr-code-badge">{{ getQrCodeText() }}</span>
-                }
+                
+                
+                
               </div>
             <!--   generer qr code -->
 

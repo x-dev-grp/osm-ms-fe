@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { OilTransaction, TransactionState } from '../models/OilTransaction';
 import { ApiResponse } from '../models/api-response';
-import { QrCodeRequest, QrCodeResponse } from '../models/qr-models';
+import { QrCodeInfo, QrCodeRequest, QrCodeResponse, QrResolveResponse } from '../models/qr-models';
 
 // Interface for exchange completion payload
 export interface ExchangeCompletionPayload {
@@ -95,5 +95,13 @@ export class OilTransactionService {
   }
   generateQrCode(request: QrCodeRequest): Observable<QrCodeResponse> {
     return this.http.post<QrCodeResponse>(`${this.baseUrl}/generate`, request);
+  }
+
+  generateQr(transactionId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.baseUrl}/qr/OILTRANSACTION/${transactionId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.baseUrl}/search/by-code`, { params: { code } });
   }
 }

@@ -3,6 +3,8 @@ import { Navigation } from 'src/app/theme/types/navigation';
 export interface MenuPermissionFilterOptions {
   bypassPermissionChecks?: boolean;
   enabledModules?: string[];
+  /** Navigation item ids to remove regardless of permissions (e.g. feature flags). */
+  excludedItemIds?: string[];
 }
 
 function normalizePermissions(userPermissions: unknown): Set<string> {
@@ -27,20 +29,27 @@ function tenantHasModule(module: string | undefined, enabled: Set<string>): bool
   return enabled.has(module.toUpperCase());
 }
 
-function resolveItemModule(item: Navigation): string | undefined {
-  if (item.modulePermission) {
-    return item.modulePermission;
-  }
+/** Module declared by the first MODULE:ENTITY:ACTION permission, if any. */
+function permissionModule(item: Navigation): string | undefined {
   const permission = item.permissions?.find((entry) => entry.includes(':'));
-  if (permission) {
-    return permission.split(':')[0];
+  if (!permission) {
+    return undefined;
   }
-  return undefined;
+  return permission.split(':')[0]?.toUpperCase();
 }
 
-function itemModuleEnabled(item: Navigation, enabled: Set<string>): boolean {
-  const module = resolveItemModule(item);
-  return tenantHasModule(module, enabled);
+/**
+ * Module used to show/hide the entry from tenant activation.
+ * Prefer explicit modulePermission, then the parent group's module, then the permission prefix.
+ */
+function resolveMenuModule(item: Navigation, inheritedModule?: string): string | undefined {
+  if (item.modulePermission) {
+    return item.modulePermission.toUpperCase();
+  }
+  if (inheritedModule) {
+    return inheritedModule.toUpperCase();
+  }
+  return permissionModule(item);
 }
 
 function hasModuleAccess(permissionSet: Set<string>, module: string): boolean {
@@ -67,9 +76,18 @@ function menuItemHasAccess(
   item: Navigation,
   permissionSet: Set<string>,
   enabled: Set<string>,
-  bypassPermissionChecks: boolean
+  bypassPermissionChecks: boolean,
+  inheritedModule?: string
 ): boolean {
-  if (!itemModuleEnabled(item, enabled)) {
+  const menuModule = resolveMenuModule(item, inheritedModule);
+  if (!tenantHasModule(menuModule, enabled)) {
+    return false;
+  }
+
+  // Cross-module permission (e.g. inventair ligne under conditioning menu):
+  // the permission's own module must also be activated.
+  const permModule = permissionModule(item);
+  if (permModule && menuModule && permModule !== menuModule && !tenantHasModule(permModule, enabled)) {
     return false;
   }
 
@@ -90,7 +108,7 @@ function menuItemHasAccess(
   }
 
   if (item.ressourcePermission) {
-    return hasEntityAccess(permissionSet, item.ressourcePermission);
+    return hasEntityAccess(permissionSet, item.ressourcePermission, inheritedModule);
   }
 
   return true;
@@ -100,20 +118,30 @@ function filterMenuItem(
   item: Navigation,
   permissionSet: Set<string>,
   enabled: Set<string>,
-  bypassPermissionChecks: boolean
+  bypassPermissionChecks: boolean,
+  excludedItemIds: Set<string>,
+  inheritedModule?: string
 ): Navigation | null {
+  if (item.id && excludedItemIds.has(item.id)) {
+    return null;
+  }
+
+  if (!menuItemHasAccess(item, permissionSet, enabled, bypassPermissionChecks, inheritedModule)) {
+    return null;
+  }
+
   const copy: Navigation = { ...item, hidden: false, disabled: false };
+  const childInheritedModule = (item.modulePermission ?? inheritedModule)?.toUpperCase();
 
   if (copy.children?.length) {
     copy.children = copy.children
-      .map((child) => filterMenuItem(child, permissionSet, enabled, bypassPermissionChecks))
+      .map((child) =>
+        filterMenuItem(child, permissionSet, enabled, bypassPermissionChecks, excludedItemIds, childInheritedModule)
+      )
       .filter((child): child is Navigation => child !== null);
   }
 
   if (copy.type === 'group' || copy.type === 'collapse') {
-    if (!menuItemHasAccess(copy, permissionSet, enabled, bypassPermissionChecks)) {
-      return null;
-    }
     if (!copy.children?.length) {
       return null;
     }
@@ -121,7 +149,7 @@ function filterMenuItem(
   }
 
   if (copy.type === 'item') {
-    return menuItemHasAccess(copy, permissionSet, enabled, bypassPermissionChecks) ? copy : null;
+    return copy;
   }
 
   return null;
@@ -129,6 +157,7 @@ function filterMenuItem(
 
 /**
  * Removes menu entries the user cannot access (instead of disabling them).
+ * Visibility is driven first by tenant-enabled modules, then by RBAC permissions.
  * Tenant admins bypass permission checks but still respect enabled tenant modules.
  */
 export function filterMenuByPermissions(
@@ -142,8 +171,9 @@ export function filterMenuByPermissions(
   const permissionSet = normalizePermissions(userPermissions);
   const enabled = enabledModuleSet(resolved.enabledModules);
   const bypassPermissionChecks = resolved.bypassPermissionChecks ?? false;
+  const excludedItemIds = new Set(resolved.excludedItemIds ?? []);
 
   return menuItems
-    .map((item) => filterMenuItem(item, permissionSet, enabled, bypassPermissionChecks))
+    .map((item) => filterMenuItem(item, permissionSet, enabled, bypassPermissionChecks, excludedItemIds))
     .filter((item): item is Navigation => item !== null);
 }

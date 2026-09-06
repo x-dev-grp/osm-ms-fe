@@ -1,33 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { MatError, MatFormField } from '@angular/material/form-field';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatCard } from '@angular/material/card';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { APP_LOGO_FULL } from '../../shared/config/logo.config';
+import { AuthLangSwitcherComponent } from '../auth-lang-switcher.component';
 
 @Component({
   selector: 'app-reset-confirm',
   standalone: true,
-  imports: [
-    TranslateModule,
-    CommonModule,
-    ReactiveFormsModule,
-    MatError,
-    MatFormField,
-    MatProgressSpinner,
-    MatCard,
-    TranslatePipe,
-    MatInput,
-    MatButton,
-    NgOptimizedImage
-  ],
+  imports: [TranslateModule, CommonModule, SharedModule, AuthLangSwitcherComponent],
   templateUrl: './reset-confirm.component.html',
   styleUrls: ['../authentication.scss']
 })
@@ -52,7 +37,7 @@ export class ResetConfirmComponent implements OnInit {
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(8)]]
     },
-    { validators: this.matchPasswords }
+    { validators: (group) => this.matchPasswords(group as FormGroup) }
   );
 
   private readonly API = environment.apiUrl + '/api/security';

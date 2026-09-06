@@ -5,18 +5,22 @@ import { BonCommandeService } from '../../../services/bon-commande.service';
 import { BonCommande, StatutBonCommande } from '../../../models/bon-commande.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { take } from 'rxjs/operators';
 import { ApiResponse } from '../../../../shared/models/api-response';
-import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { openQrDialog } from '../../../../shared/utils/open-qr-dialog.util';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { AuthenticationService } from '../../../../auth/services/authentication.service';
+import { OOSMModule, InventoryEntity } from '../../../../theme/types/permissions';
+import { canRegenerateQr } from '../../../../shared/utils/qr-permission.util';
 
 @Component({
   selector: 'app-bc-detail',
   standalone: true,
-  imports: [TranslateModule, CommonModule, FormsModule, RouterLink, MatDialogModule, MatTooltipModule],
+  imports: [
+    MatDialogModule,TranslateModule, CommonModule, FormsModule, RouterLink, MatTooltipModule],
   templateUrl: './bc-detail.component.html',
   styleUrls: ['./bc-detail.component.scss']
 })
@@ -31,10 +35,13 @@ export class BcDetailComponent implements OnInit {
   receptionQuantities: { [key: string]: number } = {};
 
   constructor(
+    private auth: AuthenticationService,
+    
+    private dialog: MatDialog,
+    
     private route: ActivatedRoute,
     private router: Router,
     private bonCommandeService: BonCommandeService,
-    private dialog: MatDialog,
     private confirmationDialog: ConfirmationDialogService,
     private toastService: ToastService
   ) {}
@@ -184,22 +191,29 @@ export class BcDetailComponent implements OnInit {
     return !!this.getQrCodeText() && !!this.bon?.qrImageBase64?.trim();
   }
 
-  openExistingQrDialog(): void {
-    if (!this.hasCompleteQrMetadata() || !this.bon) return;
 
-    this.dialog.open(QrDialogComponent, {
-      width: '400px',
-      data: {
-        qrText: this.getQrCodeText(),
-        qrImageBase64: this.bon.qrImageBase64 || '',
-        encrypted: true,
-        payloadType: 'BONCOMMANDE',
-        payloadMode: 'PUBLIC_CODE'
-      }
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.bon) {
+      return;
+    }
+    openQrDialog(this.dialog, {
+      code: this.getQrCodeText(),
+      qrImageBase64: this.bon.qrImageBase64 || '',
+      payloadType: 'BONCOMMANDE'
     });
   }
 
+
+  canRegenerateExistingQr(): boolean {
+    return canRegenerateQr(this.auth, OOSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE);
+  }
+
   generateQr(): void {
+    if (this.hasQrCode() && !this.canRegenerateExistingQr()) {
+      this.toastService.error('QR.ERROR.NO_REGENERATE_PERMISSION');
+      return;
+    }
     if (this.generatingQr || !this.bon?.id) return;
 
     this.confirmQrRegeneration((confirmed) => {
@@ -215,15 +229,10 @@ export class BcDetailComponent implements OnInit {
             qrUrl: response.qrUrl,
             qrImageBase64: response.qrImageBase64
           };
-          this.dialog.open(QrDialogComponent, {
-            width: '400px',
-            data: {
-              qrText: response.publicCode,
-              qrImageBase64: response.qrImageBase64,
-              encrypted: true,
-              payloadType: 'BONCOMMANDE',
-              payloadMode: 'PUBLIC_CODE'
-            }
+          openQrDialog(this.dialog, {
+            code: response.publicCode,
+            qrImageBase64: response.qrImageBase64,
+            payloadType: 'BONCOMMANDE'
           });
         },
         error: () => {

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { OilCredit } from '../models/OilCredit';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../shared/models/api-response';
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +36,13 @@ export class OilCreditService {
   // Update an existing OilCreditcc.
   updateOilCredit(OilCredit: OilCredit): Observable<ApiResponse<OilCredit>> {
     return this.http.put<ApiResponse<OilCredit>>(`${this.baseUrl}`, OilCredit);
+  }
+
+  generateQr(oilCreditId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.baseUrl}/qr/OILCREDIT/${oilCreditId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.baseUrl}/search/by-code`, { params: { code } });
   }
 }

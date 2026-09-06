@@ -11,10 +11,11 @@ import { catchError, first, of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { APP_LOGO_FULL } from '../../shared/config/logo.config';
+import { AuthLangSwitcherComponent } from '../auth-lang-switcher.component';
 
 @Component({
   selector: 'app-forgot-password',
-  imports: [TranslateModule, CommonModule, SharedModule, RouterModule, MatProgressSpinnerModule],
+  imports: [TranslateModule, CommonModule, SharedModule, RouterModule, MatProgressSpinnerModule, AuthLangSwitcherComponent],
   templateUrl: './forgot-password.component.html',
   standalone: true,
   styleUrls: ['../authentication.scss']
