@@ -14,6 +14,19 @@ export class PermissionCatalogAdminService {
     return this.http.get<PermissionCatalogStatus>(`${this.baseUrl}/catalog-status`);
   }
 
+  /** Live classpath permissions-spec.json currently used by the backend. */
+  getCatalogSpec(): Observable<unknown> {
+    return this.http.get(`${this.baseUrl}/catalog-spec`);
+  }
+
+  /** Download the live classpath permissions-spec.json as a file. */
+  downloadCatalogSpec(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/catalog-spec`, {
+      params: { download: 'true' },
+      responseType: 'blob'
+    });
+  }
+
   syncCatalog(): Observable<PermissionCatalogSyncResponse> {
     return this.http.post<PermissionCatalogSyncResponse>(`${this.baseUrl}/sync-catalog`, {});
   }

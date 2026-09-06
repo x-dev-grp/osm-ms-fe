@@ -5,13 +5,14 @@ import { Parameter } from '../../shared/models/Parameter';
 import { SharedModule } from '../../shared/shared.module';
 import { DecimalPipe, NgFor, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { ToastService } from '../../shared/services/toast.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   DailyMetricPayload,
   normalizeMetricValue,
   parseDailyMetricPayload
 } from '../../shared/services/DailyMetricPayload';
 import { finalize } from 'rxjs/operators';
+import { MillPlanningConfigService, ENABLE_MILL_PLANNING_CODE } from '../../shared/services/mill-planning-config.service';
 
 @Component({
   selector: 'app-parameter',
@@ -40,7 +41,9 @@ export class ParameterComponent implements OnInit {
   constructor(
     private service: AppParameterService,
     private fb: FormBuilder,
-    private toast: ToastService
+    private toast: ToastService,
+    private translate: TranslateService,
+    private millPlanningConfig: MillPlanningConfigService
   ) {}
 
   ngOnInit() {
@@ -72,6 +75,14 @@ export class ParameterComponent implements OnInit {
 
   private reloadParameters(): void {
     this.loading = true;
+    // Ensure catalog defaults (incl. ENABLE_MILL_PLANNING) exist, then reload.
+    this.service.seedDefaults().subscribe({
+      next: () => this.loadParametersList(),
+      error: () => this.loadParametersList()
+    });
+  }
+
+  private loadParametersList(): void {
     this.service.getAll().subscribe({
       next: (res) => {
         this.parameters = res.data ?? [];
@@ -100,10 +111,16 @@ export class ParameterComponent implements OnInit {
         validators.push(Validators.pattern(/^-?\d*\.?\d+$/));
       }
       const controlKey = `param_${param.code}`;
-      const initialValue = this.isDailyMetricParam(param)
+      let initialValue: unknown = this.isDailyMetricParam(param)
         ? normalizeMetricValue(parseDailyMetricPayload(param.value).current)
         : param.value;
-      const control = this.fb.control(initialValue, validators);
+      if (this.getParameterType(param) === 'BOOLEAN') {
+        initialValue = this.toBoolean(param.value);
+      }
+      const control = this.fb.control(
+        initialValue,
+        this.getParameterType(param) === 'BOOLEAN' ? [] : validators
+      );
       this.paramForm.addControl(controlKey, control);
     });
   }
@@ -111,11 +128,14 @@ export class ParameterComponent implements OnInit {
   save(param: Parameter) {
     const controlKey = `param_${param.code}`;
     const rawValue = this.paramForm.get(controlKey)?.value;
-    const newValue = this.isDailyMetricParam(param)
+    let newValue: unknown = this.isDailyMetricParam(param)
       ? JSON.stringify(this.buildDailyMetricValue(param, rawValue))
       : rawValue;
+    if (this.getParameterType(param) === 'BOOLEAN') {
+      newValue = this.toBoolean(rawValue) ? 'true' : 'false';
+    }
 
-    const updatedParam: Parameter = { ...param, value: newValue };
+    const updatedParam: Parameter = { ...param, value: String(newValue) };
 
     this.service.updateValue(updatedParam).subscribe({
       next: (res) => {
@@ -129,10 +149,15 @@ export class ParameterComponent implements OnInit {
         this.applyFilters();
         const displayValue = this.isDailyMetricParam(updated)
           ? normalizeMetricValue(parseDailyMetricPayload(updated.value).current)
-          : updated.value;
+          : this.getParameterType(updated) === 'BOOLEAN'
+            ? this.toBoolean(updated.value)
+            : updated.value;
         this.paramForm.get(controlKey)?.setValue(displayValue);
         this.paramForm.get(controlKey)?.markAsPristine();
         this.refreshMetricPayload(updated);
+        if (updated.code === ENABLE_MILL_PLANNING_CODE) {
+          this.millPlanningConfig.setLocalEnabled(this.toBoolean(updated.value));
+        }
         this.toast.success('AUTO.PARAMETRE_MIS_A_JOUR_AVEC_SUCCES');
       },
       error: () => {
@@ -143,6 +168,26 @@ export class ParameterComponent implements OnInit {
 
   getParameterType(param: Parameter): string {
     return (param.type || 'STRING').toUpperCase();
+  }
+
+  parameterLabelKey(code: string): string {
+    return `GENERAL_CONFIG_UI.PARAMETERS.CODES.${code}`;
+  }
+
+  parameterTitle(param: Parameter): string {
+    const key = this.parameterLabelKey(param.code);
+    const translated = this.translate.instant(key);
+    return translated && translated !== key ? translated : param.code;
+  }
+
+  private toBoolean(value: unknown): boolean {
+    if (typeof value === 'boolean') {
+      return value;
+    }
+    const normalized = String(value ?? '')
+      .trim()
+      .toLowerCase();
+    return ['true', '1', 'yes'].includes(normalized);
   }
 
   isDailyMetricParam(param: Parameter): boolean {

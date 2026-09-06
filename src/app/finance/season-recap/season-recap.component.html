@@ -46,6 +46,18 @@
       </mat-card>
       <mat-card class="summary-card">
         <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.OIL_SALES_COLLECTED' | translate }}</span>
+          <span class="summary-value paid">{{ summary.oilSalesCollected | currency: 'TND' }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.OIL_SALES_UNPAID' | translate }}</span>
+          <span class="summary-value unpaid">{{ summary.oilSalesUnpaid | currency: 'TND' }}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="summary-card">
+        <mat-card-content>
           <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.EXPENSES' | translate }}</span>
           <span class="summary-value outbound">{{ summary.expensesTotal | currency: 'TND' }}</span>
           <span class="summary-meta">{{ summary.expensesCount }} {{ 'ABIOOC.SEASON_RECAP.ITEMS' | translate }}</span>

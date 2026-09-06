@@ -15,9 +15,6 @@ import { MaterielSupplierDetailComponent } from './components/materiel-suppliers
 import { SkuListComponent } from './components/sku/sku-list/sku-list.component';
 import { SkuFormComponent } from './components/sku/sku-form/sku-form.component';
 import { SkuDetailComponent } from './components/sku/sku-detail/sku-detail.component';
-import { ClientListComponent } from '../projet/pages/clients/client-list/client-list.component';
-import { ClientDetailComponent } from '../projet/pages/clients/client-detail/client-detail.component';
-import { ClientFormComponent } from '../projet/pages/clients/client-form/client-form.component';
 import { LigneListComponent } from './components/lignes/ligne-list/ligne-list.component';
 import { LigneFormComponent } from './components/lignes/ligne-form/ligne-form.component';
 import { LigneDetailComponent } from './components/lignes/ligne-detail/ligne-detail.component';
@@ -33,6 +30,14 @@ import { anyPermissionGuard, moduleGuard } from '../interceptors/guards/permissi
 import { Action, ConditioningEntity, InventoryEntity, OOSMModule, permissionKey } from '../theme/types/permissions';
 
 const routes: Routes = [
+  {
+    path: 'audit',
+    component: AuditComponent,
+    canActivate: [
+      moduleGuard([OOSMModule.CONDITIONING, OOSMModule.INVENTAIR]),
+      anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.AUDIT, Action.READ)])
+    ]
+  },
   {
     path: '',
     canActivate: [moduleGuard([OOSMModule.INVENTAIR])],
@@ -176,10 +181,10 @@ const routes: Routes = [
         canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.SKU, Action.UPDATE)])]
       },
 
-      { path: 'clients', component: ClientListComponent },
-      { path: 'clients/nouveau', component: ClientFormComponent },
-      { path: 'clients/:id', component: ClientDetailComponent },
-      { path: 'clients/:id/editer', component: ClientFormComponent },
+      { path: 'clients', redirectTo: '/projets/clients', pathMatch: 'full' },
+      { path: 'clients/nouveau', redirectTo: '/projets/clients/new', pathMatch: 'full' },
+      { path: 'clients/:id/editer', redirectTo: '/projets/clients/:id' },
+      { path: 'clients/:id', redirectTo: '/projets/clients/detail/:id' },
 
       {
         path: 'lignes',
@@ -242,11 +247,6 @@ const routes: Routes = [
         path: 'boms/:id',
         component: BomDetailComponent,
         canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)])]
-      },
-      {
-        path: 'audit',
-        component: AuditComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.AUDIT, Action.READ)])]
       }
     ]
   }

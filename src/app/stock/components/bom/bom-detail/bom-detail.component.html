@@ -33,20 +33,17 @@
     </div>
 
     <div class="header-actions" *ngIf="bom">
-      @if (hasCompleteQrMetadata()) {
-        <button class="btn-action" [matTooltip]="'AUTO.VIEW_QR' | translate" (click)="openExistingQrDialog()">
-          <i class="fas fa-qrcode"></i>
-
-          {{ 'AUTO.QR' | translate }}
-        </button>
-      }
-      <button class="btn-action" [disabled]="generatingQr" (click)="generateQr()">
-        <i class="fas fa-qrcode"></i>
-        {{ generatingQr ? 'Generation...' : 'Generer QR' }}
-      </button>
-      @if (hasCompleteQrMetadata()) {
-        <span class="qr-code-badge">{{ getQrCodeText() }}</span>
-      }
+      <div class="qr-actions">
+  <button *ngIf="hasCompleteQrMetadata()" class="btn-action" type="button" (click)="openExistingQrDialog()">
+    <i class="fas fa-qrcode"></i> {{ 'AUTO.QR' | translate }}
+  </button>
+  <button class="btn-action" type="button" [disabled]="generatingQr || (hasQrCode() && !canRegenerateExistingQr())" (click)="generateQr()">
+    <i class="fas fa-qrcode"></i> {{ generatingQr ? '...' : ('QR.GENERATE' | translate) }}
+  </button>
+</div>
+      
+      
+      
       <button
         class="btn-action activate"
         type="button"

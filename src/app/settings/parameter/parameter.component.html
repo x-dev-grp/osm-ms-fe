@@ -24,7 +24,10 @@
     <article class="parameter-card" *ngFor="let param of filtered">
       <header class="parameter-card-header">
         <div class="parameter-card-title">
-          <span class="parameter-code">{{ param.code }}</span>
+          <div class="parameter-title-stack">
+            <span class="parameter-label">{{ parameterTitle(param) }}</span>
+            <span class="parameter-code">{{ param.code }}</span>
+          </div>
           <span class="parameter-type">{{ getParameterType(param) }}</span>
         </div>
         <button
@@ -131,7 +134,19 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-slide-toggle *ngSwitchCase="'BOOLEAN'" [formControlName]="'param_' + param.code"></mat-slide-toggle>
+            <div *ngSwitchCase="'BOOLEAN'" class="boolean-toggle-row">
+              <mat-slide-toggle
+                [formControlName]="'param_' + param.code"
+                (change)="paramForm.get('param_' + param.code)?.markAsDirty()"
+              >
+                {{
+                  (paramForm.get('param_' + param.code)?.value
+                    ? 'GENERAL_CONFIG_UI.PARAMETERS.ENABLED'
+                    : 'GENERAL_CONFIG_UI.PARAMETERS.DISABLED'
+                  ) | translate
+                }}
+              </mat-slide-toggle>
+            </div>
 
             <mat-form-field *ngSwitchDefault appearance="outline" class="value-field compact-field" subscriptSizing="dynamic">
               <mat-label>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</mat-label>

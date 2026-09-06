@@ -6,7 +6,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
 
@@ -17,9 +16,13 @@ import { ToastService } from '../../shared/services/toast.service';
 import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
 import { MatChip, MatChipListbox } from '@angular/material/chips';
 import { deliveryType } from '../../shared/models/deleveryType';
-import { QrDialogComponent } from '../../shared/components/qr-dialog/qr-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { openQrDialog } from '../../shared/utils/open-qr-dialog.util';
 import { ConfirmationDialogService, ConfirmationType } from '../../shared/services/confirmation-dialog.service';
 import { buildTransactionsQueryParams } from '../../finance/utils/finance-resource-links.util';
+import { AuthenticationService } from '../../auth/services/authentication.service';
+import { OOSMModule, ReceptionEntity } from '../../theme/types/permissions';
+import { canRegenerateQr } from '../../shared/utils/qr-permission.util';
 
 @Component({
   selector: 'app-details-reception-olive',
@@ -27,6 +30,7 @@ import { buildTransactionsQueryParams } from '../../finance/utils/finance-resour
   templateUrl: './details-reception.component.html',
   styleUrls: ['./details-reception.component.scss'],
   imports: [
+    MatDialogModule,
     CommonModule,
     DatePipe,
     MatCardModule,
@@ -34,8 +38,7 @@ import { buildTransactionsQueryParams } from '../../finance/utils/finance-resour
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    MatDialogModule,
-    TranslateModule,
+        TranslateModule,
     MatProgressSpinner,
     MatChipListbox,
     MatChip
@@ -43,10 +46,11 @@ import { buildTransactionsQueryParams } from '../../finance/utils/finance-resour
 })
 export class DetailsReceptionComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly auth = inject(AuthenticationService);
+  private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
   private readonly deliveryService = inject(UnifiedDeliveryService);
   private readonly translate = inject(TranslateService);
-  private readonly dialog = inject(MatDialog);
   private readonly confirmationDialog = inject(ConfirmationDialogService);
   private readonly router = inject(Router);
 
@@ -156,22 +160,29 @@ export class DetailsReceptionComponent implements OnInit {
     return !!this.getQrCodeText() && !!this.deliveryData?.qrImageBase64?.trim();
   }
 
-  openExistingQrDialog(): void {
-    if (!this.hasCompleteQrMetadata() || !this.deliveryData) return;
 
-    this.dialog.open(QrDialogComponent, {
-      width: '400px',
-      data: {
-        qrText: this.getQrCodeText(),
-        qrImageBase64: this.deliveryData.qrImageBase64 || '',
-        encrypted: true,
-        payloadType: 'UNIFIEDDELIVERY',
-        payloadMode: 'PUBLIC_CODE'
-      }
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.deliveryData) {
+      return;
+    }
+    openQrDialog(this.dialog, {
+      code: this.getQrCodeText(),
+      qrImageBase64: this.deliveryData.qrImageBase64 || '',
+      payloadType: 'UNIFIEDDELIVERY'
     });
   }
 
+
+  canRegenerateExistingQr(): boolean {
+    return canRegenerateQr(this.auth, OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY);
+  }
+
   generateQr(): void {
+    if (this.hasQrCode() && !this.canRegenerateExistingQr()) {
+      this.toast.error('QR.ERROR.NO_REGENERATE_PERMISSION');
+      return;
+    }
     if (this.generatingQr || !this.deliveryData?.id) return;
 
     this.confirmQrRegeneration((confirmed) => {
@@ -188,16 +199,10 @@ export class DetailsReceptionComponent implements OnInit {
             qrUrl: response.qrUrl,
             qrImageBase64: response.qrImageBase64
           };
-
-          this.dialog.open(QrDialogComponent, {
-            width: '400px',
-            data: {
-              qrText: response.publicCode,
-              qrImageBase64: response.qrImageBase64,
-              encrypted: true,
-              payloadType: 'UNIFIEDDELIVERY',
-              payloadMode: 'PUBLIC_CODE'
-            }
+          openQrDialog(this.dialog, {
+            code: response.publicCode,
+            qrImageBase64: response.qrImageBase64,
+            payloadType: 'UNIFIEDDELIVERY'
           });
         },
         error: () => {

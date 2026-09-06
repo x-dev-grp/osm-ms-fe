@@ -76,10 +76,25 @@
   flex: 1;
 }
 
-.parameter-code {
+.parameter-title-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.parameter-label {
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--accent-900);
+  line-height: 1.25;
+}
+
+.parameter-code {
+  font-weight: 500;
+  font-size: 0.72rem;
+  color: var(--accent-600);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   white-space: nowrap;
   overflow: hidden;
@@ -96,6 +111,12 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--primary-500) 12%, transparent);
   color: var(--primary-600);
+}
+
+.boolean-toggle-row {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
 }
 
 .parameter-save-btn {

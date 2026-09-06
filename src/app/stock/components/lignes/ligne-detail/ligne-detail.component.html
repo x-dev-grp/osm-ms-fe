@@ -31,20 +31,9 @@
     </div>
 
     <div class="hero-actions" *ngIf="ligne() as current">
-      @if (hasCompleteQrMetadata()) {
-        <button mat-stroked-button [matTooltip]="'AUTO.VIEW_QR' | translate" (click)="openExistingQrDialog()">
-          <mat-icon>qr_code_2</mat-icon>
-
-          {{ 'AUTO.QR' | translate }}
-        </button>
-      }
-      <button mat-stroked-button color="primary" [disabled]="generatingQr()" (click)="generateQr()">
-        <mat-icon>qr_code_2</mat-icon>
-        {{ generatingQr() ? 'Generation...' : 'Generer QR' }}
-      </button>
-      @if (hasCompleteQrMetadata()) {
-        <span class="qr-code-badge">{{ getQrCodeText() }}</span>
-      }
+      
+      
+      
       <button mat-stroked-button class="btn-light" [routerLink]="['/stock/lignes', current.id, 'edit']">
         <mat-icon>edit</mat-icon>
 
@@ -57,6 +46,20 @@
       </button>
     </div>
   </section>
+
+  <div class="qr-actions">
+  <button *ngIf="hasCompleteQrMetadata()" mat-stroked-button type="button"
+          [matTooltip]="'QR.TITLE' | translate" (click)="openExistingQrDialog()">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ 'AUTO.QR' | translate }}
+  </button>
+  <button mat-stroked-button color="primary" type="button" [disabled]="generatingQr() || (hasQrCode() && !canRegenerateExistingQr())"
+          [matTooltip]="'QR.GENERATE' | translate" (click)="generateQr()">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ generatingQr() ? '...' : ('QR.GENERATE' | translate) }}
+  </button>
+</div>
+
 
   <div class="state-card" *ngIf="loading() && !ligne()">
     <mat-spinner diameter="46"></mat-spinner>

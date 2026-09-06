@@ -22,10 +22,10 @@ export class ClientListComponent {
   handleAction(event: { row: Client; action: string }): void {
     switch (event.action) {
       case 'READ':
-        void this.router.navigate(['/stock/clients', event.row.id]);
+        void this.router.navigate(['/projets/clients/detail', event.row.id]);
         break;
       case 'UPDATE':
-        void this.router.navigate(['/stock/clients', event.row.id, 'editer']);
+        void this.router.navigate(['/projets/clients', event.row.id]);
         break;
     }
   }

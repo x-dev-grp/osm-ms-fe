@@ -58,4 +58,8 @@ export interface OilTransaction {
   /** Audit fields (from BaseEntity) */
   createdDate?: string;
   lastModifiedDate?: string;
+  publicCode?: string | null;
+  qrHex?: string | null;
+  qrUrl?: string | null;
+  qrImageBase64?: string | null;
 }

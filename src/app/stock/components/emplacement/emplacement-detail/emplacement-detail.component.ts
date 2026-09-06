@@ -3,21 +3,25 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { take } from 'rxjs/operators';
 import { EmplacementStockService } from '../../../services/emplacement-stock.service';
 import { EmplacementStock, TypeEmplacement } from '../../../models/emplacement-stock.model';
 import { CategorieArticle } from '../../../models/article.model';
-import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { openQrDialog } from '../../../../shared/utils/open-qr-dialog.util';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { AuthenticationService } from '../../../../auth/services/authentication.service';
+import { OOSMModule, InventoryEntity } from '../../../../theme/types/permissions';
+import { canRegenerateQr } from '../../../../shared/utils/qr-permission.util';
 
 @Component({
   selector: 'app-emplacement-detail',
   standalone: true,
-  imports: [TranslateModule, CommonModule, RouterLink, MatButtonModule, MatDialogModule, MatIconModule, MatTooltipModule],
+  imports: [
+    MatDialogModule,TranslateModule, CommonModule, RouterLink, MatButtonModule, MatIconModule, MatTooltipModule],
   templateUrl: './emplacement-detail.component.html',
   styleUrls: ['./emplacement-detail.component.scss']
 })
@@ -32,10 +36,13 @@ export class EmplacementDetailComponent implements OnInit {
   actionEnCours = false;
 
   constructor(
+    private auth: AuthenticationService,
+    
+    private dialog: MatDialog,
+    
     private route: ActivatedRoute,
     private router: Router,
     private emplacementService: EmplacementStockService,
-    private dialog: MatDialog,
     private confirmationDialog: ConfirmationDialogService,
     private toastService: ToastService
   ) {}
@@ -76,22 +83,29 @@ export class EmplacementDetailComponent implements OnInit {
     return !!this.getQrCodeText() && !!this.emplacement?.qrImageBase64?.trim();
   }
 
-  openExistingQrDialog(): void {
-    if (!this.hasCompleteQrMetadata() || !this.emplacement) return;
 
-    this.dialog.open(QrDialogComponent, {
-      width: '400px',
-      data: {
-        qrText: this.getQrCodeText(),
-        qrImageBase64: this.emplacement.qrImageBase64 || '',
-        encrypted: true,
-        payloadType: 'EMPLACEMENTSTOCK',
-        payloadMode: 'PUBLIC_CODE'
-      }
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.emplacement) {
+      return;
+    }
+    openQrDialog(this.dialog, {
+      code: this.getQrCodeText(),
+      qrImageBase64: this.emplacement.qrImageBase64 || '',
+      payloadType: 'EMPLACEMENTSTOCK'
     });
   }
 
+
+  canRegenerateExistingQr(): boolean {
+    return canRegenerateQr(this.auth, OOSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK);
+  }
+
   generateQr(): void {
+    if (this.hasQrCode() && !this.canRegenerateExistingQr()) {
+      this.toastService.error('QR.ERROR.NO_REGENERATE_PERMISSION');
+      return;
+    }
     if (this.generatingQr || !this.emplacement?.id) return;
 
     this.confirmQrRegeneration((confirmed) => {
@@ -107,15 +121,10 @@ export class EmplacementDetailComponent implements OnInit {
             qrUrl: response.qrUrl,
             qrImageBase64: response.qrImageBase64
           };
-          this.dialog.open(QrDialogComponent, {
-            width: '400px',
-            data: {
-              qrText: response.publicCode,
-              qrImageBase64: response.qrImageBase64,
-              encrypted: true,
-              payloadType: 'EMPLACEMENTSTOCK',
-              payloadMode: 'PUBLIC_CODE'
-            }
+          openQrDialog(this.dialog, {
+            code: response.publicCode,
+            qrImageBase64: response.qrImageBase64,
+            payloadType: 'EMPLACEMENTSTOCK'
           });
         },
         error: () => {

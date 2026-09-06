@@ -33,87 +33,417 @@
       <button mat-flat-button color="primary" type="button" (click)="loadStatus()">{{ 'COMMON.REFRESH' | translate }}</button>
     </div>
   } @else if (status) {
-    <section class="dashboard-section">
-      <div class="section-heading">
-        <mat-icon>inventory_2</mat-icon>
-        <h3>{{ 'ADMIN_PERMISSION_CATALOG.SECTIONS.STATUS' | translate }}</h3>
-      </div>
-      <div class="admin-kpi-grid admin-kpi-grid--3">
-        <div class="metric-card metric-card--primary">
-          <div class="metric-card__top">
-            <mat-icon>description</mat-icon>
-            <span>{{ 'ADMIN_PERMISSION_CATALOG.KPIS.SPEC_VERSION' | translate }}</span>
-          </div>
-          <div class="metric-card__value">v{{ status.specVersion }}</div>
-          <div class="metric-card__meta">{{ status.specSource }}</div>
+    <section class="catalog-ops">
+      <div class="catalog-ops__stats">
+        <div class="catalog-ops__stat">
+          <span class="catalog-ops__label">{{ 'ADMIN_PERMISSION_CATALOG.KPIS.SPEC_VERSION' | translate }}</span>
+          <strong>v{{ status.specVersion }}</strong>
+          <small>{{ status.specSource }}</small>
         </div>
-        <div class="metric-card metric-card--info">
-          <div class="metric-card__top">
-            <mat-icon>category</mat-icon>
-            <span>{{ 'ADMIN_PERMISSION_CATALOG.KPIS.ENTITIES' | translate }}</span>
-          </div>
-          <div class="metric-card__value">{{ status.specEntityCount }}</div>
-          <div class="metric-card__meta">
-            {{ status.specProfileCount }} {{ 'ADMIN_PERMISSION_CATALOG.KPIS.PROFILES' | translate }}
-          </div>
+        <div class="catalog-ops__stat">
+          <span class="catalog-ops__label">{{ 'ADMIN_PERMISSION_CATALOG.KPIS.ENTITIES' | translate }}</span>
+          <strong>{{ status.specEntityCount }}</strong>
+          <small>{{ status.specProfileCount }} {{ 'ADMIN_PERMISSION_CATALOG.KPIS.PROFILES' | translate }}</small>
         </div>
-        <div class="metric-card metric-card--success">
-          <div class="metric-card__top">
-            <mat-icon>verified_user</mat-icon>
-            <span>{{ 'ADMIN_PERMISSION_CATALOG.KPIS.DB_PERMISSIONS' | translate }}</span>
-          </div>
-          <div class="metric-card__value">{{ status.dbActivePermissionCount }}</div>
-          <div class="metric-card__meta">
-            / {{ status.expectedPermissionCount }} {{ 'ADMIN_PERMISSION_CATALOG.KPIS.EXPECTED' | translate }}
-          </div>
+        <div class="catalog-ops__stat">
+          <span class="catalog-ops__label">{{ 'ADMIN_PERMISSION_CATALOG.KPIS.DB_PERMISSIONS' | translate }}</span>
+          <strong>{{ status.dbActivePermissionCount }}</strong>
+          <small>/ {{ status.expectedPermissionCount }} {{ 'ADMIN_PERMISSION_CATALOG.KPIS.EXPECTED' | translate }}</small>
         </div>
       </div>
-    </section>
 
-    <section class="dashboard-section">
-      <app-card [icon]="'sync'" [cardTitle]="'ADMIN_PERMISSION_CATALOG.SECTIONS.SYNC' | translate" [showContent]="true">
-        <p class="catalog-note">{{ 'ADMIN_PERMISSION_CATALOG.SYNC_HINT' | translate }}</p>
-        <ul class="catalog-operations">
-          <li>{{ 'ADMIN_PERMISSION_CATALOG.OPS.CREATE' | translate }}</li>
-          <li>{{ 'ADMIN_PERMISSION_CATALOG.OPS.REACTIVATE' | translate }}</li>
-          <li>{{ 'ADMIN_PERMISSION_CATALOG.OPS.LEGACY' | translate }}</li>
-          <li>{{ 'ADMIN_PERMISSION_CATALOG.OPS.MIRRORS' | translate }}</li>
-        </ul>
-        <div class="catalog-flags">
-          <span class="status-pill" [class.active]="status.syncOnStartup">
-            {{ 'ADMIN_PERMISSION_CATALOG.STARTUP_SYNC' | translate }}:
-            {{ (status.syncOnStartup ? 'COMMON.YES' : 'COMMON.NO') | translate }}
-          </span>
-          @if (catalogGap() > 0) {
-            <span class="status-pill warn">
-              {{ 'ADMIN_PERMISSION_CATALOG.GAP' | translate }}: {{ catalogGap() }}
+      <div class="catalog-ops__sync">
+        <div class="catalog-ops__sync-copy">
+          <h3>{{ 'ADMIN_PERMISSION_CATALOG.SECTIONS.SYNC' | translate }}</h3>
+          <p>{{ 'ADMIN_PERMISSION_CATALOG.SYNC_HINT' | translate }}</p>
+          <div class="catalog-flags">
+            <span class="status-pill" [class.active]="status.syncOnStartup">
+              {{ 'ADMIN_PERMISSION_CATALOG.STARTUP_SYNC' | translate }}:
+              {{ (status.syncOnStartup ? 'COMMON.YES' : 'COMMON.NO') | translate }}
             </span>
-          }
-        </div>
-        <div class="catalog-actions">
-          <button mat-flat-button color="primary" type="button" (click)="syncCatalog()" [disabled]="syncing">
-            @if (syncing) {
-              <mat-spinner diameter="20"></mat-spinner>
-            } @else {
-              <mat-icon>sync</mat-icon>
+            @if (catalogGap() > 0) {
+              <span class="status-pill warn">
+                {{ 'ADMIN_PERMISSION_CATALOG.GAP' | translate }}: {{ catalogGap() }}
+              </span>
             }
-            <span class="ms-1">{{ 'ADMIN_PERMISSION_CATALOG.SYNC_BUTTON' | translate }}</span>
-          </button>
-        </div>
-      </app-card>
-    </section>
-
-    @if (lastSyncResult?.success) {
-      <section class="dashboard-section">
-        <app-card [icon]="'task_alt'" [cardTitle]="'ADMIN_PERMISSION_CATALOG.SECTIONS.LAST_RESULT' | translate" [showContent]="true">
-          <div class="sync-result-grid">
-            <div><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.CREATED' | translate }}</strong> {{ lastSyncResult?.created ?? 0 }}</div>
-            <div><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.EXISTING' | translate }}</strong> {{ lastSyncResult?.existing ?? 0 }}</div>
-            <div><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.LEGACY' | translate }}</strong> {{ lastSyncResult?.legacyMerged ?? 0 }}</div>
-            <div><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.MIRRORS' | translate }}</strong> {{ lastSyncResult?.mirrorGrants ?? 0 }}</div>
           </div>
-        </app-card>
-      </section>
-    }
+        </div>
+        <button mat-flat-button color="primary" type="button" (click)="syncCatalog()" [disabled]="syncing">
+          @if (syncing) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <mat-icon>sync</mat-icon>
+          }
+          <span class="ms-1">{{ 'ADMIN_PERMISSION_CATALOG.SYNC_BUTTON' | translate }}</span>
+        </button>
+      </div>
+
+      @if (lastSyncResult?.success) {
+        <div class="catalog-ops__result">
+          <span><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.CREATED' | translate }}</strong> {{ lastSyncResult?.created ?? 0 }}</span>
+          <span><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.EXISTING' | translate }}</strong> {{ lastSyncResult?.existing ?? 0 }}</span>
+          <span><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.LEGACY' | translate }}</strong> {{ lastSyncResult?.legacyMerged ?? 0 }}</span>
+          <span><strong>{{ 'ADMIN_PERMISSION_CATALOG.RESULT.MIRRORS' | translate }}</strong> {{ lastSyncResult?.mirrorGrants ?? 0 }}</span>
+        </div>
+      }
+    </section>
   }
+
+  <section class="dashboard-section catalog-browser">
+    <div class="section-heading">
+      <mat-icon>account_tree</mat-icon>
+      <h3>{{ 'ADMIN_PERMISSION_CATALOG.SECTIONS.VISUALIZE' | translate }}</h3>
+    </div>
+
+    <input
+      #specFileInput
+      type="file"
+      accept="application/json,.json"
+      class="spec-file-input"
+      (change)="onSpecFileSelected($event)"
+    />
+
+    @if (!specView) {
+      <div
+        class="spec-dropzone"
+        (dragover)="onDragOver($event)"
+        (drop)="onSpecFileDropped($event)"
+        role="region"
+      >
+        @if (parsingSpec || loadingLiveSpec) {
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.PARSING' | translate }}</p>
+        } @else {
+          <mat-icon>hub</mat-icon>
+          <h4>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.DROP_TITLE' | translate }}</h4>
+          <p>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.DROP_HINT' | translate }}</p>
+          <div class="spec-dropzone__actions">
+            <button mat-flat-button color="primary" type="button" (click)="loadLiveSpec()" [disabled]="loadingLiveSpec">
+              <mat-icon>cloud_download</mat-icon>
+              <span class="ms-1">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.LOAD_LIVE' | translate }}</span>
+            </button>
+            <button mat-stroked-button type="button" (click)="openSpecPicker()">
+              <mat-icon>folder_open</mat-icon>
+              <span class="ms-1">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.BROWSE' | translate }}</span>
+            </button>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="spec-viewer">
+        <div class="spec-viewer__toolbar">
+          <div class="spec-viewer__file">
+            <mat-icon>description</mat-icon>
+            <div>
+              <strong>{{ specView.fileName }}</strong>
+              <div class="spec-viewer__meta">
+                <span>v{{ specView.version }}</span>
+                @if (liveSpecLoaded) {
+                  <span class="status-pill active">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.LIVE_BADGE' | translate }}</span>
+                } @else {
+                  <span class="status-pill">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.UPLOADED_BADGE' | translate }}</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="spec-viewer__actions">
+            <button
+              mat-stroked-button
+              color="primary"
+              type="button"
+              (click)="loadLiveSpec()"
+              [disabled]="loadingLiveSpec || parsingSpec || downloadingSpec"
+            >
+              @if (loadingLiveSpec) {
+                <mat-spinner diameter="18"></mat-spinner>
+              } @else {
+                <mat-icon>cloud_download</mat-icon>
+              }
+              <span class="ms-1">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.RELOAD_LIVE' | translate }}</span>
+            </button>
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="downloadLiveSpec()"
+              [disabled]="downloadingSpec || loadingLiveSpec"
+            >
+              @if (downloadingSpec) {
+                <mat-spinner diameter="18"></mat-spinner>
+              } @else {
+                <mat-icon>download</mat-icon>
+              }
+              <span class="ms-1">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.DOWNLOAD' | translate }}</span>
+            </button>
+            <button mat-stroked-button type="button" (click)="openSpecPicker()" [disabled]="parsingSpec">
+              <mat-icon>upload</mat-icon>
+              <span class="ms-1">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.REPLACE' | translate }}</span>
+            </button>
+            <button mat-icon-button type="button" (click)="clearSpecView()" [attr.aria-label]="'ADMIN_PERMISSION_CATALOG.SPEC.CLEAR' | translate">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="spec-stat-strip">
+          <div class="spec-stat">
+            <span>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.KPI_ENTITIES' | translate }}</span>
+            <strong>{{ specView.entityCount }}</strong>
+            <small>{{ specView.moduleCount }} {{ 'ADMIN_PERMISSION_CATALOG.SPEC.KPI_MODULES' | translate }}</small>
+          </div>
+          <div class="spec-stat">
+            <span>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.KPI_PROFILES' | translate }}</span>
+            <strong>{{ specView.profileCount }}</strong>
+            <small>{{ specView.actionCatalogCount }} {{ 'ADMIN_PERMISSION_CATALOG.SPEC.KPI_ACTIONS' | translate }}</small>
+          </div>
+          <div class="spec-stat">
+            <span>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.KPI_RESOLVED' | translate }}</span>
+            <strong>{{ specView.expectedPermissionCount }}</strong>
+            <small>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.KPI_RESOLVED_HINT' | translate }}</small>
+          </div>
+          <div class="spec-stat">
+            <span>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.KPI_MIRRORS' | translate }}</span>
+            <strong>{{ specView.mirrorCount }}</strong>
+            <small>{{ specView.presetCount }} {{ 'ADMIN_PERMISSION_CATALOG.SPEC.KPI_PRESETS' | translate }}</small>
+          </div>
+        </div>
+
+        <div class="spec-panel">
+          <div class="spec-tabs" role="tablist">
+            <button type="button" role="tab" class="spec-tab" [class.active]="activeTab === 'entities'" [attr.aria-selected]="activeTab === 'entities'" (click)="setTab('entities')">
+              {{ 'ADMIN_PERMISSION_CATALOG.SPEC.TAB_ENTITIES' | translate }}
+              <em>{{ specView.entityCount }}</em>
+            </button>
+            <button type="button" role="tab" class="spec-tab" [class.active]="activeTab === 'profiles'" [attr.aria-selected]="activeTab === 'profiles'" (click)="setTab('profiles')">
+              {{ 'ADMIN_PERMISSION_CATALOG.SPEC.TAB_PROFILES' | translate }}
+              <em>{{ specView.profileCount }}</em>
+            </button>
+            <button type="button" role="tab" class="spec-tab" [class.active]="activeTab === 'mirrors'" [attr.aria-selected]="activeTab === 'mirrors'" (click)="setTab('mirrors')">
+              {{ 'ADMIN_PERMISSION_CATALOG.SPEC.TAB_MIRRORS' | translate }}
+              <em>{{ specView.mirrorCount }}</em>
+            </button>
+            <button type="button" role="tab" class="spec-tab" [class.active]="activeTab === 'presets'" [attr.aria-selected]="activeTab === 'presets'" (click)="setTab('presets')">
+              {{ 'ADMIN_PERMISSION_CATALOG.SPEC.TAB_PRESETS' | translate }}
+              <em>{{ specView.presetCount }}</em>
+            </button>
+          </div>
+
+          <div class="spec-panel__body">
+            @if (activeTab === 'entities') {
+              <div class="spec-entities">
+                <div class="spec-entities__filters">
+                  <mat-form-field appearance="outline" class="spec-search" subscriptSizing="dynamic">
+                    <mat-label>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.SEARCH' | translate }}</mat-label>
+                    <input matInput [(ngModel)]="entitySearch" />
+                    <mat-icon matSuffix>search</mat-icon>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="spec-module-filter" subscriptSizing="dynamic">
+                    <mat-label>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.MODULE' | translate }}</mat-label>
+                    <mat-select [(ngModel)]="moduleFilter">
+                      <mat-option value="ALL">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.ALL_MODULES' | translate }}</mat-option>
+                      @for (module of specView.modules; track module.name) {
+                        <mat-option [value]="module.name">{{ module.name }} ({{ module.entityCount }})</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="spec-entities__layout">
+                  <div class="spec-entity-list">
+                    @for (entity of filteredEntities(); track entity.entity) {
+                      <button
+                        type="button"
+                        class="spec-entity-row"
+                        [class.active]="selectedEntity?.entity === entity.entity"
+                        [class.has-error]="!!entity.resolveError"
+                        (click)="selectEntity(entity)"
+                      >
+                        <div class="spec-entity-row__top">
+                          <strong>{{ entity.entity }}</strong>
+                          <span class="status-pill">{{ entity.module }}</span>
+                        </div>
+                        <div class="spec-entity-row__meta">
+                          @if (entity.profile) {
+                            <span>{{ entity.profile }}</span>
+                          } @else if (entity.explicitPermissions?.length) {
+                            <span>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.EXPLICIT' | translate }}</span>
+                          }
+                          <span>· {{ entity.resolvedActions.length }} {{ 'ADMIN_PERMISSION_CATALOG.SPEC.ACTIONS' | translate }}</span>
+                        </div>
+                      </button>
+                    } @empty {
+                      <div class="spec-empty">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.NO_ENTITIES' | translate }}</div>
+                    }
+                  </div>
+
+                  <div class="spec-entity-detail">
+                    @if (selectedEntity; as entity) {
+                      <div class="spec-entity-detail__header">
+                        <div>
+                          <h4>{{ entity.entity }}</h4>
+                          <p>{{ entity.description || ('ADMIN_PERMISSION_CATALOG.SPEC.NO_DESCRIPTION' | translate) }}</p>
+                        </div>
+                        <span class="status-pill active">{{ entity.module }}</span>
+                      </div>
+
+                      @if (entity.resolveError) {
+                        <div class="spec-error-banner">{{ entity.resolveError }}</div>
+                      }
+
+                      <div class="spec-detail-grid">
+                        <div>
+                          <strong>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.PROFILE' | translate }}</strong>
+                          <span>{{ entity.profile || '—' }}</span>
+                        </div>
+                        <div>
+                          <strong>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.SECTION' | translate }}</strong>
+                          <span>{{ entity.section || '—' }}</span>
+                        </div>
+                        <div>
+                          <strong>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.ACTIONS' | translate }}</strong>
+                          <span>{{ entity.resolvedActions.length }}</span>
+                        </div>
+                      </div>
+
+                      @if (entity.explicitPermissions?.length) {
+                        <div class="spec-chip-block">
+                          <h5>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.EXPLICIT_PERMS' | translate }}</h5>
+                          <div class="spec-chips">
+                            @for (action of entity.explicitPermissions; track action) {
+                              <span class="action-chip">{{ action }}</span>
+                            }
+                          </div>
+                        </div>
+                      }
+
+                      @if (entity.addActions.length) {
+                        <div class="spec-chip-block">
+                          <h5>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.ADD_ACTIONS' | translate }}</h5>
+                          <div class="spec-chips">
+                            @for (action of entity.addActions; track action) {
+                              <span class="action-chip action-chip--add">{{ action }}</span>
+                            }
+                          </div>
+                        </div>
+                      }
+
+                      @if (entity.removeActions.length) {
+                        <div class="spec-chip-block">
+                          <h5>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.REMOVE_ACTIONS' | translate }}</h5>
+                          <div class="spec-chips">
+                            @for (action of entity.removeActions; track action) {
+                              <span class="action-chip action-chip--remove">{{ action }}</span>
+                            }
+                          </div>
+                        </div>
+                      }
+
+                      @if (entity.legacyAliases.length) {
+                        <div class="spec-chip-block">
+                          <h5>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.ALIASES' | translate }}</h5>
+                          <div class="spec-chips">
+                            @for (alias of entity.legacyAliases; track alias) {
+                              <span class="action-chip action-chip--alias">{{ alias }}</span>
+                            }
+                          </div>
+                        </div>
+                      }
+
+                      <div class="spec-chip-block">
+                        <h5>{{ 'ADMIN_PERMISSION_CATALOG.SPEC.RESOLVED_ACTIONS' | translate }}</h5>
+                        <div class="spec-chips">
+                          @for (action of entity.resolvedActions; track action) {
+                            <span class="action-chip action-chip--resolved">{{ action }}</span>
+                          } @empty {
+                            <span class="cell-muted">—</span>
+                          }
+                        </div>
+                      </div>
+                    } @else {
+                      <div class="spec-empty">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.SELECT_ENTITY' | translate }}</div>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (activeTab === 'profiles') {
+              <div class="spec-profiles">
+                @for (profile of specView.profiles; track profile.name) {
+                  <div class="spec-profile-card">
+                    <div class="spec-profile-card__header">
+                      <strong>{{ profile.name }}</strong>
+                      <span>{{ profile.actions.length }} {{ 'ADMIN_PERMISSION_CATALOG.SPEC.ACTIONS' | translate }}</span>
+                    </div>
+                    <div class="spec-chips">
+                      @for (action of profile.actions; track action) {
+                        <span class="action-chip">{{ action }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (activeTab === 'mirrors') {
+              <div class="spec-mirrors">
+                @if (!specView.roleMirrors.length) {
+                  <div class="spec-empty">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.NO_MIRRORS' | translate }}</div>
+                } @else {
+                  @for (mirror of specView.roleMirrors; track $index) {
+                    <div class="spec-mirror-row">
+                      <div class="spec-mirror-side">
+                        <span class="status-pill">{{ mirror.sourceModule }}</span>
+                        <strong>{{ mirror.sourceEntity }}</strong>
+                      </div>
+                      <mat-icon>arrow_forward</mat-icon>
+                      <div class="spec-mirror-side">
+                        <span class="status-pill">{{ mirror.targetModule }}</span>
+                        <strong>{{ mirror.targetEntity }}</strong>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            }
+
+            @if (activeTab === 'presets') {
+              <div class="spec-presets">
+                @if (!specView.rolePresets.length) {
+                  <div class="spec-empty">{{ 'ADMIN_PERMISSION_CATALOG.SPEC.NO_PRESETS' | translate }}</div>
+                } @else {
+                  @for (preset of specView.rolePresets; track preset.name) {
+                    <div class="spec-preset-card">
+                      <div class="spec-preset-card__header">
+                        <div>
+                          <strong>{{ preset.name }}</strong>
+                          <p>{{ preset.description || ('ADMIN_PERMISSION_CATALOG.SPEC.NO_DESCRIPTION' | translate) }}</p>
+                        </div>
+                        <span class="status-pill">{{ preset.grants?.length || 0 }} {{ 'ADMIN_PERMISSION_CATALOG.SPEC.GRANTS' | translate }}</span>
+                      </div>
+                      <div class="spec-preset-grants">
+                        @for (grant of preset.grants || []; track grant.module + grant.entity) {
+                          <div class="spec-preset-grant">
+                            <div class="spec-preset-grant__title">
+                              <span class="status-pill">{{ grant.module }}</span>
+                              <strong>{{ grant.entity }}</strong>
+                            </div>
+                            <div class="spec-chips">
+                              @for (action of grant.actions; track action) {
+                                <span class="action-chip action-chip--resolved">{{ action }}</span>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </section>
 </div>

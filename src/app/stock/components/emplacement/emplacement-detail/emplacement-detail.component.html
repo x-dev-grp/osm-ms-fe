@@ -56,20 +56,18 @@
           </div>
         </div>
         <div class="header-actions">
-          @if (hasCompleteQrMetadata()) {
-            <button class="btn-icon-edit" [matTooltip]="'AUTO.VIEW_QR' | translate" (click)="openExistingQrDialog()">
-              <i class="fas fa-qrcode me-2"></i>
-
-              {{ 'AUTO.QR' | translate }}
-            </button>
-          }
-          <button class="btn-icon-edit" [disabled]="generatingQr" (click)="generateQr()">
-            <i class="fas fa-qrcode me-2"></i>
-            {{ generatingQr ? 'Generation...' : 'Generer QR' }}
-          </button>
-          @if (hasCompleteQrMetadata()) {
-            <span class="zone-badge">{{ getQrCodeText() }}</span>
-          }
+      <div class="qr-actions">
+  <button *ngIf="hasCompleteQrMetadata()" mat-stroked-button type="button"
+          [matTooltip]="'QR.TITLE' | translate" (click)="openExistingQrDialog()">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ 'AUTO.QR' | translate }}
+  </button>
+  <button mat-stroked-button color="primary" type="button" [disabled]="generatingQr || (hasQrCode() && !canRegenerateExistingQr())"
+          [matTooltip]="'QR.GENERATE' | translate" (click)="generateQr()">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ generatingQr ? '...' : ('QR.GENERATE' | translate) }}
+  </button>
+</div>
           <button class="btn-icon-edit" [routerLink]="['/stock/emplacements', emplacement.id, 'edit']">
             <i class="fas fa-edit me-2"></i>
 

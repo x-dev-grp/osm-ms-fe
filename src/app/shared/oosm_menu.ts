@@ -14,13 +14,16 @@ import {
 } from 'src/app/theme/types/permissions';
 
 /**
- * Menu organized by OOSM module and business logic.
- * Flow: Réception → Production huile → Conditionnement → Inventaire → Finance → Paramètres
+ * Sidebar by mill business flow (not raw module names).
+ * Module gating still uses modulePermission / permission prefixes.
+ *
+ * Flow: Réception → Huilerie → Conditionnement → Stocks → Finance → RH → Maintenance → Pilotage → Admin
  */
 export const oosm_menus: Navigation[] = [
+  // ─── 1. TABLEAU DE BORD ────────────────────────────────────────────────────
   {
     id: 'group-dashboard-hub',
-    title: 'DASHBOARD_HUB.TITLE',
+    title: 'MENU.HOME.TITLE',
     type: 'group',
     children: [
       {
@@ -33,7 +36,8 @@ export const oosm_menus: Navigation[] = [
       }
     ]
   },
-  // ─── RÉCEPTION ─────────────────────────────────────────────────────────────
+
+  // ─── 2. RÉCEPTION & APPORTEURS ──────────────────────────────────────────────
   {
     id: 'group-reception',
     title: 'MENU.RECEPTION.TITLE',
@@ -41,7 +45,7 @@ export const oosm_menus: Navigation[] = [
     modulePermission: 'RECEPTION',
     children: [
       {
-        id: 'collapse-reception-operations',
+        id: 'collapse-reception-new',
         title: 'MENU.RECEPTION.OPERATIONS',
         type: 'collapse',
         icon: 'add_circle_outline',
@@ -54,15 +58,6 @@ export const oosm_menus: Navigation[] = [
             icon: 'spa',
             ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY,
             children: [
-              {
-                id: 'item-reception-olive-exchange',
-                title: 'OPERATION_TYPE.EXCHANGE',
-                type: 'item',
-                url: '/reception/reception-olive/exchange',
-                icon: 'swap_horiz',
-                breadcrumbs: false,
-                ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-              },
               {
                 id: 'item-reception-olive-simple',
                 title: 'OPERATION_TYPE.SIMPLE_RECEPTION',
@@ -89,6 +84,15 @@ export const oosm_menus: Navigation[] = [
                 icon: 'shopping_cart',
                 breadcrumbs: false,
                 ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+              },
+              {
+                id: 'item-reception-olive-exchange',
+                title: 'OPERATION_TYPE.EXCHANGE',
+                type: 'item',
+                url: '/reception/reception-olive/exchange',
+                icon: 'swap_horiz',
+                breadcrumbs: false,
+                ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
               }
             ]
           },
@@ -97,22 +101,22 @@ export const oosm_menus: Navigation[] = [
             title: 'MENU.RECEPTION.OIL',
             type: 'item',
             url: '/reception/reception-huile',
-            icon: 'local_shipping',
+            icon: 'water_drop',
             breadcrumbs: false,
             ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           }
         ]
       },
       {
-        id: 'collapse-reception-history',
-        title: 'MENU.RECEPTION.HISTORY',
+        id: 'collapse-reception-journal',
+        title: 'MENU.RECEPTION.JOURNAL',
         type: 'collapse',
-        icon: 'history',
+        icon: 'menu_book',
         ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY,
         children: [
           {
             id: 'item-reception-list-olive-all',
-            title: 'MENU.PRODUCTION.ALL_OLIVE_RECEPTIONS',
+            title: 'MENU.RECEPTION.JOURNAL_OLIVE',
             type: 'item',
             url: '/reception/reception-list/olive',
             icon: 'list',
@@ -120,44 +124,8 @@ export const oosm_menus: Navigation[] = [
             ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           },
           {
-            id: 'item-reception-list-olive-simple',
-            title: 'AUTO.TRITURATION_PARTICULIER',
-            type: 'item',
-            url: '/reception/reception-list/olive/SIMPLE_RECEPTION',
-            icon: 'person',
-            breadcrumbs: false,
-            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-          },
-          {
-            id: 'item-reception-list-olive-base',
-            title: 'AUTO.TRITURATION_SUR_BASE',
-            type: 'item',
-            url: '/reception/reception-list/olive/BASE',
-            icon: 'recycling',
-            breadcrumbs: false,
-            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-          },
-          {
-            id: 'item-reception-list-olive-purchase',
-            title: 'AUTO.ACHAT_OLIVE',
-            type: 'item',
-            url: '/reception/reception-list/olive/OLIVE_PURCHASE',
-            icon: 'shopping_basket',
-            breadcrumbs: false,
-            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-          },
-          {
-            id: 'item-reception-list-olive-exchange',
-            title: 'OPERATION_TYPE.EXCHANGE',
-            type: 'item',
-            url: '/reception/reception-list/olive/EXCHANGE',
-            icon: 'compare_arrows',
-            breadcrumbs: false,
-            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-          },
-          {
             id: 'item-reception-list-oil',
-            title: 'MENU.PRODUCTION.RECEPTION_OIL',
+            title: 'MENU.RECEPTION.JOURNAL_OIL',
             type: 'item',
             url: '/reception/reception-list/oil',
             icon: 'water_drop',
@@ -169,9 +137,18 @@ export const oosm_menus: Navigation[] = [
             title: 'MENU.RECEPTION.PURCHASE_JOURNAL',
             type: 'item',
             url: '/reception/purchase-journal',
-            icon: 'menu_book',
+            icon: 'receipt_long',
             breadcrumbs: false,
             ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+          },
+          {
+            id: 'item-reception-import',
+            title: 'MENU.RECEPTION.IMPORT',
+            type: 'item',
+            url: '/reception/import',
+            icon: 'upload_file',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)]
           }
         ]
       },
@@ -212,10 +189,10 @@ export const oosm_menus: Navigation[] = [
     ]
   },
 
-  // ─── PRODUCTION HUILE ──────────────────────────────────────────────────────
+  // ─── 3. HUILERIE ───────────────────────────────────────────────────────────
   {
     id: 'group-production',
-    title: 'MENU.PRODUCTION.TITLE',
+    title: 'MENU.PRODUCTION.MILL_TITLE',
     type: 'group',
     modulePermission: 'PRODUCTION',
     children: [
@@ -223,23 +200,23 @@ export const oosm_menus: Navigation[] = [
         id: 'collapse-production-quality',
         title: 'MENU.PRODUCTION.QUALITY',
         type: 'collapse',
-        icon: 'rule',
+        icon: 'science',
         children: [
-          {
-            id: 'item-quality-control-oil',
-            title: 'MENU.RECEPTION.QUALITY_CONTROL_HUILE',
-            type: 'item',
-            url: '/reception/oil_qc',
-            icon: 'science',
-            breadcrumbs: false,
-            ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
-          },
           {
             id: 'item-quality-control-olive',
             title: 'MENU.RECEPTION.QUALITY_CONTROL_OLIVE',
             type: 'item',
             url: '/reception/olive_qc',
             icon: 'biotech',
+            breadcrumbs: false,
+            ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
+          },
+          {
+            id: 'item-quality-control-oil',
+            title: 'MENU.RECEPTION.QUALITY_CONTROL_HUILE',
+            type: 'item',
+            url: '/reception/oil_qc',
+            icon: 'science',
             breadcrumbs: false,
             ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
           }
@@ -265,7 +242,7 @@ export const oosm_menus: Navigation[] = [
             title: 'AUTO.TRANSACTIONS_HUILE',
             type: 'item',
             url: '/storage/oil-transactions',
-            icon: 'water_drop',
+            icon: 'sync_alt',
             breadcrumbs: false,
             ressourcePermission: ProductionEntity.OILTRANSACTION
           },
@@ -292,7 +269,7 @@ export const oosm_menus: Navigation[] = [
     ]
   },
 
-  // ─── CONDITIONNEMENT ─────────────────────────────────────────────────────────
+  // ─── 4. CONDITIONNEMENT & EXPÉDITION ────────────────────────────────────────
   {
     id: 'group-conditioning',
     title: 'MENU.CONDITIONNEMENT.TITLE',
@@ -321,6 +298,7 @@ export const oosm_menus: Navigation[] = [
             url: '/stock/lignes',
             icon: 'conveyor_belt',
             breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
             permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ)]
           },
           {
@@ -331,6 +309,53 @@ export const oosm_menus: Navigation[] = [
             icon: 'label',
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.LABELCONTENT, Action.READ)]
+          },
+          {
+            id: 'item-conditioning-certifications',
+            title: 'AUTO.CERTIFICATIONS',
+            type: 'item',
+            url: '/labels/certifications',
+            icon: 'verified_user',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.CERTIFICATION, Action.READ)]
+          }
+        ]
+      },
+      {
+        id: 'collapse-conditioning-catalog',
+        title: 'MENU.CONDITIONNEMENT.CATALOG',
+        type: 'collapse',
+        icon: 'category',
+        children: [
+          {
+            id: 'item-conditioning-articles',
+            title: 'AUTO.ARTICLES_DE_COND',
+            type: 'item',
+            url: '/stock/articles',
+            icon: 'category',
+            breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)]
+          },
+          {
+            id: 'item-conditioning-products',
+            title: 'AUTO.PRODUITS_FINIS',
+            type: 'item',
+            url: '/stock/products',
+            icon: 'inventory_2',
+            breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)]
+          },
+          {
+            id: 'item-conditioning-bom',
+            title: 'AUTO.NOMENCLATURES_BOM',
+            type: 'item',
+            url: '/stock/boms',
+            icon: 'receipt',
+            breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
+            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)]
           }
         ]
       },
@@ -368,97 +393,17 @@ export const oosm_menus: Navigation[] = [
             permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.CLIENT, Action.READ)]
           }
         ]
-      },
-      {
-        id: 'collapse-conditioning-analytics',
-        title: 'MENU.CONDITIONNEMENT.ANALYTICS',
-        type: 'collapse',
-        icon: 'insights',
-        permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ)],
-        children: [
-          {
-            id: 'item-analytics-of-yield',
-            title: 'AUTO.RENDEMENTS_DES_OF',
-            type: 'item',
-            url: '/analytics/of-yield',
-            icon: 'speed',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
-          },
-          {
-            id: 'item-analytics-quality',
-            title: 'AUTO.QUALITE_NON_CONFORMITES',
-            type: 'item',
-            url: '/analytics/quality',
-            icon: 'fact_check',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
-          },
-          {
-            id: 'item-analytics-bom-gap',
-            title: 'AUTO.ECARTS_NOMENCLATURES_BOM',
-            type: 'item',
-            url: '/analytics/bom-gap',
-            icon: 'difference',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
-          },
-          {
-            id: 'item-analytics-filtration',
-            title: 'AUTO.EFFICACITE_FILTRAGE',
-            type: 'item',
-            url: '/analytics/filtration',
-            icon: 'filter_alt',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
-          }
-        ]
       }
     ]
   },
 
-  // ─── STOCKS & INVENTAIRE ─────────────────────────────────────────────────────
+  // ─── 5. STOCKS EMBALLAGE & ACHATS ──────────────────────────────────────────
   {
     id: 'group-inventory',
     title: 'MENU.STOCKS_INV.TITLE',
     type: 'group',
     modulePermission: 'INVENTAIR',
     children: [
-      {
-        id: 'collapse-stock-catalog',
-        title: 'MENU.STOCKS_INV.ITEMS',
-        type: 'collapse',
-        icon: 'inventory_2',
-        children: [
-          {
-            id: 'item-stocks-articles',
-            title: 'AUTO.ARTICLES_DE_COND',
-            type: 'item',
-            url: '/stock/articles',
-            icon: 'category',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)]
-          },
-          {
-            id: 'item-stocks-products',
-            title: 'AUTO.PRODUITS_FINIS',
-            type: 'item',
-            url: '/stock/products',
-            icon: 'inventory_2',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)]
-          },
-          {
-            id: 'item-stocks-bom',
-            title: 'AUTO.NOMENCLATURES_BOM',
-            type: 'item',
-            url: '/stock/boms',
-            icon: 'receipt',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)]
-          }
-        ]
-      },
       {
         id: 'collapse-stock-operations',
         title: 'MENU.STOCKS_INV.OPERATIONS',
@@ -489,15 +434,6 @@ export const oosm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/par-emplacement',
             icon: 'view_list',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
-          },
-          {
-            id: 'item-stocks-audit',
-            title: 'AUTO.JOURNAL_D_AUDIT',
-            type: 'item',
-            url: '/stock/audit',
-            icon: 'history',
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
           }
@@ -532,7 +468,7 @@ export const oosm_menus: Navigation[] = [
     ]
   },
 
-  // ─── FINANCE ─────────────────────────────────────────────────────────────────
+  // ─── 6. VENTES & TRÉSORERIE ────────────────────────────────────────────────
   {
     id: 'group-finance',
     title: 'MENU.FINANCE.TITLE',
@@ -546,20 +482,11 @@ export const oosm_menus: Navigation[] = [
         icon: 'account_balance',
         children: [
           {
-            id: 'item-finance-expenses',
-            title: 'MENU.FINANCE.EXPENSES',
+            id: 'item-finance-cash-register',
+            title: 'MENU.FINANCE.CASH_REGISTER',
             type: 'item',
-            url: '/finance/expenses',
-            icon: 'receipt_long',
-            breadcrumbs: false,
-            ressourcePermission: FinanceEntity.EXPENSE
-          },
-          {
-            id: 'item-finance-transactions',
-            title: 'MENU.FINANCE.TRANSACTIONS',
-            type: 'item',
-            url: '/finance/transactions',
-            icon: 'sync_alt',
+            url: '/finance/cash-register',
+            icon: 'point_of_sale',
             breadcrumbs: false,
             ressourcePermission: FinanceEntity.FINANCIALTRANSACTION
           },
@@ -573,24 +500,24 @@ export const oosm_menus: Navigation[] = [
             ressourcePermission: FinanceEntity.BANKACCOUNT
           },
           {
-            id: 'item-finance-cash-register',
-            title: 'MENU.FINANCE.CASH_REGISTER',
+            id: 'item-finance-transactions',
+            title: 'MENU.FINANCE.TRANSACTIONS',
             type: 'item',
-            url: '/finance/cash-register',
-            icon: 'point_of_sale',
+            url: '/finance/transactions',
+            icon: 'sync_alt',
             breadcrumbs: false,
             ressourcePermission: FinanceEntity.FINANCIALTRANSACTION
+          },
+          {
+            id: 'item-finance-expenses',
+            title: 'MENU.FINANCE.EXPENSES',
+            type: 'item',
+            url: '/finance/expenses',
+            icon: 'receipt_long',
+            breadcrumbs: false,
+            ressourcePermission: FinanceEntity.EXPENSE
           }
         ]
-      },
-      {
-        id: 'item-finance-season-recap',
-        title: 'MENU.FINANCE.SEASON_RECAP',
-        type: 'item',
-        url: '/finance/season-recap',
-        icon: 'summarize',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)]
       },
       {
         id: 'collapse-finance-sales',
@@ -603,7 +530,7 @@ export const oosm_menus: Navigation[] = [
             title: 'MENU.FINANCE.OIL_SALES',
             type: 'item',
             url: '/finance/oil-sales',
-            icon: 'point_of_sale',
+            icon: 'water_drop',
             breadcrumbs: false,
             ressourcePermission: FinanceEntity.OILSALE
           },
@@ -614,6 +541,7 @@ export const oosm_menus: Navigation[] = [
             url: '/finance/oil-credit',
             icon: 'credit_score',
             breadcrumbs: false,
+            modulePermission: 'FINANCE',
             permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.READ)],
             ressourcePermission: ProductionEntity.OILCREDIT
           },
@@ -627,11 +555,20 @@ export const oosm_menus: Navigation[] = [
             ressourcePermission: FinanceEntity.WASTESALE
           }
         ]
+      },
+      {
+        id: 'item-finance-season-recap',
+        title: 'MENU.FINANCE.SEASON_RECAP',
+        type: 'item',
+        url: '/finance/season-recap',
+        icon: 'summarize',
+        breadcrumbs: false,
+        permissions: [permissionKey(OOSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)]
       }
     ]
   },
 
-  // ─── RH / HR ─────────────────────────────────────────────────────────────────
+  // ─── 7. PERSONNEL ──────────────────────────────────────────────────────────
   {
     id: 'group-hr',
     title: 'MENU.HR.TITLE',
@@ -667,7 +604,7 @@ export const oosm_menus: Navigation[] = [
             title: 'HR.QUICK_NAV.DEPARTMENTS',
             type: 'item',
             url: '/hr/departments',
-            icon: 'account_tree',
+            icon: 'apartment',
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.HR, HREntity.DEPARTMENT, Action.READ)]
           },
@@ -720,7 +657,7 @@ export const oosm_menus: Navigation[] = [
             title: 'HR.QUICK_NAV.POINTAGE',
             type: 'item',
             url: '/hr/pointages',
-            icon: 'schedule',
+            icon: 'fingerprint',
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.HR, HREntity.POINTAGE, Action.READ)]
           },
@@ -759,24 +696,6 @@ export const oosm_menus: Navigation[] = [
             icon: 'event_busy',
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.HR, HREntity.LEAVEREQUEST, Action.READ)]
-          },
-          {
-            id: 'item-hr-leave-types',
-            title: 'HR.QUICK_NAV.LEAVE_TYPES',
-            type: 'item',
-            url: '/hr/leave-types',
-            icon: 'category',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.HR, HREntity.LEAVETYPE, Action.READ)]
-          },
-          {
-            id: 'item-hr-holidays',
-            title: 'HR.QUICK_NAV.PUBLIC_HOLIDAYS',
-            type: 'item',
-            url: '/hr/public-holidays',
-            icon: 'celebration',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.HR, HREntity.PUBLICHOLIDAY, Action.READ)]
           }
         ]
       },
@@ -834,36 +753,62 @@ export const oosm_menus: Navigation[] = [
         ]
       },
       {
-        id: 'item-hr-settings',
-        title: 'HR.QUICK_NAV.SETTINGS',
-        type: 'item',
-        url: '/hr/settings',
+        id: 'collapse-hr-settings',
+        title: 'MENU.HR.SETTINGS',
+        type: 'collapse',
         icon: 'settings',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.LEGALRULE, Action.READ)]
-      },
-      {
-        id: 'item-hr-compliance',
-        title: 'HR.QUICK_NAV.COMPLIANCE',
-        type: 'item',
-        url: '/hr/compliance',
-        icon: 'verified_user',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.COMPLIANCE, Action.READ)]
-      },
-      {
-        id: 'item-hr-agent',
-        title: 'HR.QUICK_NAV.AGENT',
-        type: 'item',
-        url: '/hr/agent',
-        icon: 'smart_toy',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ)]
+        children: [
+          {
+            id: 'item-hr-leave-types',
+            title: 'HR.QUICK_NAV.LEAVE_TYPES',
+            type: 'item',
+            url: '/hr/leave-types',
+            icon: 'category',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.LEAVETYPE, Action.READ)]
+          },
+          {
+            id: 'item-hr-holidays',
+            title: 'HR.QUICK_NAV.PUBLIC_HOLIDAYS',
+            type: 'item',
+            url: '/hr/public-holidays',
+            icon: 'celebration',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.PUBLICHOLIDAY, Action.READ)]
+          },
+          {
+            id: 'item-hr-settings',
+            title: 'HR.QUICK_NAV.SETTINGS',
+            type: 'item',
+            url: '/hr/settings',
+            icon: 'tune',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.LEGALRULE, Action.READ)]
+          },
+          {
+            id: 'item-hr-compliance',
+            title: 'HR.QUICK_NAV.COMPLIANCE',
+            type: 'item',
+            url: '/hr/compliance',
+            icon: 'verified_user',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.COMPLIANCE, Action.READ)]
+          },
+          {
+            id: 'item-hr-agent',
+            title: 'HR.QUICK_NAV.AGENT',
+            type: 'item',
+            url: '/hr/agent',
+            icon: 'smart_toy',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.HR, HREntity.EMPLOYEE, Action.READ)]
+          }
+        ]
       }
     ]
   },
 
-  // ─── MAINTENANCE & ÉQUIPEMENT ───────────────────────────────────────────────
+  // ─── 8. MAINTENANCE ────────────────────────────────────────────────────────
   {
     id: 'group-maintenance-equipment',
     title: 'MENU.MAINTENANCE_EQUIPMENT.TITLE',
@@ -903,7 +848,86 @@ export const oosm_menus: Navigation[] = [
     ]
   },
 
-  // ─── PARAMÈTRES ──────────────────────────────────────────────────────────────
+  // ─── 9. PILOTAGE & RAPPORTS ────────────────────────────────────────────────
+  {
+    id: 'group-pilotage',
+    title: 'MENU.PILOTAGE.TITLE',
+    type: 'group',
+    children: [
+      {
+        id: 'collapse-pilotage-conditioning',
+        title: 'MENU.PILOTAGE.CONDITIONING',
+        type: 'collapse',
+        icon: 'insights',
+        modulePermission: 'CONDITIONING',
+        permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ)],
+        children: [
+          {
+            id: 'item-analytics-dashboard',
+            title: 'AUTO.RAPPORT_GLOBAL_DES_OF',
+            type: 'item',
+            url: '/analytics/dashboard',
+            icon: 'dashboard',
+            breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
+          },
+          {
+            id: 'item-analytics-of-yield',
+            title: 'AUTO.RENDEMENTS_DES_OF',
+            type: 'item',
+            url: '/analytics/of-yield',
+            icon: 'speed',
+            breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
+          },
+          {
+            id: 'item-analytics-quality',
+            title: 'AUTO.QUALITE_NON_CONFORMITES',
+            type: 'item',
+            url: '/analytics/quality',
+            icon: 'fact_check',
+            breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
+          },
+          {
+            id: 'item-analytics-bom-gap',
+            title: 'AUTO.ECARTS_NOMENCLATURES_BOM',
+            type: 'item',
+            url: '/analytics/bom-gap',
+            icon: 'difference',
+            breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
+          },
+          {
+            id: 'item-analytics-filtration',
+            title: 'AUTO.EFFICACITE_FILTRAGE',
+            type: 'item',
+            url: '/analytics/filtration',
+            icon: 'filter_alt',
+            breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
+          },
+          {
+            id: 'item-conditioning-audit',
+            title: 'AUTO.JOURNAL_D_AUDIT',
+            type: 'item',
+            url: '/stock/audit',
+            icon: 'history',
+            breadcrumbs: false,
+            modulePermission: 'CONDITIONING',
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.AUDIT, Action.READ)]
+          }
+        ]
+      }
+    ]
+  },
+
+  // ─── 10. ADMINISTRATION ────────────────────────────────────────────────────
   {
     id: 'group-settings',
     title: 'MENU.SETTINGS.TITLE',
@@ -943,16 +967,6 @@ export const oosm_menus: Navigation[] = [
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRULE, Action.READ)],
             ressourcePermission: ProductionEntity.QUALITYCONTROLRULE
-          },
-          {
-            id: 'item-settings-certifications',
-            title: 'AUTO.CERTIFICATIONS',
-            type: 'item',
-            url: '/labels/certifications',
-            icon: 'verified_user',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.CERTIFICATION, Action.READ)],
-            ressourcePermission: ProductionEntity.CERTIFICATION
           },
           {
             id: 'item-settings-mill-machines',

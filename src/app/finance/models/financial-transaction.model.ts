@@ -94,6 +94,10 @@ export interface FinancialTransaction {
   vendorName?: string;
   paidAmount?: number;
   unpaidAmount?: number;
+  publicCode?: string | null;
+  qrHex?: string | null;
+  qrUrl?: string | null;
+  qrImageBase64?: string | null;
 }
 
 /** Normalizes API amounts that may arrive as number or string (BigDecimal). */

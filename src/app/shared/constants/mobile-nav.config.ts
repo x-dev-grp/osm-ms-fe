@@ -13,6 +13,15 @@ export interface MobileNavTab {
 
 export const MOBILE_NAV_MORE_TAB_ID = 'more';
 
+/** Stock paths that belong to Conditionnement (catalog / lines), not Inventaire. */
+const CONDITIONING_STOCK_PREFIXES = [
+  '/stock/lignes',
+  '/stock/articles',
+  '/stock/products',
+  '/stock/boms',
+  '/stock/audit'
+];
+
 export const OOSM_MOBILE_NAV_TABS: MobileNavTab[] = [
   {
     id: 'home',
@@ -30,17 +39,17 @@ export const OOSM_MOBILE_NAV_TABS: MobileNavTab[] = [
   },
   {
     id: 'production',
-    labelKey: 'MENU.PRODUCTION.TITLE',
+    labelKey: 'MENU.PRODUCTION.MILL_TITLE',
     icon: 'precision_manufacturing',
     routePrefixes: ['/storage', '/reception/oil_qc', '/reception/olive_qc'],
     menuGroupId: 'group-production'
   },
   {
-    id: 'stock',
-    labelKey: 'MENU.STOCKS_INV.TITLE',
+    id: 'conditioning',
+    labelKey: 'MENU.CONDITIONNEMENT.TITLE',
     icon: 'inventory_2',
-    routePrefixes: ['/stock'],
-    menuGroupId: 'group-inventory'
+    routePrefixes: ['/of', '/labels', '/projets', '/analytics', ...CONDITIONING_STOCK_PREFIXES],
+    menuGroupId: 'group-conditioning'
   }
 ];
 
@@ -85,6 +94,10 @@ export const ADMIN_MOBILE_PRIMARY_URLS = ADMIN_MOBILE_NAV_TABS.map((tab) => tab.
 
 const PRODUCTION_ROUTE_PREFIXES = ['/storage', '/reception/oil_qc', '/reception/olive_qc'];
 
+function matchesPrefix(normalized: string, prefix: string): boolean {
+  return normalized === prefix || normalized.startsWith(`${prefix}/`) || normalized.startsWith(`${prefix};`);
+}
+
 export function findMenuGroupById(menus: Navigation[], groupId: string): Navigation | undefined {
   return menus.find((menu) => menu.id === groupId && menu.type === 'group');
 }
@@ -123,7 +136,7 @@ export function resolveMobileNavTabId(url: string, tabs: MobileNavTab[]): string
   }
 
   for (const prefix of PRODUCTION_ROUTE_PREFIXES) {
-    if (normalized === prefix || normalized.startsWith(`${prefix}/`) || normalized.startsWith(`${prefix};`)) {
+    if (matchesPrefix(normalized, prefix)) {
       const productionTab = tabs.find((tab) => tab.id === 'production');
       if (productionTab) {
         return productionTab.id;
@@ -131,13 +144,26 @@ export function resolveMobileNavTabId(url: string, tabs: MobileNavTab[]): string
     }
   }
 
+  for (const prefix of CONDITIONING_STOCK_PREFIXES) {
+    if (matchesPrefix(normalized, prefix)) {
+      const conditioningTab = tabs.find((tab) => tab.id === 'conditioning');
+      if (conditioningTab) {
+        return conditioningTab.id;
+      }
+    }
+  }
+
   for (const tab of tabs) {
     for (const prefix of tab.routePrefixes) {
-      if (prefix === '/reception' && PRODUCTION_ROUTE_PREFIXES.some((p) => normalized.startsWith(p))) {
+      if (prefix === '/reception' && PRODUCTION_ROUTE_PREFIXES.some((p) => matchesPrefix(normalized, p))) {
         continue;
       }
 
-      if (normalized === prefix || normalized.startsWith(`${prefix}/`) || normalized.startsWith(`${prefix};`)) {
+      if (CONDITIONING_STOCK_PREFIXES.includes(prefix)) {
+        continue;
+      }
+
+      if (matchesPrefix(normalized, prefix)) {
         return tab.id;
       }
     }

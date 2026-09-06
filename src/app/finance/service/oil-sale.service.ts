@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { OilSale } from '../models/oil-sale.model';
 import { ApiResponse } from '../../shared/models/api-response';
 import { OilSaleCreateRequest } from '../oil-sales/oil-sale-add/oil-sale-create.request';
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -53,4 +54,13 @@ export class OilSaleService {
   processPayment(payload: any): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<void>>(`${this.baseUrl}/payment`, payload);
   }
+
+  generateQr(oilSaleId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.baseUrl}/qr/OILSALE/${oilSaleId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.baseUrl}/search/by-code`, { params: { code } });
+  }
+
 }

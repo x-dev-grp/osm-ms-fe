@@ -13,10 +13,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../theme/types/role';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { APP_LOGO_FULL } from '../../shared/config/logo.config';
+import { AuthLangSwitcherComponent } from '../auth-lang-switcher.component';
 
 @Component({
   selector: 'app-login',
-  imports: [TranslateModule, CommonModule, SharedModule, RouterModule, MatProgressSpinnerModule],
+  imports: [TranslateModule, CommonModule, SharedModule, RouterModule, MatProgressSpinnerModule, AuthLangSwitcherComponent],
   templateUrl: './login.component.html',
   standalone: true,
   styleUrls: ['../authentication.scss']
@@ -26,14 +27,24 @@ export class LoginComponent implements OnInit {
 
   authenticationService = inject(AuthenticationService);
   loading = false;
-  form: FormGroup;
+  form!: FormGroup;
   hide = true;
-  errorMessage: any;
+  errorMessage: { message?: string } | string | null = null;
   private _fb = inject(FormBuilder);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private tokenService = inject(TokenService);
   private translateService = inject(TranslateService);
+
+  get errorText(): string {
+    if (!this.errorMessage) {
+      return '';
+    }
+    if (typeof this.errorMessage === 'string') {
+      return this.errorMessage;
+    }
+    return this.errorMessage.message ?? '';
+  }
 
   getUserNameErrorMessage() {
     if (this.form.controls['username'].hasError('required')) {
@@ -87,17 +98,18 @@ export class LoginComponent implements OnInit {
 
   submit() {
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
+
     this.loading = true;
+    this.errorMessage = null;
     const rememberMe = this.form.get('rememberMe')?.value === true;
-    const loginPayload = {
-      ...this.form.value,
-      username: (this.form.get('username')?.value as string)?.trim()
-    };
+    const username = String(this.form.get('username')?.value ?? '').trim();
+    const password = this.form.get('password')?.value as string;
 
     this.authenticationService
-      .login(loginPayload)
+      .login({ username, password })
       .pipe(
         first(),
         catchError((err: any) => {
@@ -105,7 +117,7 @@ export class LoginComponent implements OnInit {
           if ([504, 503].includes(err?.status)) {
             this.errorMessage = { message: this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE') };
           } else if (err?.error?.error_uri && err?.error?.error_description) {
-            this.router.navigate(
+            void this.router.navigate(
               [
                 '/auth/user/update-password',
                 {
@@ -113,44 +125,38 @@ export class LoginComponent implements OnInit {
                   id: err.error.error_uri
                 }
               ],
-              {
-                state: { temporaryPassword: this.form.get('password')?.value }
-              }
+              { state: { temporaryPassword: password } }
             );
           } else {
-            this.errorMessage = err?.error;
+            this.errorMessage = err?.error ?? { message: this.translateService.instant('LOGIN.UNEXPECTED_ERROR') };
           }
           return of(null);
         })
       )
       .subscribe({
         next: (response: unknown) => {
-          if (response) {
-            this.errorMessage = null;
-            this.loading = false;
-            const accessToken = (response as Record<string, unknown>)['access_token'] as string;
-            const refreshToken = (response as Record<string, unknown>)['refresh_token'] as string;
-            this.tokenService.persistLogin(
-              accessToken,
-              refreshToken,
-              rememberMe,
-              this.form.get('username')?.value
-            );
-            this.authenticationService.applyAccessToken(accessToken, { reloadPhoto: false });
-            this.authenticationService.refreshSession().subscribe({
-              next: () => {
-                const role = this.authenticationService.currentUserValue?.role;
-                if (role === Role.OosmAdmin) {
-                  this.router.navigate(['/dashboard/administration']);
-                } else {
-                  this.router.navigate(['/dashboard']);
-                }
-              },
-              error: () => {
-                this.errorMessage = { message: this.translateService.instant('LOGIN.UNEXPECTED_ERROR') };
-              }
-            });
+          if (!response) {
+            return;
           }
+
+          this.loading = false;
+          const accessToken = (response as Record<string, unknown>)['access_token'] as string;
+          const refreshToken = (response as Record<string, unknown>)['refresh_token'] as string;
+          this.tokenService.persistLogin(accessToken, refreshToken, rememberMe, username);
+          this.authenticationService.applyAccessToken(accessToken, { reloadPhoto: false });
+          this.authenticationService.refreshSession().subscribe({
+            next: () => {
+              const role = this.authenticationService.currentUserValue?.role;
+              if (role === Role.OosmAdmin) {
+                void this.router.navigate(['/dashboard/administration']);
+              } else {
+                void this.router.navigate(['/dashboard']);
+              }
+            },
+            error: () => {
+              this.errorMessage = { message: this.translateService.instant('LOGIN.UNEXPECTED_ERROR') };
+            }
+          });
         },
         error: () => {
           this.errorMessage = this.translateService.instant('LOGIN.UNEXPECTED_ERROR');

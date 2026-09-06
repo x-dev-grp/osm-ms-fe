@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { GlobalLot, PlanItemType, PlanningItem } from '../../../shared/models/planningDTOS';
 import { SupplierType } from '../../../shared/models/supplier-type';
@@ -16,6 +17,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppParameterService } from '../../../shared/services/AppParameterService';
 import { ToastService } from '../../../shared/services/toast.service';
 import { TenantParameterClient } from '../../../shared/services/tenant-parameter.client';
+import { MillMachineService } from '../../../shared/services/mill-machine.service';
+import { MillMachine } from '../../../shared/models/millMachine';
 
 interface ChildLotWithRendement extends PlanningItem {
   calculatedRendement?: number;
@@ -38,6 +41,7 @@ interface ChildLotWithRendement extends PlanningItem {
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
+    MatSelectModule,
     CommonModule,
     FormsModule,
     TranslateModule
@@ -56,6 +60,10 @@ export class CompletionDetailsDialogComponent implements OnInit {
   triturationMinutes: number | null = null;
   triturationPricePerKg: number | null = null;
 
+  mills: MillMachine[] = [];
+  selectedMillId: string | null = null;
+  requireMillSelection = false;
+
   item: PlanningItem | GlobalLot;
   itemType: PlanItemType;
   protected readonly PlanItemType = PlanItemType;
@@ -68,14 +76,17 @@ export class CompletionDetailsDialogComponent implements OnInit {
     private toast: ToastService,
     private parameterService: AppParameterService,
     private tenantParams: TenantParameterClient,
+    private millMachineService: MillMachineService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       item: PlanningItem | GlobalLot;
       itemType: PlanItemType;
+      requireMillSelection?: boolean;
     }
   ) {
     this.item = data.item;
     this.itemType = data.itemType;
+    this.requireMillSelection = !!data.requireMillSelection;
     if (this.itemType === this.PlanItemType.GLOBAL_LOT) {
       this.initializeChildLots();
     }
@@ -168,6 +179,13 @@ export class CompletionDetailsDialogComponent implements OnInit {
     return this.itemType === PlanItemType.LOT ? (this.item as PlanningItem) : null;
   }
 
+  get shouldShowMillPicker(): boolean {
+    if (this.requireMillSelection) {
+      return true;
+    }
+    return !this.resolveExistingMillId();
+  }
+
   get durationSummary(): string {
     const total = this.triturationDurationInMinutes;
     if (total == null || total <= 0) {
@@ -218,8 +236,38 @@ export class CompletionDetailsDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.completionTime = this.toTimeInputValue(this.completionDate);
+    this.selectedMillId = this.resolveExistingMillId();
+    this.loadMillsIfNeeded();
     this.loadTriturationPriceFromParam();
     this.calculateChildLotsPrice();
+  }
+
+  private resolveExistingMillId(): string | null {
+    const fromItem = (this.item as PlanningItem | GlobalLot)?.millMachineId;
+    if (fromItem) {
+      return String(fromItem);
+    }
+    return null;
+  }
+
+  private loadMillsIfNeeded(): void {
+    if (!this.shouldShowMillPicker && this.selectedMillId) {
+      return;
+    }
+    this.millMachineService.getAllMillMachines().subscribe({
+      next: (mills) => {
+        this.mills = (mills ?? []).filter((m) => {
+          const status = (m.operatingStatus ?? '').toUpperCase();
+          return !['MAINTENANCE', 'OUT_OF_SERVICE', 'INACTIVE'].includes(status);
+        });
+        if (!this.selectedMillId && this.mills.length === 1 && this.mills[0].id) {
+          this.selectedMillId = this.mills[0].id;
+        }
+      },
+      error: () => {
+        this.mills = [];
+      }
+    });
   }
 
   loadTriturationPriceFromParam(): void {
@@ -253,6 +301,10 @@ export class CompletionDetailsDialogComponent implements OnInit {
   }
 
   onConfirm(): void {
+    if (this.shouldShowMillPicker && !this.selectedMillId) {
+      this.toast.warning(this.translate.instant('RECEPTION.PLANNING.COMPLETION.MILL_REQUIRED'));
+      return;
+    }
     if (this.inputOilQuantity == null || this.inputOilQuantity < 0) {
       this.toast.warning(this.translate.instant('RECEPTION.PLANNING.COMPLETION.INVALID_OIL_QUANTITY'));
       return;
@@ -350,6 +402,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
       triturationHours: this.triturationHours,
       triturationMinutes: this.triturationMinutes,
       triturationDurationInMinutes: this.triturationDurationInMinutes,
+      millMachineId: this.selectedMillId || this.resolveExistingMillId() || undefined,
       childLotsRendement: this.childLotsWithRendement.map((lot) => ({
         lotNumber: lot.lotNumber,
         oilQuantity: lot.oilQuantity!,

@@ -18,6 +18,8 @@
 
       <mat-card-title>{{ 'OIL_TRANSACTIONS.VIEW.TITLE' | translate }}</mat-card-title>
       <div class="header-actions">
+        
+        
         <button (click)="onEdit()" [matTooltip]="'OIL_TRANSACTIONS.VIEW.ACTIONS.EDIT' | translate" color="primary"
                 mat-raised-button>
           <mat-icon>edit</mat-icon>
@@ -29,6 +31,19 @@
       </div>
     </div>
     <mat-card-content class="scrollable-content enhanced-content">
+      <div class="qr-actions">
+  <button *ngIf="hasCompleteQrMetadata()" mat-stroked-button type="button"
+          [matTooltip]="'QR.TITLE' | translate" (click)="openExistingQrDialog()">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ 'AUTO.QR' | translate }}
+  </button>
+  <button mat-stroked-button color="primary" type="button" [disabled]="generatingQr || (hasQrCode() && !canRegenerateExistingQr())"
+          [matTooltip]="'QR.GENERATE' | translate" (click)="generateQr()">
+    <mat-icon>qr_code_2</mat-icon>
+    {{ generatingQr ? '...' : ('QR.GENERATE' | translate) }}
+  </button>
+</div>
+
       <!-- General Information Section -->
       <mat-card class="section-card">
         <div class="section-header">

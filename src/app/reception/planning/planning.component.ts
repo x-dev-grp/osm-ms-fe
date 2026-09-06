@@ -41,9 +41,11 @@ import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeade
 import { SharedModule } from '../../shared/shared.module';
 import { DialogModule } from '@angular/cdk/dialog';
 import { ChildLotCompletionDto, PlanningService } from '../../shared/services/planning.service';
+import { MillPlanningConfigService } from '../../shared/services/mill-planning-config.service';
 import { ConfirmDialogComponent } from '../../shared/component/confirm-dialog/confirm-dialog.component';
 import { CompletionDetailsDialogComponent } from './completion-details-dialog/completion-details-dialog.component';
 import { SumPipe } from '../../shared/pipes/sum.pipe';
+import { Router } from '@angular/router';
 import {
   BoardItem,
   GlobalLot,
@@ -75,6 +77,7 @@ type CompletionResult = {
   triturationDurationInMinutes?: number | null | '';
   trtDate?: string;
   finalObservation?: string;
+  millMachineId?: string;
 };
 
 @Component({
@@ -147,7 +150,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private toast: ToastService,
     private dialog: MatDialog,
-    private planningService: PlanningService
+    private planningService: PlanningService,
+    private millPlanningConfig: MillPlanningConfigService,
+    private router: Router
   ) {}
 
   get visibleUnassignedCount(): number {
@@ -243,7 +248,17 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       this.cdr.markForCheck();
     });
 
-    this.loadPlanning();
+    this.millPlanningConfig
+      .isEnabled()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((enabled) => {
+        if (!enabled) {
+          this.toast.warning(this.translationservice.instant('RECEPTION.PLANNING.DISABLED_HINT'));
+          void this.router.navigate(['/reception']);
+          return;
+        }
+        this.loadPlanning();
+      });
   }
 
   ngAfterViewInit(): void {
@@ -804,6 +819,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   toPlanningItem(d: UnifiedDelivery): PlanningItem {
     // Ensure all fields are always present, even if undefined
     const extra: Partial<PlanningItem> = d as unknown as Partial<PlanningItem>;
+    const millId =
+      (d as UnifiedDelivery & { millMachine?: { id?: string } }).millMachine?.id ??
+      (extra as PlanningItem).millMachineId;
     const result: PlanningItem = {
       id: d.id,
       lotNumber: d.lotNumber,
@@ -812,6 +830,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       oliveQuantity: d.poidsNet ?? 0, // Use poidsNet instead of oliveQuantity
       globalLotNumber: d.globalLotNumber ?? null,
       completed: d.status === 'COMPLETED',
+      millMachineId: millId ?? undefined,
       supplier: d.supplier ?? undefined,
       region: d.region?.name ?? undefined,
       oliveVariety: d.oliveVariety?.name ?? undefined,
@@ -832,11 +851,28 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   markAsCompleted(item: BoardItem): void {
+    // Ensure mill from board column is attached before opening completion dialog
+    if (!item.data.millMachineId) {
+      const mill = this.mills.find((m) => m.receptions.some((r) => r === item || this.sameBoardItem(r, item)));
+      if (mill?.id) {
+        item.data.millMachineId = mill.id;
+      }
+    }
     if (item.type === PlanItemType.LOT) {
       this.markAsCompletedLot(item);
     } else if (item.type === PlanItemType.GLOBAL_LOT) {
       this.markAsCompletedGlobalLot(item);
     }
+  }
+
+  private sameBoardItem(a: BoardItem, b: BoardItem): boolean {
+    if (a.type !== b.type) {
+      return false;
+    }
+    if (a.type === PlanItemType.LOT) {
+      return (a.data as PlanningItem).lotNumber === (b.data as PlanningItem).lotNumber;
+    }
+    return (a.data as GlobalLot).globalLotNumber === (b.data as GlobalLot).globalLotNumber;
   }
 
   // Add trackBy functions for better performance
@@ -879,10 +915,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
               ? 0
               : Number(r.triturationDurationInMinutes),
           trtDate: r.trtDate,
-          finalObservation: r.finalObservation
+          finalObservation: r.finalObservation,
+          millMachineId: r.millMachineId as string | undefined
         }))
       )
-      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, autoSetStorage, triturationDurationInMinutes, trtDate, finalObservation }) => {
+      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, autoSetStorage, triturationDurationInMinutes, trtDate, finalObservation, millMachineId }) => {
         const label = (item.data as PlanningItem).lotNumber;
 
         // Update UI model
@@ -890,6 +927,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         if (target) {
           (target as PlanningItem).oilQuantity = oilQuantity;
           (target as PlanningItem).rendement = rendement;
+          if (millMachineId) {
+            (target as PlanningItem).millMachineId = millMachineId;
+          }
           if ('autoSetStorage' in target) (target as any).autoSetStorage = autoSetStorage;
           if ('completed' in target) (target as any).completed = true;
           this.cdr.markForCheck();
@@ -906,7 +946,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           autoSetStorage,
           triturationDurationInMinutes,
           trtDate,
-          finalObservation
+          finalObservation,
+          millMachineId
         );
         this.handleResponse(req$, item, target);
       });
@@ -928,10 +969,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
               ? 0
               : Number(r.triturationDurationInMinutes),
           trtDate: r.trtDate,
-          finalObservation: r.finalObservation
+          finalObservation: r.finalObservation,
+          millMachineId: r.millMachineId as string | undefined
         }))
       )
-      .subscribe(({ oilQuantity, rendement, childLotsRendement, autoSetStorage, triturationDurationInMinutes, trtDate, finalObservation }) => {
+      .subscribe(({ oilQuantity, rendement, childLotsRendement, autoSetStorage, triturationDurationInMinutes, trtDate, finalObservation, millMachineId }) => {
         const label = (item.data as GlobalLot).globalLotNumber;
 
         // Update UI model
@@ -939,6 +981,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         if (target) {
           (target as GlobalLot).oilQuantity = oilQuantity;
           (target as GlobalLot).rendement = rendement;
+          if (millMachineId) {
+            (target as GlobalLot).millMachineId = millMachineId;
+          }
           if ('autoSetStorage' in target) (target as any).autoSetStorage = autoSetStorage;
           if ('completed' in target) (target as any).completed = true;
           this.cdr.markForCheck();
@@ -954,7 +999,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           autoSetStorage,
           triturationDurationInMinutes,
           trtDate,
-          finalObservation
+          finalObservation,
+          millMachineId
         );
         this.handleResponse(req$, item, target);
       });
@@ -965,7 +1011,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     const isMobile = window.innerWidth <= 768;
 
     const dialogRef = this.dialog.open(CompletionDetailsDialogComponent, {
-      data: { item: item.data, itemType: item.type },
+      data: {
+        item: item.data,
+        itemType: item.type,
+        requireMillSelection: !item.data.millMachineId
+      },
       width: isMobile ? '100vw' : 'min(960px, 92vw)',
       height: isMobile ? '100vh' : undefined,
       maxWidth: isMobile ? '100vw' : '960px',
@@ -1039,7 +1089,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     autoSetStorage: any,
     triturationDurationInMinutes: any,
     trtDate?: string,
-    finalObservation?: string
+    finalObservation?: string,
+    millMachineId?: string
   ) {
     if (itemToComplete.type === PlanItemType.LOT) {
       return this.planningService.completeLotWithDetails(
@@ -1050,7 +1101,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         autoSetStorage,
         triturationDurationInMinutes,
         trtDate,
-        finalObservation
+        finalObservation,
+        millMachineId
       );
     } else {
       return this.planningService.completeGlobalLotWithDetails(
@@ -1061,7 +1113,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         totalTriturationPrice,
         triturationDurationInMinutes,
         trtDate,
-        finalObservation
+        finalObservation,
+        millMachineId
       );
     }
   }

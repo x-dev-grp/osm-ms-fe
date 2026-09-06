@@ -13,18 +13,7 @@
         <h2 class="d-inline-block ms-2">Bon de commande {{ bon.numeroBC }}</h2>
       </div>
       <div class="btn-group">
-        @if (hasCompleteQrMetadata()) {
-          <button class="btn btn-outline-primary" [matTooltip]="'AUTO.VIEW_QR' | translate" (click)="openExistingQrDialog()">
-            <i class="fas fa-qrcode"></i>  {{ 'AUTO.QR' | translate }}
-          </button>
-        }
-        <button class="btn btn-outline-primary" [disabled]="generatingQr" (click)="generateQr()">
-          <i class="fas fa-qrcode"></i>
-          {{ generatingQr ? 'Generation...' : 'Generer QR' }}
-        </button>
-        @if (hasCompleteQrMetadata()) {
-          <span class="badge bg-light text-dark border ms-2 qr-code-badge">{{ getQrCodeText() }}</span>
-        }
+
         <button *ngIf="bon.status === 'EN_ATTENTE'" class="btn btn-success" (click)="validerBon()">
           <i class="fas fa-check"></i>  {{ 'CONTROLE_QUALITE.BUTTONS.VALIDATE' | translate }}
         </button>
@@ -36,6 +25,15 @@
     <div *ngIf="error" class="alert alert-danger">
       {{ error }}
     </div>
+    <div class="qr-actions d-flex gap-2 align-items-center mb-3">
+  <button *ngIf="hasCompleteQrMetadata()" class="btn btn-outline-secondary" type="button" (click)="openExistingQrDialog()">
+    <i class="fas fa-qrcode"></i> {{ 'AUTO.QR' | translate }}
+  </button>
+  <button class="btn btn-outline-primary" type="button" [disabled]="generatingQr || (hasQrCode() && !canRegenerateExistingQr())" (click)="generateQr()">
+    <i class="fas fa-qrcode"></i> {{ generatingQr ? '...' : ('QR.GENERATE' | translate) }}
+  </button>
+</div>
+
     <div class="mb-4">
       <span class="badge fs-6 p-3 {{ getStatutBadgeClass(bon.status) }}">
         {{ bon.status }}

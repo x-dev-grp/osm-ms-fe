@@ -58,11 +58,15 @@
       </a>
     </button>
 
-    <button [matMenuTriggerFor]="languages" [attr.aria-label]="'AUTO.MODE' | translate" class="header-item" mat-button>
+    <button
+      [matMenuTriggerFor]="themeModes"
+      [attr.aria-label]="'APPLICATION_CONFIG.THEME_MODE.TITLE' | translate"
+      class="header-item"
+      mat-button
+      type="button"
+    >
       <a class="pc-head-link">
-        <svg class="pc-icon">
-          <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
-        </svg>
+        <mat-icon>{{ themeModeIcon }}</mat-icon>
       </a>
     </button>
 
@@ -103,10 +107,28 @@
     }
   </mat-menu>
 
-  <mat-menu #languages="matMenu" xPosition="before">
-    <button mat-menu-item (click)="useLanguage('en')">{{ 'AUTO.ENGLISH' | translate }}</button>
-    <button mat-menu-item (click)="useLanguage('fr')">{{ 'AUTO.FRANCAIS' | translate }}</button>
-    <button mat-menu-item (click)="useLanguage('ar')">{{ 'AUTO.ARABIC' | translate }}</button>
+  <mat-menu #themeModes="matMenu" xPosition="before">
+    <button mat-menu-item type="button" (click)="setThemeMode('light')">
+      <mat-icon>light_mode</mat-icon>
+      <span>{{ 'APPLICATION_CONFIG.THEME_MODE.LIGHT' | translate }}</span>
+      @if (themeMode === 'light') {
+        <mat-icon class="theme-mode-check">check</mat-icon>
+      }
+    </button>
+    <button mat-menu-item type="button" (click)="setThemeMode('dark')">
+      <mat-icon>dark_mode</mat-icon>
+      <span>{{ 'APPLICATION_CONFIG.THEME_MODE.DARK' | translate }}</span>
+      @if (themeMode === 'dark') {
+        <mat-icon class="theme-mode-check">check</mat-icon>
+      }
+    </button>
+    <button mat-menu-item type="button" (click)="setThemeMode('auto')">
+      <mat-icon>brightness_auto</mat-icon>
+      <span>{{ 'APPLICATION_CONFIG.THEME_MODE.AUTO' | translate }}</span>
+      @if (themeMode === 'auto') {
+        <mat-icon class="theme-mode-check">check</mat-icon>
+      }
+    </button>
   </mat-menu>
 
   <mat-menu #user="matMenu" class="dropdown-user-profile" xPosition="before">

@@ -29,6 +29,7 @@ import { DashboardDateRange, stripDashboardDate } from '../../shared/components/
 interface FinanceKpis {
   netFlow: number;
   totalRevenue: number;
+  collectedRevenue: number;
   cashIn: number;
   cashOut: number;
   paidExpenses: number;
@@ -40,6 +41,7 @@ interface FinanceKpis {
 interface WasteSaleRow {
   saleDate?: string | Date;
   totalPrice?: number;
+  paidAmount?: number;
   unpaidAmount?: number;
 }
 
@@ -126,6 +128,7 @@ export class FinanceDashboardComponent implements OnDestroy {
         createKpiSheet('KPIs', [
           { label: this.translate.instant('MENU.FINANCE.DASHBOARD.KPIS.NET_FLOW'), value: this.formatAmount(this.kpis.netFlow) },
           { label: this.translate.instant('MENU.FINANCE.DASHBOARD.KPIS.TOTAL_REVENUE'), value: this.formatAmount(this.kpis.totalRevenue) },
+          { label: this.translate.instant('MENU.FINANCE.DASHBOARD.KPIS.COLLECTED_REVENUE'), value: this.formatAmount(this.kpis.collectedRevenue) },
           { label: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.REVENUE'), value: this.formatAmount(this.kpis.cashIn) },
           { label: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.EXPENSES_LABEL'), value: this.formatAmount(this.kpis.cashOut) },
           { label: this.translate.instant('MENU.FINANCE.DASHBOARD.KPIS.PENDING_EXPENSES'), value: this.formatAmount(this.kpis.pendingExpenses) },
@@ -191,7 +194,9 @@ export class FinanceDashboardComponent implements OnDestroy {
       .filter((t) => t.direction === TransactionDirection.OUTBOUND)
       .reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
     const oilRevenue = oilSales.reduce((sum, sale) => sum + (sale.totalAmount ?? 0), 0);
+    const oilCollected = oilSales.reduce((sum, sale) => sum + (sale.paidAmount ?? 0), 0);
     const wasteRevenue = wasteSales.reduce((sum, sale) => sum + (sale.totalPrice ?? 0), 0);
+    const wasteCollected = wasteSales.reduce((sum, sale) => sum + (sale.paidAmount ?? 0), 0);
     const oilUnpaid = oilSales.reduce((sum, sale) => sum + (sale.unpaidAmount ?? 0), 0);
     const wasteUnpaid = wasteSales.reduce((sum, sale) => sum + (sale.unpaidAmount ?? 0), 0);
     const pendingExpenses = expenses.filter((exp) => exp.status === 'Pending').reduce((sum, exp) => sum + (exp.amount ?? 0), 0);
@@ -200,6 +205,7 @@ export class FinanceDashboardComponent implements OnDestroy {
     return {
       netFlow: cashIn - cashOut,
       totalRevenue: oilRevenue + wasteRevenue,
+      collectedRevenue: oilCollected + wasteCollected,
       cashIn,
       cashOut,
       paidExpenses,
@@ -225,6 +231,11 @@ export class FinanceDashboardComponent implements OnDestroy {
         title: t('MENU.FINANCE.DASHBOARD.KPIS.TOTAL_REVENUE'),
         count: this.formatAmount(this.kpis.totalRevenue),
         subLabel: t('MENU.FINANCE.OIL_SALES')
+      },
+      {
+        title: t('MENU.FINANCE.DASHBOARD.KPIS.COLLECTED_REVENUE'),
+        count: this.formatAmount(this.kpis.collectedRevenue),
+        subLabel: t('MENU.FINANCE.DASHBOARD.KPIS.COLLECTED_REVENUE_HINT')
       },
       {
         title: t('MENU.FINANCE.DASHBOARD.KPIS.PENDING_EXPENSES'),
@@ -335,7 +346,11 @@ export class FinanceDashboardComponent implements OnDestroy {
         bucketDay.setDate(end.getDate() - (bucketCount - 1 - i));
         if (txDate.getTime() === stripDashboardDate(bucketDay).getTime()) {
           counts[i] += 1;
-          amounts[i] += parseTransactionAmount(tx.amount);
+          const signed =
+            tx.direction === TransactionDirection.OUTBOUND
+              ? -parseTransactionAmount(tx.amount)
+              : parseTransactionAmount(tx.amount);
+          amounts[i] += signed;
         }
       }
     });

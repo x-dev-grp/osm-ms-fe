@@ -8,7 +8,7 @@ export const CLIENT_DASHBOARD_CONFIG: DashboardConfig = {
   baseURL: 'ordreConditionement/clients',
   searchEndpoint: 'ordreConditionement/clients',
   addNewItem: true,
-  addNewItemUrl: '/stock/clients/nouveau',
+  addNewItemUrl: '/projets/clients/new',
   fileName: 'clients',
   specificActions: [
     { action: 'READ', color: 'primary', icon: 'visibility' },

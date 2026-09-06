@@ -15,6 +15,8 @@ interface SeasonRecapSummary {
   deliveryPaid: number;
   deliveryUnpaid: number;
   oilSalesTotal: number;
+  oilSalesCollected: number;
+  oilSalesUnpaid: number;
   oilSalesCount: number;
   expensesTotal: number;
   expensesCount: number;
@@ -104,7 +106,14 @@ export class SeasonRecapComponent implements OnInit {
           }
 
           const oilSaleRows = oilSales?.data ?? [];
-          const oilSalesTotal = oilSaleRows.reduce((sum: number, row: any) => sum + Number(row?.totalAmount ?? 0), 0);
+          let oilSalesTotal = 0;
+          let oilSalesCollected = 0;
+          let oilSalesUnpaid = 0;
+          for (const row of oilSaleRows) {
+            oilSalesTotal += Number(row?.totalAmount ?? 0);
+            oilSalesCollected += Number(row?.paidAmount ?? 0);
+            oilSalesUnpaid += Number(row?.unpaidAmount ?? 0);
+          }
 
           const expenseRows = expenses?.data ?? [];
           const expensesTotal = expenseRows.reduce((sum: number, row: any) => sum + Number(row?.amount ?? row?.totalAmount ?? 0), 0);
@@ -125,6 +134,8 @@ export class SeasonRecapComponent implements OnInit {
             deliveryPaid,
             deliveryUnpaid,
             oilSalesTotal,
+            oilSalesCollected,
+            oilSalesUnpaid,
             oilSalesCount: oilSales?.total ?? oilSaleRows.length,
             expensesTotal,
             expensesCount: expenses?.total ?? expenseRows.length,

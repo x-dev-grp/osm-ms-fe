@@ -88,7 +88,7 @@
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",
     "ADD_COMPANY_CREATED": "Company and admin user created successfully.",
-    "ADD_COMPANY_INITIAL_PASSWORD": "Company created. Share these credentials with the admin â€” Username: {{username}}, Password: {{password}}",
+    "ADD_COMPANY_INITIAL_PASSWORD": "Company created. Share these credentials with the admin — Username: {{username}}, Password: {{password}}",
     "ADD_OOSM_ADMIN_BUTTON": "Add ZitFlow Admin",
     "ADD_OOSM_ADMIN_ROLE": "Role",
     "ADD_OOSM_ADMIN_ROLE_VALUE": "ZitFlow Admin",
@@ -187,7 +187,58 @@
     "SECTIONS": {
       "LAST_RESULT": "Last sync result",
       "STATUS": "Catalog status",
-      "SYNC": "Synchronize permission catalog"
+      "SYNC": "Synchronize permission catalog",
+      "VISUALIZE": "Visualize permissions-spec.json"
+    },
+    "SPEC": {
+      "ACTIONS": "actions",
+      "ADD_ACTIONS": "Added actions",
+      "ALIASES": "Legacy aliases",
+      "ALL_MODULES": "All modules",
+      "BROWSE": "Choose JSON file",
+      "CLEAR": "Clear",
+      "DOWNLOAD": "Download current spec",
+      "DOWNLOAD_ERROR": "Unable to download permissions-spec.json from the server.",
+      "DOWNLOAD_SUCCESS": "permissions-spec.json downloaded.",
+      "DROP_HINT": "The live server catalog loads automatically. You can also upload another permissions-spec.json to compare.",
+      "DROP_TITLE": "Permission catalog visualizer",
+      "EXPLICIT": "Explicit permissions",
+      "EXPLICIT_PERMS": "Explicit permissions",
+      "GRANTS": "grants",
+      "INVALID_TYPE": "Please upload a .json permissions-spec file.",
+      "KPI_ACTIONS": "catalog actions",
+      "KPI_ENTITIES": "Entities in file",
+      "KPI_MIRRORS": "Role mirrors",
+      "KPI_MODULES": "modules",
+      "KPI_PRESETS": "role presets",
+      "KPI_PROFILES": "Action profiles",
+      "KPI_RESOLVED": "Resolved permissions",
+      "KPI_RESOLVED_HINT": "after profile + add/remove",
+      "LIVE_BADGE": "Live server",
+      "UPLOADED_BADGE": "Uploaded file",
+      "LOADED": "Permission spec loaded.",
+      "LOADED_LIVE": "Live permissions-spec.json loaded from the server.",
+      "LOAD_LIVE": "Load live server file",
+      "LOAD_LIVE_ERROR": "Unable to load the live permissions-spec.json from the server.",
+      "MODULE": "Module",
+      "NO_DESCRIPTION": "No description",
+      "NO_ENTITIES": "No entities match this filter.",
+      "NO_MIRRORS": "No role mirrors defined.",
+      "NO_PRESETS": "No role presets defined.",
+      "PARSE_ERROR": "Could not parse the permissions-spec JSON file.",
+      "PARSING": "Loading permissions-spec...",
+      "PROFILE": "Profile",
+      "RELOAD_LIVE": "Reload from server",
+      "REMOVE_ACTIONS": "Removed actions",
+      "REPLACE": "Upload file",
+      "RESOLVED_ACTIONS": "Resolved actions",
+      "SEARCH": "Search entities, profiles, actions…",
+      "SECTION": "Section",
+      "SELECT_ENTITY": "Select an entity to inspect its resolved permissions.",
+      "TAB_ENTITIES": "Entities",
+      "TAB_MIRRORS": "Mirrors",
+      "TAB_PRESETS": "Role presets",
+      "TAB_PROFILES": "Profiles"
     },
     "STARTUP_SYNC": "Sync on startup",
     "SUBTITLE": "Platform operations — keep the permission database aligned with permissions-spec.json",
@@ -380,7 +431,7 @@
   },
   "BRANDING": {
     "SLOGAN": "Olive Oil Management System",
-    "TAGLINE": "From reception to sale â€” one platform for your mill"
+    "TAGLINE": "From reception to sale — one platform for your mill"
   },
   "USER_GUIDE": {
     "TITLE": "Help & user guide",
@@ -410,7 +461,7 @@
     },
     "FLOW": {
       "TITLE": "Typical mill workflow",
-      "SUBTITLE": "From olive intake to sale â€” each step links to the next module.",
+      "SUBTITLE": "From olive intake to sale — each step links to the next module.",
       "RECEPTION": "Reception",
       "STORAGE": "Tanks",
       "CONDITIONING": "Packaging",
@@ -426,7 +477,7 @@
     },
     "COMMON_TASKS": {
       "TITLE": "Common tasks",
-      "SUBTITLE": "Shortcuts based on your permissions â€” jump straight to frequent actions."
+      "SUBTITLE": "Shortcuts based on your permissions — jump straight to frequent actions."
     },
     "TASKS": {
       "NEW_OLIVE": "New olive reception",
@@ -463,18 +514,18 @@
     },
     "RECEPTION_TYPES": {
       "TITLE": "Olive operation types",
-      "SUBTITLE": "Each type has its own list and form â€” pick the one matching your business case.",
+      "SUBTITLE": "Each type has its own list and form — pick the one matching your business case.",
       "OIL": "Oil purchase reception"
     },
     "PDF_GUIDES": {
       "TITLE": "Download PDF user guides",
-      "SUBTITLE": "Complete printable guides â€” 8 chapters per language (reception through administration).",
+      "SUBTITLE": "Complete printable guides — 8 chapters per language (reception through administration).",
       "VIEW": "View",
       "DOWNLOAD": "Download",
       "NOTE": "Operational PDFs (reception slips, invoices) are generated from record detail screens, not from these guides.",
       "FR": {
         "TITLE": "French guide",
-        "DESC": "Full guide â€” 8 chapters, main operator language."
+        "DESC": "Full guide — 8 chapters, main operator language."
       },
       "EN": {
         "TITLE": "English guide",
@@ -492,7 +543,7 @@
         "A": "Menus are filtered by your role permissions (MODULE:ENTITY:ACTION). Ask your company admin to grant the required permission or role."
       },
       "LOGIN": {
-        "Q": "I cannot log in â€” what should I check?",
+        "Q": "I cannot log in — what should I check?",
         "A": "Verify username and password (case-sensitive). If the account is locked or the company is inactive, contact your administrator. Ensure the backend server is running in local setups."
       },
       "PDF": {
@@ -527,7 +578,7 @@
       "PERMISSIONS": "If a menu is missing, ask your admin to grant the required role.",
       "PDF": "Generate PDF receipts and invoices from record detail screens.",
       "NOTIFICATIONS": "Check the bell icon for validations, QC blocks, and maintenance alerts.",
-      "LISTS": "Most list screens support filters, export, and row actions â€” double-click a row to open details."
+      "LISTS": "Most list screens support filters, export, and row actions — double-click a row to open details."
     },
     "WORKFLOWS": {
       "TITLE": "How modules connect",
@@ -536,7 +587,7 @@
       "CONDITIONING": "Manufacturing orders consume packaging stock and produce labeled units.",
       "FINANCE": "Ledger records payments; oil sales: confirm â†’ deliver â†’ invoice â†’ pay.",
       "HR": "HR links employees â†’ active contracts â†’ attendance & leave â†’ monthly payslips (CNSS, IRPP, CSS). Employee profile shows all related records.",
-      "PERMISSIONS": "Each screen needs MODULE:ENTITY:ACTION â€” ask admin if a menu is hidden."
+      "PERMISSIONS": "Each screen needs MODULE:ENTITY:ACTION — ask admin if a menu is hidden."
     },
     "MODULES": {
       "RECEPTION": {
@@ -643,7 +694,7 @@
     "VIEW_TICKET": "View details",
     "HELP_TITLE": "Need help from ZitFlow?",
     "HELP_DESC": "Report a bug, ask a question, or request a change. Your ticket includes your user and company context automatically.",
-    "HELP_TIP1": "Open the ticket from the screen where the issue happens â€” we capture the page URL automatically.",
+    "HELP_TIP1": "Open the ticket from the screen where the issue happens — we capture the page URL automatically.",
     "HELP_TIP2": "Describe steps to reproduce and expected vs actual behaviour.",
     "DIALOG": {
       "TITLE": "New support ticket",
@@ -677,7 +728,7 @@
     },
     "ADMIN": {
       "TITLE": "Client support",
-      "SUBTITLE": "Tenant users submit tickets from the app. Review and update status here â€” no external tool required.",
+      "SUBTITLE": "Tenant users submit tickets from the app. Review and update status here — no external tool required.",
       "EMPTY": "No support tickets yet."
     }
   },
@@ -2307,20 +2358,20 @@
         "TITLE": "Related links"
       },
       "SECTIONS": {
-        "ADDITIONAL_INFO": "â„¹ï¸ Additional Info",
-        "GENERAL_INFO": "ðŸ“¦ General Information",
-        "INFO_CONTROL_QUALITE": "ðŸ§ª Quality Control Info",
-        "INFO_PRIX": "ðŸ’° Pricing Info",
-        "INFO_PRODUCTION": "ðŸ­ Production Info",
-        "OIL_INFO": "ðŸ›¢ï¸ Oil Information",
-        "OLIVE_INFO": "ðŸŒ¿ Olive Variety",
-        "OLIVE_OIL_INFO": "ðŸ«’ Olive & Oil Information",
+        "ADDITIONAL_INFO": "ℹ️ Additional Info",
+        "GENERAL_INFO": "📦 General Information",
+        "INFO_CONTROL_QUALITE": "🧪 Quality Control Info",
+        "INFO_PRIX": "💰 Pricing Info",
+        "INFO_PRODUCTION": "🏭 Production Info",
+        "OIL_INFO": "🛢️ Oil Information",
+        "OLIVE_INFO": "🌿 Olive Variety",
+        "OLIVE_OIL_INFO": "🫒 Olive & Oil Information",
         "PROCESSING": "Processing",
-        "STORAGE": "ðŸ­ Storage Unit",
-        "STORAGE_UNIT": "ðŸ­ Storage Unit",
-        "SUPPLIER": "ðŸ‘¤ Supplier",
-        "TRUCK": "ðŸšš Truck Information",
-        "WEIGHT_CONTAINER ": "âš–ï¸ Weight Information",
+        "STORAGE": "🏭 Storage Unit",
+        "STORAGE_UNIT": "🏭 Storage Unit",
+        "SUPPLIER": "👤 Supplier",
+        "TRUCK": "🚚 Truck Information",
+        "WEIGHT_CONTAINER ": "⚖️ Weight Information",
         "DOCUMENTS": "Documents"
       },
       "TITLE": "Reception Details"
@@ -2328,18 +2379,18 @@
     "FIELDS": {
       "CATEGORY_OLIVE_OIL": "Olive Oil Category",
       "DELIVERY_DATE": "Delivery Date",
-      "DELIVERY_NUMBER": "NÂ° rÃ©ception",
+      "DELIVERY_NUMBER": "N° réception",
       "DELIVERY_TYPE": "Delivery Type",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "GROSS_WEIGHT": "Gross Weight (KG)",
-      "LOT_NUMBER": "Lot NÂ°",
-      "LOT_OLIVE_NUMBER": "NÂ° lot de rÃ©fÃ©rence",
+      "LOT_NUMBER": "Lot N°",
+      "LOT_OLIVE_NUMBER": "N° lot de référence",
       "MILL_MACHINE": "Mill machine",
       "MILL_START": "Processing start",
       "NET_WEIGHT": "Net Weight (KG)",
       "OIL_QUANTITY": "Oil Quantity",
       "OIL_TYPE": "Oil type",
-      "OLIVE_LOT_NUMBER": "Olive Lot NÂ°/reception NÂ°",
+      "OLIVE_LOT_NUMBER": "Olive Lot N°/reception N°",
       "OLIVE_QUANTITY": "Olive Quantity",
       "OLIVE_TYPE": "Olive Type",
       "OLIVE_VARIETY": "Variety",
@@ -3410,7 +3461,7 @@
       "CONFIRM": "Confirm purchase",
       "CONFIRM_HINT": "Review the details. This will create an expense, a financial transaction, and update stock.",
       "CONFIRM_TITLE": "Confirm purchase",
-      "DIALOG_HINT": "Purchase {{name}} â€” enter quantity and supplier.",
+      "DIALOG_HINT": "Purchase {{name}} — enter quantity and supplier.",
       "DIALOG_TITLE": "Buy containers",
       "ERROR": "Failed to record purchase",
       "NEXT": "Continue",
@@ -3646,7 +3697,7 @@
       },
       "FIELDS": {
         "DELIVERY_DATE": "Delivery Date",
-        "DELIVERY_NUMBER": "NÂ° rÃ©ception",
+        "DELIVERY_NUMBER": "N° réception",
         "GLOBAL_LOT_NUMBER": "Global Lot Number",
         "LOT_NUMBER": "Lot Number",
         "OIL_QUANTITY": "Oil Quantity (KG)",
@@ -3918,7 +3969,7 @@
     "DIALOG": {
       "EXCHANGE": {
         "TITLE_DESTINATION": "chose the destination storage unit to validate the transaction",
-        "TITLE_SOURCE": "Choisir une unitÃ© de stockage source pour valider le transaction"
+        "TITLE_SOURCE": "Choisir une unité de stockage source pour valider le transaction"
       }
     },
     "FORM": {
@@ -4369,7 +4420,7 @@
   "Other": "Other",
   "PAGE_404": {
     "BACK_HOME": "Back To Home",
-    "DESCRIPTION": "The page youâ€™re looking for doesnâ€™t exist, was moved, or is temporarily unavailable.",
+    "DESCRIPTION": "The page you’re looking for doesn’t exist, was moved, or is temporarily unavailable.",
     "IMAGE_ALT": "404 error illustration",
     "TITLE": "Page Not Found"
   },
@@ -4384,7 +4435,7 @@
     "CLIENT_ADDRESS": "Address",
     "CLIENT_INFO": "Client",
     "CLIENT_NAME": "Client name",
-    "CLIENT_PHONE": "Mobile NÂ°",
+    "CLIENT_PHONE": "Mobile N°",
     "CODEECH": "Sample code",
     "COMPANY_ADDRESS": "Address",
     "COMPANY_EMAIL": "Email",
@@ -4455,8 +4506,8 @@
     "LOT": "Lot",
     "LOT_GLOBAL": "Global Lot",
     "LOT_NUMBER": "Lot Number",
-    "MOBILE": "Phone NÂ°",
-    "NCOLIS": "Package NÂ°",
+    "MOBILE": "Phone N°",
+    "NCOLIS": "Package N°",
     "NOTE_DE_PAIEMENT": "Payment note",
     "NOTE_PAYEMENT_RECEPTION": "Reception Payment Note",
     "NOTE_PAYEMENT_TRITURATION": "Crushing Payment Note",
@@ -4464,7 +4515,6 @@
     "NOTE_PAYEMENT_VENTE_HUILE": "Oil Sale Payment Note",
     "NO_QUALITY_DATA": "No quality control data available",
     "NUMBER_PLACEHOLDER": "No: ",
-    "NÂ°COLIS": "Package #",
     "OIL_CUSTOMER": "Oil Customer",
     "OIL_DISPATCH": "Oil Dispatch Note",
     "OIL_GRADE": {
@@ -4519,7 +4569,7 @@
     "RECEPTION_DATE": "Reception Date",
     "RECEPTION_ID": "Reception ID",
     "RECEPTION_IN": "Reception",
-    "RECEPTION_NUMBER": "NÂ° rÃ©ception",
+    "RECEPTION_NUMBER": "N° réception",
     "RECEPTION_OIL": "Oil Reception Receipt",
     "RECEPTION_OLIVE": "Olive Reception Receipt",
     "RECEPTION_REGION": "Reception Region",
@@ -4543,7 +4593,7 @@
     "STORAGE_UNIT_SOURCE": "Storage Unit (Source)",
     "SUBTOTAL": "Subtotal",
     "SUPPLIER": "Supplier",
-    "TANK_NUMBER": "NÂ° Article",
+    "TANK_NUMBER": "N° Article",
     "TAX_ID": "Tax ID",
     "TVA_LEGAL_MENTION": "Invoice issued in accordance with Article 18 of the Tunisian VAT Code. Unit prices exclude VAT. VAT rates and amounts are shown per line.",
     "UNIT_PRICE_HT": "Unit price excl. VAT",
@@ -4568,7 +4618,7 @@
     "TRITURATION": "Trituration",
     "TRITURATION_SERVICE": "Olive Oil Trituration Service",
     "TRUCK_MAT": "Truck Mat",
-    "TRUCK_STATE": "Ã‰tat du camion",
+    "TRUCK_STATE": "État du camion",
     "TYPE": "Type",
     "UNIT_PRICE": "Unit Price",
     "UNPAID": "Unpaid",
@@ -4658,7 +4708,8 @@
   "QR": {
     "ENCRYPTED": "Encrypted",
     "ERROR": {
-      "GENERATE": "Unable to generate QR code"
+      "GENERATE": "Unable to generate QR code",
+      "NO_REGENERATE_PERMISSION": "You do not have permission to regenerate QR codes"
     },
     "GENERATE": "Generate QR",
     "TITLE": "QR code",
@@ -4797,7 +4848,7 @@
       "LOAD_WARNING_PLANNING": "Could not load saved planning assignments.",
       "MILL_OVER_CAPACITY": "{{mill}} is over capacity ({{used}} / {{capacity}} kg)",
       "MILL_BLOCKED_BADGE": "Blocked",
-      "MILL_BLOCKED_DROP": "Cannot assign lots to {{mill}} â€” {{reason}}",
+      "MILL_BLOCKED_DROP": "Cannot assign lots to {{mill}} — {{reason}}",
       "MILL_BLOCKED_TOOLTIP": "{{mill}} is not available for planning ({{reason}})",
       "MILL_BLOCKED_MAINTENANCE": "under maintenance",
       "MILL_BLOCKED_OUT_OF_SERVICE": "out of service",
@@ -4827,7 +4878,7 @@
     },
     "FIELDS": {
       "DELIVERY_DATE": "Reception Date",
-      "DELIVERY_NUMBER": "NÂ° rÃ©ception",
+      "DELIVERY_NUMBER": "N° réception",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "LOT_NUMBER": "Lot Number",
       "NET_WEIGHT": "Net Weight (kg)",
@@ -4950,7 +5001,7 @@
         "MESSAGE": "Are you sure you want to save this payment ?"
       },
       "SAVE_QC": {
-        "MESSAGE": "Are you sure you want to save the qualityâ€‘control results?",
+        "MESSAGE": "Are you sure you want to save the quality‑control results?",
         "TITLE": "Confirm Save"
       },
       "SIMPLE": {
@@ -6065,7 +6116,7 @@
     "VOIR_DETAILS": "See details",
     "AUCUNE_ETIQUETTE_TROUVEE": "No labels found",
     "CHARGEMENT_DES_EMPREINTES": "Loading fingerprints...",
-    "LOT_N": "LOT NÂ°",
+    "LOT_N": "LOT N°",
     "EXTRACTION": "Extraction",
     "STOCKAGE": "Storage",
     "APERCU_DE_L_ETIQUETTE": "Label preview",
@@ -6105,7 +6156,7 @@
     "BLOQUE_PAR_LA_QUALITE": "blocked by quality",
     "LES_ACTIONS_DE_PRODUCTION_SONT_LIMITEES": ". Production actions are limited.",
     "LIBRE": "Libre",
-    "AUCUN_BLOCAGE": "â€“ No blocking.",
+    "AUCUN_BLOCAGE": "– No blocking.",
     "PRODUCTION_QUALITE": "Production & quality",
     "LES_AJUSTEMENTS_DE_CONSOMMATION_PREPARES_PENDANT_LA_PRODUCTION_N": "Consumption adjustments prepared during production do not deduct inventory immediately. The real movement is applied to the closure of the OF.",
     "LIGNE": "Line {{value0}} {{value1}}",
@@ -6154,7 +6205,7 @@
     "DATE_DEBUT": "date debut",
     "DATE_FIN": "date fin",
     "LA_DATE_DE_FIN_DOIT_ETRE_POSTERIEURE_AU_DEBUT": "The end date must be later than the start.",
-    "PRODUCTION_FABRICATION": "Production Â· Fabrication",
+    "PRODUCTION_FABRICATION": "Production · Fabrication",
     "ORDRES_DE_FABRICATION": "Manufacturing Orders",
     "SUIVEZ_ET_GEREZ_VOS_ORDRES_DE_FABRICATION_EN_TEMPS_REEL": "Track and manage your manufacturing orders in real time.",
     "NOUVEL_OF": "Nouvel OF",
@@ -6316,7 +6367,7 @@
     "SELECTIONNER_UN_OF": "Select a OF",
     "VOLUME_M3": "Volume (mÂ³)",
     "CHAINE_DE_TRACABILITE_RECEPTION_FILTRATION_OF_ETIQUETTES": "Chain of traceability (reception â†’ filtration â†’ OF â†’ labels)",
-    "SNAPSHOT_FIGE_A_LA_VALIDATION_CE_DOCUMENT_NE_CHANGERA_PLUS": "Snapshot frozen upon validation â€” this document will no longer change.",
+    "SNAPSHOT_FIGE_A_LA_VALIDATION_CE_DOCUMENT_NE_CHANGERA_PLUS": "Snapshot frozen upon validation — this document will no longer change.",
     "APERCU_EN_DIRECT_DES_LIGNES_DE_CETTE_EXPEDITION_LA_TRACABILITE_S": "Live overview of the lines of this expedition. Traceability will be fixed upon validation.",
     "CHARGEMENT_DE_LA_TRACABILITE": "Loading traceability...",
     "CODE_TRACABILITE": "Traceability code",
@@ -6457,7 +6508,7 @@
     "ACTUEL_RESERVE": "(current âˆ’ reserved).",
     "CALCUL_DES_BESOINS_MATIERES": "Calculation of material requirements",
     "AUCUNE_LIGNE_DE_NOMENCLATURE_A_AFFICHER": "No BOM lines to display.",
-    "ETAT": "Ã‰tat",
+    "ETAT": "État",
     "VERIFICATION_DE_LA_CHAINE_DE_TRACABILITE": "Verification of the chain of custody",
     "NON_RESOLUE": "Unresolved",
     "RECEPTION_HUILE": "Oil reception",
@@ -6535,7 +6586,7 @@
     "USAGE_PREVU": "Intended use",
     "UNITE_D_USAGE": "Unit of use",
     "QUANTITE_CONTENUE": "Quantity contained",
-    "TEMPERATURE_DE_STOCKAGE_C": "Storage temperature (Â°C)",
+    "TEMPERATURE_DE_STOCKAGE_C": "Storage temperature (°C)",
     "LOGISTIQUE_UNITE": "Logistics & Unit",
     "UNITE_DE_MESURE": "Unit of measurement",
     "FOURNISSEUR_PRINCIPAL": "Main supplier",
@@ -6548,7 +6599,7 @@
     "NOM_CODE_CODE_PUBLIC": "Name, code, public code...",
     "CODE_HEX_QR_EX_A1B2C3": "Code hex QR, ex: A1B2C3",
     "TOUTES": "All",
-    "ARTICLE_S_EN_DESSOUS_DU_STOCK_MINIMUM_VERIFIEZ_LES_LIGNES_SURLIG": "item(s) below minimum stock â€” check highlighted lines.",
+    "ARTICLE_S_EN_DESSOUS_DU_STOCK_MINIMUM_VERIFIEZ_LES_LIGNES_SURLIG": "item(s) below minimum stock — check highlighted lines.",
     "STOCK_MIN": "Stock Min",
     "STOCK_MAX": "Stock Max",
     "ACTIVER": "Enable",
@@ -6595,10 +6646,10 @@
     "AJOUTEZ_AU_MOINS_UN_ARTICLE_BOUTEILLE_CARTON_BOUCHON_ETIQUETTE": "Add at least one item: bottle, carton, cap, label...",
     "CHOISIR_UN_ARTICLE": "Choose an item",
     "SUPPRIMER_LA_LIGNE": "Delete line",
-    "APERCU_STOCK_BESOINS_POUR_1_UNITE_PRODUITE": "Stock overview â€” requirements for 1 unit produced",
+    "APERCU_STOCK_BESOINS_POUR_1_UNITE_PRODUITE": "Stock overview — requirements for 1 unit produced",
     "APRES_ENREGISTREMENT_VOUS_POURREZ_SIMULER_LES_BESOINS_POUR_UNE_Q": "After saving, you will be able to simulate the needs for a production quantity from the detail sheet.",
     "NOMENCLATURES": "Nomenclatures",
-    "RECETTES_EMBALLAGE_PAR_PRODUIT_FINI_UNE_SEULE_VERSION": "Packaging recipes per finished product â€” only one version",
+    "RECETTES_EMBALLAGE_PAR_PRODUIT_FINI_UNE_SEULE_VERSION": "Packaging recipes per finished product — only one version",
     "PAR_PRODUIT": "per product.",
     "NOUVELLE_NOMENCLATURE": "New nomenclature",
     "L_OF_ET_LES_PROJETS_UTILISENT_LA_NOMENCLATURE": "The OF and the projects use the nomenclature",
@@ -6661,7 +6712,7 @@
     "INFORMATIONS_GENERALES": "General information",
     "IDENTITE_ET_CLASSIFICATION_DE_L_EMPLACEMENT": "Location identity and classification.",
     "NOM_DE_L_EMPLACEMENT": "Location Name",
-    "TYPE_D_EMPLACEMENT": "Type dâ€™emplacement *",
+    "TYPE_D_EMPLACEMENT": "Type d’emplacement *",
     "CATEGORIE_ARTICLE_STOCKE": "Category article stock",
     "NON_SPECIFIEE": "Non specifiee",
     "CAPACITE_ET_CONDITIONS": "Capacity and conditions",
@@ -6742,7 +6793,7 @@
     "AUCUN_FOURNISSEUR_TROUVE": "No suppliers found",
     "AUCUN_RESULTAT_NE_CORRESPOND_AUX_CRITERES_SELECTIONNES": "No results match the selected criteria.",
     "FOURNISSEURS_WORKS": "suppliers works!",
-    "PRODUCTION_LIGNE_DE_CONDITIONNEMENT": "Production Â· Packaging line",
+    "PRODUCTION_LIGNE_DE_CONDITIONNEMENT": "Production · Packaging line",
     "DETAILS_DE_LA_LIGNE": "Line details",
     "ERREUR_DE_CHARGEMENT": "Loading error",
     "CODE_DE_LA_LIGNE": "Line code",
@@ -6756,7 +6807,7 @@
     "ACTION_DE_MAINTENANCE_REQUISE_IMMEDIATEMENT": "Maintenance action required immediately.",
     "CREE_LE": "Created on:",
     "MODIFIE_LE": "Modified on:",
-    "PRODUCTION_CONDITIONNEMENT": "Production Â· Packaging",
+    "PRODUCTION_CONDITIONNEMENT": "Production · Packaging",
     "GEREZ_VOS_UNITES_DE_PRODUCTION_SUIVEZ_LEUR_ETAT_OPERATIONNEL_ET_": "Manage your production units, monitor their operational status and control packaging capacity.",
     "NOUVELLE_LIGNE": "New line",
     "TOTAL_LIGNES": "Total lines",
@@ -6811,7 +6862,7 @@
     "CAMPAGNE": "Campaign",
     "EX_2025_2026": "Ex: 2025/2026",
     "GRADE_HUILE": "Oil grade",
-    "SELECTIONNER_UN_GRADE": "â€” Select a grade â€”",
+    "SELECTIONNER_UN_GRADE": "— Select a grade —",
     "DESCRIPTION_COURTE_DU_PRODUIT": "Short product description",
     "LES_CHAMPS_MARQUES_D_UN": "Fields marked with",
     "SONT_OBLIGATOIRES": "are obligatory",
@@ -6860,14 +6911,14 @@
     "VOLUME_APRES": "Volume after",
     "PERTES": "Losses",
     "GENERER_ETIQUETTE": "Generate label",
-    "FILTRATION_TRACABILITE_COMPLETE": "Filtration Â· Full traceability",
+    "FILTRATION_TRACABILITE_COMPLETE": "Filtration · Full traceability",
     "HISTORIQUE_DE_L_OPERATION": "History of the operation",
     "OPERATION_DE_FILTRATION": "Filtration operation",
     "DATE_HEURE": "Date/Time",
     "VOLUME_APRES_FILTRATION": "Volume after filtration",
-    "SOURCE_HUILE_NON_FILTREE": "Source â€” Unfiltered Oil",
+    "SOURCE_HUILE_NON_FILTREE": "Source — Unfiltered Oil",
     "HUILE_BRUTE": "crude oil",
-    "CIBLE_HUILE_FILTREE": "Target â€” Filtered oil",
+    "CIBLE_HUILE_FILTREE": "Target — Filtered oil",
     "HUILE_FILTREE": "filtered oil",
     "LIVRAISON_D_ORIGINE": "Original delivery",
     "NUMERO_DE_LIVRAISON": "Delivery number",
@@ -7087,7 +7138,7 @@
     "PRODUIT_CONDITIONNE": "Packaged Product:",
     "LE_NOM_DU_PRODUIT_EST_REQUIS": "The product name is required.",
     "EX_HUILE_EXTRA_VIERGE_VRAC_2024_2025": "Ex: Extra Virgin Oil Bulk 2024/2025",
-    "EX_HUILE_OLIVEA_750ML_BOUTEILLE_VERRE": "Ex: OlivÃ©a Oil 750ml Glass Bottle",
+    "EX_HUILE_OLIVEA_750ML_BOUTEILLE_VERRE": "Ex: Olivéa Oil 750ml Glass Bottle",
     "PARAMETRES_VRAC": "Bulk parameters",
     "PRODUIT_VRAC": "Bulk Product:",
     "L_HUILE_EST_STOCKEE_DIRECTEMENT_EN_CUVE_OU_EN_CITERNE_AUCUNE_NOM": "the oil is stored directly in a tank or tank. No packing nomenclature is necessary.",
@@ -7095,7 +7146,7 @@
     "EX_0_916": "Ex: 0.916",
     "EX_0_916_POUR_L_HUILE_D_OLIVE": "Ex: 0.916 for olive oil",
     "CUVE_UNITE_DE_STOCKAGE": "Tank / Storage unit",
-    "SELECTIONNER_UNE_CUVE": "â€” Select a tank â€”",
+    "SELECTIONNER_UNE_CUVE": "— Select a tank —",
     "SPECIFICATIONS_PRODUIT_CONDITIONNE": "Packaged product specifications",
     "L_HUILE_EST_MISE_EN_BOUTEILLE_OU_BIDON_RENSEIGNEZ_LES_CARACTERIS": "the oil is bottled or canned. Provide the physical characteristics of the finished product.",
     "EX_750": "Ex: 750",
@@ -7107,7 +7158,7 @@
     "SELECTIONNEZ_LES_ARTICLES_DU_CATALOGUE_PAR_CATEGORIE_POUR_CONSTI": "Select the catalog items by category to create the nomenclature of the packaged product.",
     "SOURCE_DE_LA_NOMENCLATURE": "Source of the nomenclature",
     "IMPORTER_UN_MODELE_EXISTANT": "Import an existing template",
-    "CHOISIR_UN_MODELE": "â€” Choose a model â€”",
+    "CHOISIR_UN_MODELE": "— Choose a model —",
     "LE_MODELE_SELECTIONNE_REMPLIRA_AUTOMATIQUEMENT_LES_ARTICLES_DE_L": "The selected template will automatically populate the BOM items.",
     "AUCUNE_NOMENCLATURE_EXISTANTE_CREEZ_UNE_NOUVELLE_BOM_PUIS_REVENE": "No existing nomenclature. Create a new BOM then come back and apply it to this product.",
     "AJOUTER_NOUVELLE_BOM": "Add new BOM",
@@ -7282,7 +7333,7 @@
     "PARAMETRE_MIS_A_JOUR_AVEC_SUCCES": "Parameter updated successfully",
     "ERREUR_LORS_DE_LA_MISE_A_JOUR_DU_PARAMETRE": "Error updating parameter",
     "ECHEC_DE_L_ENREGISTREMENT": "Registration failed âŒ",
-    "ERREUR_DE_COMMUNICATION_AVEC_LE_SERVEUR": "Communication error with server âš ï¸",
+    "ERREUR_DE_COMMUNICATION_AVEC_LE_SERVEUR": "Communication error with server ⚠️",
     "LA_QUANTITE_DOIT_ETRE_POSITIVE": "Quantity must be positive",
     "ERREUR_LORS_DE_L_ENTREE_EN_STOCK": "Error when entering stock",
     "ERREUR_LORS_DE_LA_SORTIE_DE_STOCK": "Error when out of stock",

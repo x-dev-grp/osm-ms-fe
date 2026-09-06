@@ -18,12 +18,14 @@ import { ReceptionListComponent } from './reception-list/reception-list.componen
 import { ReceptionDashboardComponent } from './reception-dashboard/reception-dashboard.component';
 import { SupplierPaymentHistoryComponent } from './suppliers/supplier-payment-history/supplier-payment-history.component';
 import { allPermissionGuard, anyPermissionGuard, moduleGuard } from '../interceptors/guards/permission.guard';
+import { millPlanningEnabledGuard } from '../interceptors/guards/mill-planning-enabled.guard';
 // CHANGE: permissions - use enums
 import { Action, OOSMModule, permissionKey, ProductionEntity, ReceptionEntity } from 'src/app/theme/types/permissions';
 import { OliveQCComponent } from './olive-qc/oliveQC.component';
 import { OperationType } from '../shared/models/operation-type.enum';
 import { SupplierInfoComponent } from './suppliers/supplier-info/supplier-info.component';
 import { PurchaseJournalComponent } from './purchase-journal/purchase-journal.component';
+import { ReceptionImportWizardComponent } from './import/reception-import-wizard.component';
 
 export const receptionRoutes: Routes = [
   // DASHBOARD (READ)
@@ -192,7 +194,10 @@ export const receptionRoutes: Routes = [
   {
     path: 'mill-schedules',
     component: PlanningComponent,
-    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)])]
+    canActivate: [
+      allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)]),
+      millPlanningEnabledGuard
+    ]
   },
 
   // MILL MACHINES
@@ -242,5 +247,10 @@ export const receptionRoutes: Routes = [
     path: 'purchase-journal',
     component: PurchaseJournalComponent,
     canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+  },
+  {
+    path: 'import',
+    component: ReceptionImportWizardComponent,
+    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
   }
 ];

@@ -1,38 +1,95 @@
-<section class="cash-register">
-  <p class="cash-register__hint">{{ 'ABIOOC.CASH_REGISTER.HINT' | translate }}</p>
-
-  @if (loading) {
-    <div class="cash-register__loading">
-      <mat-spinner diameter="32"></mat-spinner>
+<app-dashboard-shell
+  titleKey="ABIOOC.CASH_REGISTER.TITLE"
+  subtitleKey="ABIOOC.CASH_REGISTER.HINT"
+  icon="point_of_sale"
+  theme="finance"
+  [loading]="loading && !summary"
+  [lastUpdated]="lastUpdated"
+  [showDateFilter]="true"
+  [defaultPreset]="'today'"
+  [exportPayload]="exportPayload"
+  (refresh)="onRefresh()"
+  (dateRangeChange)="onDateRangeChange($event)"
+>
+  <section class="cash-register">
+    <div class="cash-register__toolbar">
+      <mat-form-field appearance="outline" class="cash-register__opening" subscriptSizing="dynamic">
+        <mat-label>{{ 'ABIOOC.CASH_REGISTER.OPENING' | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          step="0.001"
+          [ngModel]="openingBalance"
+          (ngModelChange)="onOpeningBalanceChange($event)"
+        />
+        <span matTextSuffix>TND</span>
+      </mat-form-field>
+      <p class="cash-register__opening-hint">{{ 'ABIOOC.CASH_REGISTER.OPENING_HINT' | translate }}</p>
+      @if (loading) {
+        <mat-spinner diameter="28"></mat-spinner>
+      }
     </div>
-  } @else if (summary) {
-    <div class="cash-register__summary">
-      <mat-card class="summary-card">
-        <mat-card-content>
-          <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.INBOUND' | translate }}</span>
-          <span class="summary-value inbound">{{ summary.inbound | currency: 'TND' }}</span>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="summary-card">
-        <mat-card-content>
-          <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.OUTBOUND' | translate }}</span>
-          <span class="summary-value outbound">{{ summary.outbound | currency: 'TND' }}</span>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="summary-card">
-        <mat-card-content>
-          <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.NET' | translate }}</span>
-          <span class="summary-value">{{ summary.net | currency: 'TND' }}</span>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="summary-card">
-        <mat-card-content>
-          <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.MOVEMENTS' | translate }}</span>
-          <span class="summary-value">{{ summary.count }}</span>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  }
 
-  <oosm-dashboard [config]="dashboardConfig"></oosm-dashboard>
-</section>
+    @if (summary) {
+      <div class="cash-register__summary">
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.OPENING' | translate }}</span>
+            <span class="summary-value">{{ summary.opening | currency: 'TND' }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.INBOUND' | translate }}</span>
+            <span class="summary-value inbound">{{ summary.inbound | currency: 'TND' }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.OUTBOUND' | translate }}</span>
+            <span class="summary-value outbound">{{ summary.outbound | currency: 'TND' }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.NET' | translate }}</span>
+            <span class="summary-value">{{ summary.netMovement | currency: 'TND' }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card summary-card--accent">
+          <mat-card-content>
+            <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.CLOSING' | translate }}</span>
+            <span class="summary-value">{{ summary.closing | currency: 'TND' }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="summary-card">
+          <mat-card-content>
+            <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.MOVEMENTS' | translate }}</span>
+            <span class="summary-value">{{ summary.count }}</span>
+            @if (summary.truncated) {
+              <span class="summary-meta">{{ 'ABIOOC.CASH_REGISTER.TRUNCATED' | translate }}</span>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="cash-register__methods">
+        @for (row of summary.byMethod; track row.method) {
+          <mat-card class="summary-card method-card">
+            <mat-card-content>
+              <span class="summary-label">{{ methodLabelKey(row.method) | translate }}</span>
+              <span class="summary-value">{{ row.net | currency: 'TND' }}</span>
+              <span class="summary-meta method-meta">
+                <span class="inbound">+{{ row.inbound | currency: 'TND':'symbol':'1.0-3' }}</span>
+                ·
+                <span class="outbound">−{{ row.outbound | currency: 'TND':'symbol':'1.0-3' }}</span>
+              </span>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+
+    <oosm-dashboard [config]="dashboardConfig"></oosm-dashboard>
+  </section>
+</app-dashboard-shell>

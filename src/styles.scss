@@ -242,6 +242,17 @@ a.flex {
   border-radius: 0;
 }
 
+/* QR dialog: centered, content-sized */
+.qr-center-dialog .mat-mdc-dialog-container {
+  padding: 0 !important;
+}
+
+.qr-center-dialog .mat-mdc-dialog-surface {
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(28, 36, 22, 0.18) !important;
+}
+
 .completion-dialog-panel .mat-mdc-dialog-container,
 .completion-dialog-panel .mat-mdc-dialog-surface,
 .completion-dialog-panel .mat-mdc-dialog-content {

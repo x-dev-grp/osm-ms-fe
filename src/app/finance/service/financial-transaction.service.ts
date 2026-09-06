@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { FinancialTransaction, TransactionBillRequest } from '../models/financial-transaction.model';
 import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 
 export interface SupplierFinancialSummary {
   supplierId?: string;
@@ -92,5 +93,13 @@ export class FinancialTransactionService {
       observe: 'response',
       responseType: 'blob'
     });
+  }
+
+  generateQr(transactionId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.baseUrl}/qr/FINANCIALTRANSACTION/${transactionId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.baseUrl}/search/by-code`, { params: { code } });
   }
 }

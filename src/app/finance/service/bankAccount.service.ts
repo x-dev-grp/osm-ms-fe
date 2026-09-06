@@ -5,6 +5,7 @@ import { ApiResponse } from '../../shared/models/api-response';
 import { BankAccount, BankAccountWithTransactions } from '../models/BankAccount';
 import { FinancialTransaction } from '../models/financial-transaction.model';
 import { environment } from '../../../environments/environment';
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -95,4 +96,13 @@ export class BankAccountService {
   getAllBanksWithBalances(): Observable<ApiResponse<BankAccountWithTransactions>> {
     return this.http.get<ApiResponse<BankAccountWithTransactions>>(`${this.baseUrl}/fetchAll/with-balances`);
   }
+
+  generateQr(bankAccountId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.baseUrl}/qr/BANKACCOUNT/${bankAccountId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.baseUrl}/search/by-code`, { params: { code } });
+  }
+
 }

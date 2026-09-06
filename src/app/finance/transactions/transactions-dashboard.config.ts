@@ -43,7 +43,11 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
         { value: 'LOAN', label: 'Prêt', labelTranslatePath: 'TRANSACTIONS.TYPES.LOAN' },
         { value: 'INTERNAL_TRANSFER', label: 'Transfert Interne', labelTranslatePath: 'TRANSACTIONS.TYPES.INTERNAL_TRANSFER' },
         { value: 'OIL_SALE', label: "Vente d'Huile", labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_SALE' },
+        { value: 'OIL_CONTAINER_SALE', label: 'Vente conteneurs', labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_CONTAINER_SALE' },
         { value: 'OIL_PURCHASE', label: "Achat d'Huile", labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_PURCHASE' },
+        { value: 'WASTE_SALE', label: 'Vente déchets', labelTranslatePath: 'TRANSACTIONS.TYPES.WASTE_SALE' },
+        { value: 'WASTE_PAYMENT', label: 'Paiement déchets', labelTranslatePath: 'TRANSACTIONS.TYPES.WASTE_PAYMENT' },
+        { value: 'EQUIPMENT_SERVICE', label: 'Service équipement', labelTranslatePath: 'TRANSACTIONS.TYPES.EQUIPMENT_SERVICE' },
         { value: 'SUPPLIER_PAYMENT', label: 'Paiement Fournisseur', labelTranslatePath: 'TRANSACTIONS.TYPES.SUPPLIER_PAYMENT' },
         { value: 'SUPPLIER_CREDIT', label: 'Crédit Fournisseur', labelTranslatePath: 'TRANSACTIONS.TYPES.SUPPLIER_CREDIT' },
         { value: 'DEPOSIT', label: 'Dépôt', labelTranslatePath: 'TRANSACTIONS.TYPES.DEPOSIT' },
@@ -111,7 +115,10 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
         { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
         { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
         { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' },
-        { label: 'Vente Huile', value: 'OIL_SALE', labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_SALE' }
+        { label: 'Vente Huile', value: 'OIL_SALE', labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_SALE' },
+        { label: 'Paiement vente huile', value: 'OIL_SALE_PAYMENT', labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_SALE_PAYMENT' },
+        { label: 'Vente conteneurs', value: 'OIL_CONTAINER_SALE', labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_CONTAINER_SALE' },
+        { label: 'Vente déchets', value: 'WASTE_SALE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.WASTE_SALE' }
       ]
     },
     {
