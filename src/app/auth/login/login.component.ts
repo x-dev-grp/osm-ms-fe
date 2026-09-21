@@ -97,6 +97,9 @@ export class LoginComponent implements OnInit {
   }
 
   submit() {
+    if (this.loading) {
+      return;
+    }
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -113,22 +116,27 @@ export class LoginComponent implements OnInit {
       .pipe(
         first(),
         catchError((err: any) => {
-          this.loading = false;
           if ([504, 503].includes(err?.status)) {
             this.errorMessage = { message: this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE') };
+            this.loading = false;
           } else if (err?.error?.error_uri && err?.error?.error_description) {
-            void this.router.navigate(
-              [
-                '/auth/user/update-password',
-                {
-                  username: err.error.error_description,
-                  id: err.error.error_uri
-                }
-              ],
-              { state: { temporaryPassword: password } }
-            );
+            void this.router
+              .navigate(
+                [
+                  '/auth/user/update-password',
+                  {
+                    username: err.error.error_description,
+                    id: err.error.error_uri
+                  }
+                ],
+                { state: { temporaryPassword: password } }
+              )
+              .finally(() => {
+                this.loading = false;
+              });
           } else {
             this.errorMessage = err?.error ?? { message: this.translateService.instant('LOGIN.UNEXPECTED_ERROR') };
+            this.loading = false;
           }
           return of(null);
         })
@@ -139,7 +147,6 @@ export class LoginComponent implements OnInit {
             return;
           }
 
-          this.loading = false;
           const accessToken = (response as Record<string, unknown>)['access_token'] as string;
           const refreshToken = (response as Record<string, unknown>)['refresh_token'] as string;
           this.tokenService.persistLogin(accessToken, refreshToken, rememberMe, username);
@@ -147,14 +154,15 @@ export class LoginComponent implements OnInit {
           this.authenticationService.refreshSession().subscribe({
             next: () => {
               const role = this.authenticationService.currentUserValue?.role;
-              if (role === Role.OosmAdmin) {
-                void this.router.navigate(['/dashboard/administration']);
-              } else {
-                void this.router.navigate(['/dashboard']);
-              }
+              const target =
+                role === Role.OosmAdmin ? ['/dashboard/administration'] : ['/dashboard'];
+              void this.router.navigate(target).finally(() => {
+                this.loading = false;
+              });
             },
             error: () => {
               this.errorMessage = { message: this.translateService.instant('LOGIN.UNEXPECTED_ERROR') };
+              this.loading = false;
             }
           });
         },

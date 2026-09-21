@@ -268,6 +268,16 @@
   gap: 14px;
 }
 
+.auth-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
 .auth-input {
   display: flex;
   flex-direction: column;
@@ -408,6 +418,11 @@
 .auth-link:hover {
   color: var(--auth-olive-deep);
   text-decoration: underline;
+}
+
+.auth-link--disabled {
+  pointer-events: none;
+  opacity: 0.55;
 }
 
 .auth-submit {

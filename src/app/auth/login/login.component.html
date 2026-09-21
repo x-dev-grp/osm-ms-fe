@@ -37,53 +37,58 @@
         <div *ngIf="errorText" class="auth-alert auth-alert--error" role="alert">{{ errorText }}</div>
 
         <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()">
-          <label class="auth-input" [class.auth-input--invalid]="form.controls['username'].touched && form.controls['username'].invalid">
-            <span class="auth-input__label">{{ 'LOGIN.IDENTIFIER' | translate }}</span>
-            <span class="auth-input__control">
-              <mat-icon class="auth-input__icon" aria-hidden="true">person_outline</mat-icon>
-              <input
-                formControlName="username"
-                id="username"
-                autocomplete="username"
-                [placeholder]="'LOGIN.IDENTIFIER_PLACEHOLDER' | translate"
-              />
-            </span>
-            <span class="auth-input__error" *ngIf="form.controls['username'].touched && form.controls['username'].invalid">
-              {{ getUserNameErrorMessage() }}
-            </span>
-          </label>
+          <fieldset class="auth-form__fields" [disabled]="loading">
+            <label class="auth-input" [class.auth-input--invalid]="form.controls['username'].touched && form.controls['username'].invalid">
+              <span class="auth-input__label">{{ 'LOGIN.IDENTIFIER' | translate }}</span>
+              <span class="auth-input__control">
+                <mat-icon class="auth-input__icon" aria-hidden="true">person_outline</mat-icon>
+                <input
+                  formControlName="username"
+                  id="username"
+                  autocomplete="username"
+                  [placeholder]="'LOGIN.IDENTIFIER_PLACEHOLDER' | translate"
+                />
+              </span>
+              <span class="auth-input__error" *ngIf="form.controls['username'].touched && form.controls['username'].invalid">
+                {{ getUserNameErrorMessage() }}
+              </span>
+            </label>
 
-          <label class="auth-input" [class.auth-input--invalid]="form.controls['password'].touched && form.controls['password'].invalid">
-            <span class="auth-input__label">{{ 'LOGIN.PASSWORD' | translate }}</span>
-            <span class="auth-input__control">
-              <mat-icon class="auth-input__icon" aria-hidden="true">lock_outline</mat-icon>
-              <input
-                formControlName="password"
-                [type]="hide ? 'password' : 'text'"
-                id="password"
-                autocomplete="current-password"
-              />
-              <button
-                type="button"
-                class="auth-input__toggle"
-                (click)="hide = !hide"
-                [attr.aria-label]="'LOGIN.TOGGLE_PASSWORD' | translate"
-                [attr.aria-pressed]="!hide"
-              >
-                <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
-              </button>
-            </span>
-            <span class="auth-input__error" *ngIf="form.controls['password'].touched && form.controls['password'].invalid">
-              {{ getPasswordErrorMessage() }}
-            </span>
-          </label>
+            <label class="auth-input" [class.auth-input--invalid]="form.controls['password'].touched && form.controls['password'].invalid">
+              <span class="auth-input__label">{{ 'LOGIN.PASSWORD' | translate }}</span>
+              <span class="auth-input__control">
+                <mat-icon class="auth-input__icon" aria-hidden="true">lock_outline</mat-icon>
+                <input
+                  formControlName="password"
+                  [type]="hide ? 'password' : 'text'"
+                  id="password"
+                  autocomplete="current-password"
+                />
+                <button
+                  type="button"
+                  class="auth-input__toggle"
+                  (click)="hide = !hide"
+                  [disabled]="loading"
+                  [attr.aria-label]="'LOGIN.TOGGLE_PASSWORD' | translate"
+                  [attr.aria-pressed]="!hide"
+                >
+                  <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </span>
+              <span class="auth-input__error" *ngIf="form.controls['password'].touched && form.controls['password'].invalid">
+                {{ getPasswordErrorMessage() }}
+              </span>
+            </label>
 
-          <div class="auth-form__row">
-            <mat-checkbox formControlName="rememberMe" color="primary" class="auth-remember">
-              {{ 'LOGIN.REMEMBERME' | translate }}
-            </mat-checkbox>
-            <a routerLink="/auth/forgot-password" class="auth-link">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
-          </div>
+            <div class="auth-form__row">
+              <mat-checkbox formControlName="rememberMe" color="primary" class="auth-remember">
+                {{ 'LOGIN.REMEMBERME' | translate }}
+              </mat-checkbox>
+              <a routerLink="/auth/forgot-password" class="auth-link" [class.auth-link--disabled]="loading" [attr.tabindex]="loading ? -1 : null">
+                {{ 'LOGIN.FORGOT_PASSWORD' | translate }}
+              </a>
+            </div>
+          </fieldset>
 
           <button type="submit" mat-flat-button color="primary" class="auth-submit" [disabled]="loading || form.invalid">
             <mat-spinner *ngIf="loading" diameter="22"></mat-spinner>
