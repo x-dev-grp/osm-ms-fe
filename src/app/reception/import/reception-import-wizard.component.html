@@ -30,15 +30,16 @@
     <mat-card-content>
       <div class="day-import__actions">
         <label class="day-import__file">
-          <input type="file" accept=".xlsx,.xls" (change)="onFileSelected($event)" />
+          <input type="file" accept=".xlsx" [disabled]="committing || state === 'unknown'" (change)="onFileSelected($event)" />
           <span>{{ selectedFile?.name || ('ABIOOC.DAY_IMPORT.CHOOSE_FILE' | translate) }}</span>
         </label>
         <button
           mat-flat-button
           color="primary"
           type="button"
-          [disabled]="!selectedFile || dryRunning"
-          (click)="runDryRun()">
+          [disabled]="!selectedFile || dryRunning || committing || state === 'unknown'"
+          (click)="runDryRun()"
+        >
           @if (dryRunning) {
             <mat-spinner diameter="18"></mat-spinner>
           } @else {
@@ -50,6 +51,14 @@
     </mat-card-content>
   </mat-card>
 
+  @if (state === 'unknown') {
+    <p role="status">{{ 'ABIOOC.DAY_IMPORT.OUTCOME_UNKNOWN' | translate }}</p>
+    <button mat-stroked-button type="button" (click)="checkOutcome()">{{ 'ABIOOC.DAY_IMPORT.CHECK_OUTCOME' | translate }}</button>
+    <button mat-stroked-button type="button" (click)="retryCommit()">{{ 'ABIOOC.DAY_IMPORT.RETRY_COMMIT' | translate }}</button>
+  }
+  @if (state === 'committed') {
+    <p role="status">{{ 'ABIOOC.DAY_IMPORT.COMMIT_OK' | translate }}</p>
+  }
   @if (report) {
     <mat-card class="day-import__card">
       <mat-card-header>
@@ -126,7 +135,11 @@
                   <td>{{ row.sheet }}</td>
                   <td>{{ row.rowNumber }}</td>
                   <td>{{ row.businessKey || '—' }}</td>
-                  <td><span class="status status--{{ row.status | lowercase }}">{{ row.status }}</span></td>
+                  <td>
+                    <span class="status status--{{ row.status | lowercase }}">
+                      {{ 'ABIOOC.DAY_IMPORT.STATUS.' + row.status | translate }}
+                    </span>
+                  </td>
                   <td>{{ row.message || '—' }}</td>
                 </tr>
               } @empty {
@@ -156,7 +169,9 @@
                   <td>{{ row.sheet }}</td>
                   <td>{{ row.rowNumber }}</td>
                   <td>{{ row.businessKey || '—' }}</td>
-                  <td><span class="status status--error">{{ row.status }}</span></td>
+                  <td>
+                    <span class="status status--error">{{ 'ABIOOC.DAY_IMPORT.STATUS.' + row.status | translate }}</span>
+                  </td>
                   <td>{{ row.message || '—' }}</td>
                 </tr>
               } @empty {
@@ -173,8 +188,9 @@
             mat-flat-button
             color="accent"
             type="button"
-            [disabled]="!report.canCommit || !selectedFile || committing"
-            (click)="commit()">
+            [disabled]="state !== 'valid' || !report.canCommit || !selectedFile || committing || dryRunning"
+            (click)="commit()"
+          >
             @if (committing) {
               <mat-spinner diameter="18"></mat-spinner>
             } @else {
@@ -202,8 +218,9 @@
             mat-flat-button
             color="primary"
             type="button"
-            [disabled]="connectingDrive || !driveStatus?.oauthConfigured"
-            (click)="connectDrive()">
+            [disabled]="!canManageDrive || connectingDrive || !driveStatus?.oauthConfigured"
+            (click)="connectDrive()"
+          >
             @if (connectingDrive) {
               <mat-spinner diameter="18"></mat-spinner>
             } @else {
@@ -216,8 +233,9 @@
             mat-stroked-button
             color="warn"
             type="button"
-            [disabled]="disconnectingDrive"
-            (click)="disconnectDrive()">
+            [disabled]="!canManageDrive || disconnectingDrive"
+            (click)="disconnectDrive()"
+          >
             @if (disconnectingDrive) {
               <mat-spinner diameter="18"></mat-spinner>
             } @else {
@@ -234,8 +252,9 @@
           mat-flat-button
           color="accent"
           type="button"
-          [disabled]="syncing || !driveStatus?.connected"
-          (click)="syncDrive()">
+          [disabled]="!canManageDrive || syncing || !driveStatus?.configured"
+          (click)="syncDrive()"
+        >
           @if (syncing) {
             <mat-spinner diameter="18"></mat-spinner>
           } @else {
@@ -278,7 +297,7 @@
           @if (driveStatus.lastStatus) {
             <div>
               <dt>{{ 'ABIOOC.DAY_IMPORT.DRIVE_LAST_STATUS' | translate }}</dt>
-              <dd>{{ driveStatus.lastStatus }}</dd>
+              <dd>{{ driveResultLabel(driveStatus.lastStatus) }}</dd>
             </div>
           }
           @if (driveStatus.lastMessage) {
