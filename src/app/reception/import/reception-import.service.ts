@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiSingleResponse } from '../../shared/models/api-response';
+import { TranslateService } from '@ngx-translate/core';
 
 export type DayImportRowStatus = 'CREATE' | 'LINK_EXISTING' | 'SKIP_DUPLICATE' | 'ERROR' | 'WARNING';
 
@@ -61,14 +62,20 @@ export type DayImportReportFormat = 'xlsx' | 'csv';
 export class ReceptionImportService {
   private readonly baseUrl = `${environment.apiUrl}/api/production/import/day`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient, private readonly translate: TranslateService) {}
 
   downloadTemplate(): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/template`, { responseType: 'blob' });
+    return this.http.get(`${this.baseUrl}/template`, {
+      params: new HttpParams().set('lang', this.translate.currentLang || 'fr'),
+      responseType: 'blob'
+    });
   }
 
   downloadSample(): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/sample`, { responseType: 'blob' });
+    return this.http.get(`${this.baseUrl}/sample`, {
+      params: new HttpParams().set('lang', this.translate.currentLang || 'fr'),
+      responseType: 'blob'
+    });
   }
 
   dryRun(file: File): Observable<DayImportReport> {
