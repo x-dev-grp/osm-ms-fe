@@ -1,15 +1,14 @@
-import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { catchError, first, of, tap } from 'rxjs';
+import { first } from 'rxjs';
 import { UserService } from '../../settings/user-management/services/user.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
-import { AuthenticationService } from 'src/app/auth/services/authentication.service';
-import { MatDialog } from '@angular/material/dialog';
-import { TokenService } from '../services/tokenService.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthenticationService } from '../services/authentication.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthLangSwitcherComponent } from '../auth-lang-switcher.component';
 
@@ -21,25 +20,18 @@ import { AuthLangSwitcherComponent } from '../auth-lang-switcher.component';
   imports: [TranslateModule, CommonModule, SharedModule, RouterModule, AuthLangSwitcherComponent]
 })
 export class UpdatePasswordComponent implements OnInit {
-  @ViewChild('changePwdTpl') changePwdTpl: TemplateRef<unknown>;
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private authService = inject(AuthenticationService);
-  private tokenService = inject(TokenService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private dialog = inject(MatDialog);
   private translateService = inject(TranslateService);
-  conHide: boolean = false;
-  newHide: boolean = false;
+  conHide = true;
+  newHide = true;
   // Form and UI state
   _form: FormGroup;
   errorMessage = '';
   loading = false;
-
-  // Password visibility toggles
-  hideNewPassword = true;
-  hideConfirmPassword = true;
 
   ngOnInit(): void {
     this.initForm();
@@ -55,7 +47,6 @@ export class UpdatePasswordComponent implements OnInit {
         validators: [this.invalidConfirmPassword()]
       }
     );
-    console.log(this.route.snapshot.paramMap);
   }
 
   // Custom validator for password strength
@@ -102,6 +93,7 @@ export class UpdatePasswordComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.loading) return;
     if (this._form.invalid) {
       this._form.markAllAsTouched();
       return;
@@ -109,13 +101,13 @@ export class UpdatePasswordComponent implements OnInit {
 
     const userId = this.route.snapshot.paramMap?.get('id');
     if (!userId) {
-      this.errorMessage = this.translateService.instant('AUTO.INVALID_USER');
+      this.errorMessage = this.translateService.instant('LOGIN.PASSWORD_UPDATE_CONTEXT_EXPIRED');
       return;
     }
 
     const temporaryPassword = history.state?.temporaryPassword;
     if (!temporaryPassword) {
-      this.errorMessage = this.translateService.instant('AUTO.INVALID_CREDENTIALS');
+      this.errorMessage = this.translateService.instant('LOGIN.PASSWORD_UPDATE_CONTEXT_EXPIRED');
       return;
     }
 
@@ -129,84 +121,25 @@ export class UpdatePasswordComponent implements OnInit {
 
     this.userService
       .updateInitialPassword(payload, userId)
-      .pipe(
-        tap(() => {
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this._form.reset();
           this.loading = false;
-          this.openChangePasswordDialog();
-        }),
-        catchError((err: unknown) => {
-          this.loading = false;
-          this.handleError(err);
-          return of(null);
-        })
-      )
-      .subscribe();
-  }
-
-  private openChangePasswordDialog(): void {
-    const dialogRef = this.dialog.open(this.changePwdTpl, {
-      width: '400px',
-      disableClose: true
-      // data: {
-      //   username: this.route.snapshot.paramMap?.get('username')
-      // }
-    });
-
-    dialogRef.afterClosed().subscribe((result: unknown) => {
-      if (result === 'continue') {
-        this.performLogin();
-      } else {
-        this.authService.logout();
-      }
-    });
-  }
-
-  private performLogin(): void {
-    const username = this.route.snapshot.paramMap?.get('username');
-    if (!username) {
-      this.errorMessage = this.translateService.instant('LOGIN.USERNAME_MISSING');
-      return;
-    }
-    const payload: Record<string, string> = {
-      username: username,
-      password: this._form.get('newPassword')?.value || ''
-    };
-
-    this.loading = true;
-    this.authService
-      .login(payload)
-      .pipe(
-        first(),
-        tap((response) => {
-          if (response) {
-            this.handleSuccessfulLogin(response);
-          }
-        }),
-        catchError((err) => {
+          this.authService.logout(undefined, 'password-changed');
+        },
+        error: (err: unknown) => {
           this.loading = false;
           this.handleError(err);
-          return of(null);
-        })
-      )
-      .subscribe();
-  }
-
-  private handleSuccessfulLogin(response: unknown): void {
-    const resp = response as Record<string, unknown>;
-    this.tokenService.persistLogin(resp['access_token'] as string, resp['refresh_token'] as string, false);
-    if (this.authService.applyAccessToken(this.tokenService.getToken()!)) {
-      this.router.navigate(['welcome']);
-    }
+        }
+      });
   }
 
   private handleError(err: unknown): void {
-    if (typeof err === 'object' && err !== null && 'status' in err && [504, 503].includes((err as any).status)) {
+    if (err instanceof HttpErrorResponse && (err.status === 0 || err.status >= 500)) {
       this.errorMessage = this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE');
-    } else if (typeof err === 'object' && err !== null && 'error' in err) {
-      this.errorMessage = (err as any).error || this.translateService.instant('LOGIN.UNEXPECTED_ERROR');
     } else {
-      this.errorMessage = this.translateService.instant('LOGIN.UNEXPECTED_ERROR');
+      this.errorMessage = this.translateService.instant('LOGIN.PASSWORD_UPDATE_FAILED');
     }
-    console.error('Error:', err);
   }
 }

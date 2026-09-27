@@ -58,7 +58,7 @@ jobs:
           # http-server uses 404.html as its fallback for Angular deep links.
           cp dist/ui/index.html dist/ui/404.html
           trap 'rm -f dist/ui/404.html' EXIT
-          npx playwright test e2e/smoke.spec.ts e2e/day-import.spec.ts --config=e2e/playwright.config.ts --project=chromium
+          npx playwright test e2e/smoke.spec.ts e2e/day-import.spec.ts e2e/auth-flow.spec.ts --config=e2e/playwright.config.ts --project=chromium
         env:
           CI: true
 

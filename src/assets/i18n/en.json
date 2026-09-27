@@ -484,6 +484,9 @@
     "VIEW_TITLE": "User details"
   },
   "USER_PROFILE": {
+    "PASSWORD_INVALID_CURRENT": "The current password is incorrect. Try again.",
+    "PASSWORD_REUSED": "Choose a password different from your current one.",
+    "PASSWORD_UNAVAILABLE": "We couldn't reach the service. Please try again later.",
     "TITLE": "My Account",
     "TABS": {
       "PROFILE": "Profile",
@@ -2831,13 +2834,14 @@
   "FINANCE_TAB": "Finance Config",
   "FORGOT_PASSWORD": {
     "BACK_TO_LOGIN": "Back to login",
+    "SUBTITLE": "Enter your email to receive a six-digit reset code.",
     "EMAIL": "Email",
     "EMAIL_INVALID": "Please enter a valid email address",
     "EMAIL_REQUIRED": "Email is required",
     "ERROR_MESSAGE": "An error occurred while processing your request. Please try again later.",
     "SERVICE_UNAVAILABLE": "Service unavailable. Please try again later.",
-    "SUBMIT": "Send reset link",
-    "SUCCESS_MESSAGE": "If an account exists with this email, you will receive a password reset link shortly.",
+    "SUBMIT": "Send reset code",
+    "SUCCESS_MESSAGE": "If an account exists with this email, you will receive a reset code shortly.",
     "TITLE": "Forgot Password"
   },
   "File Manager": "File Manager",
@@ -3080,6 +3084,11 @@
   "Invoice": "Invoice",
   "Kanban": "Kanban",
   "LOGIN": {
+    "INVALID_CREDENTIALS": "Sign-in failed. Check your details and try again.",
+    "PASSWORD_CHANGED": "Your password was changed. Sign in with your new password.",
+    "PASSWORD_UPDATE_CONTEXT_EXPIRED": "This password setup session is no longer available. Return to sign-in and try again.",
+    "PASSWORD_UPDATE_FAILED": "We couldn't save your new password. Check your temporary password or start again from sign-in.",
+    "SESSION_UNAVAILABLE": "We couldn't finish signing you in. Please try again.",
     "ACCOUNT_LOCKED": "Your account is locked. Contact an administrator.",
     "FORGOT_PASSWORD": "Forgot password?",
     "NO_ACCESS": "No modules are available for your account. Contact an administrator if you need access.",
@@ -5021,6 +5030,18 @@
   },
   "REQUIRED": "Required ",
   "RESET_PASSWORD": {
+    "CODE_SUBTITLE": "Enter the six-digit code from the latest reset email.",
+    "PASSWORD_SUBTITLE": "Choose a new password to finish resetting your account.",
+    "REQUEST_NEW_CODE": "Request a new code",
+    "CODE_REQUIRED": "Enter the code from your email.",
+    "CODE_FORMAT": "Enter the six-digit code.",
+    "CODE_INVALID": "This code is incorrect or no longer valid. Check the latest email or request another code.",
+    "ERROR_VALIDATE": "We couldn't check this code. Please try again.",
+    "ERROR_UPDATE": "We couldn't change your password. The reset request may have expired or the password may not be accepted. Request a new code and try again.",
+    "PASSWORD_REQUIRED": "Enter a new password.",
+    "PASSWORD_INVALID": "Check your new password and try again.",
+    "CONFIRM_REQUIRED": "Confirm your new password.",
+    "CONFIRM_INVALID": "Check the confirmation and try again.",
     "CODE_PLACEHOLDER": "Enter your code",
     "CONFIRMATION_CODE": "Confirmation Code",
     "CONFIRM_PASSWORD": "Confirm Password",
