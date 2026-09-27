@@ -249,12 +249,21 @@ export class UserProfileComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
         tap(() => {
           this.passwordLoading = false;
-          this.passwordSuccess = this.i18n.instant('USER_PROFILE.PASSWORD_SUCCESS');
           this.passwordForm.reset();
+          this.authService.logout(undefined, 'password-changed');
         }),
         catchError((err) => {
           this.passwordLoading = false;
-          this.passwordError = this.resolveError(err, 'USER_PROFILE.PASSWORD_ERROR');
+          const detail = typeof err?.error === 'string' ? err.error : '';
+          const key =
+            err?.status === 0 || err?.status >= 500
+              ? 'USER_PROFILE.PASSWORD_UNAVAILABLE'
+              : detail === 'Invalid credentials'
+                ? 'USER_PROFILE.PASSWORD_INVALID_CURRENT'
+                : detail === 'New password must differ from the current password'
+                  ? 'USER_PROFILE.PASSWORD_REUSED'
+                  : 'USER_PROFILE.PASSWORD_ERROR';
+          this.passwordError = this.i18n.instant(key);
           return of(null);
         })
       )

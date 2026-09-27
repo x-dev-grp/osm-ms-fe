@@ -487,7 +487,7 @@ export class AuthenticationService {
     return this.loggingOut;
   }
 
-  logout(queryParams?: string) {
+  logout(queryParams?: string, success?: 'password-changed') {
     if (this.loggingOut) {
       return;
     }
@@ -505,7 +505,10 @@ export class AuthenticationService {
 
     const navigate = () => {
       if (!queryParams) {
-        void this.router.navigate(['/auth/login']).finally(() => {
+        void this.router.navigate(['/auth/login'], {
+          queryParams: success ? { success } : undefined,
+          replaceUrl: !!success
+        }).finally(() => {
           this.loggingOut = false;
         });
         return;
