@@ -4,12 +4,7 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiSingleResponse } from '../../shared/models/api-response';
 
-export type DayImportRowStatus =
-  | 'CREATE'
-  | 'LINK_EXISTING'
-  | 'SKIP_DUPLICATE'
-  | 'ERROR'
-  | 'WARNING';
+export type DayImportRowStatus = 'CREATE' | 'LINK_EXISTING' | 'SKIP_DUPLICATE' | 'ERROR' | 'WARNING';
 
 export interface DayImportFieldError {
   field: string;
@@ -28,6 +23,8 @@ export interface DayImportRow {
 }
 
 export interface DayImportReport {
+  runId?: string;
+  outcome?: 'PREVIEW' | 'COMMITTED' | 'REPLAYED' | 'REJECTED';
   businessDate?: string;
   canCommit: boolean;
   validCount: number;
@@ -88,10 +85,25 @@ export class ReceptionImportService {
     });
   }
 
-  commit(file: File): Observable<DayImportReport> {
+  commit(file: File, previewId: string): Observable<DayImportReport> {
     return this.http
-      .post<ApiSingleResponse<DayImportReport>>(`${this.baseUrl}/commit`, this.toFormData(file))
+      .post<
+        ApiSingleResponse<DayImportReport>
+      >(`${this.baseUrl}/commit`, this.toFormData(file), { params: new HttpParams().set('previewId', previewId) })
       .pipe(map((res) => this.unwrapReport(res)));
+  }
+
+  run(id: string): Observable<DayImportReport> {
+    return this.http
+      .get<ApiSingleResponse<DayImportReport>>(`${this.baseUrl}/runs/${encodeURIComponent(id)}`)
+      .pipe(map((res) => this.unwrapReport(res)));
+  }
+
+  savedReport(id: string, format: DayImportReportFormat): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/runs/${encodeURIComponent(id)}/report`, {
+      params: new HttpParams().set('format', format),
+      responseType: 'blob'
+    });
   }
 
   driveSync(): Observable<DayImportDriveStatus> {
@@ -101,22 +113,18 @@ export class ReceptionImportService {
   }
 
   driveStatus(): Observable<DayImportDriveStatus> {
-    return this.http
-      .get<ApiSingleResponse<DayImportDriveStatus>>(`${this.baseUrl}/drive/status`)
-      .pipe(map((res) => this.unwrapDrive(res)));
+    return this.http.get<ApiSingleResponse<DayImportDriveStatus>>(`${this.baseUrl}/drive/status`).pipe(map((res) => this.unwrapDrive(res)));
   }
 
   driveAuthorizeUrl(): Observable<string> {
-    return this.http
-      .get<ApiSingleResponse<{ authorizeUrl: string }>>(`${this.baseUrl}/drive/oauth/authorize`)
-      .pipe(
-        map((res) => {
-          if (!res?.success || !res.data?.authorizeUrl) {
-            throw new Error(res?.message || 'Unable to start Google Drive login');
-          }
-          return res.data.authorizeUrl;
-        })
-      );
+    return this.http.get<ApiSingleResponse<{ authorizeUrl: string }>>(`${this.baseUrl}/drive/oauth/authorize`).pipe(
+      map((res) => {
+        if (!res?.success || !res.data?.authorizeUrl) {
+          throw new Error(res?.message || 'Unable to start Google Drive login');
+        }
+        return res.data.authorizeUrl;
+      })
+    );
   }
 
   driveDisconnect(): Observable<DayImportDriveStatus> {
@@ -139,7 +147,8 @@ export class ReceptionImportService {
   }
 
   private unwrapDrive(res: ApiSingleResponse<DayImportDriveStatus>): DayImportDriveStatus {
-    const status = res?.data || {};
+    if (!res?.success || !res.data) throw new Error(res?.message || 'Drive request failed');
+    const status = res.data;
     return {
       ...status,
       lastStatus: status.lastResult || status.lastStatus,
