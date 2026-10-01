@@ -22,7 +22,21 @@ describe('filterMenuByPermissions — tenant modules', () => {
           type: 'item',
           url: '/stock/lignes',
           modulePermission: 'CONDITIONING',
-          permissions: ['INVENTAIR:LIGNECONDITIONNEMENT:READ']
+          permissions: ['CONDITIONING:LIGNECONDITIONNEMENT:READ']
+        },
+        {
+          id: 'item-stock-operations',
+          title: 'Stock operations',
+          type: 'item',
+          url: '/stock/mouvements',
+          permissions: ['CONDITIONING:MOUVEMENTSTOCKSEC:READ']
+        },
+        {
+          id: 'item-oil-filtering',
+          title: 'Oil filtration',
+          type: 'item',
+          url: '/storage/oil-filtering',
+          permissions: ['CONDITIONING:FILTRATIONOPERATION:READ']
         }
       ]
     },
@@ -58,7 +72,9 @@ describe('filterMenuByPermissions — tenant modules', () => {
 
   const allPermissions = [
     'CONDITIONING:OF:READ',
-    'INVENTAIR:LIGNECONDITIONNEMENT:READ',
+    'CONDITIONING:MOUVEMENTSTOCKSEC:READ',
+    'CONDITIONING:FILTRATIONOPERATION:READ',
+    'CONDITIONING:LIGNECONDITIONNEMENT:READ',
     'INVENTAIR:ARTICLESEC:READ'
   ];
 
@@ -77,17 +93,26 @@ describe('filterMenuByPermissions — tenant modules', () => {
     });
     expect(result.map((m) => m.id)).toEqual(['group-conditioning', 'group-dashboard']);
     const conditioning = result.find((m) => m.id === 'group-conditioning');
-    // Lines need inventair as well (cross-module permission)
-    expect(conditioning?.children?.map((c) => c.id)).toEqual(['item-of']);
+    expect(conditioning?.children?.map((c) => c.id)).toEqual([
+      'item-of',
+      'item-lines',
+      'item-stock-operations',
+      'item-oil-filtering'
+    ]);
   });
 
-  it('shows lines only when both CONDITIONING and INVENTAIR are on', () => {
+  it('shows all conditioning entries without the inventory module', () => {
     const result = filterMenuByPermissions(menus, allPermissions, {
       enabledModules: ['CONDITIONING', 'INVENTAIR'],
       bypassPermissionChecks: true
     });
     const conditioning = result.find((m) => m.id === 'group-conditioning');
-    expect(conditioning?.children?.map((c) => c.id)).toEqual(['item-of', 'item-lines']);
+    expect(conditioning?.children?.map((c) => c.id)).toEqual([
+      'item-of',
+      'item-lines',
+      'item-stock-operations',
+      'item-oil-filtering'
+    ]);
   });
 
   it('hides all module groups when enabledModules is empty', () => {
