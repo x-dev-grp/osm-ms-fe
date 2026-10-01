@@ -25,6 +25,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SortByTranslatedPipe } from '../../pipes/sort-by-translated.pipe';
 import { resolveListContext, translateHintWithFallback, translateWithFallback } from './models/list-context.util';
+import { dashboardPaymentStatus, DashboardPaymentStatus } from './models/payment-status.util';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -54,6 +55,9 @@ import { resolveListContext, translateHintWithFallback, translateWithFallback } 
   ]
 })
 export class OosmDashboard implements OnInit, AfterViewInit, OnChanges {
+  paymentStatus(record: Record<string, unknown>): DashboardPaymentStatus {
+    return dashboardPaymentStatus(record);
+  }
   readonly _store = inject(DashboardStore);
   _router = inject(Router);
   _dialog = inject(MatDialog);
@@ -265,7 +269,7 @@ export class OosmDashboard implements OnInit, AfterViewInit, OnChanges {
       return false;
     }
 
-    const record = row as Record<string, unknown> & { actions?: string[] };
+    const record = row as Record<string, unknown> & { actions?: string[]; status?: string };
     const specificActions = this.config()?.specificActions;
 
     if (specificActions?.length) {
@@ -273,12 +277,22 @@ export class OosmDashboard implements OnInit, AfterViewInit, OnChanges {
       if (!item) {
         return false;
       }
-      if (item.disabled?.field && record[item.disabled.field] === item.disabled.value) {
-        return false;
-      }
-      return true;
+      return !this.isSpecificActionDisabled(item, record);
     }
 
     return (record?.actions ?? []).includes(action);
+  }
+
+  isSpecificActionDisabled(
+    item: NonNullable<DashboardConfig['specificActions']>[number],
+    row: Record<string, unknown> & { actions?: string[]; status?: string }
+  ): boolean {
+    if (item.disabled?.field && row[item.disabled.field] === item.disabled.value) {
+      return true;
+    }
+    if (item.requiredAction && !(row.actions ?? []).includes(item.requiredAction)) {
+      return true;
+    }
+    return !!item.allowedStatuses?.length && !item.allowedStatuses.includes(String(row.status ?? ''));
   }
 }
