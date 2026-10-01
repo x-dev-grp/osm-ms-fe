@@ -12,7 +12,7 @@
   (dateRangeChange)="onDateRangeChange($event)"
 >
   <section class="cash-register">
-    <div class="cash-register__toolbar">
+    <div class="cash-register__toolbar" data-tour="cash-opening">
       <mat-form-field appearance="outline" class="cash-register__opening" subscriptSizing="dynamic">
         <mat-label>{{ 'ABIOOC.CASH_REGISTER.OPENING' | translate }}</mat-label>
         <input
@@ -31,7 +31,7 @@
     </div>
 
     @if (summary) {
-      <div class="cash-register__summary">
+      <div class="cash-register__summary" data-tour="cash-summary">
         <mat-card class="summary-card">
           <mat-card-content>
             <span class="summary-label">{{ 'ABIOOC.CASH_REGISTER.OPENING' | translate }}</span>
@@ -73,7 +73,7 @@
         </mat-card>
       </div>
 
-      <div class="cash-register__methods">
+      <div class="cash-register__methods" data-tour="cash-methods">
         @for (row of summary.byMethod; track row.method) {
           <mat-card class="summary-card method-card">
             <mat-card-content>

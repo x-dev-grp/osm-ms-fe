@@ -1,19 +1,20 @@
 :host {
   display: inline-flex;
   align-items: center;
+  max-width: 100%;
 }
 
 .system-health {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 38px;
-  max-width: 260px;
-  padding: 0 10px;
-  border: 1px solid #dde3ed;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #172033;
+  height: 36px;
+  max-width: 100%;
+  padding: 0 12px;
+  border: 1px solid var(--border-subtle, #dde3ed);
+  border-radius: 10px;
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #172033);
   font: inherit;
   cursor: default;
   white-space: nowrap;
@@ -43,7 +44,7 @@
 .system-health__label {
   min-width: 0;
   overflow: hidden;
-  color: #344054;
+  color: var(--text-secondary, #344054);
   font-size: 12px;
   font-weight: 600;
   line-height: 1;
@@ -54,7 +55,8 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-left: 2px;
+  margin-inline-start: 2px;
+  direction: ltr;
 }
 
 .system-health__check {
@@ -89,7 +91,7 @@
 }
 
 .system-health--compact {
-  width: 38px;
+  width: 36px;
   justify-content: center;
   padding: 0;
 }
@@ -100,15 +102,41 @@
   font-size: 18px;
 }
 
-@media (max-width: 1120px) {
+:host-context(body.dark) {
   .system-health {
-    width: 38px;
-    justify-content: center;
-    padding: 0;
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+    color: #e6e9ef;
   }
 
-  .system-health__label,
-  .system-health__checks {
+  .system-health__label {
+    color: #cfd5df;
+  }
+
+  .system-health__check {
+    background: rgba(255, 255, 255, 0.08);
+    color: #c3cad6;
+  }
+
+  .system-health__check[data-status='UP'] {
+    background: rgba(17, 132, 91, 0.22);
+    color: #6fd3a8;
+  }
+
+  .system-health__check[data-status='DEGRADED'] {
+    background: rgba(183, 121, 31, 0.24);
+    color: #f2c46d;
+  }
+
+  .system-health__check[data-status='DOWN'],
+  .system-health__check[data-status='ERROR'] {
+    background: rgba(194, 65, 59, 0.24);
+    color: #f19a94;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .system-health__label {
     display: none;
   }
 }

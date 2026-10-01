@@ -681,6 +681,19 @@ const AR_RECEPTION_PLANNING = {
 
 Object.assign(PATCH.ar, AR_RECEPTION_PLANNING);
 
+Object.assign(PATCH.en, {
+  'OSM_DASHBOARD.ACTIONS.ACTIVATE_MODULES': 'Activate modules',
+  'OSM_DASHBOARD.ACTIONS.CALCULATE': 'Calculate'
+});
+Object.assign(PATCH.fr, {
+  'OSM_DASHBOARD.ACTIONS.ACTIVATE_MODULES': 'Activer les modules',
+  'OSM_DASHBOARD.ACTIONS.CALCULATE': 'Calculer'
+});
+Object.assign(PATCH.ar, {
+  'OSM_DASHBOARD.ACTIONS.ACTIVATE_MODULES': 'تفعيل الوحدات',
+  'OSM_DASHBOARD.ACTIONS.CALCULATE': 'حساب'
+});
+
 // Copy EN-only SUPPLIERS.* flat keys from AR nested structure with English labels
 function copySuppliersNestedToFlat(sourceFlat, targetFlat, targetLang, prefix = 'SUPPLIERS') {
   for (const [key, value] of Object.entries(sourceFlat)) {
@@ -743,7 +756,7 @@ function main() {
   copySuppliersNestedToFlat(flats.ar, flats.en, 'en');
   copySuppliersNestedToFlat(flats.ar, flats.fr, 'fr');
 
-  const usedMissing = loadLines('used-keys-missing-in-en.txt');
+  const usedMissing = LANGS.flatMap((lang) => loadLines(`used-keys-missing-in-${lang}.txt`));
   const union = new Set([
     ...Object.keys(flats.en),
     ...Object.keys(flats.fr),

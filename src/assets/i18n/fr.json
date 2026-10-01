@@ -1,4 +1,590 @@
 {
+  "TOUR": {
+    "NEXT": "Suivant",
+    "PREVIOUS": "Retour",
+    "DONE": "J'ai compris",
+    "PROGRESS": "{{current}} sur {{total}}",
+    "REPLAY": "Visite guidée de cette page",
+    "RESET_ALL": "Revoir toutes les visites guidées",
+    "STEP": {
+      "MENU_TITLE": "Vous êtes ici",
+      "MENU": "Cette page fait partie de la rubrique surlignée du menu. Utilisez-la pour passer d'une page du module à l'autre.",
+      "HEADER_TITLE": "Titre de la page",
+      "HEADER": "Le titre indique la page affichée ; le chemin au-dessus permet de revenir en arrière.",
+      "ACTIONS_TITLE": "Actions principales",
+      "ACTIONS": "Boutons pour créer, exporter ou actualiser ce que la page affiche.",
+      "FIELDS_TITLE": "Recherche et filtres",
+      "FIELDS": "Affinez la liste en saisissant ou en choisissant des valeurs ici.",
+      "DATA_TITLE": "Vos données",
+      "DATA": "Les enregistrements s'affichent ici. Cliquez sur une ligne ou ses boutons pour l'ouvrir, la modifier ou la supprimer.",
+      "TABS_TITLE": "Vues",
+      "TABS": "Passez d'une vue à l'autre de cette page.",
+      "REPLAY_TITLE": "Besoin d'un rappel ?",
+      "REPLAY": "Cliquez sur ce bouton à tout moment pour revoir la visite de la page affichée.",
+      "LIST_NEW_TITLE": "Créer",
+      "LIST_NEW": "Ouvre le formulaire pour ajouter un nouvel enregistrement.",
+      "LIST_FILTER_TITLE": "Filtres",
+      "LIST_FILTER": "Cochez les champs sur lesquels filtrer : ils apparaissent au-dessus du tableau, où vous saisissez ou choisissez les valeurs. « Réinitialiser » efface tous les filtres.",
+      "LIST_DATA_TITLE": "La liste",
+      "LIST_DATA": "Cliquez sur un titre de colonne pour trier, utilisez la pagination en bas et double-cliquez sur une ligne pour l'ouvrir.",
+      "LIST_ROW_ACTIONS_TITLE": "Actions de la ligne",
+      "LIST_ROW_ACTIONS": "Le bouton ⋮ de chaque ligne liste ce que vous pouvez faire sur l'enregistrement. Seules les actions permises par son statut actuel apparaissent.",
+      "LIST_EXPORT_TITLE": "Export",
+      "LIST_EXPORT": "Exportez la liste en CSV ou PDF : cochez les colonnes à inclure puis cliquez sur Exporter.",
+      "DASH_FILTERS_TITLE": "Période et filtres",
+      "DASH_FILTERS": "Ouvrez ce panneau pour choisir la période (aujourd'hui, ce mois, dates personnalisées…) et les autres filtres. Tous les chiffres de la page les suivent.",
+      "DASH_EXPORT_TITLE": "Export",
+      "DASH_EXPORT": "Téléchargez les chiffres affichés en Excel, CSV ou PDF.",
+      "DASH_REFRESH_TITLE": "Actualiser",
+      "DASH_REFRESH": "Recharge les dernières données sans quitter la page."
+    },
+    "SHELL": {
+      "TITLE": "Bienvenue sur ZitFlow",
+      "INTRO": "Une courte visite de l'écran principal. Vous pouvez la quitter à tout moment avec Échap ou la croix.",
+      "MENU_TITLE": "Menu principal",
+      "MENU": "Tous les modules activés pour votre société : réception, moulin, stock, finance, RH… Seules les pages autorisées sont affichées.",
+      "SEARCH_TITLE": "Recherche globale",
+      "SEARCH": "Saisissez un numéro de lot, un code de réception ou scannez un QR code, puis Entrée pour y accéder directement.",
+      "HELP_TITLE": "Guide utilisateur",
+      "HELP": "L'aide pas à pas pour chaque module.",
+      "SUPPORT_TITLE": "Assistance",
+      "SUPPORT": "Signalez un problème ou posez une question ; notre équipe répond à votre ticket.",
+      "NOTIFICATIONS_TITLE": "Notifications",
+      "NOTIFICATIONS": "Alertes de stock, qualité, paiements et tâches qui vous sont assignées.",
+      "PROFILE_TITLE": "Votre compte",
+      "PROFILE": "Votre profil, la langue de l'application et la déconnexion. Vous pouvez aussi revoir les visites guidées ici."
+    },
+    "DASHBOARD": {
+      "TITLE": "Tableau de bord",
+      "INTRO": "Votre vue du jour. Chaque onglet regroupe les chiffres clés d'un module ; vous ne voyez que les onglets autorisés pour votre rôle.",
+      "HUB_TABS_TITLE": "Onglets du tableau de bord",
+      "HUB_TABS": "Passez de la vue d'ensemble à la réception, la finance, le stockage, l'inventaire, les RH, les analyses ou l'administration. L'adresse de la page garde l'onglet : vous pouvez la mettre en favori.",
+      "HUB_PANEL_TITLE": "Chiffres de l'onglet choisi",
+      "HUB_PANEL": "Indicateurs et graphiques du module choisi. La plupart des tableaux de bord ont leur propre filtre de période et leurs boutons d'export et d'actualisation en haut."
+    },
+    "ADMIN_DASHBOARD": {
+      "TITLE": "Vue d'ensemble de la plateforme",
+      "INTRO": "Votre tour de contrôle pour toute la plateforme : entreprises, utilisateurs, modules sous licence, support et état du système.",
+      "ADMIN_HEALTH_TITLE": "État du système",
+      "ADMIN_HEALTH": "État en direct du backend, de la base de données et de cette application web. Il se met à jour tout seul ; un point rouge ou orange signale un point à vérifier.",
+      "ADMIN_KPIS_TITLE": "Chiffres clés",
+      "ADMIN_KPIS": "Entreprises, utilisateurs, utilisateurs connectés ces 7 derniers jours et tickets support en attente de réponse. Cliquez sur une carte pour ouvrir la page correspondante.",
+      "ADMIN_ATTENTION_TITLE": "À surveiller",
+      "ADMIN_ATTENTION": "Les points à suivre : nouveaux tickets, entreprises inactives ou sans activité, entreprises sans utilisateur ou sans module, utilisateurs verrouillés. Cliquez sur une pastille pour les traiter.",
+      "ADMIN_COMPANIES_TITLE": "Entreprises",
+      "ADMIN_COMPANIES": "Chaque entreprise avec son statut, ses modules activés, ses utilisateurs et sa dernière activité. Recherchez ou filtrez, puis ouvrez une entreprise ou gérez ses modules avec les boutons de la ligne.",
+      "ADMIN_MODULES_TITLE": "Adoption des modules",
+      "ADMIN_MODULES": "Le nombre d'entreprises qui utilisent chaque module, pour voir ce qui est le plus souscrit.",
+      "ADMIN_SUPPORT_TITLE": "Support",
+      "ADMIN_SUPPORT": "Les tickets par statut et les derniers reçus. Ouvrez la boîte support pour y répondre.",
+      "DASH_EXPORT": "Téléchargez les chiffres clés, la liste des entreprises et l'adoption des modules en Excel, CSV ou PDF."
+    },
+    "RECEPTION_DASHBOARD": {
+      "TITLE": "Vue d'ensemble des réceptions",
+      "INTRO": "Suivez les réceptions d'olives et d'huile sur une période : combien sont arrivées, combien restent en attente, volumes et paiements.",
+      "DASH_FILTERS": "Choisissez la période et, en dessous, un type d'opération (réception simple, base, achat d'olives, échange…) pour cibler les chiffres.",
+      "RECEPTION_DAILY_METRIC_TITLE": "Prix BASE du jour",
+      "RECEPTION_DAILY_METRIC": "Saisissez une fois par jour le prix de référence BASE. Il est enregistré et tracé sur le graphique des prix ; une fois saisi, le bouton ne fait que l'afficher.",
+      "RECEPTION_KPIS_TITLE": "Chiffres clés",
+      "RECEPTION_KPIS": "Réceptions totales, en attente et terminées avec leur évolution quotidienne, ainsi que le volume total et les montants payés et impayés de la période.",
+      "RECEPTION_TREND_TITLE": "Tendances",
+      "RECEPTION_TREND": "Réceptions par jour sur la période. Avec le filtre BASE, l'évolution du prix unitaire BASE s'affiche aussi."
+    },
+    "RECEPTION_OLIVE": {
+      "TITLE": "Réceptions d'olives",
+      "INTRO": "Toutes les réceptions d'olives de ce type d'opération (réception simple, base, achat d'olives ou échange), de la pesée au paiement.",
+      "LIST_NEW_TITLE": "Nouvelle réception",
+      "LIST_NEW": "Enregistrez un nouveau camion d'olives pour ce type d'opération. Le numéro de lot (par exemple 0001OC26) est attribué automatiquement à l'enregistrement.",
+      "LIST_DATA": "Une ligne par réception avec son lot, son fournisseur, son poids net et son statut. Double-cliquez sur une ligne pour l'ouvrir.",
+      "LIST_ROW_ACTIONS": "Suivez la réception étape par étape : la modifier, saisir la qualité, fixer le prix, payer le fournisseur, enregistrer l'huile produite, imprimer les bons, la clôturer ou l'annuler. Seules les étapes permises par son statut apparaissent."
+    },
+    "RECEPTION_OIL": {
+      "TITLE": "Réceptions d'huile",
+      "INTRO": "L'huile achetée ou reçue en vrac, avec sa qualité, son prix et son paiement.",
+      "LIST_NEW_TITLE": "Nouvelle réception d'huile",
+      "LIST_NEW": "Enregistrez une nouvelle livraison d'huile. Le numéro de lot est attribué automatiquement à l'enregistrement.",
+      "LIST_DATA": "Une ligne par réception d'huile avec son lot, son fournisseur, sa quantité et son statut. Double-cliquez sur une ligne pour l'ouvrir.",
+      "LIST_ROW_ACTIONS": "Modifier, saisir la qualité de l'huile, fixer le prix, compléter les détails de paiement, payer, imprimer le reçu ou la facture, ou annuler. Seules les actions permises par son statut apparaissent."
+    },
+    "RECEPTION_IMPORT": {
+      "TITLE": "Import Excel journalier",
+      "INTRO": "Importez une journée complète (réceptions, résultats qualité, paiements, ventes d'huile et dépenses) depuis un classeur Excel. La page fonctionne en trois étapes et rien n'est enregistré avant la dernière.",
+      "IMPORT_DOWNLOAD_TITLE": "1. Préparer le classeur",
+      "IMPORT_DOWNLOAD": "Téléchargez le modèle préparé pour votre société et remplissez-le ; l'exemple montre une journée complète. Créez d'abord vos cuves dans l'application : l'import ne les crée pas.",
+      "IMPORT_RULES_TITLE": "Règles obligatoires",
+      "IMPORT_RULES": "Un fichier par jour, ne renommez jamais les feuilles ou colonnes, choisissez les valeurs dans les listes et ne saisissez jamais de numéro de lot. Cochez la case pour accepter les règles : la vérification et l'import restent bloqués sinon.",
+      "IMPORT_UPLOAD_TITLE": "2. Choisir le fichier",
+      "IMPORT_UPLOAD": "Sélectionnez le classeur .xlsx rempli depuis votre ordinateur.",
+      "IMPORT_DRY_RUN_TITLE": "Vérifier sans importer",
+      "IMPORT_DRY_RUN": "Vérifie chaque ligne et affiche un rapport en dessous, sans rien enregistrer. Corrigez le fichier et revérifiez autant que nécessaire ; le rapport et le bouton d'import apparaissent alors sous cette carte.",
+      "IMPORT_SUMMARY_TITLE": "3. Rapport de vérification",
+      "IMPORT_SUMMARY": "Date d'activité, lignes valides et invalides, entrées et sorties de stock et total des dépenses. « Prêt à importer » doit indiquer Oui. Le rapport se télécharge en Excel ou CSV.",
+      "IMPORT_INVALID_TITLE": "Lignes à corriger",
+      "IMPORT_INVALID": "Chaque erreur indique la feuille, le numéro de ligne et le problème. Corrigez ces lignes dans votre classeur, sélectionnez-le à nouveau et revérifiez.",
+      "IMPORT_COMMIT_TITLE": "Importer",
+      "IMPORT_COMMIT": "Disponible seulement si la vérification ne trouve aucune erreur. Crée les opérations réelles (stock, paiements, dépenses) et attribue les numéros de lot du rapport. Ensuite, corrigez les erreurs dans l'application plutôt que de réimporter un fichier modifié.",
+      "IMPORT_DRIVE_TITLE": "Google Drive",
+      "IMPORT_DRIVE": "Optionnel : un administrateur peut connecter un dossier Google Drive pour que les classeurs qui y sont déposés soient importés automatiquement. L'état montre la dernière synchronisation et les fichiers en échec."
+    },
+    "RECEPTION_JOURNAL": {
+      "TITLE": "Journaux des réceptions",
+      "INTRO": "Toutes les réceptions d'olives ou d'huile du type choisi dans le menu, avec leur lot, leur fournisseur et leur statut.",
+      "LIST_DATA": "Double-cliquez sur une réception pour ouvrir ses détails : pesée, résultats qualité et paiements.",
+      "LIST_ROW_ACTIONS": "Les actions proposées dépendent du statut de la réception : qualité, prix, paiement, documents…"
+    },
+    "RECEPTION_PLANNING": {
+      "TITLE": "Planning de trituration",
+      "INTRO": "Planifiez quels lots passent sur quel moulin, et quand."
+    },
+    "SUPPLIERS": {
+      "TITLE": "Fournisseurs et apporteurs",
+      "INTRO": "Les personnes et sociétés qui vous apportent des olives ou de l'huile, et celles qui vous achètent.",
+      "LIST_NEW_TITLE": "Nouveau fournisseur",
+      "LIST_NEW": "Ajoutez un fournisseur : nom, téléphone, région, type de fournisseur et coordonnées bancaires. Vous pouvez aussi le créer directement depuis un formulaire de réception.",
+      "LIST_DATA": "Double-cliquez sur un fournisseur pour ouvrir son compte.",
+      "LIST_ROW_ACTIONS": "« Détails » ouvre ses opérations, son solde et ses paiements ; vous pouvez aussi consulter ou modifier sa fiche."
+    },
+    "QUALITY": {
+      "TITLE": "Contrôle qualité",
+      "INTRO": "Les résultats qualité (acidité, humidité, rendement…) enregistrés pour les lots d'olives ou d'huile.",
+      "LIST_DATA": "Une ligne par lot analysé. Double-cliquez sur une ligne pour l'ouvrir.",
+      "LIST_ROW_ACTIONS": "Saisissez ou mettez à jour les résultats qualité d'un lot et imprimez son rapport qualité."
+    },
+    "EQUIPMENT": {
+      "TITLE": "Équipements et maintenance",
+      "INTRO": "Les équipements du moulin, leurs missions et les ordres de maintenance."
+    },
+    "STORAGE": {
+      "TITLE": "Stockage de l'huile",
+      "INTRO": "Cuves et contenants, et tous les mouvements d'huile : transferts, filtrage et ventes.",
+      "DATA": "Chaque cuve affiche son volume actuel et sa capacité."
+    },
+    "CONDITIONING": {
+      "TITLE": "Conditionnement",
+      "INTRO": "Ordres de mise en bouteille, lignes, étiquettes et produits finis."
+    },
+    "STOCK": {
+      "TITLE": "Stock et inventaire",
+      "INTRO": "Stock d'articles secs et d'emballages : mouvements, emplacements et bons de commande."
+    },
+    "FINANCE": {
+      "TITLE": "Finance",
+      "INTRO": "Caisse, comptes bancaires, dépenses et ventes d'huile.",
+      "DATA": "Chaque ligne est un mouvement d'argent ; les totaux se mettent à jour à chaque saisie."
+    },
+    "HR": {
+      "TITLE": "Ressources humaines",
+      "INTRO": "Employés, pointage, congés et paie."
+    },
+    "SETTINGS": {
+      "TITLE": "Paramètres",
+      "INTRO": "Configurez votre société : utilisateurs, rôles, listes de référence et préférences."
+    },
+    "ADMINISTRATION": {
+      "TITLE": "Administration",
+      "INTRO": "Gérez les sociétés, leurs modules et leurs utilisateurs."
+    },
+    "ANALYTICS": {
+      "TITLE": "Analyses",
+      "INTRO": "Graphiques et indicateurs pour suivre la production et les ventes dans le temps."
+    },
+    "NOTIFICATIONS": {
+      "TITLE": "Notifications",
+      "INTRO": "Toutes vos alertes dans une liste ; marquez-les comme lues une fois traitées."
+    },
+    "RECEPTION_OLIVE_FORM": {
+      "TITLE": "Formulaire de réception d'olives",
+      "INTRO": "Saisissez la pesée d'un camion d'olives. Le type d'opération affiché sous le titre vient du menu utilisé et ne se change pas ici.",
+      "RECEPTION_DELIVERY_TITLE": "Livraison",
+      "RECEPTION_DELIVERY": "Les numéros de réception et de lot sont remplis par l'application. Vérifiez la date et saisissez l'immatriculation du camion au format 123TN4567.",
+      "RECEPTION_PARTY_TITLE": "Fournisseur et origine",
+      "RECEPTION_PARTY": "Commencez à taper pour trouver le fournisseur, puis choisissez la région et la parcelle. Les boutons + créent un fournisseur, une région ou une parcelle manquants sans quitter le formulaire.",
+      "RECEPTION_GOODS_TITLE": "Olives et pesée",
+      "RECEPTION_GOODS": "Choisissez la variété, puis saisissez le poids brut et le poids du camion vide : le poids net est calculé pour vous. Le poids à vide ne peut pas dépasser le poids brut.",
+      "RECEPTION_SAVE_TITLE": "Enregistrer",
+      "RECEPTION_SAVE": "Le bouton s'active quand tous les champs obligatoires sont valides. Après l'enregistrement, continuez depuis la liste des réceptions : qualité, prix et paiement."
+    },
+    "RECEPTION_OIL_FORM": {
+      "TITLE": "Formulaire de réception d'huile",
+      "INTRO": "Saisissez une livraison d'huile en vrac (achat d'huile).",
+      "RECEPTION_DELIVERY_TITLE": "Livraison",
+      "RECEPTION_DELIVERY": "Les numéros de réception et de lot sont remplis par l'application. Vérifiez la date et saisissez l'immatriculation du camion au format 123TN4567.",
+      "RECEPTION_PARTY_TITLE": "Fournisseur et origine",
+      "RECEPTION_PARTY": "Commencez à taper pour trouver le fournisseur, puis choisissez la région et la parcelle. Les boutons + créent un fournisseur, une région ou une parcelle manquants sans quitter le formulaire.",
+      "RECEPTION_GOODS_TITLE": "Huile",
+      "RECEPTION_GOODS": "Saisissez la quantité en litres et choisissez le type d'huile. Le formulaire vous avertit si la quantité est incohérente ou dépasse la capacité disponible.",
+      "RECEPTION_SAVE_TITLE": "Enregistrer",
+      "RECEPTION_SAVE": "Actif quand les champs obligatoires sont valides. La qualité, le prix et le paiement se gèrent ensuite depuis la liste des réceptions d'huile."
+    },
+    "RECEPTION_DETAILS": {
+      "TITLE": "Détails de la réception",
+      "INTRO": "Tout sur une réception en une seule page : pesée, fournisseur, stockage, trituration, prix, paiement et qualité.",
+      "DETAILS_STATUS_TITLE": "Type et statut",
+      "DETAILS_STATUS": "Olive ou huile, le type d'opération et l'étape où en est la réception.",
+      "DETAILS_QR_TITLE": "QR code",
+      "DETAILS_QR": "Générez un QR code pour ce lot à imprimer sur les sacs ou contenants ; le scanner dans la recherche globale ramène à cette page.",
+      "DETAILS_COUNTERPART_TITLE": "Réception liée",
+      "DETAILS_COUNTERPART": "La réception d'olives et l'huile qu'elle a produite sont liées : ouvrez l'autre d'ici.",
+      "DETAILS_LINKS_TITLE": "Pages liées",
+      "DETAILS_LINKS": "Accédez aux paiements, mouvements d'huile, compte et paiements du fournisseur, cuve ou contrôle qualité liés à cette réception.",
+      "DETAILS_PRICE_TITLE": "Prix et paiement",
+      "DETAILS_PRICE": "Prix unitaire, total, montant déjà payé, reste à payer et statut du paiement.",
+      "DETAILS_QUALITY_TITLE": "Résultats qualité",
+      "DETAILS_QUALITY": "La valeur mesurée de chaque contrôle qualité enregistré pour ce lot."
+    },
+    "PURCHASE_JOURNAL": {
+      "TITLE": "Journal des achats",
+      "INTRO": "Toutes les opérations d'achat et de trituration dans une seule liste, comme la feuille « Achat » : achats d'olives et d'huile, base, échanges et réceptions simples.",
+      "LIST_DATA": "Une ligne par opération avec son lot, son fournisseur, ses quantités et montants. Les totaux de colonne s'affichent dans les en-têtes quand ils existent.",
+      "LIST_ROW_ACTIONS": "Ouvrez, valorisez, payez ou imprimez chaque opération, y compris sa facture commerciale."
+    },
+    "SUPPLIER_DETAILS": {
+      "TITLE": "Compte fournisseur",
+      "INTRO": "Tout ce que vous avez fait avec un fournisseur : opérations, sommes dues et payées, et sa fiche.",
+      "SUPPLIER_TABS_TITLE": "Trois vues",
+      "SUPPLIER_TABS": "Opérations liste les réceptions par type, Finance montre le solde et les mouvements d'argent, Profil affiche les coordonnées et la banque.",
+      "SUPPLIER_OPERATIONS_TITLE": "Types d'opération",
+      "SUPPLIER_OPERATIONS": "Chaque carte indique le nombre et le montant total d'un type d'opération. Cliquez sur une carte pour lister ces opérations en dessous.",
+      "LIST_DATA_TITLE": "Opérations",
+      "LIST_DATA": "Les opérations de la carte choisie. Pour les fournisseurs BASE, les totaux olives et huile et un registre des paiements s'affichent aussi.",
+      "SUPPLIER_FINANCE_TITLE": "Solde",
+      "SUPPLIER_FINANCE": "Montants total, payé et impayé, entrées et sorties d'argent.",
+      "SUPPLIER_PROFILE_TITLE": "Profil",
+      "SUPPLIER_PROFILE": "Coordonnées, matricule fiscal, compte bancaire, type de fournisseur et s'il stocke de l'huile chez vous."
+    },
+    "SUPPLIER_FORM": {
+      "TITLE": "Fiche fournisseur",
+      "INTRO": "Créez ou mettez à jour la fiche d'un fournisseur.",
+      "SUPPLIER_IDENTITY_TITLE": "Identité",
+      "SUPPLIER_IDENTITY": "Le prénom et le nom sont obligatoires, tout comme le téléphone juste en dessous.",
+      "SUPPLIER_TYPE_TITLE": "Région et type",
+      "SUPPLIER_TYPE": "La région et le type de fournisseur servent aux filtres, aux rapports et à l'import journalier.",
+      "SUPPLIER_BANK_TITLE": "Coordonnées bancaires",
+      "SUPPLIER_BANK": "RIB et nom de la banque, facultatifs, utiles pour payer par virement.",
+      "SUPPLIER_SAVE_TITLE": "Enregistrer",
+      "SUPPLIER_SAVE": "Enregistre le fournisseur ; il peut ensuite être choisi dans les réceptions."
+    },
+    "QUALITY_ENTRY": {
+      "TITLE": "Résultats qualité",
+      "INTRO": "Saisissez les valeurs mesurées d'un lot. Chaque valeur est comparée aux limites définies dans les règles qualité.",
+      "FIELDS": "Renseignez chaque mesure ; les valeurs hors limites sont signalées.",
+      "ACTIONS": "Enregistrez les résultats ; ils apparaissent dans les détails de la réception et ses rapports."
+    },
+    "QUALITY_RULES": {
+      "TITLE": "Règles qualité",
+      "INTRO": "Les contrôles réalisés sur les olives et l'huile (acidité, humidité…), avec leur unité et leurs limites.",
+      "LIST_NEW": "Ajoutez un contrôle qualité avec ses valeurs minimale et maximale.",
+      "LIST_DATA": "Chaque règle est proposée lors de la saisie des résultats qualité."
+    },
+    "MILL_MACHINES": {
+      "TITLE": "Moulins",
+      "INTRO": "Vos machines de trituration, leur capacité et les lots traités.",
+      "LIST_NEW": "Ajoutez un moulin.",
+      "LIST_ROW_ACTIONS": "Consultez un moulin et ses réceptions, modifiez-le ou ouvrez sa maintenance."
+    },
+    "MAINTENANCE": {
+      "TITLE": "Ordres de maintenance",
+      "INTRO": "Réparations et maintenance préventive de vos équipements.",
+      "LIST_NEW": "Ouvrez un nouvel ordre de travail pour une machine.",
+      "LIST_ROW_ACTIONS": "Consultez ou mettez à jour un ordre au fil des travaux."
+    },
+    "MILL_EQUIPMENT": {
+      "TITLE": "Équipements",
+      "INTRO": "Les équipements de votre moulin : machines, pompes, véhicules…",
+      "LIST_NEW": "Ajoutez un équipement.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez un équipement."
+    },
+    "EQUIPMENT_MISSIONS": {
+      "TITLE": "Missions d'équipement",
+      "INTRO": "Les utilisations prévues de vos équipements : quel équipement, qui, quand et pour quoi.",
+      "LIST_NEW": "Planifiez une nouvelle mission.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez une mission."
+    },
+    "STORAGE_UNITS": {
+      "TITLE": "Cuves",
+      "INTRO": "Toutes vos cuves d'huile avec leur capacité, leur volume actuel, leur lot et leur statut.",
+      "LIST_NEW_TITLE": "Nouvelle cuve",
+      "LIST_NEW": "Créez une cuve : nom, capacité, variété, grade et s'il s'agit d'un stockage loué. Une cuve doit exister avant d'y mettre de l'huile ou d'y importer une journée.",
+      "LIST_DATA": "Double-cliquez sur une cuve pour voir son contenu et ses mouvements.",
+      "LIST_ROW_ACTIONS": "Consultez, modifiez ou supprimez une cuve, ou affectez-la à un fournisseur qui stocke son huile chez vous."
+    },
+    "STORAGE_FORM": {
+      "TITLE": "Fiche cuve",
+      "INTRO": "Décrivez une cuve pour que chaque mouvement d'huile soit contrôlé par rapport à sa capacité.",
+      "STORAGE_IDENTITY_TITLE": "Identité et capacité",
+      "STORAGE_IDENTITY": "Nom, lot, emplacement, statut et capacité maximale en kg. En modification, le volume actuel peut être corrigé sans dépasser la capacité.",
+      "STORAGE_OIL_TITLE": "Huile",
+      "STORAGE_OIL": "La variété, le grade de qualité et si la cuve contient de l'huile brute ou filtrée.",
+      "STORAGE_PAID_TITLE": "Stockage payant",
+      "STORAGE_PAID": "Cochez si un client paie pour stocker son huile dans cette cuve, puis saisissez le loyer mensuel.",
+      "STORAGE_SAVE_TITLE": "Enregistrer",
+      "STORAGE_SAVE": "Actif quand les champs obligatoires sont valides."
+    },
+    "STORAGE_RECAP": {
+      "TITLE": "Vue des cuves",
+      "INTRO": "Un tableau visuel de toutes les cuves : leur remplissage, leur contenu et son coût.",
+      "DASH_FILTERS": "Ouvrez ce panneau pour trouver une cuve par son code public (saisi ou scanné, puis Entrée) et n'afficher que les cuves louées ou celles d'huile filtrée.",
+      "STORAGE_CARD_TITLE": "Carte de cuve",
+      "STORAGE_CARD": "Statut, lot, coût moyen et total, volume actuel, capacité libre et maximale, variété et grade. « Voir » ouvre la cuve.",
+      "STORAGE_FILL_TITLE": "Niveau de remplissage",
+      "STORAGE_FILL": "Le taux de remplissage de la cuve, en pourcentage.",
+      "DASH_EXPORT": "Téléchargez le tableau en Excel, CSV ou PDF."
+    },
+    "OIL_TRANSACTION_FORM": {
+      "TITLE": "Mouvement d'huile",
+      "INTRO": "Enregistrez ou validez un mouvement d'huile vers, depuis ou entre des cuves.",
+      "TX_TYPE_TITLE": "Type de mouvement",
+      "TX_TYPE": "Par exemple une réception, un transfert, une vente, un échange ou un prêt. Le type détermine les cuves et les champs de prix nécessaires.",
+      "TX_UNITS_TITLE": "Cuves",
+      "TX_UNITS": "La cuve source d'où sort l'huile et/ou la cuve de destination où elle entre, selon le type.",
+      "TX_QUANTITY_TITLE": "Grade et quantité",
+      "TX_QUANTITY": "Le grade de qualité de l'huile et la quantité en kg, contrôlée par rapport à la capacité de la cuve.",
+      "TX_PRICE_TITLE": "Prix",
+      "TX_PRICE": "Pour les mouvements valorisés, saisissez le prix unitaire au kg ; le total est calculé.",
+      "TX_SAVE_TITLE": "Enregistrer ou approuver",
+      "TX_SAVE": "Créez ou mettez à jour le mouvement. En modification, « Approuver » le valide."
+    },
+    "OIL_TRANSACTIONS": {
+      "TITLE": "Mouvements d'huile",
+      "INTRO": "Tous les mouvements d'huile entrant ou sortant de vos cuves : réceptions, transferts, ventes, échanges et prêts.",
+      "LIST_NEW": "Enregistrez un nouveau mouvement d'huile.",
+      "LIST_DATA": "Une ligne par mouvement avec son type, ses cuves, sa quantité et son état. Double-cliquez sur une ligne pour l'ouvrir.",
+      "LIST_ROW_ACTIONS": "Les mouvements en attente doivent être validés : « Valider » ouvre le contrôle adapté à leur type (échange, réception, vente…). Vous pouvez aussi modifier un mouvement et imprimer son reçu, son bon de sortie ou son bon de commande."
+    },
+    "OIL_FILTERING": {
+      "TITLE": "Filtration d'huile",
+      "INTRO": "Les opérations de filtration qui font passer l'huile d'une cuve source à une cuve cible, avec traçabilité et qualité.",
+      "LIST_NEW": "Planifiez une filtration : cuve source, cuve cible et volume.",
+      "LIST_ROW_ACTIONS": "Démarrez l'opération, changez son statut, consultez sa traçabilité, saisissez la qualité de l'huile une fois terminée, préparez une étiquette ou supprimez-la."
+    },
+    "OIL_FILTERING_FORM": {
+      "TITLE": "Opération de filtration",
+      "INTRO": "Préparez une opération de filtration.",
+      "FILTERING_UNITS_TITLE": "Cuves source et cible",
+      "FILTERING_UNITS": "La cuve contenant l'huile à filtrer et celle qui recevra l'huile filtrée.",
+      "FILTERING_VOLUME_TITLE": "Volume",
+      "FILTERING_VOLUME": "Litres à filtrer, avec une note facultative.",
+      "FILTERING_SAVE_TITLE": "Créer",
+      "FILTERING_SAVE": "Crée l'opération ; démarrez-la ensuite depuis la liste des filtrations."
+    },
+    "OIL_CONTAINERS": {
+      "TITLE": "Contenants d'huile",
+      "INTRO": "Bouteilles, bidons et autres contenants utilisés pour vendre ou stocker l'huile, avec leur stock.",
+      "LIST_NEW": "Ajoutez un type de contenant.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez un contenant, ou enregistrez un achat pour l'ajouter au stock (« Entrée en stock »)."
+    },
+    "OF_ORDERS": {
+      "TITLE": "Ordres de fabrication (OF)",
+      "INTRO": "Les ordres de conditionnement : quel produit, combien d'unités et sur quelle ligne.",
+      "LIST_NEW": "Créez un ordre de fabrication.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez un ordre, déclarez sa production ou saisissez ses contrôles qualité."
+    },
+    "LABELS": {
+      "TITLE": "Étiquettes",
+      "INTRO": "Les étiquettes produits, conçues et validées avant impression.",
+      "LIST_NEW": "Créez une étiquette avec l'éditeur pas à pas.",
+      "LIST_ROW_ACTIONS": "Consultez, modifiez, finalisez, exportez ou repassez une étiquette en brouillon, ou supprimez-la."
+    },
+    "PROJECTS": {
+      "TITLE": "Projets",
+      "INTRO": "Les projets clients : commandes à préparer, produire et expédier.",
+      "LIST_NEW": "Créez un projet pour un client.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez un projet, planifiez son expédition, ajoutez un ordre de fabrication, changez son statut ou supprimez-le."
+    },
+    "PRODUCTS": {
+      "TITLE": "Produits finis",
+      "INTRO": "Les produits que vous vendez (SKU) : emballage, volume et étiquettes.",
+      "LIST_NEW": "Créez un produit fini.",
+      "LIST_ROW_ACTIONS": "Consultez, modifiez, activez ou désactivez, ou supprimez un produit."
+    },
+    "BOMS": {
+      "TITLE": "Nomenclatures",
+      "INTRO": "La recette de chaque produit : quels articles et quelles quantités pour fabriquer une unité.",
+      "LIST_NEW": "Créez une nomenclature.",
+      "LIST_ROW_ACTIONS": "Consultez, modifiez, activez ou supprimez une nomenclature."
+    },
+    "PACKAGING_LINES": {
+      "TITLE": "Lignes de conditionnement",
+      "INTRO": "Vos lignes d'embouteillage et de conditionnement et leur capacité.",
+      "LIST_NEW": "Ajoutez une ligne de conditionnement.",
+      "LIST_ROW_ACTIONS": "Consultez, modifiez, activez ou désactivez une ligne."
+    },
+    "STOCK_ARTICLES": {
+      "TITLE": "Articles",
+      "INTRO": "Matières sèches et emballages (bouteilles, bouchons, étiquettes, cartons…) avec leur stock et leurs seuils d'alerte.",
+      "LIST_NEW": "Créez un article avec son unité et son stock minimum.",
+      "LIST_ROW_ACTIONS": "Consultez, modifiez, activez ou désactivez un article."
+    },
+    "STOCK_DASHBOARD": {
+      "TITLE": "Tableau de bord du stock",
+      "INTRO": "Le stock de matières sèches en un coup d'œil : valeur, alertes, derniers mouvements et bons de commande en attente.",
+      "STOCK_THRESHOLDS_TITLE": "Vérifier les seuils",
+      "STOCK_THRESHOLDS": "Recharge les chiffres du stock et vous signale les articles sous leurs seuils.",
+      "STOCK_SUMMARY_TITLE": "Synthèse",
+      "STOCK_SUMMARY": "Valeur totale du stock, articles en alerte, taux de rupture estimé et bons de commande en attente de validation.",
+      "STOCK_CRITICAL_TITLE": "Articles critiques",
+      "STOCK_CRITICAL": "Articles sous leur seuil critique, avec stock actuel et minimum. « Voir tout » ouvre la liste des articles.",
+      "STOCK_MOVEMENTS_TITLE": "Derniers mouvements",
+      "STOCK_MOVEMENTS": "Les dernières entrées et sorties de stock ; « Voir tout » ouvre la liste complète."
+    },
+    "STOCK_MOVEMENTS": {
+      "TITLE": "Mouvements de stock",
+      "INTRO": "Toutes les entrées et sorties de matières sèches, avec l'article, la quantité et la date. Les mouvements proviennent des opérations qui reçoivent ou consomment du stock.",
+      "LIST_DATA": "Double-cliquez sur un mouvement pour voir son détail."
+    },
+    "STOCK_LOCATIONS": {
+      "TITLE": "Emplacements de stock",
+      "INTRO": "Où sont rangées vos matières sèches (magasins, étagères…) et ce que contient chaque emplacement.",
+      "LIST_NEW": "Ajoutez un emplacement.",
+      "LIST_ROW_ACTIONS": "Consultez, modifiez, activez ou désactivez, ou supprimez un emplacement."
+    },
+    "PURCHASE_ORDERS": {
+      "TITLE": "Bons de commande",
+      "INTRO": "Les commandes de matières sèches passées à vos fournisseurs de matériel.",
+      "LIST_NEW": "Créez un bon de commande.",
+      "LIST_ROW_ACTIONS": "Ouvrez un bon, validez-le ou refusez-le."
+    },
+    "MATERIAL_SUPPLIERS": {
+      "TITLE": "Fournisseurs de matériel",
+      "INTRO": "Les fournisseurs de bouteilles, d'emballages et d'autres matières sèches.",
+      "LIST_NEW": "Ajoutez un fournisseur de matériel.",
+      "LIST_DATA": "Double-cliquez sur un fournisseur pour voir sa fiche."
+    },
+    "FINANCE_DASHBOARD": {
+      "TITLE": "Tableau de bord financier",
+      "INTRO": "Les entrées et sorties d'argent sur une période : chiffre d'affaires, encaissements, dépenses et impayés.",
+      "DASH_FILTERS": "Choisissez la période ; tous les chiffres et graphiques la suivent.",
+      "FINANCE_KPIS_TITLE": "Chiffres clés",
+      "FINANCE_KPIS": "Flux net, chiffre d'affaires total et encaissé (ventes d'huile et de déchets), entrées, sorties, dépenses en attente et créances impayées.",
+      "FINANCE_OVERVIEW_TITLE": "Vue d'ensemble",
+      "FINANCE_OVERVIEW": "Nombre et montant des transactions dans le temps, avec les tuiles de statut sur le côté.",
+      "FINANCE_RECENT_TITLE": "Activité récente",
+      "FINANCE_RECENT": "Les derniers mouvements d'argent ; ouvrez la page des transactions pour la liste complète."
+    },
+    "CASH_REGISTER": {
+      "TITLE": "Caisse journalière",
+      "INTRO": "Les mouvements d'espèces d'une journée ou d'une période, avec le solde d'ouverture et de clôture, comme la feuille « Caisse ».",
+      "DASH_FILTERS": "Aujourd'hui est sélectionné par défaut ; choisissez ici un autre jour ou une autre période.",
+      "CASH_OPENING_TITLE": "Solde d'ouverture",
+      "CASH_OPENING": "Saisissez les espèces présentes en caisse au début de la période. Le montant est mémorisé sur cet ordinateur pour cette période et sert à calculer le solde de clôture.",
+      "CASH_SUMMARY_TITLE": "Synthèse",
+      "CASH_SUMMARY": "Solde d'ouverture, entrées, sorties, mouvement net, solde de clôture et nombre de mouvements.",
+      "CASH_METHODS_TITLE": "Par mode de paiement",
+      "CASH_METHODS": "Montant net par mode de paiement, avec entrées et sorties.",
+      "LIST_NEW_TITLE": "Nouvelle transaction",
+      "LIST_NEW": "Enregistrez un mouvement d'argent (paiement reçu, dépense payée…).",
+      "LIST_DATA_TITLE": "Mouvements",
+      "LIST_DATA": "Chaque mouvement d'espèces de la période.",
+      "DASH_EXPORT": "Téléchargez la caisse en Excel, CSV ou PDF."
+    },
+    "SEASON_RECAP": {
+      "TITLE": "Récapitulatif de la saison",
+      "INTRO": "Les totaux clés de la saison, comme la feuille « Récap », calculés à partir des données actuelles.",
+      "SEASON_GRID_TITLE": "Totaux de la saison",
+      "SEASON_GRID": "Livraisons d'achat, kg d'olives et litres d'huile, puis ce qui a été payé et ce qui reste dû aux fournisseurs.",
+      "SEASON_SALES_TITLE": "Ventes d'huile",
+      "SEASON_SALES": "Total des ventes d'huile ; les cartes suivantes montrent ce qui a été encaissé et ce que les clients doivent encore.",
+      "SEASON_CASH_TITLE": "Trésorerie nette",
+      "SEASON_CASH": "Entrées moins sorties d'espèces sur la saison."
+    },
+    "BANKS": {
+      "TITLE": "Comptes bancaires",
+      "INTRO": "Les comptes bancaires de votre société et leur solde.",
+      "LIST_NEW": "Ajoutez un compte bancaire.",
+      "LIST_ROW_ACTIONS": "Consultez un compte et ses mouvements, ou modifiez-le."
+    },
+    "EXPENSES": {
+      "TITLE": "Dépenses",
+      "INTRO": "Les frais de fonctionnement : carburant, réparations, factures, services…",
+      "LIST_NEW": "Enregistrez une dépense avec sa catégorie, son montant et son mode de paiement.",
+      "LIST_ROW_ACTIONS": "Consultez, modifiez ou imprimez une dépense."
+    },
+    "OIL_SALES": {
+      "TITLE": "Ventes d'huile",
+      "INTRO": "Les ventes d'huile aux clients, de la commande à la livraison et à la facture.",
+      "LIST_NEW": "Créez une vente : client, huile, quantité et prix.",
+      "LIST_ROW_ACTIONS": "Confirmez ou annulez une vente, enregistrez sa livraison et imprimez le bon de commande, le bon de livraison ou la facture."
+    },
+    "OIL_CREDIT": {
+      "TITLE": "Crédit d'huile",
+      "INTRO": "L'huile remise à crédit : emballage, type d'huile, quantité et destinataire.",
+      "LIST_NEW": "Enregistrez un nouveau crédit d'huile.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez un crédit ; son contrat se télécharge en PDF depuis son détail."
+    },
+    "TRANSACTIONS": {
+      "TITLE": "Transactions financières",
+      "INTRO": "Tous les mouvements d'argent : paiements fournisseurs, ventes encaissées, dépenses, dépôts et virements.",
+      "LIST_NEW": "Enregistrez une transaction.",
+      "LIST_ROW_ACTIONS": "Consultez, modifiez, approuvez ou rejetez une transaction, dupliquez-la, ou imprimez son reçu ou sa facture."
+    },
+    "WASTE_SALES": {
+      "TITLE": "Ventes de déchets",
+      "INTRO": "Les ventes de sous-produits de trituration comme les grignons.",
+      "LIST_NEW": "Enregistrez une vente de déchets.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez une vente."
+    },
+    "HR_DASHBOARD": {
+      "TITLE": "Ressources humaines",
+      "INTRO": "Votre personnel en un coup d'œil, avec des raccourcis vers chaque page RH.",
+      "HR_KPIS_TITLE": "Chiffres clés",
+      "HR_KPIS": "Effectif et principaux indicateurs RH.",
+      "HR_NAV_TITLE": "Pages RH",
+      "HR_NAV": "Employés, contrats, pointage, congés, paie et paramètres : cliquez sur une carte pour l'ouvrir.",
+      "DASH_EXPORT": "Téléchargez ces chiffres."
+    },
+    "HR_EMPLOYEES": {
+      "TITLE": "Employés",
+      "INTRO": "Les fiches de votre personnel : identité, poste, département et contrat.",
+      "LIST_NEW": "Ajoutez un employé.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez un employé."
+    },
+    "HR_TIME": {
+      "TITLE": "Temps de travail",
+      "INTRO": "Pointages, feuilles de temps et demandes d'heures supplémentaires.",
+      "LIST_NEW": "Ajoutez une saisie.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez une saisie ; les demandes s'approuvent ou se rejettent ici."
+    },
+    "HR_LEAVE": {
+      "TITLE": "Congés",
+      "INTRO": "Demandes de congé, types de congé et jours fériés.",
+      "LIST_NEW": "Ajoutez un enregistrement pour cette page.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez ; les demandes de congé s'approuvent ou se rejettent ici."
+    },
+    "HR_PAYROLL": {
+      "TITLE": "Paie",
+      "INTRO": "Périodes de paie, bulletins, variables de paie, avances sur salaire et prêts.",
+      "LIST_NEW": "Ajoutez un enregistrement pour cette page.",
+      "LIST_ROW_ACTIONS": "Selon la page : calculer, valider, payer ou clôturer une période, et télécharger les bulletins en PDF."
+    },
+    "SETTINGS_USERS": {
+      "TITLE": "Utilisateurs",
+      "INTRO": "Les personnes qui peuvent se connecter à ZitFlow, et le rôle qui définit ce que chacune peut faire.",
+      "LIST_NEW": "Créez un compte utilisateur.",
+      "LIST_ROW_ACTIONS": "Consultez ou modifiez un utilisateur."
+    },
+    "SETTINGS_USER_FORM": {
+      "TITLE": "Compte utilisateur",
+      "INTRO": "Identité, coordonnées et rôle d'un utilisateur.",
+      "FIELDS_TITLE": "Identité",
+      "FIELDS": "Prénom, nom, identifiant, e-mail et téléphone.",
+      "USER_CONFIRMATION_TITLE": "Méthode de confirmation",
+      "USER_CONFIRMATION": "Si le compte est confirmé par e-mail ou par téléphone.",
+      "USER_ROLE_TITLE": "Rôle",
+      "USER_ROLE": "Le rôle détermine les modules et actions accessibles à l'utilisateur. Les rôles se gèrent dans Paramètres > Rôles.",
+      "USER_LOCKED_TITLE": "Désactiver",
+      "USER_LOCKED": "Bloque le compte sans le supprimer.",
+      "USER_SAVE_TITLE": "Enregistrer",
+      "USER_SAVE": "Disponible quand le formulaire est valide."
+    },
+    "SETTINGS_ROLES": {
+      "TITLE": "Rôles",
+      "INTRO": "Les rôles regroupent des permissions ; chaque utilisateur reçoit un rôle.",
+      "ROLES_NEW_TITLE": "Nouveau rôle",
+      "ROLES_NEW": "Créez un rôle et cochez les permissions qu'il accorde, module par module.",
+      "ROLES_GRID_TITLE": "Rôles existants",
+      "ROLES_GRID": "Chaque carte indique le nombre d'utilisateurs et un résumé des permissions. Consultez, modifiez ou supprimez un rôle ; le rôle ADMIN ne peut pas être modifié."
+    }
+  },
   "ACCESS_DENIED": {
     "GO_HOME": "Retour à l'accueil",
     "GO_HOME_TITLE": "Retour à l'accueil",
@@ -12,6 +598,41 @@
   },
   "ABIOOC": {
     "DAY_IMPORT": {
+      "SHEETS": {
+        "ImportMeta": "Journée",
+        "Regions": "Régions",
+        "Parcels": "Parcelles",
+        "SupplierTypes": "Types de fournisseur",
+        "QcRules": "Contrôles qualité",
+        "Suppliers": "Fournisseurs",
+        "OilContainers": "Contenants",
+        "StorageUnits": "Cuves",
+        "Receptions": "Réceptions",
+        "QcResults": "Résultats qualité",
+        "Payments": "Paiements",
+        "OilSales": "Ventes d'huile",
+        "OilSaleContainers": "Contenants vendus",
+        "Expenses": "Dépenses"
+      },
+      "RULES_TITLE": "Règles obligatoires",
+      "RULES": {
+        "TEMPLATE": "Utilisez uniquement le modèle téléchargé depuis l'application pour votre société. N'utilisez pas le fichier d'une autre société.",
+        "ONE_DAY": "Un fichier = une seule journée. Renseignez la date dans la feuille « Journée ».",
+        "STRUCTURE": "Ne renommez, ne supprimez et ne déplacez aucune feuille ni aucun titre de colonne. Ne retirez pas la protection.",
+        "REFERENCES": "Les références et les numéros de lot prévus sont générés par le fichier (colonnes grises). Ne copiez jamais de lignes d'un fichier à l'autre ; les codes fournisseur, contenant et contrôle (colonnes rouges) doivent rester uniques.",
+        "DROPDOWNS": "Choisissez les valeurs dans les listes déroulantes. Saisissez les nouveaux éléments uniquement dans leur feuille dédiée.",
+        "FORMATS": "Dates au format AAAA-MM-JJ. Montants et quantités en chiffres uniquement, sans unité ni symbole monétaire.",
+        "TANKS": "Les cuves doivent exister dans l'application avant l'import.",
+        "LOT": "Ne saisissez aucun numéro de lot : l'application l'attribue elle-même (ex. 0001OC26), comme pour une réception saisie à la main.",
+        "REVIEW": "Vérifiez toujours le rapport de contrôle avant de confirmer. Rien n'est enregistré avant votre confirmation."
+      },
+      "LOT": "Lot",
+      "LOT_PLANNED": "Numéro de lot que recevra cette réception à la confirmation",
+      "LOT_ASSIGNED": "Numéro de lot attribué par l'application",
+      "RULES_ACCEPT": "J'ai lu et j'accepte ces règles",
+      "RULES_ACCEPTED_ON": "Acceptées le {{date}}",
+      "RULES_REQUIRED": "Acceptez les règles obligatoires ci-dessus pour contrôler et importer un fichier.",
+      "RULES_RESPONSIBILITY": "Les données importées relèvent de la responsabilité de votre société. Une fois confirmé, l'import crée de vraies opérations (stock, paiements, dépenses) : corrigez les erreurs dans l'application, pas en réimportant un fichier modifié.",
       "TITLE": "Import journalier Excel",
       "HINT": "Importez les réceptions, contrôles qualité, paiements, ventes et dépenses d’une journée depuis un seul fichier.",
       "STEP_DOWNLOAD": "1. Préparer le fichier",
@@ -106,7 +727,11 @@
       "MOVEMENTS": "Mouvements",
       "NET": "Solde caisse",
       "OUTBOUND": "Sorties caisse",
-      "TITLE": "Caisse du jour"
+      "TITLE": "Caisse du jour",
+      "CLOSING": "CLOSING",
+      "OPENING": "OPENING",
+      "OPENING_HINT": "OPENING HINT",
+      "TRUNCATED": "TRUNCATED"
     },
     "PURCHASE_JOURNAL": {
       "HINT": "Vue combinée des achats et triturations (feuille Achat ABIOOC).",
@@ -123,7 +748,9 @@
       "OIL_L": "Total huile (L)",
       "OIL_SALES": "Total ventes huile",
       "OLIVE_KG": "Total olive (kg)",
-      "SALES": "ventes"
+      "SALES": "ventes",
+      "OIL_SALES_COLLECTED": "OIL SALES COLLECTED",
+      "OIL_SALES_UNPAID": "OIL SALES UNPAID"
     }
   },
   "TENANT_MODULES": {
@@ -216,7 +843,55 @@
       "NEW_USERS_30D": "Nouveaux utilisateurs (30 j)",
       "TOTAL_TENANTS": "Total tenants",
       "TOTAL_USERS": "Total utilisateurs",
-      "USERS_WITHOUT_TENANT": "Utilisateurs sans tenant"
+      "USERS_WITHOUT_TENANT": "Utilisateurs sans tenant",
+      "COMPANIES": "Entreprises",
+      "ACTIVE_INACTIVE": "{{active}} actives · {{inactive}} inactives",
+      "NEW_USERS_META": "+{{count}} sur les 30 derniers jours",
+      "ACTIVE_USERS_7D": "Utilisateurs actifs (7 jours)",
+      "PERCENT_OF_USERS": "{{percent}} % des utilisateurs connectés",
+      "OPEN_TICKETS": "Tickets support ouverts",
+      "TICKETS_META": "{{open}} nouveaux · {{inProgress}} en cours"
+    },
+    "ATTENTION": {
+      "ALL_CLEAR": "Tout est en ordre : aucune entreprise, aucun utilisateur ni ticket ne demande votre attention.",
+      "OPEN_TICKETS": "nouveaux tickets support",
+      "INACTIVE_COMPANIES": "entreprises inactives",
+      "COMPANIES_WITHOUT_USERS": "entreprises sans utilisateur",
+      "COMPANIES_WITHOUT_MODULES": "entreprises sans module",
+      "DORMANT_COMPANIES": "entreprises actives sans activité depuis 30 jours",
+      "LOCKED_USERS": "utilisateurs verrouillés",
+      "USERS_WITHOUT_TENANT": "utilisateurs sans entreprise"
+    },
+    "COMPANIES": {
+      "SEARCH": "Rechercher une entreprise ou une ville",
+      "FILTER_ALL": "Toutes",
+      "FILTER_ACTIVE": "Actives",
+      "FILTER_INACTIVE": "Inactives",
+      "ADD": "Nouvelle entreprise",
+      "NO_MODULES": "Aucun module",
+      "ACTIVE_COUNT": "{{count}} actifs",
+      "NEVER": "Jamais",
+      "OPEN": "Ouvrir l'entreprise",
+      "MANAGE_MODULES": "Gérer les modules",
+      "SHOW_ALL": "Tout afficher ({{count}})",
+      "SHOW_LESS": "Afficher moins",
+      "MANAGE_ALL": "Gérer les entreprises",
+      "EMPTY": "Aucune entreprise ne correspond à ces filtres."
+    },
+    "MODULES": {
+      "COMPANY_COUNT": "{{count}} entreprises"
+    },
+    "SUPPORT": {
+      "OPEN_INBOX": "Boîte support",
+      "EMPTY": "Aucun ticket support pour l'instant."
+    },
+    "RECENT": {
+      "USERS": "{{count}} utilisateurs",
+      "ALL_USERS": "Tous les utilisateurs",
+      "PLATFORM": "Plateforme"
+    },
+    "EXPORT": {
+      "KPIS": "Chiffres clés"
     },
     "LOADING": "Chargement du tableau de bord admin...",
     "LOAD_ERROR": "Impossible de charger les statistiques. Veuillez réessayer.",
@@ -228,7 +903,11 @@
       "TENANTS": "Vue d'ensemble des tenants",
       "TOP_TENANTS": "Top tenants par utilisateurs",
       "USERS": "Vue d'ensemble des utilisateurs",
-      "USERS_BY_ROLE": "Utilisateurs par rôle"
+      "USERS_BY_ROLE": "Utilisateurs par rôle",
+      "ATTENTION": "À surveiller",
+      "COMPANIES": "Entreprises",
+      "MODULE_ADOPTION": "Adoption des modules",
+      "SUPPORT": "Tickets support"
     },
     "STATUS": {
       "ACTIVE": "Actif",
@@ -237,10 +916,17 @@
     "TABLE": {
       "CREATED": "Créé le",
       "STATUS": "Statut",
-      "USERS": "Utilisateurs"
+      "USERS": "Utilisateurs",
+      "COMPANY": "Entreprise",
+      "COMPANIES": "Entreprises",
+      "MODULE": "Module",
+      "MODULES": "Modules",
+      "ACTIVE_7D": "Utilisateurs actifs (7 jours)",
+      "LAST_ACTIVITY": "Dernière activité",
+      "ACTIONS": "Actions"
     },
-    "TITLE": "Vue d'ensemble admin",
-    "SUBTITLE": "Vue globale des tenants et utilisateurs de la plateforme"
+    "TITLE": "Vue d'ensemble de la plateforme",
+    "SUBTITLE": "Entreprises, utilisateurs, modules et support sur toute la plateforme"
   },
   "ADMIN_PERMISSION_CATALOG": {
     "BACK": "Tableau de bord admin",
@@ -767,6 +1453,32 @@
         "LEAVE_BODY": "Soumission avec type et dates. Contrôle des chevauchements et contrat actif requis. Approuver ou Rejeter depuis la vue détail si statut En attente.",
         "DOCS_HINT": "Documentation complète : docs/user-guide/fr/09-module-rh.md dans le dépôt projet."
       }
+    },
+    "DAY_IMPORT": {
+      "GUIDE": {
+        "DRIVE_TITLE": "DRIVE TITLE",
+        "LINKS_TITLE": "LINKS TITLE",
+        "RULES_TITLE": "RULES TITLE",
+        "SUBTITLE": "SUBTITLE",
+        "TIP": "TIP",
+        "TITLE": "TITLE",
+        "WORKFLOW_TITLE": "WORKFLOW TITLE"
+      },
+      "LINKS": {
+        "WIZARD": "WIZARD"
+      }
+    },
+    "RECEPTION": {
+      "GUIDE": {
+        "CHECKLIST_TITLE": "CHECKLIST TITLE",
+        "FLOW_TITLE": "FLOW TITLE",
+        "LINKS_TITLE": "LINKS TITLE",
+        "MASTER_TITLE": "MASTER TITLE",
+        "OPTIONAL_TITLE": "OPTIONAL TITLE",
+        "SUBTITLE": "SUBTITLE",
+        "TIP": "TIP",
+        "TITLE": "TITLE"
+      }
     }
   },
   "SUPPORT": {
@@ -1170,7 +1882,8 @@
     "VIEW": "Afficher",
     "YES": "Oui",
     "CLEAR": "Effacer",
-    "SELECT": "Sélectionner"
+    "SELECT": "Sélectionner",
+    "VIEW_ALL": "VIEW ALL"
   },
   "CERTIFICATIONS": {
     "FIELDS": {
@@ -1872,7 +2585,9 @@
       "MESSAGES": {
         "LOAD_ERROR": "Erreur lors du chargement du bulletin.",
         "NOT_FOUND": "Bulletin introuvable.",
-        "PDF_ERROR": "Impossible de télécharger le PDF."
+        "PDF_ERROR": "Impossible de télécharger le PDF.",
+        "SAVE_ERROR": "Error saving payslip.",
+        "SAVE_SUCCESS": "Payslip saved successfully."
       }
     },
     "REPORTS": {
@@ -2409,7 +3124,7 @@
       "TEXT": "Chargement..."
     },
     "TITLE": {
-      "RECEPTION": "Statitstique des receptions éffectuer"
+      "RECEPTION": "Statistiques des réceptions effectuées"
     }
   },
   "DELIVERIES": {
@@ -3153,7 +3868,10 @@
       "TITLE": "Conditionnement & Logistique",
       "WORKSHOP": "Atelier de conditionnement",
       "ANALYTICS": "Analyses & rapports",
-      "CATALOG": "Catalogue"
+      "CATALOG": "Catalogue",
+      "OPERATIONS": "Opérations de conditionnement",
+      "LABELS_CERTIFICATIONS": "Étiquettes & certifications",
+      "PACKAGING_INVENTORY": "Stock de conditionnement"
     },
     "CUSTOMERS": {
       "ACTIONS": {
@@ -3278,7 +3996,9 @@
           "TOTAL_PAID": "Total Payé",
           "TOTAL_REVENUE": "Revenu Total",
           "TOTAL_TRANSACTIONS": "Total Transactions",
-          "TOTAL_UNPAID": "Total Impayé"
+          "TOTAL_UNPAID": "Total Impayé",
+          "COLLECTED_REVENUE": "COLLECTED REVENUE",
+          "COLLECTED_REVENUE_HINT": "COLLECTED REVENUE HINT"
         },
         "LOADING": {
           "TEXT": "Chargement des données financières..."
@@ -3326,7 +4046,8 @@
       "TITLE": "Finance & Comptabilité",
       "TRANSACTIONS": "Transactions Financières",
       "TREASURY": "Trésorerie & banques",
-      "WASTE_MANAGEMENT": "Gestion des déchets"
+      "WASTE_MANAGEMENT": "Gestion des déchets",
+      "WASTE_SALES": "WASTE SALES"
     },
     "HOME": {
       "ANALYTICS_REPORTS": "Rapports & analyses",
@@ -3452,8 +4173,8 @@
       "TITLE": "Fournisseurs"
     },
     "PILOTAGE": {
-      "TITLE": "Pilotage",
-      "CONDITIONING": "Analytics conditionnement"
+      "TITLE": "Rapports & analyses",
+      "CONDITIONING": "Rapports de conditionnement"
     }
   },
   "MILL_MACHINE": {
@@ -4261,7 +4982,8 @@
       "VALIDATION": {
         "MIN_VALUE": "La valeur doit être supérieure à 0",
         "NET_GREATER": "Le poids net ne peut pas être supérieur au poids brut",
-        "REQUIRED": "Ce champ est obligatoire"
+        "REQUIRED": "Ce champ est obligatoire",
+        "EMPTY_GREATER_THAN_GROSS": "EMPTY GREATER THAN GROSS"
       }
     },
     "SECTIONS": {
@@ -4279,6 +5001,13 @@
     "SIMPLE_RECEPTION": "Trituration particulier"
   },
   "OSM_DASHBOARD": {
+    "PAYMENT_STATUS": {
+      "PAID": "Payé",
+      "PAID_AMOUNT": "Montant payé",
+      "PARTIAL": "Partiellement payé",
+      "UNPAID": "Non payé",
+      "UNPAID_AMOUNT": "Montant impayé"
+    },
     "ACTIONS": {
       "ADD_LINE": "Ajouter une ligne",
       "AJUSTER_STOCK": "Ajuster le stock",
@@ -4373,6 +5102,7 @@
       "QUALITYCONTROLRULE": "Critère de contrôle qualité",
       "READ": "Afficher",
       "RECEPTION": "Réception",
+      "REGENERATE_QR": "Régénérer le code QR",
       "RESET_PASSWORD": "Réinitialiser le mot de passe",
       "REJECT": "Rejeter",
       "REMOVE_LINE": "Supprimer une ligne",
@@ -4412,7 +5142,8 @@
       "STATUS": "Statut",
       "TOGGLE_ACTIVE": "Activer / desactiver",
       "TRACEABILITY": "Tracabilite",
-      "PREPARE_LABEL": "Preparer etiquette"
+      "PREPARE_LABEL": "Preparer etiquette",
+      "CALCULATE": "Calculer"
     },
     "COLUMNS": {
       "HIDE": "Masquer les colonnes",
@@ -4931,7 +5662,8 @@
         "TRITURATION_PRICE_PER_KG_LABEL": "Prix de trituration (par kg)",
         "TRUCK_PLATE": "Immatriculation camion",
         "YIELD_HINT": "Calculé : huile produite / poids net d'olives",
-        "YIELD_LABEL": "Rendement"
+        "YIELD_LABEL": "Rendement",
+        "MILL_LABEL": "MILL LABEL"
       },
       "GROUP_REQUIRES_TWO": "Sélectionnez au moins deux lots pour créer un lot global",
       "CONFIRM_SAVE": "Enregistrer le planning actuel ?",
@@ -5578,6 +6310,7 @@
     "BANK_TRANSFER": "Virement Bancaire",
     "BATCH_PAYMENT": "Paiement par lot",
     "BOTH_PAYMENT": "Paiement Mixte",
+    "OIL_SHARE_HINT": "La part payée en huile est enregistrée par le parcours « Paiement en huile » et déjà déduite du reste à payer. Réglez ici uniquement le solde en argent.",
     "CANCEL": "Annuler",
     "DOWNLOAD_PDF": "Télécharger le contrat (PDF)",
     "CASH": "Espèces",
@@ -5841,6 +6574,7 @@
       "OIL_CONTAINER_SALE": "Vente de contenants",
       "OIL_PURCHASE": "Achat d'Huile",
       "OIL_SALE": "Vente d'Huile",
+      "OIL_SALE_PAYMENT": "Paiement d'une vente d'huile",
       "PAYMENT": "Paiement",
       "PURCHASE": "Achat",
       "RECEPTION_IN": "Réception",
@@ -5852,11 +6586,13 @@
       "WASTE_DISPOSAL_COST": "Coût élimination déchets",
       "WASTE_PAYMENT": "Paiement déchets",
       "WASTE_SALE": "Vente de déchets",
-      "WITHDRAWAL": "Retrait"
+      "WITHDRAWAL": "Retrait",
+      "EQUIPMENT_SERVICE": "EQUIPMENT SERVICE"
     },
     "VIEW": {
       "TITLE": "Détails de la Transaction"
-    }
+    },
+    "PAYMENT_METHOD": "PAYMENT METHOD"
   },
   "Table": "Tableau",
   "Teacher": "Enseignant",
@@ -7736,6 +8472,7 @@
     "TITLE": "Tableaux de bord",
     "SUBTITLE": "Basculer entre les tableaux de bord des modules",
     "TABS_ARIA": "Tableaux de bord par module",
+    "BREADCRUMB_ARIA": "Fil d'Ariane des tableaux de bord",
     "NO_ACCESS_TITLE": "Aucun tableau de bord disponible",
     "NO_ACCESS": "Votre compte n'a pas la permission d'afficher un tableau de bord. Contactez un administrateur.",
     "TABS": {

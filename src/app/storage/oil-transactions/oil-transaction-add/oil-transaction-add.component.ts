@@ -108,6 +108,9 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     this.loadStorageUnits();
     this.checkEditMode();
     this.setupFormSubscriptions();
+    const initialType = this.form.get('transactionType')?.value as TransactionType;
+    this.updateFieldRequirements(initialType);
+    this.updatePricingFields(initialType);
     const searchData: SearchData = {
       page: 0,
       searchData: {

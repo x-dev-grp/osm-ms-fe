@@ -24,6 +24,7 @@ function fixture() {
   const commits = [];
   const messages = [];
   Object.assign(w, {
+    rulesAccepted: true,
     state: 'selected',
     selectionVersion: 0,
     selectedFile: null,
@@ -47,6 +48,17 @@ function validated(f) {
   f.w.runDryRun();
   f.requests[0].handlers.next({ ...preview });
 }
+
+test('validation and commit stay blocked until the rules are accepted', () => {
+  const f = fixture();
+  validated(f);
+  f.w.rulesAccepted = false;
+  f.w.commit();
+  assert.equal(f.commits.length, 0);
+  select(f.w, 'B.xlsx');
+  f.w.runDryRun();
+  assert.equal(f.requests.length, 1);
+});
 
 test('late response for A cannot enable commit of B', () => {
   const f = fixture();

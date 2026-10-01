@@ -31,6 +31,7 @@ import { oosm_menus } from '../../../shared/oosm_menu';
 import { admin_menus } from '../../../shared/admin_menu';
 import { filterMenuByPermissions } from '../../../shared/utils/menu-permission.filter';
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';
+import { TourService } from '../../../shared/tour/tour.service';
 import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-config.service';
 import { NotificationService } from '../../../shared/services/notification.service';
@@ -84,6 +85,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private themeService = inject(ThemeLayoutService);
   private cdr: ChangeDetectorRef;
   private destroyRef = inject(DestroyRef);
+  private tourService = inject(TourService);
 
   constructor() {
     effect(() => {
@@ -108,6 +110,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     const cfg = this.themeConfig.loadConfig();
     this.themeConfig.applyConfig(cfg);
+    this.tourService.init(this.destroyRef);
     this.currentLayout = cfg.layout;
     this.rtlMode = cfg.rtlLayout;
     this.manageLayout(cfg.layout);

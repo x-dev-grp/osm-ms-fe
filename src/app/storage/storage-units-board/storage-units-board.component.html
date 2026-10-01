@@ -62,6 +62,7 @@
         @for (storageUnit of filteredUnits(); track trackById($index, storageUnit)) {
           <div
             class="storage-card"
+            data-tour="storage-card"
             [class.paid-storage]="paidStorage(storageUnit)"
             [class.filtered-oil]="filteredOil(storageUnit)"
           >
@@ -148,7 +149,7 @@
               </div>
             </div>
 
-            <div class="storage-visualization">
+            <div class="storage-visualization" data-tour="storage-fill">
               <div class="storage-unit">
                 <div class="storage-unit-body">
                   <div

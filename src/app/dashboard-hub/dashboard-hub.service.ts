@@ -38,6 +38,10 @@ export class DashboardHubService {
   }
 
   private canViewTabForUser(tabId: DashboardTabId): boolean {
+    if (this.auth.isOosmAdmin()) {
+      return tabId === 'administration';
+    }
+
     switch (tabId) {
       case 'overview':
         return true;
@@ -62,8 +66,8 @@ export class DashboardHubService {
 
       case 'inventory':
         return (
-          this.auth.hasModule(OOSMModule.INVENTAIR) &&
-          this.auth.hasPermission(permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
+          this.auth.hasModule(OOSMModule.CONDITIONING) &&
+          this.auth.hasPermission(permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.STOCKSEC, Action.READ))
         );
 
       case 'hr':
@@ -77,9 +81,6 @@ export class DashboardHubService {
           this.auth.hasModule(OOSMModule.CONDITIONING) &&
           this.auth.hasPermission(permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ))
         );
-
-      case 'administration':
-        return this.auth.isOosmAdmin();
 
       default:
         return false;

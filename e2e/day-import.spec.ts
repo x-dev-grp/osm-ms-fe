@@ -38,6 +38,10 @@ async function prepare(page: import('@playwright/test').Page, lang: string, reje
       sessionStorage.setItem('auth_token', token);
       localStorage.setItem('app_language', lang);
       localStorage.setItem('app_theme', 'dark');
+      localStorage.setItem(
+        'oosm.tours.v1.30000000-0000-4000-8000-000000000001',
+        JSON.stringify(['SHELL@1', 'RECEPTION_IMPORT@2'])
+      );
     },
     { token, lang }
   );
@@ -67,6 +71,7 @@ async function prepare(page: import('@playwright/test').Page, lang: string, reje
     return route.abort();
   });
   await page.goto('/reception/import');
+  await page.getByRole('checkbox').check();
 }
 
 for (const [lang, title] of [

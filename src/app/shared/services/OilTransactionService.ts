@@ -43,7 +43,7 @@ export class OilTransactionService {
 
   /** Update an existing transaction */
   update(id: string, tx: Partial<OilTransaction>): Observable<OilTransaction> {
-    return this.http.put<OilTransaction>(`${this.baseUrl}/${id}`, tx);
+    return this.http.put<OilTransaction>(this.baseUrl, { ...tx, id });
   }
 
   /** Fetch all transactions for a given storage unit */
@@ -76,12 +76,12 @@ export class OilTransactionService {
 
   // Update an existing oil transaction
   updateOilTransaction(oilTransaction: OilTransaction): Observable<ApiResponse<OilTransaction>> {
-    return this.http.put<ApiResponse<OilTransaction>>(`${this.baseUrl}/${oilTransaction.id}`, oilTransaction);
+    return this.http.put<ApiResponse<OilTransaction>>(this.baseUrl, oilTransaction);
   }
 
   // Delete an oil transaction by ID
   deleteOilTransaction(id: string): Observable<{ success: boolean; message: string; data: void }> {
-    return this.http.delete<{ success: boolean; message: string; data: void }>(`${this.baseUrl}/${id}`);
+    return this.http.delete<{ success: boolean; message: string; data: void }>(`${this.baseUrl}/delete/${id}`);
   }
 
   // Complete an exchange transaction
