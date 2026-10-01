@@ -3167,6 +3167,13 @@
     "SIMPLE_RECEPTION": "طحن خاص"
   },
   "OSM_DASHBOARD": {
+    "PAYMENT_STATUS": {
+      "PAID": "مدفوع",
+      "PAID_AMOUNT": "المبلغ المدفوع",
+      "PARTIAL": "مدفوع جزئياً",
+      "UNPAID": "غير مدفوع",
+      "UNPAID_AMOUNT": "المبلغ غير المدفوع"
+    },
     "ACTIONS": {
       "ADD_LINE": "إضافة سطر",
       "AJUSTER_STOCK": "تعديل المخزون",

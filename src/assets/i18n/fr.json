@@ -4279,6 +4279,13 @@
     "SIMPLE_RECEPTION": "Trituration particulier"
   },
   "OSM_DASHBOARD": {
+    "PAYMENT_STATUS": {
+      "PAID": "Payé",
+      "PAID_AMOUNT": "Montant payé",
+      "PARTIAL": "Partiellement payé",
+      "UNPAID": "Non payé",
+      "UNPAID_AMOUNT": "Montant impayé"
+    },
     "ACTIONS": {
       "ADD_LINE": "Ajouter une ligne",
       "AJUSTER_STOCK": "Ajuster le stock",

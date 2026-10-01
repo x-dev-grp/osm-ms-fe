@@ -4288,6 +4288,13 @@
     "SIMPLE_RECEPTION": "Private milling"
   },
   "OSM_DASHBOARD": {
+    "PAYMENT_STATUS": {
+      "PAID": "Paid",
+      "PAID_AMOUNT": "Paid amount",
+      "PARTIAL": "Partially paid",
+      "UNPAID": "Unpaid",
+      "UNPAID_AMOUNT": "Unpaid amount"
+    },
     "ACTIONS": {
       "ADD_LINE": "Add Line",
       "ADD_OF": "Add Manufacturing Order",

@@ -25,6 +25,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SortByTranslatedPipe } from '../../pipes/sort-by-translated.pipe';
 import { resolveListContext, translateHintWithFallback, translateWithFallback } from './models/list-context.util';
+import { dashboardPaymentStatus, DashboardPaymentStatus } from './models/payment-status.util';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -54,6 +55,10 @@ import { resolveListContext, translateHintWithFallback, translateWithFallback } 
   ]
 })
 export class OosmDashboard implements OnInit, AfterViewInit, OnChanges {
+  paymentStatus(record: Record<string, unknown>): DashboardPaymentStatus {
+    return dashboardPaymentStatus(record);
+  }
+
   readonly _store = inject(DashboardStore);
   _router = inject(Router);
   _dialog = inject(MatDialog);

@@ -384,12 +384,28 @@
 
     <ng-template #dashboardFieldValue let-record="record" let-item="item">
       @if (item?.fieldType === "checkbox") {
-        <input
-          type="checkbox"
-          class="checkbox-cell"
-          [checked]="record[item.name]"
-          disabled
-        />
+        @if (item?.name === 'paid') {
+          <div class="payment-status-cell">
+            <span class="status-badge" [ngClass]="'status-' + paymentStatus(record)">
+              {{ 'OSM_DASHBOARD.PAYMENT_STATUS.' + (paymentStatus(record) | uppercase) | translate }}
+            </span>
+            <span class="payment-amount payment-amount--paid">
+              {{ 'OSM_DASHBOARD.PAYMENT_STATUS.PAID_AMOUNT' | translate }}:
+              {{ (record['paidAmount'] || 0) | number:'1.2-3' }} TND
+            </span>
+            <span class="payment-amount payment-amount--unpaid">
+              {{ 'OSM_DASHBOARD.PAYMENT_STATUS.UNPAID_AMOUNT' | translate }}:
+              {{ (record['unpaidAmount'] || 0) | number:'1.2-3' }} TND
+            </span>
+          </div>
+        } @else {
+          <input
+            type="checkbox"
+            class="checkbox-cell"
+            [checked]="record[item.name]"
+            disabled
+          />
+        }
       } @else if (item?.fieldType === "select") {
         @if (item?.name === 'status') {
           <span class="status-badge" [ngClass]="'status-' + (record[item?.name] | lowercase)">
