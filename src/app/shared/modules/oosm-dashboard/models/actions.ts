@@ -51,5 +51,6 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['MAINTENANCE', 'handyman'],
   ['WAITING', 'hourglass_pause'],
   ['RESET_PASSWORD', 'lock_reset'],
+  ['REGENERATE_QR', 'qr_code_2'],
   ['ENTREE_STOCK', 'add_shopping_cart']
 ]);
