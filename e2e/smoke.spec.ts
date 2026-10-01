@@ -1,18 +1,19 @@
 import { test, expect } from '@playwright/test';
+import { credentialsFromEnv, requireLogin } from './helpers/auth';
 
-const username = process.env.E2E_USERNAME || 'oosmAdmin';
-const password = process.env.E2E_PASSWORD || 'osmAdmin123';
+const username = credentialsFromEnv()?.username ?? '';
+const password = credentialsFromEnv()?.password ?? '';
 
 test.describe('ZitFlow smoke', () => {
   test('login page shows ZitFlow branding', async ({ page }) => {
     await page.goto('/auth/login');
-    await expect(page.locator('.auth-slogan')).toBeVisible();
+    await expect(page.locator('.auth-visual__title')).toBeVisible();
     await expect(page.locator('input#username')).toBeVisible();
     await expect(page.locator('input#password')).toBeVisible();
   });
 
   test('successful login reaches home or admin dashboard', async ({ page }) => {
-    test.skip(!process.env.E2E_RUN_LOGIN, 'Set E2E_RUN_LOGIN=1 with backend running');
+    requireLogin(test);
 
     await page.goto('/auth/login');
     await page.locator('input#username').fill(username);
@@ -24,7 +25,7 @@ test.describe('ZitFlow smoke', () => {
   });
 
   test('help page loads when authenticated', async ({ page }) => {
-    test.skip(!process.env.E2E_RUN_LOGIN, 'Set E2E_RUN_LOGIN=1 with backend running');
+    requireLogin(test);
 
     await page.goto('/auth/login');
     await page.locator('input#username').fill(username);

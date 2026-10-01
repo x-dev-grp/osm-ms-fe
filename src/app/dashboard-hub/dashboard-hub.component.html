@@ -1,13 +1,30 @@
 <div class="dashboard-hub">
   <header class="dashboard-hub__header page-header page-header--hub">
-    <div class="page-header__left">
+    <div class="page-header__left dashboard-hub__identity">
       <div class="header-icon-wrap header-icon-wrap--hub">
         <mat-icon>dashboard</mat-icon>
       </div>
-      <div>
-        <h1 class="m-0 f-w-600">{{ 'DASHBOARD_HUB.TITLE' | translate }}</h1>
-        <p class="m-0 text-muted dashboard-hub__subtitle">{{ 'DASHBOARD_HUB.SUBTITLE' | translate }}</p>
-      </div>
+      <nav class="dashboard-hub__breadcrumb" [attr.aria-label]="'DASHBOARD_HUB.BREADCRUMB_ARIA' | translate">
+        <h1 class="dashboard-hub__crumbs m-0">
+          @if (activeTab && rootTabId && activeTabId !== rootTabId) {
+            <button type="button" class="dashboard-hub__crumb dashboard-hub__crumb--link" (click)="selectTab(rootTabId)">
+              {{ 'DASHBOARD_HUB.TITLE' | translate }}
+            </button>
+          } @else {
+            <span class="dashboard-hub__crumb dashboard-hub__crumb--root">{{ 'DASHBOARD_HUB.TITLE' | translate }}</span>
+          }
+          @if (activeTab) {
+            <mat-icon class="dashboard-hub__crumb-separator" aria-hidden="true">chevron_right</mat-icon>
+            <span class="dashboard-hub__crumb dashboard-hub__crumb--current" aria-current="page">
+              {{ activeTab.labelKey | translate }}
+            </span>
+          }
+        </h1>
+      </nav>
+    </div>
+
+    <div class="dashboard-hub__actions">
+      <ng-template [cdkPortalOutlet]="headerHost.portal()"></ng-template>
     </div>
   </header>
 
@@ -18,27 +35,29 @@
       <p>{{ 'DASHBOARD_HUB.NO_ACCESS' | translate }}</p>
     </section>
   } @else {
-    <nav class="dashboard-hub__tabs" role="tablist" [attr.aria-label]="'DASHBOARD_HUB.TABS_ARIA' | translate">
-      @for (tab of visibleTabs; track tab.id) {
-        <button
-          type="button"
-          class="dashboard-hub-tab"
-          [class]="tab.accentClass"
-          [class.active]="activeTabId === tab.id"
-          [attr.aria-selected]="activeTabId === tab.id"
-          [attr.aria-label]="tab.labelKey | translate"
-          [matTooltip]="tab.labelKey | translate"
-          matTooltipShowDelay="200"
-          role="tab"
-          (click)="selectTab(tab.id)"
-        >
-          <mat-icon aria-hidden="true">{{ tab.icon }}</mat-icon>
-          <span class="dashboard-hub-tab__label">{{ tab.labelKey | translate }}</span>
-        </button>
-      }
-    </nav>
+    @if (showTabs) {
+      <nav class="dashboard-hub__tabs" data-tour="hub-tabs" role="tablist" [attr.aria-label]="'DASHBOARD_HUB.TABS_ARIA' | translate">
+        @for (tab of visibleTabs; track tab.id) {
+          <button
+            type="button"
+            class="dashboard-hub-tab"
+            [class]="tab.accentClass"
+            [class.active]="activeTabId === tab.id"
+            [attr.aria-selected]="activeTabId === tab.id"
+            [attr.aria-label]="tab.labelKey | translate"
+            [matTooltip]="tab.labelKey | translate"
+            matTooltipShowDelay="200"
+            role="tab"
+            (click)="selectTab(tab.id)"
+          >
+            <mat-icon aria-hidden="true">{{ tab.icon }}</mat-icon>
+            <span class="dashboard-hub-tab__label">{{ tab.labelKey | translate }}</span>
+          </button>
+        }
+      </nav>
+    }
 
-    <section class="dashboard-hub__panel" role="tabpanel">
+    <section class="dashboard-hub__panel" data-tour="hub-panel" [attr.role]="showTabs ? 'tabpanel' : null">
       @if (activeTabId && loadedTabs.has('overview') && activeTabId === 'overview') {
         <div class="dashboard-hub__embedded">
           <app-home-dashboard />

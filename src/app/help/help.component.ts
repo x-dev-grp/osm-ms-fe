@@ -187,6 +187,8 @@ export class HelpComponent implements OnInit {
     'USER_GUIDE.DAY_IMPORT.GUIDE.RULES.ITEM4'
   ];
 
+  /** Mirrors the import wizard: Drive import stays hidden until OAuth is production-ready. */
+  readonly dayImportDriveEnabled = false;
   readonly dayImportDriveKeys: string[] = [
     'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP1',
     'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP2',
@@ -431,8 +433,8 @@ export class HelpComponent implements OnInit {
         icon: 'inventory_2',
         accentClass: 'help-card--inventory',
         visible:
-          this.auth.hasModule(OOSMModule.INVENTAIR) &&
-          this.auth.hasPermission(permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
+          this.auth.hasModule(OOSMModule.CONDITIONING) &&
+          this.auth.hasPermission(permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.STOCKSEC, Action.READ))
       },
       {
         id: 'finance',
