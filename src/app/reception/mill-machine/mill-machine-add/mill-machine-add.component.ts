@@ -91,7 +91,8 @@ export class MillMachineAddComponent implements OnInit {
             model: this.machine.model,
             serialNumber: this.machine.serialNumber,
             capacity: this.machine.capacity,
-            operatingStatus: this.machine.operatingStatus,
+            // Machines saved before the status list matched the backend still carry ACTIVE.
+            operatingStatus: this.machine.operatingStatus === 'ACTIVE' ? 'OPERATIONAL' : this.machine.operatingStatus,
             hoursOperated: this.machine.hoursOperated,
             lastMaintenanceDate: this.machine.lastMaintenanceDate ? new Date(this.machine.lastMaintenanceDate) : null,
             nextMaintenanceDate: this.machine.nextMaintenanceDate ? new Date(this.machine.nextMaintenanceDate) : null,

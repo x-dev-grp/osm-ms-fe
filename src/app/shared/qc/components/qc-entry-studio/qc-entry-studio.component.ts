@@ -82,12 +82,15 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get canSave(): boolean {
-    return !this.saving && !this.isReadOnly && this.canSubmit && this.form.valid;
+    return !this.saving && !this.isReadOnly && this.canSubmit && this.form.valid && this.isFullyCompliant;
   }
 
   get saveHintKey(): string | null {
     if (this.isReadOnly) {
       return 'CONTROLE_QUALITE.SAVE_HINTS.ALREADY_SAVED';
+    }
+    if (this.canSave) {
+      return null;
     }
     if (this.submitBlockedHint) {
       return this.submitBlockedHint;
@@ -97,9 +100,6 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (!this.isFullyCompliant) {
       return 'CONTROLE_QUALITE.MESSAGES.QC_NOT_COMPLIANT';
-    }
-    if (this.canSave) {
-      return null;
     }
     return null;
   }
@@ -134,6 +134,9 @@ export class QcEntryStudioComponent implements OnInit, OnChanges, OnDestroy {
   async onSave(): Promise<void> {
     if (!this.canSave) {
       this.form.markAllAsTouched();
+      if (!this.isFullyCompliant) {
+        this.toast.warning('CONTROLE_QUALITE.MESSAGES.QC_NOT_COMPLIANT');
+      }
       return;
     }
 
