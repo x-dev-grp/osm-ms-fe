@@ -51,8 +51,7 @@ const routes: Routes = [
       {
         path: 'par-emplacement',
         loadComponent: () => import('./components/stock-par-emplacement/stock-par-emplacement.component')
-          .then((m) => m.StockParEmplacementComponent),
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.STOCKSEC, Action.READ)])]
+          .then((m) => m.StockParEmplacementComponent)
       },
       {
         path: 'articles',

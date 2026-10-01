@@ -1,4 +1,5 @@
 import { Navigation } from 'src/app/theme/types/navigation';
+import { expandGrantedPermissions, grantingPermissionKeys } from 'src/app/theme/types/permissions';
 
 export interface MenuPermissionFilterOptions {
   bypassPermissionChecks?: boolean;
@@ -12,7 +13,7 @@ function normalizePermissions(userPermissions: unknown): Set<string> {
     return new Set();
   }
   const list = Array.isArray(userPermissions) ? userPermissions : [userPermissions];
-  return new Set(list.map((p) => String(p).toUpperCase()));
+  return expandGrantedPermissions(list.map((p) => String(p)));
 }
 
 function enabledModuleSet(enabledModules?: string[]): Set<string> {
@@ -29,6 +30,13 @@ function tenantHasModule(module: string | undefined, enabled: Set<string>): bool
   return enabled.has(module.toUpperCase());
 }
 
+function toModuleList(modules: string | string[] | undefined): string[] {
+  if (!modules) {
+    return [];
+  }
+  return (Array.isArray(modules) ? modules : [modules]).map((module) => module.toUpperCase());
+}
+
 /** Module declared by the first MODULE:ENTITY:ACTION permission, if any. */
 function permissionModule(item: Navigation): string | undefined {
   const permission = item.permissions?.find((entry) => entry.includes(':'));
@@ -39,33 +47,33 @@ function permissionModule(item: Navigation): string | undefined {
 }
 
 /**
- * Module used to show/hide the entry from tenant activation.
- * Prefer explicit modulePermission, then the parent group's module, then the permission prefix.
+ * Modules used to show/hide the entry from tenant activation (any of them is enough).
+ * Prefer explicit modulePermission, then the parent group's modules, then the permission prefix.
  */
-function resolveMenuModule(item: Navigation, inheritedModule?: string): string | undefined {
-  if (item.modulePermission) {
-    return item.modulePermission.toUpperCase();
+function resolveMenuModules(item: Navigation, inheritedModules: string[]): string[] {
+  const explicit = toModuleList(item.modulePermission);
+  if (explicit.length) {
+    return explicit;
   }
-  if (inheritedModule) {
-    return inheritedModule.toUpperCase();
+  if (inheritedModules.length) {
+    return inheritedModules;
   }
-  return permissionModule(item);
+  return toModuleList(permissionModule(item));
 }
 
-function hasModuleAccess(permissionSet: Set<string>, module: string): boolean {
-  const prefix = `${module.toUpperCase()}:`;
-  return [...permissionSet].some((p) => p.startsWith(prefix));
+function hasModuleAccess(permissionSet: Set<string>, modules: string[]): boolean {
+  const prefixes = modules.map((module) => `${module}:`);
+  return [...permissionSet].some((p) => prefixes.some((prefix) => p.startsWith(prefix)));
 }
 
-function hasEntityAccess(permissionSet: Set<string>, entity: string, module?: string): boolean {
+function hasEntityAccess(permissionSet: Set<string>, entity: string, modules: string[]): boolean {
   const entityUpper = entity.toUpperCase();
-  const moduleUpper = module?.toUpperCase();
   return [...permissionSet].some((p) => {
     const [mod, ent] = p.split(':');
     if (!ent) {
       return false;
     }
-    if (moduleUpper && mod !== moduleUpper) {
+    if (modules.length && !modules.includes(mod)) {
       return false;
     }
     return ent === entityUpper;
@@ -77,17 +85,18 @@ function menuItemHasAccess(
   permissionSet: Set<string>,
   enabled: Set<string>,
   bypassPermissionChecks: boolean,
-  inheritedModule?: string
+  inheritedModules: string[]
 ): boolean {
-  const menuModule = resolveMenuModule(item, inheritedModule);
-  if (!tenantHasModule(menuModule, enabled)) {
+  const menuModules = resolveMenuModules(item, inheritedModules);
+  if (menuModules.length && !menuModules.some((module) => tenantHasModule(module, enabled))) {
     return false;
   }
 
-  // Cross-module permission (e.g. inventair ligne under conditioning menu):
-  // the permission's own module must also be activated.
-  const permModule = permissionModule(item);
-  if (permModule && menuModule && permModule !== menuModule && !tenantHasModule(permModule, enabled)) {
+  // A permission only counts when its own module is activated (e.g. inventair ligne under conditioning menu).
+  const grantingKeys = (item.permissions ?? [])
+    .flatMap((permission) => grantingPermissionKeys(permission))
+    .filter((key) => !key.includes(':') || tenantHasModule(key.split(':')[0], enabled));
+  if (item.permissions?.length && !grantingKeys.length) {
     return false;
   }
 
@@ -96,19 +105,21 @@ function menuItemHasAccess(
   }
 
   if (item.permissions?.length) {
-    return item.permissions.some((p) => permissionSet.has(p.toUpperCase()));
+    return grantingKeys.some((key) => permissionSet.has(key));
   }
 
-  if (item.modulePermission && item.ressourcePermission) {
-    return hasEntityAccess(permissionSet, item.ressourcePermission, item.modulePermission);
+  const explicitModules = toModuleList(item.modulePermission);
+
+  if (explicitModules.length && item.ressourcePermission) {
+    return hasEntityAccess(permissionSet, item.ressourcePermission, explicitModules);
   }
 
-  if (item.modulePermission) {
-    return hasModuleAccess(permissionSet, item.modulePermission);
+  if (explicitModules.length) {
+    return hasModuleAccess(permissionSet, explicitModules);
   }
 
   if (item.ressourcePermission) {
-    return hasEntityAccess(permissionSet, item.ressourcePermission, inheritedModule);
+    return hasEntityAccess(permissionSet, item.ressourcePermission, inheritedModules);
   }
 
   return true;
@@ -120,23 +131,24 @@ function filterMenuItem(
   enabled: Set<string>,
   bypassPermissionChecks: boolean,
   excludedItemIds: Set<string>,
-  inheritedModule?: string
+  inheritedModules: string[] = []
 ): Navigation | null {
   if (item.id && excludedItemIds.has(item.id)) {
     return null;
   }
 
-  if (!menuItemHasAccess(item, permissionSet, enabled, bypassPermissionChecks, inheritedModule)) {
+  if (!menuItemHasAccess(item, permissionSet, enabled, bypassPermissionChecks, inheritedModules)) {
     return null;
   }
 
   const copy: Navigation = { ...item, hidden: false, disabled: false };
-  const childInheritedModule = (item.modulePermission ?? inheritedModule)?.toUpperCase();
+  const explicitModules = toModuleList(item.modulePermission);
+  const childInheritedModules = explicitModules.length ? explicitModules : inheritedModules;
 
   if (copy.children?.length) {
     copy.children = copy.children
       .map((child) =>
-        filterMenuItem(child, permissionSet, enabled, bypassPermissionChecks, excludedItemIds, childInheritedModule)
+        filterMenuItem(child, permissionSet, enabled, bypassPermissionChecks, excludedItemIds, childInheritedModules)
       )
       .filter((child): child is Navigation => child !== null);
   }

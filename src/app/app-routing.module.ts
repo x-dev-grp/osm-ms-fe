@@ -119,10 +119,10 @@ const routes: Routes = [
         loadComponent: () => import('./settings/user-profile/user-profile.component').then((c) => c.UserProfileComponent)
       },
 
-      // Quality-control criteria belong to Production; declared before `settings`, which requires Habilitation.
+      // Quality-control criteria belong to Production (formerly reached through Habilitation settings); declared before `settings`.
       {
         path: 'settings/quality-control',
-        canActivate: [moduleGuard([OOSMModule.PRODUCTION])],
+        canActivate: [moduleGuard([OOSMModule.PRODUCTION, OOSMModule.HABILITATION])],
         canActivateChild: [AuthGuardChild],
         children: qualityControlRoutes
       },
