@@ -52,49 +52,44 @@ export const oosm_menus: Navigation[] = [
         ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY,
         children: [
           {
-            id: 'collapse-reception-olive',
-            title: 'MENU.RECEPTION.OLIVE',
-            type: 'collapse',
-            icon: 'spa',
-            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY,
-            children: [
-              {
                 id: 'item-reception-olive-simple',
                 title: 'OPERATION_TYPE.SIMPLE_RECEPTION',
                 type: 'item',
                 url: '/reception/reception-olive/simple_reception',
                 icon: 'person',
                 breadcrumbs: false,
+                permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)],
                 ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-              },
-              {
+          },
+          {
                 id: 'item-reception-olive-base',
                 title: 'OPERATION_TYPE.BASE',
                 type: 'item',
                 url: '/reception/reception-olive/base',
                 icon: 'recycling',
                 breadcrumbs: false,
+                permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)],
                 ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-              },
-              {
+          },
+          {
                 id: 'item-reception-olive-purchase',
                 title: 'OPERATION_TYPE.OLIVE_PURCHASE',
                 type: 'item',
                 url: '/reception/reception-olive/olive_purchase',
                 icon: 'shopping_cart',
                 breadcrumbs: false,
+                permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)],
                 ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-              },
-              {
+          },
+          {
                 id: 'item-reception-olive-exchange',
                 title: 'OPERATION_TYPE.EXCHANGE',
                 type: 'item',
                 url: '/reception/reception-olive/exchange',
                 icon: 'swap_horiz',
                 breadcrumbs: false,
+                permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)],
                 ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-              }
-            ]
           },
           {
             id: 'item-reception-oil',
@@ -103,6 +98,7 @@ export const oosm_menus: Navigation[] = [
             url: '/reception/reception-huile',
             icon: 'water_drop',
             breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)],
             ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           }
         ]
@@ -256,6 +252,44 @@ export const oosm_menus: Navigation[] = [
             ressourcePermission: ProductionEntity.STORAGEUNIT
           }
         ]
+      },
+      {
+        id: 'collapse-production-maintenance',
+        title: 'MENU.MAINTENANCE_EQUIPMENT.TITLE',
+        type: 'collapse',
+        icon: 'handyman',
+        children: [
+          {
+            id: 'item-maintenance-work-orders',
+            title: 'MENU.MAINTENANCE.WORK_ORDERS',
+            type: 'item',
+            url: '/maintenance',
+            icon: 'handyman',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)],
+            ressourcePermission: ProductionEntity.MAINTENANCEWORKORDER
+          },
+          {
+            id: 'item-mill-equipment',
+            title: 'MENU.EQUIPMENT.REGISTRY',
+            type: 'item',
+            url: '/mill-equipment',
+            icon: 'agriculture',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLEQUIPMENT, Action.READ)],
+            ressourcePermission: ProductionEntity.MILLEQUIPMENT
+          },
+          {
+            id: 'item-equipment-missions',
+            title: 'MENU.EQUIPMENT.MISSIONS',
+            type: 'item',
+            url: '/equipment-missions',
+            icon: 'local_shipping',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.EQUIPMENTSERVICEMISSION, Action.READ)],
+            ressourcePermission: ProductionEntity.EQUIPMENTSERVICEMISSION
+          }
+        ]
       }
     ]
   },
@@ -268,8 +302,8 @@ export const oosm_menus: Navigation[] = [
     modulePermission: 'CONDITIONING',
     children: [
       {
-        id: 'collapse-conditioning-workshop',
-        title: 'MENU.CONDITIONNEMENT.WORKSHOP',
+        id: 'collapse-conditioning-operations',
+        title: 'MENU.CONDITIONNEMENT.OPERATIONS',
         type: 'collapse',
         icon: 'precision_manufacturing',
         children: [
@@ -300,7 +334,15 @@ export const oosm_menus: Navigation[] = [
             icon: 'filter_alt',
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.FILTRATIONOPERATION, Action.READ)]
-          },
+          }
+        ]
+      },
+      {
+        id: 'collapse-conditioning-labels',
+        title: 'MENU.CONDITIONNEMENT.LABELS_CERTIFICATIONS',
+        type: 'collapse',
+        icon: 'label',
+        children: [
           {
             id: 'item-conditioning-labels',
             title: 'MENU.CONDITIONNEMENT.LABELS',
@@ -396,7 +438,7 @@ export const oosm_menus: Navigation[] = [
       },
       {
         id: 'collapse-conditioning-stock-operations',
-        title: 'MENU.STOCKS_INV.OPERATIONS',
+        title: 'MENU.CONDITIONNEMENT.PACKAGING_INVENTORY',
         type: 'collapse',
         icon: 'inventory',
         children: [
@@ -435,17 +477,11 @@ export const oosm_menus: Navigation[] = [
   // ─── 5. STOCKS EMBALLAGE & ACHATS ──────────────────────────────────────────
   {
     id: 'group-inventory',
-    title: 'MENU.STOCKS_INV.TITLE',
+    title: 'MENU.STOCKS_INV.PURCHASING',
     type: 'group',
     modulePermission: 'INVENTAIR',
     children: [
       {
-        id: 'collapse-stock-purchasing',
-        title: 'MENU.STOCKS_INV.PURCHASING',
-        type: 'collapse',
-        icon: 'shopping_bag',
-        children: [
-          {
             id: 'item-stocks-bons-commande',
             title: 'AUTO.BONS_DE_COMMANDE',
             type: 'item',
@@ -453,8 +489,8 @@ export const oosm_menus: Navigation[] = [
             icon: 'description',
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.READ)]
-          },
-          {
+      },
+      {
             id: 'item-stocks-fournisseurs',
             title: 'DASHBOARD_TITLES.MATERIEL_SUPPLIERS',
             type: 'item',
@@ -462,8 +498,6 @@ export const oosm_menus: Navigation[] = [
             icon: 'business',
             breadcrumbs: false,
             permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.MATERIEL_SUPPLIER, Action.READ)]
-          }
-        ]
       }
     ]
   },
@@ -808,47 +842,7 @@ export const oosm_menus: Navigation[] = [
     ]
   },
 
-  // ─── 8. MAINTENANCE ────────────────────────────────────────────────────────
-  {
-    id: 'group-maintenance-equipment',
-    title: 'MENU.MAINTENANCE_EQUIPMENT.TITLE',
-    type: 'group',
-    modulePermission: 'PRODUCTION',
-    children: [
-      {
-        id: 'item-maintenance-work-orders',
-        title: 'MENU.MAINTENANCE.WORK_ORDERS',
-        type: 'item',
-        url: '/maintenance',
-        icon: 'handyman',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MAINTENANCEWORKORDER, Action.READ)],
-        ressourcePermission: ProductionEntity.MAINTENANCEWORKORDER
-      },
-      {
-        id: 'item-mill-equipment',
-        title: 'MENU.EQUIPMENT.REGISTRY',
-        type: 'item',
-        url: '/mill-equipment',
-        icon: 'agriculture',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.MILLEQUIPMENT, Action.READ)],
-        ressourcePermission: ProductionEntity.MILLEQUIPMENT
-      },
-      {
-        id: 'item-equipment-missions',
-        title: 'MENU.EQUIPMENT.MISSIONS',
-        type: 'item',
-        url: '/equipment-missions',
-        icon: 'local_shipping',
-        breadcrumbs: false,
-        permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.EQUIPMENTSERVICEMISSION, Action.READ)],
-        ressourcePermission: ProductionEntity.EQUIPMENTSERVICEMISSION
-      }
-    ]
-  },
-
-  // ─── 9. PILOTAGE & RAPPORTS ────────────────────────────────────────────────
+  // ─── 8. RAPPORTS & ANALYSES ────────────────────────────────────────────────
   {
     id: 'group-pilotage',
     title: 'MENU.PILOTAGE.TITLE',
@@ -911,16 +905,6 @@ export const oosm_menus: Navigation[] = [
             breadcrumbs: false,
             modulePermission: 'CONDITIONING',
             permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.REPORT)]
-          },
-          {
-            id: 'item-conditioning-audit',
-            title: 'AUTO.JOURNAL_D_AUDIT',
-            type: 'item',
-            url: '/stock/audit',
-            icon: 'history',
-            breadcrumbs: false,
-            modulePermission: 'CONDITIONING',
-            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.AUDIT, Action.READ)]
           }
         ]
       }
@@ -1007,6 +991,16 @@ export const oosm_menus: Navigation[] = [
             ressourcePermission: HabilitationEntity.ROLE
           }
         ]
+      },
+      {
+        id: 'item-conditioning-audit',
+        title: 'AUTO.JOURNAL_D_AUDIT',
+        type: 'item',
+        url: '/stock/audit',
+        icon: 'history',
+        breadcrumbs: false,
+        modulePermission: 'CONDITIONING',
+        permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.AUDIT, Action.READ)]
       }
     ]
   }

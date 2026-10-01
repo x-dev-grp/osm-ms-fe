@@ -3163,7 +3163,10 @@
       "TITLE": "Packaging & logistics",
       "WORKSHOP": "Packaging workshop",
       "ANALYTICS": "Analytics & reports",
-      "CATALOG": "Catalog"
+      "CATALOG": "Catalog",
+      "OPERATIONS": "Packaging operations",
+      "LABELS_CERTIFICATIONS": "Labels & certifications",
+      "PACKAGING_INVENTORY": "Packaging inventory"
     },
     "CUSTOMERS": {
       "ACTIONS": {

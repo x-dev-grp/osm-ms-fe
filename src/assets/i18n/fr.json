@@ -3153,7 +3153,10 @@
       "TITLE": "Conditionnement & Logistique",
       "WORKSHOP": "Atelier de conditionnement",
       "ANALYTICS": "Analyses & rapports",
-      "CATALOG": "Catalogue"
+      "CATALOG": "Catalogue",
+      "OPERATIONS": "Opérations de conditionnement",
+      "LABELS_CERTIFICATIONS": "Étiquettes et certifications",
+      "PACKAGING_INVENTORY": "Stock de conditionnement"
     },
     "CUSTOMERS": {
       "ACTIONS": {

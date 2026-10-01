@@ -2214,7 +2214,10 @@
       "TITLE": "التعبئة واللوجستيات",
       "WORKSHOP": "ورشة التعبئة",
       "ANALYTICS": "التحليلات والتقارير",
-      "CATALOG": "الكتالوج"
+      "CATALOG": "الكتالوج",
+      "OPERATIONS": "عمليات التعبئة",
+      "LABELS_CERTIFICATIONS": "الملصقات والشهادات",
+      "PACKAGING_INVENTORY": "مخزون التعبئة"
     },
     "HOME": {
       "ANALYTICS_REPORTS": "التقارير والتحليلات",
