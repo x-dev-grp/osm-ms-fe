@@ -82,4 +82,32 @@ describe('AuthenticationService login', () => {
 
     expect(companyProfileService.getProfile).toHaveBeenCalledTimes(1);
   });
+
+  it('accepts the former or the current key for renamed permissions', () => {
+    service.setCurrentUserValue = {
+      id: 'user-1', email: '', password: '', phoneNumber: '', confirmationMethod: '',
+      isLocked: false, role: Role.User, tenantId: 'tenant-1',
+      permissions: ['INVENTAIR:STOCKSEC:READ', 'FINANCE:OILCREDIT:READ', 'PRODUCTION:STORAGEUNIT:CREATE'],
+      enabledModules: ['INVENTAIR', 'FINANCE', 'PRODUCTION']
+    };
+
+    expect(service.hasPermission('CONDITIONING:STOCKSEC:READ')).toBeTrue();
+    expect(service.hasPermission('INVENTAIR:STOCKSEC:READ')).toBeTrue();
+    expect(service.hasPermission('PRODUCTION:OILCREDIT:READ')).toBeTrue();
+    expect(service.hasPermission('CONDITIONING:FILTRATIONOPERATION:CREATE')).toBeTrue();
+    expect(service.hasPermission('CONDITIONING:FILTRATIONOPERATION:READ')).toBeFalse();
+    expect(service.hasPermission('CONDITIONING:STOCKSEC:UPDATE')).toBeFalse();
+  });
+
+  it('does not derive storage-unit access from the filtration key', () => {
+    service.setCurrentUserValue = {
+      id: 'user-1', email: '', password: '', phoneNumber: '', confirmationMethod: '',
+      isLocked: false, role: Role.User, tenantId: 'tenant-1',
+      permissions: ['CONDITIONING:FILTRATIONOPERATION:READ'],
+      enabledModules: ['CONDITIONING', 'PRODUCTION']
+    };
+
+    expect(service.hasPermission('CONDITIONING:FILTRATIONOPERATION:READ')).toBeTrue();
+    expect(service.hasPermission('PRODUCTION:STORAGEUNIT:READ')).toBeFalse();
+  });
 });

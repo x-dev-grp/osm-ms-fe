@@ -18,7 +18,8 @@ export interface NavigationItem {
   isMainParent?: boolean;
 
   children?: Navigation[];
-  modulePermission?: string;
+  /** Tenant module(s) gating the entry; with several, any enabled module is enough. */
+  modulePermission?: string | string[];
   ressourcePermission?: string;
   permissions?: string[];
 }

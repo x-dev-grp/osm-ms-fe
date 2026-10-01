@@ -9,6 +9,7 @@ import { AppConfig, environment } from 'src/environments/environment';
 import { User } from '../../theme/types/user';
 import { TokenService } from 'src/app/auth/services/tokenService.service';
 import { Role } from 'src/app/theme/types/role';
+import { grantingPermissionKeys } from 'src/app/theme/types/permissions';
 import { UserService } from '../../settings/user-management/services/user.service';
 import { buildUserPhotoDataUrl } from '../../shared/utils/user-initials.util';
 import { NotificationService } from '../../shared/services/notification.service';
@@ -362,15 +363,14 @@ export class AuthenticationService {
 
     if (user.role === Role.OosmAdmin) return true;
 
-    const modulePrefix = permission.split(':')[0]?.toUpperCase();
-    if (modulePrefix && !this.hasTenantModule(modulePrefix)) {
-      return false;
-    }
-
-    if (user.role === Role.Admin) return true;
-
     const permissions = this.normalizedPermissions();
-    return permissions.includes(permission.toUpperCase());
+    return grantingPermissionKeys(permission).some((key) => {
+      const modulePrefix = key.split(':')[0];
+      if (modulePrefix && !this.hasTenantModule(modulePrefix)) {
+        return false;
+      }
+      return user.role === Role.Admin || permissions.includes(key);
+    });
   }
 
   hasModule(module: string): boolean {

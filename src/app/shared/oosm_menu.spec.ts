@@ -1,5 +1,6 @@
 import { oosm_menus } from './oosm_menu';
 import { Navigation } from '../theme/types/navigation';
+import { filterMenuByPermissions } from './utils/menu-permission.filter';
 
 describe('OOSM menu business structure', () => {
   const group = (id: string): Navigation => {
@@ -56,5 +57,16 @@ describe('OOSM menu business structure', () => {
       'item-reception-olive-exchange',
       'item-reception-oil'
     ]);
+  });
+
+  it('keeps packaging stock and filtering reachable with the former INVENTAIR / PRODUCTION keys and modules', () => {
+    const menu = filterMenuByPermissions(
+      oosm_menus,
+      ['INVENTAIR:STOCKSEC:READ', 'INVENTAIR:PRODUCT:READ', 'PRODUCTION:STORAGEUNIT:READ'],
+      { enabledModules: ['INVENTAIR', 'PRODUCTION'] }
+    );
+    const conditioning = menu.find((item) => item.id === 'group-conditioning');
+    const ids = (conditioning?.children ?? []).flatMap((collapse) => collapse.children?.map((item) => item.id) ?? []);
+    expect(ids).toEqual(['item-conditioning-oil-filtering', 'item-conditioning-products', 'item-stocks-par-emplacement']);
   });
 });
