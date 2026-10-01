@@ -441,3 +441,19 @@
 .mat-mdc-stroked-button .mat-icon {
   margin-right: .25rem;
 }
+
+.oil-share-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.7);
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
