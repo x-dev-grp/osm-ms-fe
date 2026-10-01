@@ -247,15 +247,6 @@ export const oosm_menus: Navigation[] = [
             ressourcePermission: ProductionEntity.OILTRANSACTION
           },
           {
-            id: 'item-storage-oil-filtering',
-            title: 'AUTO.FILTRAGE_HUILE',
-            type: 'item',
-            url: '/storage/oil-filtering',
-            icon: 'filter_alt',
-            breadcrumbs: false,
-            ressourcePermission: ProductionEntity.STORAGEUNIT
-          },
-          {
             id: 'item-storage-containers',
             title: 'AUTO.CONTENANTS_HUILE',
             type: 'item',
@@ -299,7 +290,16 @@ export const oosm_menus: Navigation[] = [
             icon: 'conveyor_belt',
             breadcrumbs: false,
             modulePermission: 'CONDITIONING',
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.LIGNECONDITIONNEMENT, Action.READ)]
+          },
+          {
+            id: 'item-conditioning-oil-filtering',
+            title: 'AUTO.FILTRAGE_HUILE',
+            type: 'item',
+            url: '/storage/oil-filtering',
+            icon: 'filter_alt',
+            breadcrumbs: false,
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.FILTRATIONOPERATION, Action.READ)]
           },
           {
             id: 'item-conditioning-labels',
@@ -335,7 +335,7 @@ export const oosm_menus: Navigation[] = [
             icon: 'category',
             breadcrumbs: false,
             modulePermission: 'CONDITIONING',
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ARTICLESEC, Action.READ)]
           },
           {
             id: 'item-conditioning-products',
@@ -345,7 +345,7 @@ export const oosm_menus: Navigation[] = [
             icon: 'inventory_2',
             breadcrumbs: false,
             modulePermission: 'CONDITIONING',
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.PRODUITFINAL, Action.READ)]
           },
           {
             id: 'item-conditioning-bom',
@@ -355,7 +355,7 @@ export const oosm_menus: Navigation[] = [
             icon: 'receipt',
             breadcrumbs: false,
             modulePermission: 'CONDITIONING',
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.BOM, Action.READ)]
           }
         ]
       },
@@ -393,19 +393,9 @@ export const oosm_menus: Navigation[] = [
             permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.CLIENT, Action.READ)]
           }
         ]
-      }
-    ]
-  },
-
-  // ─── 5. STOCKS EMBALLAGE & ACHATS ──────────────────────────────────────────
-  {
-    id: 'group-inventory',
-    title: 'MENU.STOCKS_INV.TITLE',
-    type: 'group',
-    modulePermission: 'INVENTAIR',
-    children: [
+      },
       {
-        id: 'collapse-stock-operations',
+        id: 'collapse-conditioning-stock-operations',
         title: 'MENU.STOCKS_INV.OPERATIONS',
         type: 'collapse',
         icon: 'inventory',
@@ -417,7 +407,7 @@ export const oosm_menus: Navigation[] = [
             url: '/stock/mouvements',
             icon: 'swap_horiz',
             breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.MOUVEMENTSTOCKSEC, Action.READ)]
           },
           {
             id: 'item-stocks-emplacements',
@@ -426,7 +416,7 @@ export const oosm_menus: Navigation[] = [
             url: '/stock/emplacements',
             icon: 'grid_view',
             breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.EMPLACEMENTSTOCK, Action.READ)]
           },
           {
             id: 'item-stocks-par-emplacement',
@@ -435,10 +425,20 @@ export const oosm_menus: Navigation[] = [
             url: '/stock/par-emplacement',
             icon: 'view_list',
             breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
+            permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.STOCKSEC, Action.READ)]
           }
         ]
-      },
+      }
+    ]
+  },
+
+  // ─── 5. STOCKS EMBALLAGE & ACHATS ──────────────────────────────────────────
+  {
+    id: 'group-inventory',
+    title: 'MENU.STOCKS_INV.TITLE',
+    type: 'group',
+    modulePermission: 'INVENTAIR',
+    children: [
       {
         id: 'collapse-stock-purchasing',
         title: 'MENU.STOCKS_INV.PURCHASING',
