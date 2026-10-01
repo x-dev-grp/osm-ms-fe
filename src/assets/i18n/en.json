@@ -1,4 +1,590 @@
 {
+  "TOUR": {
+    "NEXT": "Next",
+    "PREVIOUS": "Back",
+    "DONE": "Got it",
+    "PROGRESS": "{{current}} of {{total}}",
+    "REPLAY": "Guided tour of this page",
+    "RESET_ALL": "Show all guided tours again",
+    "STEP": {
+      "MENU_TITLE": "Where you are",
+      "MENU": "This page belongs to the highlighted menu section. Use it to move between the pages of this module.",
+      "HEADER_TITLE": "Page title",
+      "HEADER": "The title tells you which page you are on; the path above it takes you back one level.",
+      "ACTIONS_TITLE": "Main actions",
+      "ACTIONS": "Buttons to create, export or refresh what this page shows.",
+      "FIELDS_TITLE": "Search and filters",
+      "FIELDS": "Narrow the list down by typing or choosing values here.",
+      "DATA_TITLE": "Your data",
+      "DATA": "Records appear here. Click a row or its buttons to open, edit or delete it.",
+      "TABS_TITLE": "Views",
+      "TABS": "Switch between the different views of this page.",
+      "REPLAY_TITLE": "Need a reminder?",
+      "REPLAY": "Click this button anytime to replay the tour of the page you are on.",
+      "LIST_NEW_TITLE": "Create",
+      "LIST_NEW": "Opens the form to add a new record.",
+      "LIST_FILTER_TITLE": "Filters",
+      "LIST_FILTER": "Tick the fields you want to filter on: they appear above the table, where you type or pick values. \"Reset\" clears every filter.",
+      "LIST_DATA_TITLE": "The list",
+      "LIST_DATA": "Click a column title to sort, use the pager at the bottom to browse, and double-click a row to open it.",
+      "LIST_ROW_ACTIONS_TITLE": "Row actions",
+      "LIST_ROW_ACTIONS": "The ⋮ button of each row lists what you can do with that record. Only the actions allowed for its current status are shown.",
+      "LIST_EXPORT_TITLE": "Export",
+      "LIST_EXPORT": "Export the list to CSV or PDF: tick the columns to include, then click Export.",
+      "DASH_FILTERS_TITLE": "Period and filters",
+      "DASH_FILTERS": "Open this panel to choose the period (today, this month, custom dates…) and the other filters. Every figure on the page follows them.",
+      "DASH_EXPORT_TITLE": "Export",
+      "DASH_EXPORT": "Download the figures shown as Excel, CSV or PDF.",
+      "DASH_REFRESH_TITLE": "Refresh",
+      "DASH_REFRESH": "Reload the latest data without leaving the page."
+    },
+    "SHELL": {
+      "TITLE": "Welcome to ZitFlow",
+      "INTRO": "A short tour of the main screen. You can leave it at any time with Esc or the close button.",
+      "MENU_TITLE": "Main menu",
+      "MENU": "All modules your company has enabled: reception, mill, stock, finance, HR and more. Only pages you are allowed to use are shown.",
+      "SEARCH_TITLE": "Global search",
+      "SEARCH": "Type a lot number, a reception code or scan a QR code, then press Enter to jump straight to it.",
+      "HELP_TITLE": "User guide",
+      "HELP": "Step-by-step help for every module.",
+      "SUPPORT_TITLE": "Support",
+      "SUPPORT": "Report a problem or ask a question; our team answers your ticket.",
+      "NOTIFICATIONS_TITLE": "Notifications",
+      "NOTIFICATIONS": "Alerts about stock, quality, payments and tasks assigned to you.",
+      "PROFILE_TITLE": "Your account",
+      "PROFILE": "Your profile, the app language and log out. You can also show the guided tours again from here."
+    },
+    "DASHBOARD": {
+      "TITLE": "Dashboard",
+      "INTRO": "Your daily overview. Each tab gathers the key figures of one module; you only see the tabs your role allows.",
+      "HUB_TABS_TITLE": "Dashboard tabs",
+      "HUB_TABS": "Switch between Overview, Reception, Finance, Storage, Inventory, HR, Analytics and Administration. The page address keeps the tab, so you can bookmark it.",
+      "HUB_PANEL_TITLE": "Figures of the selected tab",
+      "HUB_PANEL": "Indicators and charts of the chosen module. Most dashboards have their own period filter, export and refresh buttons at the top."
+    },
+    "ADMIN_DASHBOARD": {
+      "TITLE": "Platform overview",
+      "INTRO": "Your control tower for the whole platform: companies, users, licensed modules, support and system health.",
+      "ADMIN_HEALTH_TITLE": "System health",
+      "ADMIN_HEALTH": "Live status of the backend, the database and this web app. It refreshes on its own; a red or orange dot means something needs checking.",
+      "ADMIN_KPIS_TITLE": "Key figures",
+      "ADMIN_KPIS": "Companies, users, users who signed in during the last 7 days and support tickets waiting for an answer. Click a card to open the matching page.",
+      "ADMIN_ATTENTION_TITLE": "Needs attention",
+      "ADMIN_ATTENTION": "Things to follow up: new tickets, inactive or idle companies, companies without users or modules, locked users. Click a chip to handle it.",
+      "ADMIN_COMPANIES_TITLE": "Companies",
+      "ADMIN_COMPANIES": "Every company with its status, enabled modules, users and last activity. Search or filter, then open a company or manage its modules with the row buttons.",
+      "ADMIN_MODULES_TITLE": "Module adoption",
+      "ADMIN_MODULES": "How many companies use each module, to see what is licensed the most.",
+      "ADMIN_SUPPORT_TITLE": "Support",
+      "ADMIN_SUPPORT": "Tickets by status and the latest ones received. Open the support inbox to answer them.",
+      "DASH_EXPORT": "Download the key figures, the companies list and module adoption as Excel, CSV or PDF."
+    },
+    "RECEPTION_DASHBOARD": {
+      "TITLE": "Reception overview",
+      "INTRO": "Follow olive and oil receptions over a period: how many arrived, how many are still pending, volumes and payments.",
+      "DASH_FILTERS": "Choose the period and, below it, an operation type (simple reception, base, olive purchase, exchange…) to focus the figures.",
+      "RECEPTION_DAILY_METRIC_TITLE": "Daily BASE price",
+      "RECEPTION_DAILY_METRIC": "Enter today's reference BASE price once a day. It is saved and drawn on the price chart; once entered, the button only shows the value.",
+      "RECEPTION_KPIS_TITLE": "Key figures",
+      "RECEPTION_KPIS": "Total, pending and completed receptions with their daily trend, plus total volume, paid and unpaid amounts for the period.",
+      "RECEPTION_TREND_TITLE": "Trends",
+      "RECEPTION_TREND": "Receptions per day over the period. When you filter on BASE, the BASE unit price trend is shown too."
+    },
+    "RECEPTION_OLIVE": {
+      "TITLE": "Olive receptions",
+      "INTRO": "All olive receptions of this operation type (simple reception, base, olive purchase or exchange), from weighing to payment.",
+      "LIST_NEW_TITLE": "New reception",
+      "LIST_NEW": "Record a new truck of olives for this operation type. The lot number (for example 0001OC26) is assigned automatically when you save.",
+      "LIST_DATA": "One line per reception with its lot, supplier, net weight and status. Double-click a line to open it.",
+      "LIST_ROW_ACTIONS": "Follow the reception step by step: edit it, record quality results, set the price, pay the supplier, record the oil produced, print the slips, complete or cancel it. Only the steps allowed for its status appear."
+    },
+    "RECEPTION_OIL": {
+      "TITLE": "Oil receptions",
+      "INTRO": "Oil bought or received in bulk, with its quality, price and payment.",
+      "LIST_NEW_TITLE": "New oil reception",
+      "LIST_NEW": "Record a new oil delivery. The lot number is assigned automatically when you save.",
+      "LIST_DATA": "One line per oil reception with its lot, supplier, quantity and status. Double-click a line to open it.",
+      "LIST_ROW_ACTIONS": "Edit, record the oil quality, set the price, complete the payment details, pay, print the receipt or invoice, or cancel. Only the actions allowed for its status appear."
+    },
+    "RECEPTION_IMPORT": {
+      "TITLE": "Daily Excel import",
+      "INTRO": "Import a whole day (receptions, quality results, payments, oil sales and expenses) from one Excel workbook. The page works in three steps and nothing is saved until the last one.",
+      "IMPORT_DOWNLOAD_TITLE": "1. Get the workbook",
+      "IMPORT_DOWNLOAD": "Download the template made for your company and fill it in; the example shows a completed day. Create your tanks in the app first: the import does not create them.",
+      "IMPORT_RULES_TITLE": "Mandatory rules",
+      "IMPORT_RULES": "One file per day, never rename sheets or columns, pick values from the dropdowns and never type lot numbers. Tick the box to accept the rules: checking and importing stay locked until you do.",
+      "IMPORT_UPLOAD_TITLE": "2. Choose your file",
+      "IMPORT_UPLOAD": "Select the completed .xlsx workbook from your computer.",
+      "IMPORT_DRY_RUN_TITLE": "Check without importing",
+      "IMPORT_DRY_RUN": "Checks every row and shows a report below, without saving anything. Correct the file and check again as often as needed; the report and the import button then appear under this card.",
+      "IMPORT_SUMMARY_TITLE": "3. Check report",
+      "IMPORT_SUMMARY": "Business date, valid and invalid rows, stock in and out and total expenses. \"Ready to import\" must say Yes. The report can be downloaded as Excel or CSV.",
+      "IMPORT_INVALID_TITLE": "Rows to correct",
+      "IMPORT_INVALID": "Each error gives the sheet, the row number and what is wrong. Fix these rows in your workbook, choose it again and re-check.",
+      "IMPORT_COMMIT_TITLE": "Import",
+      "IMPORT_COMMIT": "Only available when the check found no errors. It creates the real operations (stock, payments, expenses) and assigns the lot numbers shown in the report. Afterwards, fix mistakes in the app rather than re-importing an edited file.",
+      "IMPORT_DRIVE_TITLE": "Google Drive",
+      "IMPORT_DRIVE": "Optional: an administrator can connect a Google Drive folder so that workbooks placed there are imported automatically. The status shows the last synchronisation and any failed files."
+    },
+    "RECEPTION_JOURNAL": {
+      "TITLE": "Reception journals",
+      "INTRO": "Every olive or oil reception of the kind chosen in the menu, with its lot, supplier and status.",
+      "LIST_DATA": "Double-click a reception to open its details: weighing, quality results and payments.",
+      "LIST_ROW_ACTIONS": "The actions offered depend on the reception's status: quality, price, payment, documents…"
+    },
+    "RECEPTION_PLANNING": {
+      "TITLE": "Milling planning",
+      "INTRO": "Plan which lots go through which mill and when."
+    },
+    "SUPPLIERS": {
+      "TITLE": "Suppliers and contributors",
+      "INTRO": "The people and companies who bring you olives or oil, and those who buy from you.",
+      "LIST_NEW_TITLE": "New supplier",
+      "LIST_NEW": "Add a supplier: name, phone, region, supplier type and bank details. You can also create one directly from a reception form.",
+      "LIST_DATA": "Double-click a supplier to open their account.",
+      "LIST_ROW_ACTIONS": "\"Details\" opens their operations, balance and payments; you can also view or edit their record."
+    },
+    "QUALITY": {
+      "TITLE": "Quality control",
+      "INTRO": "Quality results (acidity, humidity, yield…) recorded for olive or oil lots.",
+      "LIST_DATA": "One line per analysed lot. Double-click a line to open it.",
+      "LIST_ROW_ACTIONS": "Record or update the quality results of a lot and print its quality report."
+    },
+    "EQUIPMENT": {
+      "TITLE": "Equipment and maintenance",
+      "INTRO": "Your mill equipment, its missions and maintenance work orders."
+    },
+    "STORAGE": {
+      "TITLE": "Oil storage",
+      "INTRO": "Tanks and containers, and every oil movement between them: transfers, filtering and sales.",
+      "DATA": "Each tank shows its current volume and capacity."
+    },
+    "CONDITIONING": {
+      "TITLE": "Conditioning",
+      "INTRO": "Bottling orders, packaging lines, labels and finished products."
+    },
+    "STOCK": {
+      "TITLE": "Stock and inventory",
+      "INTRO": "Dry goods and packaging stock: movements, locations and purchase orders."
+    },
+    "FINANCE": {
+      "TITLE": "Finance",
+      "INTRO": "Cash register, bank accounts, expenses and oil sales.",
+      "DATA": "Every line is a money movement; totals are updated as you record them."
+    },
+    "HR": {
+      "TITLE": "Human resources",
+      "INTRO": "Employees, time tracking, leave and payroll."
+    },
+    "SETTINGS": {
+      "TITLE": "Settings",
+      "INTRO": "Configure your company: users, roles, reference lists and preferences."
+    },
+    "ADMINISTRATION": {
+      "TITLE": "Administration",
+      "INTRO": "Manage companies, their modules and their users."
+    },
+    "ANALYTICS": {
+      "TITLE": "Analytics",
+      "INTRO": "Charts and indicators to follow production and sales over time."
+    },
+    "NOTIFICATIONS": {
+      "TITLE": "Notifications",
+      "INTRO": "All your alerts in one list; mark them as read once handled."
+    },
+    "RECEPTION_OLIVE_FORM": {
+      "TITLE": "Olive reception form",
+      "INTRO": "Enter the weighing of a truck of olives. The operation type shown under the title comes from the menu you used and cannot be changed here.",
+      "RECEPTION_DELIVERY_TITLE": "Delivery",
+      "RECEPTION_DELIVERY": "Reception and lot numbers are filled in by the app. Check the date and type the truck plate in the format 123TN4567.",
+      "RECEPTION_PARTY_TITLE": "Supplier and origin",
+      "RECEPTION_PARTY": "Start typing to find the supplier, then choose the region and the parcel. The + buttons create a missing supplier, region or parcel without leaving the form.",
+      "RECEPTION_GOODS_TITLE": "Olives and weighing",
+      "RECEPTION_GOODS": "Choose the variety, then enter the gross weight and the empty truck weight: the net weight is calculated for you. The empty weight cannot be higher than the gross weight.",
+      "RECEPTION_SAVE_TITLE": "Save",
+      "RECEPTION_SAVE": "The button becomes active once all required fields are valid. After saving, continue from the reception list: quality, price and payment."
+    },
+    "RECEPTION_OIL_FORM": {
+      "TITLE": "Oil reception form",
+      "INTRO": "Enter a delivery of bulk oil (oil purchase).",
+      "RECEPTION_DELIVERY_TITLE": "Delivery",
+      "RECEPTION_DELIVERY": "Reception and lot numbers are filled in by the app. Check the date and type the truck plate in the format 123TN4567.",
+      "RECEPTION_PARTY_TITLE": "Supplier and origin",
+      "RECEPTION_PARTY": "Start typing to find the supplier, then choose the region and the parcel. The + buttons create a missing supplier, region or parcel without leaving the form.",
+      "RECEPTION_GOODS_TITLE": "Oil",
+      "RECEPTION_GOODS": "Enter the quantity in litres and choose the oil type. The form warns you if the quantity is inconsistent or exceeds the available capacity.",
+      "RECEPTION_SAVE_TITLE": "Save",
+      "RECEPTION_SAVE": "Active once the required fields are valid. Quality, price and payment are then handled from the oil reception list."
+    },
+    "RECEPTION_DETAILS": {
+      "TITLE": "Reception details",
+      "INTRO": "Everything about one reception on a single page: weighing, supplier, storage, milling, price, payment and quality.",
+      "DETAILS_STATUS_TITLE": "Type and status",
+      "DETAILS_STATUS": "Olive or oil, the operation type and where the reception stands in its workflow.",
+      "DETAILS_QR_TITLE": "QR code",
+      "DETAILS_QR": "Generate a QR code for this lot to print on bags or containers; scanning it in the global search brings you back to this page.",
+      "DETAILS_COUNTERPART_TITLE": "Linked reception",
+      "DETAILS_COUNTERPART": "The olive reception and the oil it produced are linked: open the other one from here.",
+      "DETAILS_LINKS_TITLE": "Related pages",
+      "DETAILS_LINKS": "Jump to the payments, oil movements, supplier account and payments, tank or quality control linked to this reception.",
+      "DETAILS_PRICE_TITLE": "Price and payment",
+      "DETAILS_PRICE": "Unit price, total, amount already paid, what remains to pay and the payment status.",
+      "DETAILS_QUALITY_TITLE": "Quality results",
+      "DETAILS_QUALITY": "The measured value of each quality check recorded for this lot."
+    },
+    "PURCHASE_JOURNAL": {
+      "TITLE": "Purchase journal",
+      "INTRO": "All purchase and milling operations in one list, like the \"Achat\" sheet: olive and oil purchases, base, exchanges and simple receptions.",
+      "LIST_DATA": "One line per operation with its lot, supplier, quantities and amounts. Column totals appear in the headers when available.",
+      "LIST_ROW_ACTIONS": "Open, price, pay or print each operation, including its commercial invoice."
+    },
+    "SUPPLIER_DETAILS": {
+      "TITLE": "Supplier account",
+      "INTRO": "Everything you did with one supplier: operations, money owed and paid, and their profile.",
+      "SUPPLIER_TABS_TITLE": "Three views",
+      "SUPPLIER_TABS": "Operations lists the receptions by kind, Finance shows the balance and money movements, Profile shows contact and bank details.",
+      "SUPPLIER_OPERATIONS_TITLE": "Operation types",
+      "SUPPLIER_OPERATIONS": "Each card shows the number and total amount of one kind of operation. Click a card to list those operations below.",
+      "LIST_DATA_TITLE": "Operations",
+      "LIST_DATA": "The operations of the selected card. For BASE suppliers, olive and oil totals and a payment ledger are shown too.",
+      "SUPPLIER_FINANCE_TITLE": "Balance",
+      "SUPPLIER_FINANCE": "Total, paid and unpaid amounts, money in and money out.",
+      "SUPPLIER_PROFILE_TITLE": "Profile",
+      "SUPPLIER_PROFILE": "Contact details, tax number, bank account, supplier type and whether they store oil with you."
+    },
+    "SUPPLIER_FORM": {
+      "TITLE": "Supplier form",
+      "INTRO": "Create or update a supplier's record.",
+      "SUPPLIER_IDENTITY_TITLE": "Identity",
+      "SUPPLIER_IDENTITY": "First name and last name are required, as is the phone number just below.",
+      "SUPPLIER_TYPE_TITLE": "Region and type",
+      "SUPPLIER_TYPE": "The region and supplier type are used in filters, reports and the daily import.",
+      "SUPPLIER_BANK_TITLE": "Bank details",
+      "SUPPLIER_BANK": "Optional RIB and bank name, useful when you pay by transfer.",
+      "SUPPLIER_SAVE_TITLE": "Save",
+      "SUPPLIER_SAVE": "Saves the supplier; it can then be chosen in receptions."
+    },
+    "QUALITY_ENTRY": {
+      "TITLE": "Quality results",
+      "INTRO": "Enter the measured values of a lot. Each value is compared with the limits set in the quality rules.",
+      "FIELDS": "Fill in each measurement; values outside the allowed range are flagged.",
+      "ACTIONS": "Save the results; they appear on the reception details and its reports."
+    },
+    "QUALITY_RULES": {
+      "TITLE": "Quality rules",
+      "INTRO": "The checks performed on olives and oil (acidity, humidity…), with their unit and allowed limits.",
+      "LIST_NEW": "Add a quality check with its minimum and maximum values.",
+      "LIST_DATA": "Each rule is proposed when quality results are entered."
+    },
+    "MILL_MACHINES": {
+      "TITLE": "Mills",
+      "INTRO": "Your milling machines, their capacity and the lots they processed.",
+      "LIST_NEW": "Add a mill.",
+      "LIST_ROW_ACTIONS": "View a mill and its receptions, edit it or open its maintenance."
+    },
+    "MAINTENANCE": {
+      "TITLE": "Maintenance work orders",
+      "INTRO": "Repairs and preventive maintenance of your equipment.",
+      "LIST_NEW": "Open a new work order for a machine.",
+      "LIST_ROW_ACTIONS": "View or update a work order as the work progresses."
+    },
+    "MILL_EQUIPMENT": {
+      "TITLE": "Equipment",
+      "INTRO": "The equipment of your mill: machines, pumps, vehicles…",
+      "LIST_NEW": "Add a piece of equipment.",
+      "LIST_ROW_ACTIONS": "View or edit an item."
+    },
+    "EQUIPMENT_MISSIONS": {
+      "TITLE": "Equipment missions",
+      "INTRO": "Planned uses of your equipment: which item, who, when and for what.",
+      "LIST_NEW": "Plan a new mission.",
+      "LIST_ROW_ACTIONS": "View or edit a mission."
+    },
+    "STORAGE_UNITS": {
+      "TITLE": "Tanks",
+      "INTRO": "All your oil tanks with their capacity, current volume, lot and status.",
+      "LIST_NEW_TITLE": "New tank",
+      "LIST_NEW": "Create a tank: name, capacity, oil variety, grade and whether it is rented storage. A tank must exist before oil, or a daily import, can go into it.",
+      "LIST_DATA": "Double-click a tank to see its content and movements.",
+      "LIST_ROW_ACTIONS": "View, edit or delete a tank, or assign it to a supplier who stores oil with you."
+    },
+    "STORAGE_FORM": {
+      "TITLE": "Tank form",
+      "INTRO": "Describe a tank so that every oil movement can be checked against its capacity.",
+      "STORAGE_IDENTITY_TITLE": "Identity and capacity",
+      "STORAGE_IDENTITY": "Name, lot, location, status and maximum capacity in kg. When editing, the current volume can be corrected but may not exceed the capacity.",
+      "STORAGE_OIL_TITLE": "Oil",
+      "STORAGE_OIL": "The oil variety, quality grade and whether the tank holds crude or filtered oil.",
+      "STORAGE_PAID_TITLE": "Rented storage",
+      "STORAGE_PAID": "Tick it if a customer pays to store oil in this tank, then enter the monthly rent.",
+      "STORAGE_SAVE_TITLE": "Save",
+      "STORAGE_SAVE": "Active once the required fields are valid."
+    },
+    "STORAGE_RECAP": {
+      "TITLE": "Storage overview",
+      "INTRO": "A visual board of all tanks: how full they are, what they hold and what it cost.",
+      "DASH_FILTERS": "Open this panel to find a tank by its public code (type or scan it, then Enter) and to show only rented tanks or only tanks of filtered oil.",
+      "STORAGE_CARD_TITLE": "Tank card",
+      "STORAGE_CARD": "Status, lot, average and total cost, current volume, free and maximum capacity, variety and grade. \"View\" opens the tank.",
+      "STORAGE_FILL_TITLE": "Fill level",
+      "STORAGE_FILL": "How full the tank is, in percent.",
+      "DASH_EXPORT": "Download the board as Excel, CSV or PDF."
+    },
+    "OIL_TRANSACTION_FORM": {
+      "TITLE": "Oil movement",
+      "INTRO": "Record or validate a movement of oil into, out of or between tanks.",
+      "TX_TYPE_TITLE": "Movement type",
+      "TX_TYPE": "For example a reception, a transfer, a sale, an exchange or a loan. The type decides which tanks and price fields are needed.",
+      "TX_UNITS_TITLE": "Tanks",
+      "TX_UNITS": "The source tank the oil leaves and/or the destination tank it enters, depending on the type.",
+      "TX_QUANTITY_TITLE": "Grade and quantity",
+      "TX_QUANTITY": "The oil quality grade and the quantity in kg, checked against the tank capacity.",
+      "TX_PRICE_TITLE": "Price",
+      "TX_PRICE": "For movements with a value, enter the unit price per kg; the total is calculated.",
+      "TX_SAVE_TITLE": "Save or approve",
+      "TX_SAVE": "Create or update the movement. When editing, \"Approve\" validates it."
+    },
+    "OIL_TRANSACTIONS": {
+      "TITLE": "Oil movements",
+      "INTRO": "Every movement of oil in or out of your tanks: receptions, transfers, sales, exchanges and loans.",
+      "LIST_NEW": "Record a new oil movement.",
+      "LIST_DATA": "One line per movement with its type, tanks, quantity and state. Double-click a line to open it.",
+      "LIST_ROW_ACTIONS": "Pending movements must be validated: \"Validate\" opens the check suited to its type (exchange, reception, sale…). You can also edit a movement and print its receipt, exit slip or purchase order."
+    },
+    "OIL_FILTERING": {
+      "TITLE": "Oil filtering",
+      "INTRO": "Filtering operations that move oil from a source tank to a target tank, with traceability and quality.",
+      "LIST_NEW": "Plan a filtering: source tank, target tank and volume.",
+      "LIST_ROW_ACTIONS": "Start the operation, change its status, view its traceability, record the oil quality once completed, prepare a label, or delete it."
+    },
+    "OIL_FILTERING_FORM": {
+      "TITLE": "Filtering operation",
+      "INTRO": "Prepare a filtering operation.",
+      "FILTERING_UNITS_TITLE": "Source and target tanks",
+      "FILTERING_UNITS": "The tank holding the oil to filter and the tank that will receive the filtered oil.",
+      "FILTERING_VOLUME_TITLE": "Volume",
+      "FILTERING_VOLUME": "Litres to filter, plus an optional note.",
+      "FILTERING_SAVE_TITLE": "Create",
+      "FILTERING_SAVE": "Creates the operation; start it later from the filtering list."
+    },
+    "OIL_CONTAINERS": {
+      "TITLE": "Oil containers",
+      "INTRO": "Bottles, cans and other containers used to sell or store oil, with their stock.",
+      "LIST_NEW": "Add a container type.",
+      "LIST_ROW_ACTIONS": "View or edit a container, or record a purchase to add containers to stock (\"Stock entry\")."
+    },
+    "OF_ORDERS": {
+      "TITLE": "Production orders (OF)",
+      "INTRO": "Bottling orders: which product, how many units and on which line.",
+      "LIST_NEW": "Create a production order.",
+      "LIST_ROW_ACTIONS": "View or edit an order, record its production or enter its quality controls."
+    },
+    "LABELS": {
+      "TITLE": "Labels",
+      "INTRO": "Product labels, designed and approved before printing.",
+      "LIST_NEW": "Start a new label with the step-by-step editor.",
+      "LIST_ROW_ACTIONS": "View, edit, finalise, export or return a label to draft, or delete it."
+    },
+    "PROJECTS": {
+      "TITLE": "Projects",
+      "INTRO": "Customer projects: orders to prepare, produce and ship.",
+      "LIST_NEW": "Create a project for a customer.",
+      "LIST_ROW_ACTIONS": "View or edit a project, plan its shipment, add a production order, change its status or delete it."
+    },
+    "PRODUCTS": {
+      "TITLE": "Finished products",
+      "INTRO": "The products you sell (SKU): packaging, volume and labels.",
+      "LIST_NEW": "Create a finished product.",
+      "LIST_ROW_ACTIONS": "View, edit, activate or deactivate, or delete a product."
+    },
+    "BOMS": {
+      "TITLE": "Bills of materials",
+      "INTRO": "The recipe of each product: which articles and quantities are used to make one unit.",
+      "LIST_NEW": "Create a bill of materials.",
+      "LIST_ROW_ACTIONS": "View, edit, activate or delete a bill of materials."
+    },
+    "PACKAGING_LINES": {
+      "TITLE": "Packaging lines",
+      "INTRO": "Your bottling and packaging lines and their capacity.",
+      "LIST_NEW": "Add a packaging line.",
+      "LIST_ROW_ACTIONS": "View, edit, activate or deactivate a line."
+    },
+    "STOCK_ARTICLES": {
+      "TITLE": "Articles",
+      "INTRO": "Dry goods and packaging (bottles, caps, labels, cartons…) with their stock and alert thresholds.",
+      "LIST_NEW": "Create an article with its unit and minimum stock.",
+      "LIST_ROW_ACTIONS": "View, edit, activate or deactivate an article."
+    },
+    "STOCK_DASHBOARD": {
+      "TITLE": "Stock dashboard",
+      "INTRO": "Dry goods stock at a glance: value, alerts, recent movements and pending purchase orders.",
+      "STOCK_THRESHOLDS_TITLE": "Check thresholds",
+      "STOCK_THRESHOLDS": "Reloads the stock figures and tells you which articles are below their thresholds.",
+      "STOCK_SUMMARY_TITLE": "Summary",
+      "STOCK_SUMMARY": "Total stock value, articles on alert, estimated stock-out rate and purchase orders waiting for validation.",
+      "STOCK_CRITICAL_TITLE": "Critical articles",
+      "STOCK_CRITICAL": "Articles below their critical threshold, with current and minimum stock. \"View all\" opens the article list.",
+      "STOCK_MOVEMENTS_TITLE": "Latest movements",
+      "STOCK_MOVEMENTS": "The most recent stock entries and exits; \"View all\" opens the full list."
+    },
+    "STOCK_MOVEMENTS": {
+      "TITLE": "Stock movements",
+      "INTRO": "Every entry and exit of dry goods, with the article, quantity and date. Movements come from the operations that receive or consume stock.",
+      "LIST_DATA": "Double-click a movement to see its details."
+    },
+    "STOCK_LOCATIONS": {
+      "TITLE": "Stock locations",
+      "INTRO": "Where your dry goods are stored (warehouses, shelves…) and what each location holds.",
+      "LIST_NEW": "Add a location.",
+      "LIST_ROW_ACTIONS": "View, edit, activate or deactivate, or delete a location."
+    },
+    "PURCHASE_ORDERS": {
+      "TITLE": "Purchase orders",
+      "INTRO": "Orders for dry goods placed with your material suppliers.",
+      "LIST_NEW": "Create a purchase order.",
+      "LIST_ROW_ACTIONS": "Open an order, validate it or refuse it."
+    },
+    "MATERIAL_SUPPLIERS": {
+      "TITLE": "Material suppliers",
+      "INTRO": "Suppliers of bottles, packaging and other dry goods.",
+      "LIST_NEW": "Add a material supplier.",
+      "LIST_DATA": "Double-click a supplier to see their details."
+    },
+    "FINANCE_DASHBOARD": {
+      "TITLE": "Finance dashboard",
+      "INTRO": "Money in and out over a period: revenue, collections, expenses and what remains unpaid.",
+      "DASH_FILTERS": "Choose the period; every figure and chart follows it.",
+      "FINANCE_KPIS_TITLE": "Key figures",
+      "FINANCE_KPIS": "Net flow, total and collected revenue (oil and waste sales), cash in, cash out, pending expenses and unpaid receivables.",
+      "FINANCE_OVERVIEW_TITLE": "Overview",
+      "FINANCE_OVERVIEW": "Number and amount of transactions over time, with status tiles on the side.",
+      "FINANCE_RECENT_TITLE": "Recent activity",
+      "FINANCE_RECENT": "The latest money movements; open the transactions page for the full list."
+    },
+    "CASH_REGISTER": {
+      "TITLE": "Daily cash register",
+      "INTRO": "Cash movements of a day or period, with the opening and closing balance, like the \"Caisse\" sheet.",
+      "DASH_FILTERS": "Today is selected by default; choose another day or period here.",
+      "CASH_OPENING_TITLE": "Opening balance",
+      "CASH_OPENING": "Type the cash in the drawer at the start of the period. It is remembered on this computer for that period and used to compute the closing balance.",
+      "CASH_SUMMARY_TITLE": "Summary",
+      "CASH_SUMMARY": "Opening balance, cash in, cash out, net movement, closing balance and number of movements.",
+      "CASH_METHODS_TITLE": "By payment method",
+      "CASH_METHODS": "Net amount per payment method, with money in and out.",
+      "LIST_NEW_TITLE": "New transaction",
+      "LIST_NEW": "Record a money movement (payment received, expense paid…).",
+      "LIST_DATA_TITLE": "Movements",
+      "LIST_DATA": "Each cash movement of the period.",
+      "DASH_EXPORT": "Download the cash register as Excel, CSV or PDF."
+    },
+    "SEASON_RECAP": {
+      "TITLE": "Season summary",
+      "INTRO": "The key totals of the season, like the \"Récap\" sheet, computed from current data.",
+      "SEASON_GRID_TITLE": "Season totals",
+      "SEASON_GRID": "Purchase deliveries, olive kg and oil litres, then what has been paid and what is still owed to suppliers.",
+      "SEASON_SALES_TITLE": "Oil sales",
+      "SEASON_SALES": "Total oil sales; the next cards show what was collected and what customers still owe.",
+      "SEASON_CASH_TITLE": "Net cash",
+      "SEASON_CASH": "Cash in minus cash out over the season."
+    },
+    "BANKS": {
+      "TITLE": "Bank accounts",
+      "INTRO": "Your company's bank accounts and their balance.",
+      "LIST_NEW": "Add a bank account.",
+      "LIST_ROW_ACTIONS": "View an account with its movements, or edit it."
+    },
+    "EXPENSES": {
+      "TITLE": "Expenses",
+      "INTRO": "Operating costs: fuel, repairs, utilities, services…",
+      "LIST_NEW": "Record an expense with its category, amount and payment method.",
+      "LIST_ROW_ACTIONS": "View, edit or print an expense."
+    },
+    "OIL_SALES": {
+      "TITLE": "Oil sales",
+      "INTRO": "Sales of oil to customers, from order to delivery and invoice.",
+      "LIST_NEW": "Create a sale: customer, oil, quantity and price.",
+      "LIST_ROW_ACTIONS": "Confirm or cancel a sale, record its delivery, and print the purchase order, delivery note or invoice."
+    },
+    "OIL_CREDIT": {
+      "TITLE": "Oil credit",
+      "INTRO": "Oil handed over on credit: packaging, oil type, quantity and recipient.",
+      "LIST_NEW": "Record a new oil credit.",
+      "LIST_ROW_ACTIONS": "View or edit a credit; its contract can be downloaded as PDF from its details."
+    },
+    "TRANSACTIONS": {
+      "TITLE": "Financial transactions",
+      "INTRO": "Every money movement: supplier payments, collected sales, expenses, deposits and transfers.",
+      "LIST_NEW": "Record a transaction.",
+      "LIST_ROW_ACTIONS": "View, edit, approve or reject a transaction, duplicate it, or print its receipt or bill."
+    },
+    "WASTE_SALES": {
+      "TITLE": "Waste sales",
+      "INTRO": "Sales of milling by-products such as pomace.",
+      "LIST_NEW": "Record a waste sale.",
+      "LIST_ROW_ACTIONS": "View or edit a sale."
+    },
+    "HR_DASHBOARD": {
+      "TITLE": "Human resources",
+      "INTRO": "Your staff at a glance, with shortcuts to every HR page.",
+      "HR_KPIS_TITLE": "Key figures",
+      "HR_KPIS": "Headcount and the main HR indicators.",
+      "HR_NAV_TITLE": "HR pages",
+      "HR_NAV": "Employees, contracts, time tracking, leave, payroll and settings: click a card to open it.",
+      "DASH_EXPORT": "Download these figures."
+    },
+    "HR_EMPLOYEES": {
+      "TITLE": "Employees",
+      "INTRO": "Your staff records: identity, position, department and contract.",
+      "LIST_NEW": "Add an employee.",
+      "LIST_ROW_ACTIONS": "View or edit an employee."
+    },
+    "HR_TIME": {
+      "TITLE": "Time tracking",
+      "INTRO": "Clock-in records, timesheets and overtime requests.",
+      "LIST_NEW": "Add an entry.",
+      "LIST_ROW_ACTIONS": "View or edit an entry; requests can be approved or rejected here."
+    },
+    "HR_LEAVE": {
+      "TITLE": "Leave",
+      "INTRO": "Leave requests, leave types and public holidays.",
+      "LIST_NEW": "Add a record for this page.",
+      "LIST_ROW_ACTIONS": "View or edit; leave requests are approved or rejected here."
+    },
+    "HR_PAYROLL": {
+      "TITLE": "Payroll",
+      "INTRO": "Payroll periods, payslips, payroll variables, salary advances and loans.",
+      "LIST_NEW": "Add a record for this page.",
+      "LIST_ROW_ACTIONS": "Depending on the page: calculate, validate, pay or close a period, and download payslips as PDF."
+    },
+    "SETTINGS_USERS": {
+      "TITLE": "Users",
+      "INTRO": "The people who can log in to ZitFlow, and the role that defines what each may do.",
+      "LIST_NEW": "Create a user account.",
+      "LIST_ROW_ACTIONS": "View or edit a user."
+    },
+    "SETTINGS_USER_FORM": {
+      "TITLE": "User account",
+      "INTRO": "Identity, contact details and role of a user.",
+      "FIELDS_TITLE": "Identity",
+      "FIELDS": "First name, last name, username, e-mail and phone number.",
+      "USER_CONFIRMATION_TITLE": "Confirmation method",
+      "USER_CONFIRMATION": "Whether the account is confirmed by e-mail or by phone.",
+      "USER_ROLE_TITLE": "Role",
+      "USER_ROLE": "The role decides which modules and actions this user can access. Roles are managed under Settings > Roles.",
+      "USER_LOCKED_TITLE": "Deactivate",
+      "USER_LOCKED": "Blocks the account without deleting it.",
+      "USER_SAVE_TITLE": "Save",
+      "USER_SAVE": "Available once the form is valid."
+    },
+    "SETTINGS_ROLES": {
+      "TITLE": "Roles",
+      "INTRO": "Roles group permissions; each user gets one role.",
+      "ROLES_NEW_TITLE": "New role",
+      "ROLES_NEW": "Create a role and tick the permissions it grants, module by module.",
+      "ROLES_GRID_TITLE": "Existing roles",
+      "ROLES_GRID": "Each card shows the number of users and a summary of permissions. View, edit or delete a role; the ADMIN role cannot be changed."
+    }
+  },
   "ACCESS_DENIED": {
     "GO_HOME": "Back to home",
     "GO_HOME_TITLE": "Back to home",
@@ -12,6 +598,41 @@
   },
   "ABIOOC": {
     "DAY_IMPORT": {
+      "SHEETS": {
+        "ImportMeta": "Day",
+        "Regions": "Regions",
+        "Parcels": "Parcels",
+        "SupplierTypes": "Supplier types",
+        "QcRules": "Quality checks",
+        "Suppliers": "Suppliers",
+        "OilContainers": "Containers",
+        "StorageUnits": "Tanks",
+        "Receptions": "Receptions",
+        "QcResults": "Quality results",
+        "Payments": "Payments",
+        "OilSales": "Oil sales",
+        "OilSaleContainers": "Containers sold",
+        "Expenses": "Expenses"
+      },
+      "RULES_TITLE": "Mandatory rules",
+      "RULES": {
+        "TEMPLATE": "Only use the template downloaded from the app for your company. Never use another company's file.",
+        "ONE_DAY": "One file = one day. Enter the date on the \"Day\" sheet.",
+        "STRUCTURE": "Do not rename, delete or move any sheet or column heading. Do not remove the protection.",
+        "REFERENCES": "References and planned lot numbers are generated by the file (grey columns). Never copy rows between files; supplier, container and quality check codes (red columns) must stay unique.",
+        "DROPDOWNS": "Pick values from the dropdowns. Enter new records only on their own sheet.",
+        "FORMATS": "Dates as YYYY-MM-DD. Amounts and quantities as plain numbers, without units or currency symbols.",
+        "TANKS": "Tanks must exist in the app before importing.",
+        "LOT": "Never enter a lot number: the app assigns it (e.g. 0001OC26), exactly as for a reception entered by hand.",
+        "REVIEW": "Always check the validation report before confirming. Nothing is saved until you confirm."
+      },
+      "LOT": "Lot",
+      "LOT_PLANNED": "Lot number this reception will receive when you confirm",
+      "LOT_ASSIGNED": "Lot number assigned by the app",
+      "RULES_ACCEPT": "I have read and accept these rules",
+      "RULES_ACCEPTED_ON": "Accepted on {{date}}",
+      "RULES_REQUIRED": "Accept the mandatory rules above to validate and import a file.",
+      "RULES_RESPONSIBILITY": "Imported data is your company's responsibility. Once confirmed, the import creates real operations (stock, payments, expenses): fix mistakes in the app, not by re-importing an edited file.",
       "TITLE": "Daily Excel import",
       "HINT": "Import a day's receipts, quality checks, payments, sales and expenses from one workbook.",
       "STEP_DOWNLOAD": "1. Prepare the workbook",
@@ -106,7 +727,11 @@
       "MOVEMENTS": "Movements",
       "NET": "Net cash",
       "OUTBOUND": "Cash out",
-      "TITLE": "Daily cash register"
+      "TITLE": "Daily cash register",
+      "CLOSING": "CLOSING",
+      "OPENING": "OPENING",
+      "OPENING_HINT": "OPENING HINT",
+      "TRUNCATED": "TRUNCATED"
     },
     "PURCHASE_JOURNAL": {
       "HINT": "Combined view of all purchase and milling operations (ABIOOC Achat sheet).",
@@ -123,7 +748,9 @@
       "OIL_L": "Total oil (L)",
       "OIL_SALES": "Oil sales total",
       "OLIVE_KG": "Total olive (kg)",
-      "SALES": "sales"
+      "SALES": "sales",
+      "OIL_SALES_COLLECTED": "OIL SALES COLLECTED",
+      "OIL_SALES_UNPAID": "OIL SALES UNPAID"
     }
   },
   "TENANT_MODULES": {
@@ -216,7 +843,55 @@
       "NEW_USERS_30D": "New users (30 days)",
       "TOTAL_TENANTS": "Total tenants",
       "TOTAL_USERS": "Total users",
-      "USERS_WITHOUT_TENANT": "Users without tenant"
+      "USERS_WITHOUT_TENANT": "Users without tenant",
+      "COMPANIES": "Companies",
+      "ACTIVE_INACTIVE": "{{active}} active · {{inactive}} inactive",
+      "NEW_USERS_META": "+{{count}} in the last 30 days",
+      "ACTIVE_USERS_7D": "Active users (7 days)",
+      "PERCENT_OF_USERS": "{{percent}}% of all users signed in",
+      "OPEN_TICKETS": "Open support tickets",
+      "TICKETS_META": "{{open}} new · {{inProgress}} in progress"
+    },
+    "ATTENTION": {
+      "ALL_CLEAR": "All clear: no company, user or ticket needs your attention.",
+      "OPEN_TICKETS": "new support tickets",
+      "INACTIVE_COMPANIES": "inactive companies",
+      "COMPANIES_WITHOUT_USERS": "companies without users",
+      "COMPANIES_WITHOUT_MODULES": "companies without modules",
+      "DORMANT_COMPANIES": "active companies idle for 30+ days",
+      "LOCKED_USERS": "locked users",
+      "USERS_WITHOUT_TENANT": "users without company"
+    },
+    "COMPANIES": {
+      "SEARCH": "Search a company or city",
+      "FILTER_ALL": "All",
+      "FILTER_ACTIVE": "Active",
+      "FILTER_INACTIVE": "Inactive",
+      "ADD": "New company",
+      "NO_MODULES": "No module",
+      "ACTIVE_COUNT": "{{count}} active",
+      "NEVER": "Never",
+      "OPEN": "Open company",
+      "MANAGE_MODULES": "Manage modules",
+      "SHOW_ALL": "Show all ({{count}})",
+      "SHOW_LESS": "Show less",
+      "MANAGE_ALL": "Manage companies",
+      "EMPTY": "No company matches these filters."
+    },
+    "MODULES": {
+      "COMPANY_COUNT": "{{count}} companies"
+    },
+    "SUPPORT": {
+      "OPEN_INBOX": "Support inbox",
+      "EMPTY": "No support ticket yet."
+    },
+    "RECENT": {
+      "USERS": "{{count}} users",
+      "ALL_USERS": "All users",
+      "PLATFORM": "Platform"
+    },
+    "EXPORT": {
+      "KPIS": "Key figures"
     },
     "LOADING": "Loading admin dashboard...",
     "LOAD_ERROR": "Unable to load dashboard statistics. Please try again.",
@@ -228,7 +903,11 @@
       "TENANTS": "Tenant overview",
       "TOP_TENANTS": "Top tenants by users",
       "USERS": "User overview",
-      "USERS_BY_ROLE": "Users by role"
+      "USERS_BY_ROLE": "Users by role",
+      "ATTENTION": "Needs attention",
+      "COMPANIES": "Companies",
+      "MODULE_ADOPTION": "Module adoption",
+      "SUPPORT": "Support tickets"
     },
     "STATUS": {
       "ACTIVE": "Active",
@@ -237,10 +916,17 @@
     "TABLE": {
       "CREATED": "Created",
       "STATUS": "Status",
-      "USERS": "Users"
+      "USERS": "Users",
+      "COMPANY": "Company",
+      "COMPANIES": "Companies",
+      "MODULE": "Module",
+      "MODULES": "Modules",
+      "ACTIVE_7D": "Active users (7 days)",
+      "LAST_ACTIVITY": "Last activity",
+      "ACTIONS": "Actions"
     },
-    "TITLE": "Admin Overview",
-    "SUBTITLE": "Platform-wide overview of tenants and users"
+    "TITLE": "Platform overview",
+    "SUBTITLE": "Companies, users, modules and support across the whole platform"
   },
   "ADMIN_PERMISSION_CATALOG": {
     "BACK": "Admin dashboard",
@@ -767,6 +1453,32 @@
         "LEAVE_BODY": "Employees submit leave with type and date range. The system checks overlap with other pending or approved leave and requires an active contract. HR reviewers open the leave detail view and click Approve or Reject while status is Pending. Approved leave can automatically mark attendance as Leave on matching work dates.",
         "DOCS_HINT": "Full technical documentation is also available in docs/user-guide/en/09-hr-module.md in the project repository."
       }
+    },
+    "DAY_IMPORT": {
+      "GUIDE": {
+        "DRIVE_TITLE": "DRIVE TITLE",
+        "LINKS_TITLE": "LINKS TITLE",
+        "RULES_TITLE": "RULES TITLE",
+        "SUBTITLE": "SUBTITLE",
+        "TIP": "TIP",
+        "TITLE": "TITLE",
+        "WORKFLOW_TITLE": "WORKFLOW TITLE"
+      },
+      "LINKS": {
+        "WIZARD": "WIZARD"
+      }
+    },
+    "RECEPTION": {
+      "GUIDE": {
+        "CHECKLIST_TITLE": "CHECKLIST TITLE",
+        "FLOW_TITLE": "FLOW TITLE",
+        "LINKS_TITLE": "LINKS TITLE",
+        "MASTER_TITLE": "MASTER TITLE",
+        "OPTIONAL_TITLE": "OPTIONAL TITLE",
+        "SUBTITLE": "SUBTITLE",
+        "TIP": "TIP",
+        "TITLE": "TITLE"
+      }
     }
   },
   "SUPPORT": {
@@ -1170,7 +1882,8 @@
     "VIEW": "View",
     "YES": "Yes",
     "CLEAR": "Clear",
-    "SELECT": "Select"
+    "SELECT": "Select",
+    "VIEW_ALL": "VIEW ALL"
   },
   "CERTIFICATIONS": {
     "FIELDS": {
@@ -2411,7 +3124,7 @@
       "TEXT": "Loading..."
     },
     "TITLE": {
-      "RECEPTION": "Receptions statistiques"
+      "RECEPTION": "Reception statistics"
     }
   },
   "DELIVERIES": {
@@ -3163,7 +3876,10 @@
       "TITLE": "Packaging & logistics",
       "WORKSHOP": "Packaging workshop",
       "ANALYTICS": "Analytics & reports",
-      "CATALOG": "Catalog"
+      "CATALOG": "Catalog",
+      "OPERATIONS": "Packaging operations",
+      "LABELS_CERTIFICATIONS": "Labels & certifications",
+      "PACKAGING_INVENTORY": "Packaging inventory"
     },
     "CUSTOMERS": {
       "ACTIONS": {
@@ -3285,7 +4001,9 @@
           "TOTAL_PAID": "Total Paid",
           "TOTAL_REVENUE": "Total Revenue",
           "TOTAL_TRANSACTIONS": "Total Transactions",
-          "TOTAL_UNPAID": "Total Unpaid"
+          "TOTAL_UNPAID": "Total Unpaid",
+          "COLLECTED_REVENUE": "COLLECTED REVENUE",
+          "COLLECTED_REVENUE_HINT": "COLLECTED REVENUE HINT"
         },
         "LOADING": {
           "TEXT": "Loading financial data..."
@@ -3333,7 +4051,8 @@
       "TITLE": "Finance & Accounting",
       "TRANSACTIONS": "Financial Transactions",
       "TREASURY": "Treasury & banks",
-      "WASTE_MANAGEMENT": "Waste management"
+      "WASTE_MANAGEMENT": "Waste management",
+      "WASTE_SALES": "WASTE SALES"
     },
     "HOME": {
       "ANALYTICS_REPORTS": "Reports & analytics",
@@ -3462,8 +4181,8 @@
       "TITLE": "Dashboards"
     },
     "PILOTAGE": {
-      "TITLE": "Operations cockpit",
-      "CONDITIONING": "Packaging analytics"
+      "TITLE": "Reports & analytics",
+      "CONDITIONING": "Packaging reports"
     }
   },
   "MILL_MACHINE": {
@@ -4270,7 +4989,8 @@
       "VALIDATION": {
         "MIN_VALUE": "Value must be greater than 0",
         "NET_GREATER": "Net weight cannot be greater than gross weight",
-        "REQUIRED": "This field is required"
+        "REQUIRED": "This field is required",
+        "EMPTY_GREATER_THAN_GROSS": "EMPTY GREATER THAN GROSS"
       }
     },
     "SECTIONS": {
@@ -4288,6 +5008,13 @@
     "SIMPLE_RECEPTION": "Private milling"
   },
   "OSM_DASHBOARD": {
+    "PAYMENT_STATUS": {
+      "PAID": "Paid",
+      "PAID_AMOUNT": "Paid amount",
+      "PARTIAL": "Partially paid",
+      "UNPAID": "Unpaid",
+      "UNPAID_AMOUNT": "Unpaid amount"
+    },
     "ACTIONS": {
       "ADD_LINE": "Add Line",
       "ADD_OF": "Add Manufacturing Order",
@@ -4385,6 +5112,7 @@
       "READ": "View",
       "READ_ARTICLE": "View Article",
       "RECEPTION": "Reception",
+      "REGENERATE_QR": "Regenerate QR code",
       "REFUSE": "Refuse",
       "RESET_PASSWORD": "Reset Password",
       "REJECT": "Reject",
@@ -4421,7 +5149,8 @@
       "VALIDATE": "Validate",
       "WAITING": "Waiting",
       "WRITE": "Add",
-      "GEN_PDF_BON_LIVRAISON": "Generate delivery note PDF"
+      "GEN_PDF_BON_LIVRAISON": "Generate delivery note PDF",
+      "CALCULATE": "Calculate"
     },
     "COLUMNS": {
       "HIDE": "Hide Columns",
@@ -4940,7 +5669,8 @@
         "TRITURATION_PRICE_PER_KG_LABEL": "Crushing price (per kg)",
         "TRUCK_PLATE": "Truck plate",
         "YIELD_HINT": "Calculated from oil produced / net olive weight",
-        "YIELD_LABEL": "Yield"
+        "YIELD_LABEL": "Yield",
+        "MILL_LABEL": "MILL LABEL"
       },
       "GROUP_REQUIRES_TWO": "Select at least two lots to create a global lot",
       "CONFIRM_SAVE": "Save the current planning?",
@@ -5587,6 +6317,7 @@
     "BANK_TRANSFER": "Bank Transfer",
     "BATCH_PAYMENT": "Batch Payment",
     "BOTH_PAYMENT": "Mixed Payment",
+    "OIL_SHARE_HINT": "The oil share is recorded through the \"Oil payment\" flow and is already deducted from the remaining balance. Settle only the cash balance here.",
     "CANCEL": "Cancel",
     "DOWNLOAD_PDF": "Download contract (PDF)",
     "CASH": "Cash",
@@ -5835,6 +6566,7 @@
       "OIL_CONTAINER_SALE": "Container sale",
       "OIL_PURCHASE": "Oil purchase",
       "OIL_SALE": "Oil sale",
+      "OIL_SALE_PAYMENT": "Oil sale payment",
       "PAYMENT": "Payment",
       "PURCHASE": "Buying",
       "RECEPTION_IN": "Reception in",
@@ -5846,7 +6578,8 @@
       "WASTE_DISPOSAL_COST": "Waste disposal cost",
       "WASTE_PAYMENT": "Waste payment",
       "WASTE_SALE": "Waste sale",
-      "WITHDRAWAL": "Withdrawl"
+      "WITHDRAWAL": "Withdrawl",
+      "EQUIPMENT_SERVICE": "EQUIPMENT SERVICE"
     },
     "VIEW": {
       "TITLE": "Transaction details"
@@ -5865,7 +6598,8 @@
       "TOTAL_INBOUND": "Total inbound",
       "TOTAL_OUTBOUND": "Total outbound",
       "TOTAL_TRANSACTIONS": "Total transactions"
-    }
+    },
+    "PAYMENT_METHOD": "PAYMENT METHOD"
   },
   "Table": "Table",
   "Teacher": "Teacher",
@@ -5930,6 +6664,7 @@
     "TITLE": "Dashboards",
     "SUBTITLE": "Switch between module dashboards in one place",
     "TABS_ARIA": "Module dashboards",
+    "BREADCRUMB_ARIA": "Dashboards breadcrumb",
     "NO_ACCESS_TITLE": "No dashboards available",
     "NO_ACCESS": "Your account does not have permission to view any module dashboard. Contact an administrator.",
     "TABS": {

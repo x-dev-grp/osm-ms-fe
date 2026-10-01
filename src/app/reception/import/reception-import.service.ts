@@ -20,6 +20,7 @@ export interface DayImportRow {
   status: DayImportRowStatus;
   message?: string;
   stockDelta?: number;
+  lotNumber?: string;
   fieldErrors?: DayImportFieldError[];
 }
 
@@ -66,16 +67,20 @@ export class ReceptionImportService {
 
   downloadTemplate(): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/template`, {
-      params: new HttpParams().set('lang', this.translate.currentLang || 'fr'),
+      params: new HttpParams().set('lang', this.workbookLanguage()),
       responseType: 'blob'
     });
   }
 
   downloadSample(): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/sample`, {
-      params: new HttpParams().set('lang', this.translate.currentLang || 'fr'),
+      params: new HttpParams().set('lang', this.workbookLanguage()),
       responseType: 'blob'
     });
+  }
+
+  private workbookLanguage(): string {
+    return this.translate.currentLang || this.translate.getBrowserLang() || 'fr';
   }
 
   dryRun(file: File): Observable<DayImportReport> {

@@ -9,6 +9,24 @@ const source = readdirSync(page)
   .join('\n');
 const keys = new Set([...source.matchAll(/ABIOOC\.DAY_IMPORT\.[A-Z_]+(?:\.[A-Z_]+)?/g)].map((match) => match[0]));
 keys.delete('ABIOOC.DAY_IMPORT.STATUS');
+keys.delete('ABIOOC.DAY_IMPORT.SHEETS');
+for (const sheet of [
+  'ImportMeta',
+  'Regions',
+  'Parcels',
+  'SupplierTypes',
+  'QcRules',
+  'Suppliers',
+  'OilContainers',
+  'StorageUnits',
+  'Receptions',
+  'QcResults',
+  'Payments',
+  'OilSales',
+  'OilSaleContainers',
+  'Expenses'
+])
+  keys.add(`ABIOOC.DAY_IMPORT.SHEETS.${sheet}`);
 keys.delete('ABIOOC.DAY_IMPORT.DRIVE_RESULTS');
 for (const status of ['CREATE', 'LINK_EXISTING', 'SKIP_DUPLICATE', 'ERROR', 'WARNING']) keys.add(`ABIOOC.DAY_IMPORT.STATUS.${status}`);
 for (const result of [
