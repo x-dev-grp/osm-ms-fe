@@ -33,6 +33,7 @@ export enum ProductionEntity {
 }
 
 export enum FinanceEntity {
+  OILCREDIT = 'OILCREDIT',
   BANKACCOUNT = 'BANKACCOUNT',
   EXPENSE = 'EXPENSE',
   FINANCIALTRANSACTION = 'FINANCIALTRANSACTION',
@@ -92,6 +93,14 @@ export enum InventoryEntity {
 }
 
 export enum ConditioningEntity {
+  ARTICLESEC = 'ARTICLESEC',
+  PRODUITFINAL = 'PRODUITFINAL',
+  BOM = 'BOM',
+  LIGNECONDITIONNEMENT = 'LIGNECONDITIONNEMENT',
+  STOCKSEC = 'STOCKSEC',
+  EMPLACEMENTSTOCK = 'EMPLACEMENTSTOCK',
+  MOUVEMENTSTOCKSEC = 'MOUVEMENTSTOCKSEC',
+  FILTRATIONOPERATION = 'FILTRATIONOPERATION',
   OF = 'OF',
   PROJET = 'PROJET',
   CLIENT = 'CLIENT',
@@ -162,6 +171,75 @@ export enum Action {
 
 export function permissionKey(moduleName: OOSMModule, entity: string, action: Action): string {
   return `${moduleName}:${entity}:${action}`;
+}
+
+/**
+ * MODULE:ENTITY pairs renamed between permission catalogs. Roles may hold either key,
+ * so holding one side grants the other.
+ */
+const EQUIVALENT_PERMISSION_ENTITIES: ReadonlyArray<readonly [string, string]> = [
+  ['INVENTAIR:ARTICLE', 'CONDITIONING:ARTICLE'],
+  ['INVENTAIR:ARTICLESEC', 'CONDITIONING:ARTICLESEC'],
+  ['INVENTAIR:PRODUCT', 'CONDITIONING:PRODUITFINAL'],
+  ['INVENTAIR:PRODUITFINAL', 'CONDITIONING:PRODUITFINAL'],
+  ['INVENTAIR:BOM', 'CONDITIONING:BOM'],
+  ['INVENTAIR:LIGNECONDITIONNEMENT', 'CONDITIONING:LIGNECONDITIONNEMENT'],
+  ['INVENTAIR:STOCKSEC', 'CONDITIONING:STOCKSEC'],
+  ['INVENTAIR:EMPLACEMENTSTOCK', 'CONDITIONING:EMPLACEMENTSTOCK'],
+  ['INVENTAIR:MOUVEMENTSTOCKSEC', 'CONDITIONING:MOUVEMENTSTOCKSEC'],
+  ['PRODUCTION:OILCREDIT', 'FINANCE:OILCREDIT']
+];
+
+/** [granting, granted]: holding the first grants the second, not the reverse. */
+const IMPLIED_PERMISSION_ENTITIES: ReadonlyArray<readonly [string, string]> = [
+  ['PRODUCTION:STORAGEUNIT', 'CONDITIONING:FILTRATIONOPERATION']
+];
+
+function splitPermission(permission: string): { entityKey: string; action: string } | null {
+  const parts = permission.toUpperCase().split(':');
+  if (parts.length !== 3) {
+    return null;
+  }
+  return { entityKey: `${parts[0]}:${parts[1]}`, action: parts[2] };
+}
+
+/** Upper-cased keys any of which grants `permission` (the key itself first). */
+export function grantingPermissionKeys(permission: string): string[] {
+  const key = permission.toUpperCase();
+  const parsed = splitPermission(key);
+  if (!parsed) {
+    return [key];
+  }
+  const keys = [key];
+  for (const [a, b] of EQUIVALENT_PERMISSION_ENTITIES) {
+    if (parsed.entityKey === a) keys.push(`${b}:${parsed.action}`);
+    if (parsed.entityKey === b) keys.push(`${a}:${parsed.action}`);
+  }
+  for (const [granting, granted] of IMPLIED_PERMISSION_ENTITIES) {
+    if (parsed.entityKey === granted) keys.push(`${granting}:${parsed.action}`);
+  }
+  return [...new Set(keys)];
+}
+
+/** Upper-cased held permissions plus every key they grant through renamed catalog entries. */
+export function expandGrantedPermissions(permissions: Iterable<string>): Set<string> {
+  const expanded = new Set<string>();
+  for (const permission of permissions) {
+    const key = String(permission).toUpperCase();
+    expanded.add(key);
+    const parsed = splitPermission(key);
+    if (!parsed) {
+      continue;
+    }
+    for (const [a, b] of EQUIVALENT_PERMISSION_ENTITIES) {
+      if (parsed.entityKey === a) expanded.add(`${b}:${parsed.action}`);
+      if (parsed.entityKey === b) expanded.add(`${a}:${parsed.action}`);
+    }
+    for (const [granting, granted] of IMPLIED_PERMISSION_ENTITIES) {
+      if (parsed.entityKey === granting) expanded.add(`${granted}:${parsed.action}`);
+    }
+  }
+  return expanded;
 }
 
 

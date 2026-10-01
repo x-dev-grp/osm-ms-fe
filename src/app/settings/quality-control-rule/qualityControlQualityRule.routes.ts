@@ -7,7 +7,10 @@ export const qualityControlRoutes: Routes = [
     path: '',
     component: QualityControlRuleComponent
   },
-
+  {
+    path: 'new',
+    component: QualityControlRuleAddComponent
+  },
   {
     path: ':id',
     component: QualityControlRuleAddComponent

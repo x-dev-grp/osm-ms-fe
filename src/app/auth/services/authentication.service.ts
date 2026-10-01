@@ -1,7 +1,7 @@
 import { inject, Injectable, Injector, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { EMPTY, Observable, Subject, switchMap } from 'rxjs';
+import { concat, defer, EMPTY, Observable, Subject, switchMap } from 'rxjs';
 import { catchError, finalize, shareReplay, tap } from 'rxjs/operators';
 
 // project import
@@ -9,6 +9,7 @@ import { AppConfig, environment } from 'src/environments/environment';
 import { User } from '../../theme/types/user';
 import { TokenService } from 'src/app/auth/services/tokenService.service';
 import { Role } from 'src/app/theme/types/role';
+import { grantingPermissionKeys } from 'src/app/theme/types/permissions';
 import { UserService } from '../../settings/user-management/services/user.service';
 import { buildUserPhotoDataUrl } from '../../shared/utils/user-initials.util';
 import { NotificationService } from '../../shared/services/notification.service';
@@ -45,6 +46,8 @@ export class AuthenticationService {
   private sessionRefreshRequest: Observable<SessionRefreshResponse> | null = null;
   private lastDocumentHiddenAt = 0;
   private loggingOut = false;
+  private sessionContextLoaded = false;
+  private sessionContextRequest: Promise<void> | null = null;
   private static readonly SESSION_REFRESH_MIN_INTERVAL_MS = 2 * 60 * 1000;
   private static readonly SESSION_REFRESH_FAILURE_BACKOFF_MS = 5 * 60 * 1000;
   private static readonly SESSION_VISIBILITY_MIN_HIDDEN_MS = 30 * 1000;
@@ -201,6 +204,9 @@ export class AuthenticationService {
     user.enabledModules =
       explicitEnabledModules ??
       (this.currentUserValue?.id === user.id ? this.currentUserValue?.enabledModules : undefined);
+    if (explicitEnabledModules) {
+      this.sessionContextLoaded = true;
+    }
     this.setCurrentUserValue = user;
 
     if (reloadPhoto) {
@@ -357,15 +363,14 @@ export class AuthenticationService {
 
     if (user.role === Role.OosmAdmin) return true;
 
-    const modulePrefix = permission.split(':')[0]?.toUpperCase();
-    if (modulePrefix && !this.hasTenantModule(modulePrefix)) {
-      return false;
-    }
-
-    if (user.role === Role.Admin) return true;
-
     const permissions = this.normalizedPermissions();
-    return permissions.includes(permission.toUpperCase());
+    return grantingPermissionKeys(permission).some((key) => {
+      const modulePrefix = key.split(':')[0];
+      if (modulePrefix && !this.hasTenantModule(modulePrefix)) {
+        return false;
+      }
+      return user.role === Role.Admin || permissions.includes(key);
+    });
   }
 
   hasModule(module: string): boolean {
@@ -404,11 +409,49 @@ export class AuthenticationService {
     }
     const previousEnabledModules = this.getTenantEnabledModules().join('|');
     user.enabledModules = modules?.map((module) => module.toUpperCase()) ?? [];
+    if (modules) {
+      this.sessionContextLoaded = true;
+    }
     this.setCurrentUserValue = user;
     const currentEnabledModules = this.getTenantEnabledModules().join('|');
     if (previousEnabledModules !== currentEnabledModules) {
       this.permissionsChangedSubject.next();
     }
+  }
+
+  /**
+   * Enabled modules are not in the access token; guards must not decide before they are known,
+   * otherwise a slow or failed session call reads as "no modules" and denies every page.
+   */
+  ensureSessionContext(): Promise<void> {
+    const user = this.currentUserValue;
+    if (!user || user.role === Role.OosmAdmin || this.sessionContextLoaded) {
+      return Promise.resolve();
+    }
+    if (!this.sessionContextRequest) {
+      const profileFallback$ = defer(() =>
+        this.sessionContextLoaded
+          ? EMPTY
+          : this.injector
+              .get(CompanyProfileService)
+              .getProfile({ forceRefresh: true })
+              .pipe(
+                tap((profile) => this.setTenantEnabledModules(profile.enabledModules)),
+                catchError(() => EMPTY)
+              )
+      );
+      this.sessionContextRequest = new Promise<void>((resolve) => {
+        concat(this.postRefreshSession(), profileFallback$)
+          .pipe(
+            finalize(() => {
+              this.sessionContextRequest = null;
+              resolve();
+            })
+          )
+          .subscribe();
+      });
+    }
+    return this.sessionContextRequest;
   }
 
   isOosmAdmin(): boolean {
@@ -502,6 +545,8 @@ export class AuthenticationService {
     this.photoRequestUserId = null;
     this.lastSessionRefreshAt = 0;
     this.sessionRefreshRequest = null;
+    this.sessionContextLoaded = false;
+    this.sessionContextRequest = null;
 
     const navigate = () => {
       if (!queryParams) {

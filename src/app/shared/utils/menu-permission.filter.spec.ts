@@ -22,7 +22,21 @@ describe('filterMenuByPermissions — tenant modules', () => {
           type: 'item',
           url: '/stock/lignes',
           modulePermission: 'CONDITIONING',
-          permissions: ['INVENTAIR:LIGNECONDITIONNEMENT:READ']
+          permissions: ['CONDITIONING:LIGNECONDITIONNEMENT:READ']
+        },
+        {
+          id: 'item-stock-operations',
+          title: 'Stock operations',
+          type: 'item',
+          url: '/stock/mouvements',
+          permissions: ['CONDITIONING:MOUVEMENTSTOCKSEC:READ']
+        },
+        {
+          id: 'item-oil-filtering',
+          title: 'Oil filtration',
+          type: 'item',
+          url: '/storage/oil-filtering',
+          permissions: ['CONDITIONING:FILTRATIONOPERATION:READ']
         }
       ]
     },
@@ -58,7 +72,9 @@ describe('filterMenuByPermissions — tenant modules', () => {
 
   const allPermissions = [
     'CONDITIONING:OF:READ',
-    'INVENTAIR:LIGNECONDITIONNEMENT:READ',
+    'CONDITIONING:MOUVEMENTSTOCKSEC:READ',
+    'CONDITIONING:FILTRATIONOPERATION:READ',
+    'CONDITIONING:LIGNECONDITIONNEMENT:READ',
     'INVENTAIR:ARTICLESEC:READ'
   ];
 
@@ -77,17 +93,26 @@ describe('filterMenuByPermissions — tenant modules', () => {
     });
     expect(result.map((m) => m.id)).toEqual(['group-conditioning', 'group-dashboard']);
     const conditioning = result.find((m) => m.id === 'group-conditioning');
-    // Lines need inventair as well (cross-module permission)
-    expect(conditioning?.children?.map((c) => c.id)).toEqual(['item-of']);
+    expect(conditioning?.children?.map((c) => c.id)).toEqual([
+      'item-of',
+      'item-lines',
+      'item-stock-operations',
+      'item-oil-filtering'
+    ]);
   });
 
-  it('shows lines only when both CONDITIONING and INVENTAIR are on', () => {
+  it('shows all conditioning entries without the inventory module', () => {
     const result = filterMenuByPermissions(menus, allPermissions, {
       enabledModules: ['CONDITIONING', 'INVENTAIR'],
       bypassPermissionChecks: true
     });
     const conditioning = result.find((m) => m.id === 'group-conditioning');
-    expect(conditioning?.children?.map((c) => c.id)).toEqual(['item-of', 'item-lines']);
+    expect(conditioning?.children?.map((c) => c.id)).toEqual([
+      'item-of',
+      'item-lines',
+      'item-stock-operations',
+      'item-oil-filtering'
+    ]);
   });
 
   it('hides all module groups when enabledModules is empty', () => {
@@ -106,5 +131,77 @@ describe('filterMenuByPermissions — tenant modules', () => {
     const conditioning = result.find((m) => m.id === 'group-conditioning');
     expect(conditioning?.children?.map((c) => c.id)).toEqual(['item-of']);
     expect(result.find((m) => m.id === 'group-inventory')).toBeUndefined();
+  });
+});
+
+describe('filterMenuByPermissions — legacy permission keys', () => {
+  const menus: Navigation[] = [
+    {
+      id: 'group-conditioning',
+      title: 'Conditioning',
+      type: 'group',
+      modulePermission: ['CONDITIONING', 'INVENTAIR', 'PRODUCTION'],
+      children: [
+        { id: 'item-of', title: 'OF', type: 'item', url: '/of', permissions: ['CONDITIONING:OF:READ'] },
+        {
+          id: 'item-stock-operations',
+          title: 'Stock operations',
+          type: 'item',
+          url: '/stock/mouvements',
+          permissions: ['CONDITIONING:MOUVEMENTSTOCKSEC:READ']
+        },
+        {
+          id: 'item-oil-filtering',
+          title: 'Oil filtration',
+          type: 'item',
+          url: '/storage/oil-filtering',
+          permissions: ['CONDITIONING:FILTRATIONOPERATION:READ']
+        }
+      ]
+    },
+    {
+      id: 'group-production',
+      title: 'Production',
+      type: 'group',
+      modulePermission: 'PRODUCTION',
+      children: [
+        { id: 'item-storage', title: 'Storage', type: 'item', url: '/storage', ressourcePermission: 'STORAGEUNIT' }
+      ]
+    },
+    {
+      id: 'group-finance',
+      title: 'Finance',
+      type: 'group',
+      modulePermission: 'FINANCE',
+      children: [
+        { id: 'item-oil-credit', title: 'Oil credit', type: 'item', url: '/finance/oil-credit', permissions: ['FINANCE:OILCREDIT:READ'] }
+      ]
+    }
+  ];
+
+  it('shows renamed entries to roles holding the former keys under the former modules', () => {
+    const result = filterMenuByPermissions(
+      menus,
+      ['INVENTAIR:MOUVEMENTSTOCKSEC:READ', 'PRODUCTION:STORAGEUNIT:READ', 'PRODUCTION:OILCREDIT:READ'],
+      { enabledModules: ['INVENTAIR', 'PRODUCTION', 'FINANCE'] }
+    );
+    expect(result.find((m) => m.id === 'group-conditioning')?.children?.map((c) => c.id)).toEqual([
+      'item-stock-operations',
+      'item-oil-filtering'
+    ]);
+    expect(result.find((m) => m.id === 'group-finance')?.children?.map((c) => c.id)).toEqual(['item-oil-credit']);
+  });
+
+  it('keeps entries gated by the module of the key that grants them', () => {
+    const result = filterMenuByPermissions(menus, [], { enabledModules: ['PRODUCTION'], bypassPermissionChecks: true });
+    expect(result.find((m) => m.id === 'group-conditioning')?.children?.map((c) => c.id)).toEqual(['item-oil-filtering']);
+  });
+
+  it('does not grant storage units from the filtration key', () => {
+    const result = filterMenuByPermissions(menus, ['CONDITIONING:FILTRATIONOPERATION:READ'], {
+      enabledModules: ['CONDITIONING', 'PRODUCTION']
+    });
+    expect(result.find((m) => m.id === 'group-production')).toBeUndefined();
+    expect(result.find((m) => m.id === 'group-conditioning')?.children?.map((c) => c.id)).toEqual(['item-oil-filtering']);
   });
 });

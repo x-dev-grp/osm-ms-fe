@@ -11,6 +11,7 @@ import { Action, OOSMModule, permissionKey, ProductionEntity, ReceptionEntity, H
 //Type
 import { Role } from './theme/types/role';
 import { receptionRoutes } from './reception/reception.routes';
+import { qualityControlRoutes } from './settings/quality-control-rule/qualityControlQualityRule.routes';
 import { AdminComponent } from './theme/layouts/admin';
 
 const routes: Routes = [
@@ -42,7 +43,7 @@ const routes: Routes = [
       {
         path: 'stock',
         loadChildren: () => import('./stock/stock.module').then(m => m.StockModule),
-        canActivate: [moduleGuard([OOSMModule.INVENTAIR])]
+        canActivate: [moduleGuard([OOSMModule.CONDITIONING, OOSMModule.INVENTAIR])]
       },
       { path: 'of',
         loadChildren: () => import('./OF/of.module').then(m => m.OfModule),
@@ -90,7 +91,7 @@ const routes: Routes = [
       {
         path: 'storage',
         loadChildren: () => import('./storage/storage-routing.module').then((m) => m.StorageRoutingModule),
-        canActivate: [moduleGuard([OOSMModule.PRODUCTION])],
+        canActivate: [moduleGuard([OOSMModule.PRODUCTION, OOSMModule.CONDITIONING])],
         data: { roles: [Role.Admin, Role.User] }
       },
 
@@ -101,12 +102,6 @@ const routes: Routes = [
         canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])],
         data: { roles: [Role.Admin, Role.User] }
       },
-      {
-        path: 'stock/par-emplacement',
-        loadComponent: () => import('./stock/components/stock-par-emplacement/stock-par-emplacement.component')
-          .then(m => m.StockParEmplacementComponent)
-      },
-
       {
         path: 'reception',
         canActivate: [moduleGuard([OOSMModule.RECEPTION])],
@@ -124,6 +119,13 @@ const routes: Routes = [
         loadComponent: () => import('./settings/user-profile/user-profile.component').then((c) => c.UserProfileComponent)
       },
 
+      // Quality-control criteria belong to Production (formerly reached through Habilitation settings); declared before `settings`.
+      {
+        path: 'settings/quality-control',
+        canActivate: [moduleGuard([OOSMModule.PRODUCTION, OOSMModule.HABILITATION])],
+        canActivateChild: [AuthGuardChild],
+        children: qualityControlRoutes
+      },
       {
         path: 'settings',
         loadChildren: () => import('./settings/settings.module').then((m) => m.SettingsModule),

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HelpComponent } from './help.component';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { Role } from '../theme/types/role';
@@ -25,7 +27,7 @@ describe('HelpComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HelpComponent, RouterTestingModule, TranslateModule.forRoot()],
-      providers: [{ provide: AuthenticationService, useValue: authStub }]
+      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: AuthenticationService, useValue: authStub }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HelpComponent);

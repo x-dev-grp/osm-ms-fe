@@ -18,8 +18,9 @@ import { LigneConditionnementService } from '../../../services/ligne-conditionne
 import { Statue } from '../../../models/ligne-conditionnement.model';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AssignableUser, UserService } from '../../../../settings/user-management/services/user.service';
-import { Action, InventoryEntity, OOSMModule } from '../../../../theme/types/permissions';
+import { Action, ConditioningEntity, InventoryEntity, OOSMModule } from '../../../../theme/types/permissions';
 import { TranslateModule } from '@ngx-translate/core';
+import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-ligne-form',
@@ -113,17 +114,33 @@ export class LigneFormComponent implements OnInit {
   private loadResponsables(): void {
     this.loadingResponsables.set(true);
 
-    this.userService.getUsersByPermission(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ).subscribe({
-      next: (users) => {
-        this.responsables.set(users || []);
-        this.ensureCurrentResponsableInList();
-        this.loadingResponsables.set(false);
-      },
-      error: (err) => {
-        console.error('Erreur chargement responsables', err);
+    // Roles may hold either the conditioning key or the legacy inventory key.
+    const usersWith = (module: OOSMModule, entity: string) =>
+      this.userService.getUsersByPermission(module, entity, Action.READ).pipe(
+        catchError((err) => {
+          console.error('Erreur chargement responsables', err);
+          return of(null);
+        })
+      );
+
+    forkJoin([
+      usersWith(OOSMModule.CONDITIONING, ConditioningEntity.LIGNECONDITIONNEMENT),
+      usersWith(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT)
+    ]).subscribe(([current, legacy]) => {
+      if (current === null && legacy === null) {
         this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LA_LISTE_DES_RESPONSABLES');
         this.loadingResponsables.set(false);
+        return;
       }
+      const merged = new Map<string, AssignableUser>();
+      [...(current || []), ...(legacy || [])].forEach((user) => {
+        if (!merged.has(user.username)) {
+          merged.set(user.username, user);
+        }
+      });
+      this.responsables.set([...merged.values()]);
+      this.ensureCurrentResponsableInList();
+      this.loadingResponsables.set(false);
     });
   }
 
