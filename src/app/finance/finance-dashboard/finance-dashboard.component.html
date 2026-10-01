@@ -13,7 +13,7 @@
   (dateRangeChange)="onDateRangeChange($event)"
 >
   @if (kpis) {
-    <section class="finance-kpi-grid">
+    <section class="finance-kpi-grid" data-tour="finance-kpis">
       <article class="finance-kpi finance-kpi--primary">
         <span class="finance-kpi__label">{{ 'MENU.FINANCE.DASHBOARD.KPIS.NET_FLOW' | translate }}</span>
         <strong class="finance-kpi__value">{{ formatAmount(kpis.netFlow) }}</strong>
@@ -57,7 +57,7 @@
       </article>
     </section>
 
-    <section class="row g-3 finance-ablepro-overview">
+    <section class="row g-3 finance-ablepro-overview" data-tour="finance-overview">
       <div class="col-lg-9">
         <app-finance-overview-chart
           [widgets]="overviewWidgets"
@@ -112,7 +112,7 @@
       </div>
 
       <div class="col-xl-6">
-        <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.RECENT_ACTIVITY' | translate" [padding]="0">
+        <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.RECENT_ACTIVITY' | translate" [padding]="0" data-tour="finance-recent">
           <ul class="list-group list-group-flush">
             @for (item of recentActivityItems; track $index) {
               <li class="list-group-item">

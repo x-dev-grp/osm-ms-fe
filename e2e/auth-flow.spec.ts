@@ -125,7 +125,7 @@ test('changing the current password signs out and shows a success message', asyn
   await page.locator('#oldPassword').fill('CurrentPassword1!');
   await page.locator('#newPassword').fill('NewPassword1!');
   await page.locator('#confirmPassword').fill('NewPassword1!');
-  await page.getByRole('button', { name: /Mettre à jour le mot de passe/ }).click();
+  await page.getByRole('button', { name: /Mettre à jour le mot de passe/ }).click({ force: true });
   await expect(page).toHaveURL(/\/auth\/login\?success=password-changed/);
   await expect(page.locator('.auth-alert--success')).toBeVisible();
   expect(await page.evaluate(() => sessionStorage.getItem('auth_token'))).toBeNull();

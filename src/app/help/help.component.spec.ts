@@ -4,6 +4,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HelpComponent } from './help.component';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { Role } from '../theme/types/role';
+import { of } from 'rxjs';
+import { SupportTicketService } from '../shared/services/support-ticket.service';
+import { MillPlanningConfigService } from '../shared/services/mill-planning-config.service';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('HelpComponent', () => {
   let component: HelpComponent;
@@ -21,11 +25,26 @@ describe('HelpComponent', () => {
     hasPermission: () => true,
     hasAnyPermission: () => true
   };
+  const supportTicketStub = {
+    list: jasmine.createSpy('list').and.returnValue(of({ success: true, data: [], total: 0 })),
+    openCreateDialog: jasmine.createSpy('openCreateDialog')
+  };
+  const millPlanningStub = {
+    isEnabled: jasmine.createSpy('isEnabled').and.returnValue(of(true))
+  };
+  const dialogStub = {
+    open: jasmine.createSpy('open')
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HelpComponent, RouterTestingModule, TranslateModule.forRoot()],
-      providers: [{ provide: AuthenticationService, useValue: authStub }]
+      providers: [
+        { provide: AuthenticationService, useValue: authStub },
+        { provide: SupportTicketService, useValue: supportTicketStub },
+        { provide: MillPlanningConfigService, useValue: millPlanningStub },
+        { provide: MatDialog, useValue: dialogStub }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HelpComponent);
