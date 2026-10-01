@@ -291,21 +291,11 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
 
               return;
             }
-            if (Number(oilTransaction?.totalPrice) == Number(this.unpaidAmount)) {
-              this.paymentForm.patchValue({
-                paymentMethod: PaymentMethod.OIL,
-                oilQuantity: oilTransaction?.quantityKg,
-                oilPrice: oilTransaction?.unitPrice
-              });
-              return;
-            } else if (oilTransaction?.totalPrice < Number(this?.unpaidAmount)) {
-              this.paymentForm.patchValue({
-                paymentMethod: PaymentMethod.BOTH,
-                oilQuantity: oilTransaction?.quantityKg,
-                oilPrice: oilTransaction?.unitPrice,
-                amount: Number(this?.unpaidAmount) - Number(oilTransaction?.totalPrice)
-              });
-            }
+            this.applyOilPayment(
+              Number(oilTransaction?.quantityKg ?? 0),
+              Number(oilTransaction?.unitPrice ?? 0),
+              Number(oilTransaction?.totalPrice ?? 0)
+            );
           }
         }),
         catchError((err, cauth) => {
@@ -324,28 +314,13 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   }
 
   processSimpleReception() {
+    this.purshase();
     this.deliveryService
       .getDeliveryByLotNumberAndType(this.data.row.lotNumber, deliveryType.OIL)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res: any) => {
           if (res?.data) {
-            this.hasOilReceptionData = true;
-            const oilReception = res.data;
-            if (oilReception?.price === this.data.row?.price) {
-              this.paymentForm.patchValue({
-                paymentMethod: 'oil',
-                oilQuantity: oilReception?.oilQuantity,
-                oilPrice: oilReception?.unitPrice
-              });
-            } else {
-              this.paymentForm.patchValue({
-                paymentMethod: 'both',
-                oilQuantity: oilReception?.oilQuantity,
-                oilPrice: oilReception?.unitPrice,
-                amount: Number(this?.unpaidAmount)
-              });
-            }
             this.applyOilReceptionResponse(res);
           } else {
             this.hasOilReceptionData = false; // disable 'both'
@@ -361,7 +336,6 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
         })
       )
       .subscribe();
-    this.purshase();
   }
 
   closePaymentForm() {
@@ -375,9 +349,7 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
         takeUntilDestroyed(this.destroyRef),
         tap((res: any) => {
           if (res?.data && res?.data.price) {
-            const oilReception = res?.data;
-            this.unpaidAmount = oilReception?.price;
-            this.paymentForm.get('amount')?.setValue(this.unpaidAmount);
+            this.paymentForm.get('amount')?.setValue(Number(this.unpaidAmount ?? 0));
           } else {
             this.transactionNotCompletedError = true;
             this.paymentForm.disable();
@@ -594,29 +566,11 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   applyOilReceptionResponse(res: any): void {
     if (res?.data) {
       const oilReception = res.data;
-      this.hasOilReceptionData = true;
-
-      if (oilReception?.price === this.data?.row?.price) {
-        this.paymentForm.patchValue(
-          {
-            paymentMethod: 'oil',
-            oilQuantity: oilReception?.oilQuantity,
-            oilPrice: oilReception?.unitPrice,
-            amount: 0
-          },
-          { emitEvent: false }
-        );
-      } else {
-        this.paymentForm.patchValue(
-          {
-            paymentMethod: 'both',
-            oilQuantity: oilReception?.oilQuantity,
-            oilPrice: oilReception?.unitPrice,
-            amount: Number(this.unpaidAmount ?? 0)
-          },
-          { emitEvent: false }
-        );
-      }
+      this.applyOilPayment(
+        Number(oilReception?.oilQuantity ?? 0),
+        Number(oilReception?.unitPrice ?? 0),
+        Number(oilReception?.price ?? 0)
+      );
     } else {
       this.hasOilReceptionData = false;
       this.paymentForm.patchValue(
@@ -631,6 +585,24 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
 
     // Always recalc after programmatic changes
     this.recalcTotals('applyOilReceptionResponse');
+  }
+
+  private applyOilPayment(oilQuantityValue: number, oilPriceValue: number, oilValue: number): void {
+    const unpaid = Number(this.unpaidAmount ?? 0);
+    const effectiveOilValue = oilValue > 0 ? oilValue : oilQuantityValue * oilPriceValue;
+    const oilOnly = effectiveOilValue >= unpaid;
+
+    this.hasOilReceptionData = effectiveOilValue > 0;
+    this.paymentForm.patchValue(
+      {
+        paymentMethod: oilOnly ? 'oil' : 'both',
+        oilQuantity: oilQuantityValue,
+        oilPrice: oilPriceValue,
+        amount: oilOnly ? 0 : Math.max(0, unpaid - effectiveOilValue)
+      },
+      { emitEvent: false }
+    );
+    this.recalcTotals('applyOilPayment');
   }
 
   /** Delivery-only pre-fill logic */
@@ -670,28 +642,40 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
     }
 
     const v = this.paymentForm.value as {
+      paymentMethod: 'cash' | 'oil' | 'both';
       moneyPaymentMethod: 'cash' | 'check' | 'bank_transfer';
       amount?: number;
+      oilQuantity?: number;
+      oilPrice?: number;
       checkNumber?: string;
       bankAccount?: any;
     };
 
     // Map to enum values like in customer flow
-    const mappedMethod =
+    const mappedMoneyMethod =
       v.moneyPaymentMethod === 'cash'
         ? PaymentMethod.CASH
         : v.moneyPaymentMethod === 'check'
           ? PaymentMethod.CHEQUE
           : PaymentMethod.TRANSFER;
+    const mappedMethod =
+      v.paymentMethod === 'oil'
+        ? PaymentMethod.OIL
+        : v.paymentMethod === 'both'
+          ? PaymentMethod.MIXED
+          : mappedMoneyMethod;
+    const cashAmount = v.paymentMethod === 'oil' ? 0 : Number(v.amount || 0);
+    const oilAmount = v.paymentMethod === 'cash' ? 0 : Number(v.oilQuantity || 0) * Number(v.oilPrice || 0);
+    const paymentAmount = Math.min(Number(this.unpaidAmount ?? 0), cashAmount + oilAmount);
 
     // Build payload identical in shape to customer flow, but for supplier
     const payload = {
       idOperation: this.selectedDelivery.id, // delivery ID or oil sale ID for supplier
-      amount: Number(v.amount || 0),
+      amount: paymentAmount,
       currency: Currency.TND,
       paymentMethod: mappedMethod,
-      checkNumber: mappedMethod === PaymentMethod.CHEQUE ? v.checkNumber || null : null,
-      bankAccount: mappedMethod === PaymentMethod.TRANSFER ? v.bankAccount || null : null,
+      checkNumber: mappedMoneyMethod === PaymentMethod.CHEQUE && v.paymentMethod !== 'oil' ? v.checkNumber || null : null,
+      bankAccount: mappedMoneyMethod === PaymentMethod.TRANSFER && v.paymentMethod !== 'oil' ? v.bankAccount || null : null,
       supplier: this.selectedDelivery.supplier, // supplier instead of customer
       customer: null
     };
