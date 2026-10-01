@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardChild } from '../interceptors/guards/auth.guard';
 // CHANGE: permissions - import permission guards
-import { allPermissionGuard } from 'src/app/interceptors/guards/permission.guard';
+import { allPermissionGuard, anyPermissionGuard } from 'src/app/interceptors/guards/permission.guard';
 // CHANGE: permissions - use enums
 import { Action, ConditioningEntity, OOSMModule, permissionKey, ProductionEntity } from 'src/app/theme/types/permissions';
 
@@ -153,7 +153,14 @@ const routes: Routes = [
       {
         path: 'oil-filtering/:id/edit',
         loadComponent: () => import('./filtration/filtration-form/filtration-form.component').then((m) => m.FiltrationFormComponent),
-        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.FILTRATIONOPERATION, Action.UPDATE)])]
+        // Legacy roles edited filtrations with PRODUCTION:STORAGEUNIT:READ.
+        canActivate: [
+          AuthGuardChild,
+          anyPermissionGuard([
+            permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.FILTRATIONOPERATION, Action.UPDATE),
+            permissionKey(OOSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)
+          ])
+        ]
       },
       {
         path: 'oil-filtering/new',
@@ -175,7 +182,10 @@ const routes: Routes = [
           import('./filtration/quality/filtration-controle-qualite.component').then((m) => m.FiltrationControleQualiteComponent),
         canActivate: [
           AuthGuardChild,
-          allPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.FILTRATIONOPERATION, Action.READ)])
+          anyPermissionGuard([
+            permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.FILTRATIONOPERATION, Action.READ),
+            permissionKey(OOSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)
+          ])
         ]
       },
       {

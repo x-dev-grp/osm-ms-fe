@@ -27,6 +27,18 @@ import { SupplierInfoComponent } from './suppliers/supplier-info/supplier-info.c
 import { PurchaseJournalComponent } from './purchase-journal/purchase-journal.component';
 import { ReceptionImportWizardComponent } from './import/reception-import-wizard.component';
 
+// Typed `/new` forms used to resolve to the `:id` edit routes (UPDATE), so UPDATE keeps granting them.
+const newTypedReceptionGuard = anyPermissionGuard([
+  permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE),
+  permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.UPDATE)
+]);
+
+// Supplier list/info used to require CREATE; READ now grants them too.
+const supplierListGuard = anyPermissionGuard([
+  permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ),
+  permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)
+]);
+
 export const receptionRoutes: Routes = [
   // DASHBOARD (READ)
   {
@@ -84,30 +96,30 @@ export const receptionRoutes: Routes = [
     path: 'reception-olive/exchange/new',
     component: OliveReceptionFormComponent,
     data: { op: OperationType.EXCHANGE },
-    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [newTypedReceptionGuard]
   },
   {
     path: 'reception-olive/simple_reception/new',
     component: OliveReceptionFormComponent,
     data: { op: OperationType.SIMPLE_RECEPTION },
-    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [newTypedReceptionGuard]
   },
   {
     path: 'reception-olive/base/new',
     component: OliveReceptionFormComponent,
     data: { op: OperationType.BASE },
-    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [newTypedReceptionGuard]
   },
   {
     path: 'reception-olive/olive_purchase/new',
     component: OliveReceptionFormComponent,
     data: { op: OperationType.OLIVE_PURCHASE },
-    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [newTypedReceptionGuard]
   },
   {
     path: 'reception-huile/new',
     component: OilReceptionFormComponent,
-    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
+    canActivate: [newTypedReceptionGuard]
   },
 
   // Optional generic fallback: /reception-olive/:op  (EXCHANGE|SIMPLE_RECEPTION|BASE|OLIVE_PURCHASE)
@@ -169,7 +181,7 @@ export const receptionRoutes: Routes = [
   {
     path: 'fournisseur',
     component: SupplierComponent,
-    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])]
+    canActivate: [supplierListGuard]
   },
   {
     path: 'fournisseur/new',
@@ -179,7 +191,7 @@ export const receptionRoutes: Routes = [
   {
     path: 'fournisseur/info/:id',
     component: SupplierInfoComponent,
-    canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])]
+    canActivate: [supplierListGuard]
   },
   {
     path: 'fournisseur/details/:id',

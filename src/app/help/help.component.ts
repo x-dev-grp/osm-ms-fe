@@ -431,7 +431,7 @@ export class HelpComponent implements OnInit {
         icon: 'inventory_2',
         accentClass: 'help-card--inventory',
         visible:
-          this.auth.hasModule(OOSMModule.INVENTAIR) &&
+          (this.auth.hasModule(OOSMModule.INVENTAIR) || this.auth.hasModule(OOSMModule.CONDITIONING)) &&
           this.auth.hasPermission(permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
       },
       {
@@ -499,7 +499,7 @@ export class HelpComponent implements OnInit {
       ];
     }
 
-    if (this.auth.hasModule(OOSMModule.INVENTAIR)) {
+    if (this.auth.hasModule(OOSMModule.INVENTAIR) || this.auth.hasModule(OOSMModule.CONDITIONING)) {
       tasks['inventory'] = [
         { labelKey: 'USER_GUIDE.TASKS.ARTICLES', route: '/stock/articles' },
         { labelKey: 'USER_GUIDE.TASKS.BOM', route: '/stock/boms' }

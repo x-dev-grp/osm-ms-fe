@@ -299,7 +299,8 @@ export const oosm_menus: Navigation[] = [
     id: 'group-conditioning',
     title: 'MENU.CONDITIONNEMENT.TITLE',
     type: 'group',
-    modulePermission: 'CONDITIONING',
+    // Packaging stock entries were under INVENTAIR and oil filtering under PRODUCTION; entries stay gated by their own permission module.
+    modulePermission: ['CONDITIONING', 'INVENTAIR', 'PRODUCTION'],
     children: [
       {
         id: 'collapse-conditioning-operations',
@@ -323,7 +324,7 @@ export const oosm_menus: Navigation[] = [
             url: '/stock/lignes',
             icon: 'conveyor_belt',
             breadcrumbs: false,
-            modulePermission: 'CONDITIONING',
+            modulePermission: ['CONDITIONING', 'INVENTAIR'],
             permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.LIGNECONDITIONNEMENT, Action.READ)]
           },
           {
@@ -376,7 +377,7 @@ export const oosm_menus: Navigation[] = [
             url: '/stock/articles',
             icon: 'category',
             breadcrumbs: false,
-            modulePermission: 'CONDITIONING',
+            modulePermission: ['CONDITIONING', 'INVENTAIR'],
             permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ARTICLESEC, Action.READ)]
           },
           {
@@ -386,7 +387,7 @@ export const oosm_menus: Navigation[] = [
             url: '/stock/products',
             icon: 'inventory_2',
             breadcrumbs: false,
-            modulePermission: 'CONDITIONING',
+            modulePermission: ['CONDITIONING', 'INVENTAIR'],
             permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.PRODUITFINAL, Action.READ)]
           },
           {
@@ -396,7 +397,7 @@ export const oosm_menus: Navigation[] = [
             url: '/stock/boms',
             icon: 'receipt',
             breadcrumbs: false,
-            modulePermission: 'CONDITIONING',
+            modulePermission: ['CONDITIONING', 'INVENTAIR'],
             permissions: [permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.BOM, Action.READ)]
           }
         ]

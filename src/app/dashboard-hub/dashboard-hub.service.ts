@@ -62,7 +62,7 @@ export class DashboardHubService {
 
       case 'inventory':
         return (
-          this.auth.hasModule(OOSMModule.INVENTAIR) &&
+          (this.auth.hasModule(OOSMModule.INVENTAIR) || this.auth.hasModule(OOSMModule.CONDITIONING)) &&
           this.auth.hasPermission(permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
         );
 
