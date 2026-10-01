@@ -81,7 +81,7 @@ function scanDashboardActions() {
       actions.add(m[1]);
     }
   }
-  for (const m of fs.readFileSync(path.join(SRC_ROOT, 'app/shared/modules/osm-dashboard/models/actions.ts'), 'utf8').matchAll(/\['([A-Z][A-Z0-9_]*)'/g)) {
+  for (const m of fs.readFileSync(path.join(SRC_ROOT, 'app/shared/modules/oosm-dashboard/models/actions.ts'), 'utf8').matchAll(/\['([A-Z][A-Z0-9_]*)'/g)) {
     actions.add(m[1]);
   }
   return [...actions];

@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -23,8 +24,8 @@ import { LanguageService } from '../../../../shared/services/language.service';
 import { UserNotification } from '../../../../shared/models/notification.model';
 import { NotificationTextPipe } from '../../../../shared/pipes/notification-text.pipe';
 import { SupportTicketService } from '../../../../shared/services/support-ticket.service';
-import { SystemHealthComponent } from '../../../../shared/components/system-health/system-health.component';
 import { ThemeConfig, ThemeConfigService } from '../../../../shared/services/theme-config.service';
+import { TourService } from '../../../../shared/tour/tour.service';
 
 @Component({
   selector: 'app-nav-right',
@@ -41,8 +42,8 @@ import { ThemeConfig, ThemeConfigService } from '../../../../shared/services/the
     MatMenuModule,
     MatBadgeModule,
     UserAvatarComponent,
-    NotificationTextPipe,
-    SystemHealthComponent
+    MatTooltipModule,
+    NotificationTextPipe
   ],
   templateUrl: './toolbar-right.component.html',
   standalone: true,
@@ -55,11 +56,16 @@ export class NavRightComponent {
   readonly notificationTextService = inject(NotificationTextService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly themeConfig = inject(ThemeConfigService);
+  private readonly tourService = inject(TourService);
 
   readonly unreadCount = this.notificationService.unreadCount;
   readonly notifications = this.notificationService.notifications;
 
   themeMode: ThemeConfig['layoutType'] = 'light';
+
+  get isOosmAdmin(): boolean {
+    return this.authenticationService.isOosmAdmin();
+  }
 
   get currentLang(): string {
     return this.translate.currentLang || localStorage.getItem('app_language') || 'en';
@@ -106,6 +112,14 @@ export class NavRightComponent {
 
   openSupportTicket(): void {
     this.supportTicketService.openCreateDialog();
+  }
+
+  replayTour(): void {
+    this.tourService.replay();
+  }
+
+  resetTours(): void {
+    this.tourService.restartAll();
   }
 
   useLanguage(language: string) {

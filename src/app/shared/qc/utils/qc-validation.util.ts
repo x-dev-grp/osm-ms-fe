@@ -1,4 +1,4 @@
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QualityControlRule } from '../../models/quality-control-rule';
 import { QualityControlResultDto } from '../../models/QualityControlResultDto';
 import { QcChecklistItem, QcChecklistSummary } from '../models/qc-context.model';
@@ -38,32 +38,6 @@ export function isWithinNumericBounds(value: number, min?: number | null, max?: 
   return true;
 }
 
-function numericMinValidator(min: number): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (control.value === null || control.value === '') {
-      return null;
-    }
-    const value = Number(control.value);
-    if (Number.isNaN(value) || value < min - QC_NUMERIC_EPSILON) {
-      return { min: { min, actual: value } };
-    }
-    return null;
-  };
-}
-
-function numericMaxValidator(max: number): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (control.value === null || control.value === '') {
-      return null;
-    }
-    const value = Number(control.value);
-    if (Number.isNaN(value) || value > max + QC_NUMERIC_EPSILON) {
-      return { max: { max, actual: value } };
-    }
-    return null;
-  };
-}
-
 export function stringOptions(rule: QualityControlRule): string[] {
   const allowed = rule.ruleTextValue || rule.rawStringValue;
   if (!allowed) {
@@ -94,7 +68,7 @@ export function evaluateRule(rule: QualityControlRule, rawValue: string | number
       return 'pass';
     }
     case 'BOOLEAN':
-      return typeof rawValue === 'boolean' ? 'pass' : 'fail';
+      return typeof rawValue === 'boolean' && (rule.booleanValue == null || rawValue === rule.booleanValue) ? 'pass' : 'fail';
     case 'STRING': {
       const text = String(rawValue).trim();
       const options = stringOptions(rule);
@@ -135,17 +109,7 @@ export function buildQcFormControls(
       }
     }
 
-    const validators = [Validators.required];
-    if (rule.ruleType === 'NUMERIC') {
-      if (rule.minValue != null) {
-        validators.push(numericMinValidator(rule.minValue));
-      }
-      if (rule.maxValue != null) {
-        validators.push(numericMaxValidator(rule.maxValue));
-      }
-    }
-
-    group[rule.ruleKey] = new FormControl({ value: initialValue, disabled: readOnly }, validators);
+    group[rule.ruleKey] = new FormControl({ value: initialValue, disabled: readOnly }, [Validators.required]);
   });
 
   return new FormGroup(group);

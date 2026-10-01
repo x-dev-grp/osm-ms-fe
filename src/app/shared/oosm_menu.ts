@@ -576,8 +576,8 @@ export const oosm_menus: Navigation[] = [
             icon: 'credit_score',
             breadcrumbs: false,
             modulePermission: 'FINANCE',
-            permissions: [permissionKey(OOSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.READ)],
-            ressourcePermission: ProductionEntity.OILCREDIT
+            permissions: [permissionKey(OOSMModule.FINANCE, FinanceEntity.OILCREDIT, Action.READ)],
+            ressourcePermission: FinanceEntity.OILCREDIT
           },
           {
             id: 'item-finance-waste-sales',

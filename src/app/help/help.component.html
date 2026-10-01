@@ -191,16 +191,18 @@
         </article>
       </div>
 
-      <div class="help-hr-guide__grid">
-        <article class="help-hr-guide__panel">
-          <h3>{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE_TITLE' | translate }}</h3>
-          <ol>
-            @for (key of dayImportDriveKeys; track key) {
-              <li>{{ key | translate }}</li>
-            }
-          </ol>
-        </article>
-      </div>
+      @if (dayImportDriveEnabled) {
+        <div class="help-hr-guide__grid">
+          <article class="help-hr-guide__panel">
+            <h3>{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE_TITLE' | translate }}</h3>
+            <ol>
+              @for (key of dayImportDriveKeys; track key) {
+                <li>{{ key | translate }}</li>
+              }
+            </ol>
+          </article>
+        </div>
+      }
 
       <h3>{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.LINKS_TITLE' | translate }}</h3>
       <div class="help-hr-guide__links">

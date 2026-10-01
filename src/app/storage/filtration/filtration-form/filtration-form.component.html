@@ -52,7 +52,7 @@
       </form>
     } @else {
       <form [formGroup]="createForm" class="form-body">
-        <div class="section">
+        <div class="section" data-tour="filtering-units">
           <h4>{{ 'AUTO.CUVE_SOURCE' | translate }} / {{ 'AUTO.CUVE_CIBLE' | translate }}</h4>
           <div class="row">
             <div class="col-md-6">
@@ -84,7 +84,7 @@
           </div>
         </div>
 
-        <div class="section">
+        <div class="section" data-tour="filtering-volume">
           <h4>{{ 'AUTO.VOLUME_A_FILTRER' | translate }}</h4>
           <div class="row">
             <div class="col-md-4">
@@ -115,7 +115,7 @@
           }
         </div>
 
-        <div class="form-row m-t-10">
+        <div class="form-row m-t-10" data-tour="filtering-save">
           <button mat-stroked-button type="button" (click)="cancel()">{{ 'ADMIN.CANCEL' | translate }}</button>
           <button
             mat-flat-button

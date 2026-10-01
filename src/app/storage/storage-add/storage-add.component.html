@@ -26,7 +26,7 @@
       <form [formGroup]="storageForm" (ngSubmit)="save()">
         <div class="studio-cards">
           <!-- Identity + Capacity -->
-          <section class="studio-card">
+          <section class="studio-card" data-tour="storage-identity">
             <header class="studio-card__head">
               <mat-icon>inventory_2</mat-icon>
               <span>{{ 'STORAGE.SECTIONS.IDENTITY' | translate }}</span>
@@ -92,7 +92,7 @@
           </section>
 
           <!-- Oil -->
-          <section class="studio-card">
+          <section class="studio-card" data-tour="storage-oil">
             <header class="studio-card__head">
               <mat-icon>eco</mat-icon>
               <span>{{ 'STORAGE.SECTIONS.OIL' | translate }}</span>
@@ -152,7 +152,7 @@
                 <textarea matInput rows="2" formControlName="description"></textarea>
               </mat-form-field>
 
-              <div class="paid-storage-row" [class.is-active]="storageForm.get('paidStorage')?.value">
+              <div class="paid-storage-row" data-tour="storage-paid" [class.is-active]="storageForm.get('paidStorage')?.value">
                 <mat-checkbox formControlName="paidStorage" color="primary">
                   {{ 'STORAGE.FORM.IS_PAID_STORAGE' | translate }}
                 </mat-checkbox>
@@ -172,7 +172,7 @@
           </section>
         </div>
 
-        <footer class="studio-actions">
+        <footer class="studio-actions" data-tour="storage-save">
           <button mat-stroked-button type="button" (click)="onBack()">{{ 'ADMIN.CANCEL' | translate }}</button>
           <button mat-flat-button color="primary" type="submit" [disabled]="loading || storageForm.invalid">
             <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>

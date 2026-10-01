@@ -164,15 +164,26 @@
   }
 }
 
+.dashboard-header-card__toolbar--embedded {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.dashboard-header-card__updated--inline {
+  margin: 0;
+  padding-inline-end: 0.25rem;
+  white-space: nowrap;
+}
+
 .dashboard-header-card__btn-label {
-  margin-left: 0.25rem;
+  margin-inline-start: 0.25rem;
 }
 
 .dashboard-header-card__btn-caret {
   width: 18px !important;
   height: 18px !important;
   font-size: 18px !important;
-  margin-left: 0.1rem !important;
+  margin-inline-start: 0.1rem !important;
 }
 
 ::ng-deep .dashboard-header-card__toolbar [dashboardHeaderActions] {
@@ -325,6 +336,16 @@
 
   .dashboard-header-card__btn-label {
     display: none;
+  }
+
+  .dashboard-header-card__toolbar--embedded {
+    flex: 1 1 100%;
+  }
+
+  .dashboard-header-card__updated--inline {
+    grid-column: 1 / -1;
+    justify-content: center;
+    white-space: normal;
   }
 
   .dashboard-filters-panel__title {
