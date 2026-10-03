@@ -456,7 +456,7 @@
           }
 
           <mat-menu #specificMenu="matMenu">
-            @for (item of config().specificActions; track item) {
+            @for (item of visibleSpecificActions(); track item) {
               <button
                 (click)="actionApply(item?.action, record)"
                 [disabled]="isSpecificActionDisabled(item, record)"
@@ -487,7 +487,7 @@
               *ngFor="let action of ($any(record)?.actions || []) | sortByTranslated : 'OSM_DASHBOARD.ACTIONS.'; trackBy: trackByAction"
             >
               <button
-                *ngIf="!config()?.filteredActions?.includes(action)"
+                *ngIf="isMenuActionVisible(action) && !config()?.filteredActions?.includes(action)"
                 (click)="actionApply(action, record)"
                 mat-menu-item
               >

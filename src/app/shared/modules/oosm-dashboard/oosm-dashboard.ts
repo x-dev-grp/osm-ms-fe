@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 import { DynamicInput } from './components/dynamic-input/dynamic-input.component';
 
 import { ConfirmationDialogService } from '../../services/confirmation-dialog.service';
-import { ACTION_ICONS } from './models/actions';
+import { ACTION_ICONS, isDashboardActionVisible } from './models/actions';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
@@ -138,6 +138,14 @@ export class OosmDashboard implements OnInit, AfterViewInit, OnChanges {
     this._store.setPage(event?.pageIndex);
   }
   trackByAction = (_: number, a: string) => a;
+
+  isMenuActionVisible(action: string | null | undefined): boolean {
+    return isDashboardActionVisible(action);
+  }
+
+  visibleSpecificActions() {
+    return (this.config().specificActions ?? []).filter((item) => this.isMenuActionVisible(item.action));
+  }
 
   getValue(path: string | undefined, object: any): any {
     return path?.split('.')?.reduce((acc, key) => acc && acc[key], object);
