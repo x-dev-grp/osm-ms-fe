@@ -40,33 +40,39 @@ const routes: Routes = [
   },
   {
     path: '',
-    canActivate: [moduleGuard([OOSMModule.INVENTAIR])],
+    canActivate: [moduleGuard([OOSMModule.CONDITIONING, OOSMModule.INVENTAIR])],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
         component: StockDashboardComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.STOCKSEC, Action.READ)])]
+      },
+      {
+        path: 'par-emplacement',
+        loadComponent: () => import('./components/stock-par-emplacement/stock-par-emplacement.component')
+          .then((m) => m.StockParEmplacementComponent),
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.STOCKSEC, Action.READ)])]
       },
       {
         path: 'articles',
         component: ArticleListComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ARTICLESEC, Action.READ)])]
       },
       {
         path: 'articles/nouveau',
         component: ArticleFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.CREATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ARTICLESEC, Action.CREATE)])]
       },
       {
         path: 'articles/:id',
         component: ArticleDetailComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ARTICLESEC, Action.READ)])]
       },
       {
         path: 'articles/:id/editer',
         component: ArticleFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.UPDATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.ARTICLESEC, Action.UPDATE)])]
       },
       {
         path: 'bons-commande',
@@ -91,12 +97,12 @@ const routes: Routes = [
       {
         path: 'mouvements',
         component: MouvementListComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.MOUVEMENTSTOCKSEC, Action.READ)])]
       },
       {
         path: 'mouvements/:id',
         component: MouvementDetailComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.MOUVEMENTSTOCKSEC, Action.READ)])]
       },
 
       {
@@ -133,27 +139,27 @@ const routes: Routes = [
       {
         path: 'products',
         component: SkuListComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.PRODUITFINAL, Action.READ)])]
       },
       {
         path: 'products/nouveau',
         component: SkuFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.CREATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.PRODUITFINAL, Action.CREATE)])]
       },
       {
         path: 'products/:id',
         component: SkuDetailComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.PRODUITFINAL, Action.READ)])]
       },
       {
         path: 'products/:id/edit',
         component: SkuFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.UPDATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.PRODUITFINAL, Action.UPDATE)])]
       },
       {
         path: 'products/:id/editer',
         component: SkuFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.UPDATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.PRODUITFINAL, Action.UPDATE)])]
       },
       {
         path: 'skus',
@@ -189,64 +195,64 @@ const routes: Routes = [
       {
         path: 'lignes',
         component: LigneListComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.LIGNECONDITIONNEMENT, Action.READ)])]
       },
       {
         path: 'lignes/nouveau',
         component: LigneFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.CREATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.LIGNECONDITIONNEMENT, Action.CREATE)])]
       },
       {
         path: 'lignes/:id',
         component: LigneDetailComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.LIGNECONDITIONNEMENT, Action.READ)])]
       },
       {
         path: 'lignes/:id/edit',
         component: LigneFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.UPDATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.LIGNECONDITIONNEMENT, Action.UPDATE)])]
       },
 
       {
         path: 'emplacements',
         component: EmplacementListComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.EMPLACEMENTSTOCK, Action.READ)])]
       },
       {
         path: 'emplacements/nouveau',
         component: EmplacementFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.CREATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.EMPLACEMENTSTOCK, Action.CREATE)])]
       },
       {
         path: 'emplacements/:id',
         component: EmplacementDetailComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.EMPLACEMENTSTOCK, Action.READ)])]
       },
       {
         path: 'emplacements/:id/edit',
         component: EmplacementFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.UPDATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.EMPLACEMENTSTOCK, Action.UPDATE)])]
       },
 
       {
         path: 'boms',
         component: BomListComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.BOM, Action.READ)])]
       },
       {
         path: 'boms/nouveau',
         component: BomFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BOM, Action.CREATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.BOM, Action.CREATE)])]
       },
       {
         path: 'boms/:id/editer',
         component: BomFormComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BOM, Action.UPDATE)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.BOM, Action.UPDATE)])]
       },
       {
         path: 'boms/:id',
         component: BomDetailComponent,
-        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)])]
+        canActivate: [anyPermissionGuard([permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.BOM, Action.READ)])]
       }
     ]
   }

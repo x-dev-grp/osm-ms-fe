@@ -34,7 +34,8 @@
           <p>{{ 'LOGIN.SUBTITLE' | translate }}</p>
         </div>
 
-        <div *ngIf="errorText" class="auth-alert auth-alert--error" role="alert">{{ errorText }}</div>
+        <div *ngIf="successKey" class="auth-alert auth-alert--success" role="status">{{ successKey | translate }}</div>
+        <div *ngIf="errorKey" class="auth-alert auth-alert--error" role="alert">{{ errorKey | translate }}</div>
 
         <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()">
           <fieldset class="auth-form__fields" [disabled]="loading">
@@ -58,12 +59,7 @@
               <span class="auth-input__label">{{ 'LOGIN.PASSWORD' | translate }}</span>
               <span class="auth-input__control">
                 <mat-icon class="auth-input__icon" aria-hidden="true">lock_outline</mat-icon>
-                <input
-                  formControlName="password"
-                  [type]="hide ? 'password' : 'text'"
-                  id="password"
-                  autocomplete="current-password"
-                />
+                <input formControlName="password" [type]="hide ? 'password' : 'text'" id="password" autocomplete="current-password" />
                 <button
                   type="button"
                   class="auth-input__toggle"
@@ -84,7 +80,12 @@
               <mat-checkbox formControlName="rememberMe" color="primary" class="auth-remember">
                 {{ 'LOGIN.REMEMBERME' | translate }}
               </mat-checkbox>
-              <a routerLink="/auth/forgot-password" class="auth-link" [class.auth-link--disabled]="loading" [attr.tabindex]="loading ? -1 : null">
+              <a
+                routerLink="/auth/forgot-password"
+                class="auth-link"
+                [class.auth-link--disabled]="loading"
+                [attr.tabindex]="loading ? -1 : null"
+              >
                 {{ 'LOGIN.FORGOT_PASSWORD' | translate }}
               </a>
             </div>

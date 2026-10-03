@@ -13,7 +13,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { openQrDialog } from '../../../../shared/utils/open-qr-dialog.util';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { AuthenticationService } from '../../../../auth/services/authentication.service';
-import { OOSMModule, InventoryEntity } from '../../../../theme/types/permissions';
+import { ConditioningEntity, OOSMModule } from '../../../../theme/types/permissions';
 import { canRegenerateQr } from '../../../../shared/utils/qr-permission.util';
 
 @Component({
@@ -112,7 +112,7 @@ export class BomDetailComponent implements OnInit {
 
 
   canRegenerateExistingQr(): boolean {
-    return canRegenerateQr(this.auth, OOSMModule.INVENTAIR, InventoryEntity.BOM);
+    return canRegenerateQr(this.auth, OOSMModule.CONDITIONING, ConditioningEntity.BOM);
   }
 
   generateQr(): void {

@@ -167,8 +167,8 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     }
 
     if (
-      this.auth.hasModule(OOSMModule.INVENTAIR) &&
-      this.auth.hasPermission(permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
+      this.auth.hasModule(OOSMModule.CONDITIONING) &&
+      this.auth.hasPermission(permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.STOCKSEC, Action.READ))
     ) {
       ids.push('inventory');
     }
@@ -226,8 +226,8 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     }
 
     if (
-      this.auth.hasModule(OOSMModule.INVENTAIR) &&
-      this.auth.hasPermission(permissionKey(OOSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ))
+      this.auth.hasModule(OOSMModule.CONDITIONING) &&
+      this.auth.hasPermission(permissionKey(OOSMModule.CONDITIONING, ConditioningEntity.STOCKSEC, Action.READ))
     ) {
       links.push({
         titleKey: 'AUTO.STOCKS',

@@ -87,7 +87,7 @@ export class SupplierInfoComponent implements OnInit, OnDestroy {
       // In dialog: close and let parent open edit screen if needed
       this.dialogRef?.close({ action: 'edit', id });
     } else {
-      this.router.navigate(['/reception/fournisseur', id, 'edit']).catch(() => {});
+      this.router.navigate(['/reception/fournisseur/edit', id]).catch(() => {});
     }
   }
 

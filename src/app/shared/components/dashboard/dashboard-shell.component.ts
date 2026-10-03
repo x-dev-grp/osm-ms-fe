@@ -1,5 +1,18 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, computed, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { TemplatePortal } from '@angular/cdk/portal';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  output,
+  signal,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 import { DashboardDateFilterComponent } from './dashboard-date-filter.component';
 import { DashboardExportService } from './dashboard-export.service';
+import { DashboardHeaderHost } from './dashboard-header-host.service';
 import { DashboardExportFormat, DashboardExportPayload, hasExportableData } from './dashboard-export.models';
 import { DashboardDateRange, DashboardPresetPeriod } from './dashboard-preset.util';
 import { DashboardTheme } from './dashboard-theme';
@@ -33,7 +47,14 @@ import { DashboardTheme } from './dashboard-theme';
 export class DashboardShellComponent implements OnInit, OnDestroy {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly exportService = inject(DashboardExportService);
+  private readonly headerHost = inject(DashboardHeaderHost, { optional: true });
+  private readonly viewContainerRef = inject(ViewContainerRef);
   private readonly destroy$ = new Subject<void>();
+  private toolbarPortal: TemplatePortal | null = null;
+
+  @ViewChild('headerToolbar', { static: true }) private headerToolbar!: TemplateRef<unknown>;
+
+  readonly embedded = !!this.headerHost;
 
   readonly titleKey = input.required<string>();
   readonly subtitleKey = input<string | null>(null);
@@ -63,6 +84,11 @@ export class DashboardShellComponent implements OnInit, OnDestroy {
   readonly canExport = computed(() => this.showExport() && hasExportableData(this.exportPayload()));
 
   ngOnInit(): void {
+    if (this.headerHost) {
+      this.toolbarPortal = new TemplatePortal(this.headerToolbar, this.viewContainerRef);
+      this.headerHost.attach(this.toolbarPortal);
+    }
+
     this.breakpointObserver
       .observe(['(min-width: 769px)'])
       .pipe(takeUntil(this.destroy$))
@@ -72,6 +98,12 @@ export class DashboardShellComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.toolbarPortal) {
+      if (this.toolbarPortal.isAttached) {
+        this.toolbarPortal.detach();
+      }
+      this.headerHost?.detach(this.toolbarPortal);
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }

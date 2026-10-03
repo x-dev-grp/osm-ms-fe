@@ -191,7 +191,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
   }
 
   viewRule(r: QualityControlRule): void {
-    this.router.navigate(['settings/quality-control-rule-details', r.id]);
+    this.router.navigate(['/settings/quality-control', r.id]);
   }
 
   provisionDefaults(): void {

@@ -7,7 +7,7 @@
     <p>{{ 'AUTO.FOURNISSEUR_NON_TROUVE_AVEC_CE_ID' | translate }}</p>
   </div>
 } @else {
-  <nav class="page-tabs">
+  <nav class="page-tabs" data-tour="supplier-tabs">
     <button class="page-tab-btn" [class.active]="activePageTab === 'operations'" (click)="loadPageTab('operations')">
       <mat-icon>history</mat-icon>
       {{ 'SUPPLIER.FINANCE.TAB_OPERATIONS' | translate }}
@@ -24,7 +24,7 @@
 
   @if (activePageTab === 'operations') {
     <div class="history-cards-container">
-      <div class="history-cards">
+      <div class="history-cards" data-tour="supplier-operations">
         @for (op of operationCards; track op.type) {
           <mat-card
             class="history-card"
@@ -118,7 +118,7 @@
   }
 
   @if (activePageTab === 'finance') {
-    <section class="finance-overview">
+    <section class="finance-overview" data-tour="supplier-finance">
       @if (financeSummaryLoading) {
         <div class="finance-loading">
           <mat-spinner diameter="36"></mat-spinner>
@@ -174,7 +174,7 @@
   }
 
   @if (activePageTab === 'profile') {
-    <section class="profile-section">
+    <section class="profile-section" data-tour="supplier-profile">
       <mat-card class="profile-card">
         <mat-card-content>
           <h3>{{ supplierDisplayName || ('SUPPLIER.FIELDS.NAME' | translate) }}</h3>
