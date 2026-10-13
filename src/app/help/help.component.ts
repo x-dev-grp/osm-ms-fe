@@ -168,37 +168,7 @@ export class HelpComponent implements OnInit {
       labelKey: 'USER_GUIDE.RECEPTION.LINKS.NEW_SIMPLE',
       route: '/reception/reception-olive/simple_reception',
       icon: 'add_circle'
-    },
-    { labelKey: 'USER_GUIDE.RECEPTION.LINKS.IMPORT', route: '/reception/import', icon: 'upload_file' }
-  ];
-
-  readonly dayImportWorkflowKeys: string[] = [
-    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP1',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP2',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP3',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP4',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW.STEP5'
-  ];
-
-  readonly dayImportRuleKeys: string[] = [
-    'USER_GUIDE.DAY_IMPORT.GUIDE.RULES.ITEM1',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.RULES.ITEM2',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.RULES.ITEM3',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.RULES.ITEM4'
-  ];
-
-  readonly dayImportDriveKeys: string[] = [
-    'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP1',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP2',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP3',
-    'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE.STEP4'
-  ];
-
-  readonly dayImportGuideLinks: HelpHrGuideLink[] = [
-    { labelKey: 'USER_GUIDE.DAY_IMPORT.LINKS.WIZARD', route: '/reception/import', icon: 'upload_file' },
-    { labelKey: 'USER_GUIDE.DAY_IMPORT.LINKS.RECEPTION', route: '/reception', icon: 'spa' },
-    { labelKey: 'USER_GUIDE.DAY_IMPORT.LINKS.QC_RULES', route: '/settings/quality-control', icon: 'rule' },
-    { labelKey: 'USER_GUIDE.DAY_IMPORT.LINKS.PARAMETERS', route: '/settings/general-config', icon: 'tune' }
+    }
   ];
 
   readonly pdfGuides: HelpPdfGuide[] = [
@@ -243,7 +213,6 @@ export class HelpComponent implements OnInit {
     { questionKey: 'USER_GUIDE.FAQ.LANGUAGE.Q', answerKey: 'USER_GUIDE.FAQ.LANGUAGE.A' },
     { questionKey: 'USER_GUIDE.FAQ.OIL_SALE.Q', answerKey: 'USER_GUIDE.FAQ.OIL_SALE.A' },
     { questionKey: 'USER_GUIDE.FAQ.RECEPTION_MASTER.Q', answerKey: 'USER_GUIDE.FAQ.RECEPTION_MASTER.A' },
-    { questionKey: 'USER_GUIDE.FAQ.DAY_IMPORT.Q', answerKey: 'USER_GUIDE.FAQ.DAY_IMPORT.A' },
     { questionKey: 'USER_GUIDE.FAQ.HR_PAYROLL.Q', answerKey: 'USER_GUIDE.FAQ.HR_PAYROLL.A' },
     { questionKey: 'USER_GUIDE.FAQ.HR_LEAVE.Q', answerKey: 'USER_GUIDE.FAQ.HR_LEAVE.A' }
   ];
@@ -299,8 +268,6 @@ export class HelpComponent implements OnInit {
     let insertAt = modulesIndex + 1;
     if (this.canAccessReception()) {
       this.navItems.splice(insertAt, 0, { id: 'help-reception', labelKey: 'USER_GUIDE.RECEPTION.NAV' });
-      insertAt += 1;
-      this.navItems.splice(insertAt, 0, { id: 'help-day-import', labelKey: 'USER_GUIDE.DAY_IMPORT.NAV' });
       insertAt += 1;
     }
     if (this.canAccessHr()) {
@@ -539,15 +506,6 @@ export class HelpComponent implements OnInit {
         hintKey: 'USER_GUIDE.TASKS.NEW_OLIVE_HINT',
         route: '/reception/reception-olive/simple_reception',
         icon: 'add_circle',
-        visible:
-          this.auth.hasModule(OOSMModule.RECEPTION) &&
-          this.auth.hasPermission(permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE))
-      },
-      {
-        labelKey: 'USER_GUIDE.TASKS.DAY_IMPORT',
-        hintKey: 'USER_GUIDE.TASKS.DAY_IMPORT_HINT',
-        route: '/reception/import',
-        icon: 'upload_file',
         visible:
           this.auth.hasModule(OOSMModule.RECEPTION) &&
           this.auth.hasPermission(permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE))

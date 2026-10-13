@@ -140,15 +140,6 @@ export const oosm_menus: Navigation[] = [
             icon: 'receipt_long',
             breadcrumbs: false,
             ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-          },
-          {
-            id: 'item-reception-import',
-            title: 'MENU.RECEPTION.IMPORT',
-            type: 'item',
-            url: '/reception/import',
-            icon: 'upload_file',
-            breadcrumbs: false,
-            permissions: [permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)]
           }
         ]
       },
