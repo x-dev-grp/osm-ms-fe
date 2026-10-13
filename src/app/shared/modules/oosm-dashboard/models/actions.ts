@@ -53,3 +53,9 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['RESET_PASSWORD', 'lock_reset'],
   ['ENTREE_STOCK', 'add_shopping_cart']
 ]);
+
+const HIDDEN_MENU_ACTIONS = new Set(['REGENERATE_QR']);
+
+export function isDashboardActionVisible(action: string | null | undefined): boolean {
+  return !!action && !HIDDEN_MENU_ACTIONS.has(action);
+}
