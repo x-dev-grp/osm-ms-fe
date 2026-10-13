@@ -58,7 +58,7 @@ export class UnifiedDeliveryService {
 
   // Create a new UnifiedDeliverycc. The UnifiedDeliverycc payload may include qualityControlResults.
   createOilDeliveryFromOlive(uuid: string): Observable<ApiResponse<UnifiedDelivery>> {
-    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/createOilRecFromOliveRec/${uuid}`);
+    return this.http.post<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/createOilRecFromOliveRec/${uuid}`, null);
   }
 
   createOilTransactionFromExchange(uuid: string): Observable<ApiResponse<UnifiedDelivery>> {
@@ -96,11 +96,11 @@ export class UnifiedDeliveryService {
     let params = new HttpParams();
     if (cause) params = params.set('cause', String(cause));
 
-    return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateStatue/${encodeURIComponent(id)}/${status}`, { params });
+    return this.http.post<ApiResponse<void>>(`${this.baseUrl}/updateStatue/${encodeURIComponent(id)}/${status}`, null, { params });
   }
 
   updatePricing(id: string, price: number): Observable<ApiResponse<void>> {
-    return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateprice/${id}/${price}`);
+    return this.http.post<ApiResponse<void>>(`${this.baseUrl}/updateprice/${id}/${price}`, null);
   }
 
   /**
