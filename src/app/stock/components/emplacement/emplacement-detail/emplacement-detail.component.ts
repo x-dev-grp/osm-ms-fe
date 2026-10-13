@@ -14,7 +14,7 @@ import { openQrDialog } from '../../../../shared/utils/open-qr-dialog.util';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AuthenticationService } from '../../../../auth/services/authentication.service';
-import { OOSMModule, InventoryEntity } from '../../../../theme/types/permissions';
+import { ConditioningEntity, OOSMModule } from '../../../../theme/types/permissions';
 import { canRegenerateQr } from '../../../../shared/utils/qr-permission.util';
 
 @Component({
@@ -98,7 +98,7 @@ export class EmplacementDetailComponent implements OnInit {
 
 
   canRegenerateExistingQr(): boolean {
-    return canRegenerateQr(this.auth, OOSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK);
+    return canRegenerateQr(this.auth, OOSMModule.CONDITIONING, ConditioningEntity.EMPLACEMENTSTOCK);
   }
 
   generateQr(): void {
