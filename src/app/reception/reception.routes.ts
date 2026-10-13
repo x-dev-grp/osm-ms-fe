@@ -25,7 +25,6 @@ import { OliveQCComponent } from './olive-qc/oliveQC.component';
 import { OperationType } from '../shared/models/operation-type.enum';
 import { SupplierInfoComponent } from './suppliers/supplier-info/supplier-info.component';
 import { PurchaseJournalComponent } from './purchase-journal/purchase-journal.component';
-import { ReceptionImportWizardComponent } from './import/reception-import-wizard.component';
 
 export const receptionRoutes: Routes = [
   // DASHBOARD (READ)
@@ -247,10 +246,5 @@ export const receptionRoutes: Routes = [
     path: 'purchase-journal',
     component: PurchaseJournalComponent,
     canActivate: [allPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
-  },
-  {
-    path: 'import',
-    component: ReceptionImportWizardComponent,
-    canActivate: [anyPermissionGuard([permissionKey(OOSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.CREATE)])]
   }
 ];
