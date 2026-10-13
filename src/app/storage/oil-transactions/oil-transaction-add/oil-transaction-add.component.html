@@ -28,7 +28,7 @@
         <form [formGroup]="form" (ngSubmit)="onSubmit()" class="transaction-form">
 
           <!-- Transaction Type and State -->
-          <div class="form-section">
+          <div class="form-section" data-tour="tx-type">
             <h3>{{ 'OIL_TRANSACTIONS.FORM.SECTIONS.TRANSACTION_TYPE_AND_STATE' | translate }}</h3>
             <div class="form-row">
               <mat-form-field appearance="outline" class="form-field">
@@ -63,7 +63,7 @@
           </div>
 
           <!-- Storage Units -->
-          <div class="form-section">
+          <div class="form-section" data-tour="tx-units">
             <h3>{{ 'OIL_TRANSACTIONS.FORM.SECTIONS.STORAGE_UNITS' | translate }}</h3>
             <div class="form-row">
               <!-- Source Unit -->
@@ -71,8 +71,7 @@
                 <mat-label>{{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_SOURCE' | translate }}</mat-label>
                 <mat-select
                   formControlName="storageUnitSourceId"
-                  required
-                  [disabled]="true">
+                  required>
                   <mat-option *ngFor="let unit of storageUnits" [value]="unit.id">
                     {{ getStorageUnitInfo(unit) }}
                   </mat-option>
@@ -87,8 +86,7 @@
                 <mat-label>{{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_DESTINATION' | translate }}</mat-label>
                 <mat-select
                   formControlName="storageUnitDestinationId"
-                  required
-                  [disabled]="true">
+                  required>
                   <mat-option *ngFor="let unit of storageUnits" [value]="unit.id">
                     {{ getStorageUnitInfo(unit) }}
                   </mat-option>
@@ -101,7 +99,7 @@
           </div>
 
           <!-- Quality and Quantity -->
-          <div class="form-section">
+          <div class="form-section" data-tour="tx-quantity">
             <h3>{{ 'OIL_TRANSACTIONS.FORM.SECTIONS.QUALITY_AND_QUANTITY' | translate }}</h3>
             <div class="form-row">
               <mat-form-field appearance="outline" class="form-field">
@@ -138,7 +136,7 @@
           </div>
 
           <!-- Financial Information -->
-          <div class="form-section" *ngIf="shouldShowPricingFields()">
+          <div class="form-section" data-tour="tx-price" *ngIf="shouldShowPricingFields()">
             <h3>{{ 'OIL_TRANSACTIONS.FORM.SECTIONS.FINANCIAL_INFORMATION' | translate }}</h3>
             <div class="form-row">
               <mat-form-field appearance="outline" class="form-field">
@@ -174,7 +172,7 @@
           </div>
 
           <!-- Form Actions -->
-          <div class="form-actions">
+          <div class="form-actions" data-tour="tx-save">
             <button
               type="button"
               mat-button
