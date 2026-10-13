@@ -14,15 +14,15 @@
             class="icon-chip small-label"
             mat-stroked-button
             disableRipple
-            [attr.aria-label]="'AUTO.DIRECTION_DE_PAIEMENT' | translate">
+            [attr.aria-label]="derivedDirection === TransactionDirection.INBOUND
+              ? ('SUPPLIER_PAYMENT.INBOUND' | translate)
+              : ('SUPPLIER_PAYMENT.OUTBOUND' | translate)"
+            [attr.title]="derivedDirection === TransactionDirection.INBOUND
+              ? ('SUPPLIER_PAYMENT.INBOUND' | translate)
+              : ('SUPPLIER_PAYMENT.OUTBOUND' | translate)">
       <mat-icon>
         {{ derivedDirection === TransactionDirection.INBOUND ? 'call_received' : 'call_made' }}
       </mat-icon>
-      <span>
-    {{ derivedDirection === TransactionDirection.INBOUND
-        ? ('SUPPLIER_PAYMENT.INBOUND' | translate)
-        : ('SUPPLIER_PAYMENT.OUTBOUND' | translate) }}
-  </span>
     </button>
   </header>
 
@@ -39,21 +39,25 @@
       <h4 class="section-title">{{ 'SUPPLIER_PAYMENT.PAYMENT_METHOD' | translate }}</h4>
 
       <mat-radio-group formControlName="paymentMethod" class="tiles-3 with-text">
-        <mat-radio-button value="cash" disabled class="tile">
+        <mat-radio-button value="cash" class="tile">
           <mat-icon>account_balance_wallet</mat-icon>
           <span>{{ 'SUPPLIER_PAYMENT.MONEY_PAYMENT' | translate }}</span>
         </mat-radio-button>
-
-        <mat-radio-button value="oil" disabled class="tile">
+        <mat-radio-button value="oil" class="tile" [disabled]="!hasOilReceptionData">
           <mat-icon>local_gas_station</mat-icon>
           <span>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT' | translate }}</span>
         </mat-radio-button>
-
-        <mat-radio-button value="both" class="tile">
+        <mat-radio-button value="both" class="tile" [disabled]="!hasOilReceptionData">
           <mat-icon>sync_alt</mat-icon>
           <span>{{ 'SUPPLIER_PAYMENT.BOTH_PAYMENT' | translate }}</span>
         </mat-radio-button>
       </mat-radio-group>
+      @if (hasOilReceptionData) {
+        <p class="oil-share-hint">
+          <mat-icon>info</mat-icon>
+          <span>{{ 'SUPPLIER_PAYMENT.OIL_SHARE_HINT' | translate }}</span>
+        </p>
+      }
     </section>
 
     <!-- 2) MONEY (when method is cash or both) -->
