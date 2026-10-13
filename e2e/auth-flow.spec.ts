@@ -121,11 +121,17 @@ test('changing the current password signs out and shows a success message', asyn
   await setup(page);
   await page.addInitScript((accessToken) => sessionStorage.setItem('auth_token', accessToken), token);
   await page.goto('/account/profile');
+  await page.keyboard.press('Escape');
   await page.getByRole('tab', { name: /Changer le mot de passe/ }).click();
   await page.locator('#oldPassword').fill('CurrentPassword1!');
   await page.locator('#newPassword').fill('NewPassword1!');
   await page.locator('#confirmPassword').fill('NewPassword1!');
-  await page.getByRole('button', { name: /Mettre à jour le mot de passe/ }).click({ force: true });
+  const submit = page.getByRole('button', { name: /Mettre à jour le mot de passe/ });
+  await expect(submit).toBeEnabled();
+  await Promise.all([
+    page.waitForResponse((response) => response.url().endsWith('/me/change-password') && response.status() === 200),
+    submit.click({ force: true })
+  ]);
   await expect(page).toHaveURL(/\/auth\/login\?success=password-changed/);
   await expect(page.locator('.auth-alert--success')).toBeVisible();
   expect(await page.evaluate(() => sessionStorage.getItem('auth_token'))).toBeNull();
