@@ -11,14 +11,14 @@ export const FILTRATION_DASHBOARD_CONFIG: DashboardConfig = {
   addNewItemUrl: '/storage/oil-filtering/new',
   fileName: 'filtration-operations',
   specificActions: [
-    { action: 'READ', color: 'primary', icon: 'visibility' },
-    { action: 'UPDATE', color: 'accent', icon: 'edit' },
-    { action: 'START', color: 'primary', icon: 'play_arrow' },
-    { action: 'STATUS', color: 'primary', icon: 'swap_horiz' },
-    { action: 'TRACEABILITY', color: 'primary', icon: 'account_tree' },
-    { action: 'OIL_QUALITY', color: 'primary', icon: 'science' },
-    { action: 'PREPARE_LABEL', color: 'primary', icon: 'sell' },
-    { action: 'REMOVE', color: 'warn', icon: 'delete' }
+    { action: 'READ', color: 'primary', icon: 'visibility', requiredAction: 'READ' },
+    { action: 'UPDATE', color: 'accent', icon: 'edit', requiredAction: 'UPDATE', allowedStatuses: ['CREATED'] },
+    { action: 'START', color: 'primary', icon: 'play_arrow', requiredAction: 'UPDATE', allowedStatuses: ['CREATED'] },
+    { action: 'STATUS', color: 'primary', icon: 'swap_horiz', requiredAction: 'UPDATE', allowedStatuses: ['CREATED', 'IN_PROGRESS'] },
+    { action: 'TRACEABILITY', color: 'primary', icon: 'account_tree', requiredAction: 'READ' },
+    { action: 'OIL_QUALITY', color: 'primary', icon: 'science', requiredAction: 'READ', allowedStatuses: ['COMPLETED'] },
+    { action: 'PREPARE_LABEL', color: 'primary', icon: 'sell', requiredAction: 'READ', allowedStatuses: ['COMPLETED'] },
+    { action: 'REMOVE', color: 'warn', icon: 'delete', requiredAction: 'DELETE', allowedStatuses: ['CREATED', 'IN_PROGRESS'] }
   ],
   fields: [
     {
