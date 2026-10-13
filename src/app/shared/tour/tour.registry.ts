@@ -69,24 +69,6 @@ export const MODULE_TOURS: TourDefinition[] = [
   },
   { id: 'DASHBOARD', version: 2, match: /^\/dashboard(\/|$)/, steps: ['intro', 'menu', el('hub-tabs'), el('hub-panel'), 'replay'] },
 
-  {
-    id: 'RECEPTION_IMPORT',
-    version: 2,
-    match: /^\/reception\/import$/,
-    steps: [
-      'intro',
-      'menu',
-      el('import-download'),
-      el('import-rules'),
-      el('import-upload'),
-      el('import-dry-run'),
-      el('import-summary'),
-      el('import-invalid'),
-      el('import-commit'),
-      el('import-drive'),
-      'replay'
-    ]
-  },
   { id: 'RECEPTION_OLIVE_FORM', version: 1, match: /^\/reception\/reception-olive\/[a-z_]+\/[^/]+$/, steps: RECEPTION_FORM },
   { id: 'RECEPTION_OLIVE', version: 2, match: /^\/reception\/reception-olive\/[^/]+$/, steps: OOSM_LIST },
   { id: 'RECEPTION_OIL_FORM', version: 1, match: /^\/reception\/reception-huile\/[^/]+$/, steps: RECEPTION_FORM },

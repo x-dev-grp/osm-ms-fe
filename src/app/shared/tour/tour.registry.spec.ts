@@ -14,7 +14,6 @@ describe('tour registry', () => {
     ['/reception/reception-huile', 'RECEPTION_OIL'],
     ['/reception/reception-huile/5', 'RECEPTION_OIL_FORM'],
     ['/reception/reception-details/3', 'RECEPTION_DETAILS'],
-    ['/reception/import', 'RECEPTION_IMPORT'],
     ['/reception/reception-list/olive?page=2', 'RECEPTION_JOURNAL'],
     ['/reception/purchase-journal', 'PURCHASE_JOURNAL'],
     ['/reception/mill-schedules', 'RECEPTION_PLANNING'],

@@ -166,62 +166,6 @@
     </section>
   }
 
-  @if (canAccessReception()) {
-    <section id="help-day-import" class="help-section help-hr-guide">
-      <h2>{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.TITLE' | translate }}</h2>
-      <p class="help-section__lead">{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.SUBTITLE' | translate }}</p>
-
-      <div class="help-hr-guide__grid">
-        <article class="help-hr-guide__panel">
-          <h3>{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.WORKFLOW_TITLE' | translate }}</h3>
-          <ol>
-            @for (key of dayImportWorkflowKeys; track key) {
-              <li>{{ key | translate }}</li>
-            }
-          </ol>
-        </article>
-
-        <article class="help-hr-guide__panel">
-          <h3>{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.RULES_TITLE' | translate }}</h3>
-          <ul>
-            @for (key of dayImportRuleKeys; track key) {
-              <li>{{ key | translate }}</li>
-            }
-          </ul>
-        </article>
-      </div>
-
-      @if (dayImportDriveEnabled) {
-        <div class="help-hr-guide__grid">
-          <article class="help-hr-guide__panel">
-            <h3>{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.DRIVE_TITLE' | translate }}</h3>
-            <ol>
-              @for (key of dayImportDriveKeys; track key) {
-                <li>{{ key | translate }}</li>
-              }
-            </ol>
-          </article>
-        </div>
-      }
-
-      <h3>{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.LINKS_TITLE' | translate }}</h3>
-      <div class="help-hr-guide__links">
-        @for (link of dayImportGuideLinks; track link.route) {
-          <a class="help-hr-guide__link" [routerLink]="link.route">
-            <mat-icon>{{ link.icon }}</mat-icon>
-            <span>{{ link.labelKey | translate }}</span>
-          </a>
-        }
-      </div>
-
-      <p class="help-hr-guide__note">{{ 'USER_GUIDE.DAY_IMPORT.GUIDE.TIP' | translate }}</p>
-      <a mat-stroked-button color="primary" routerLink="/reception/import">
-        <mat-icon>upload_file</mat-icon>
-        {{ 'USER_GUIDE.DAY_IMPORT.LINKS.WIZARD' | translate }}
-      </a>
-    </section>
-  }
-
   @if (canAccessHr()) {
     <section id="help-hr" class="help-section help-hr-guide">
       <h2>{{ 'USER_GUIDE.HR.GUIDE.TITLE' | translate }}</h2>

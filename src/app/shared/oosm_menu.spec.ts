@@ -57,4 +57,13 @@ describe('OOSM menu business structure', () => {
       'item-reception-oil'
     ]);
   });
+
+  it('does not expose the deferred daily Excel import', () => {
+    const visit = (items: Navigation[]): Navigation[] =>
+      items.flatMap((item) => [item, ...(item.children ? visit(item.children) : [])]);
+
+    const entries = visit(oosm_menus);
+    expect(entries.some((item) => item.id === 'item-reception-import')).toBeFalse();
+    expect(entries.some((item) => item.url === '/reception/import')).toBeFalse();
+  });
 });

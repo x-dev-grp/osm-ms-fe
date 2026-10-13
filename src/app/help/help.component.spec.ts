@@ -66,4 +66,12 @@ describe('HelpComponent', () => {
     expect(el.querySelector('#help-pdf')).toBeTruthy();
     expect(el.querySelector('.help-pdf-grid')).toBeTruthy();
   });
+
+  it('does not expose the deferred daily Excel import', () => {
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('#help-day-import')).toBeNull();
+    expect(el.querySelector('a[href="/reception/import"]')).toBeNull();
+    expect(component.navItems.some((item) => item.id === 'help-day-import')).toBeFalse();
+    expect(component.commonTasks.some((item) => item.route === '/reception/import')).toBeFalse();
+  });
 });
