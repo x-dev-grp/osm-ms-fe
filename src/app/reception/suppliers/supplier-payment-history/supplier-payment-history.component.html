@@ -13,14 +13,18 @@
             <div class="payment-header">
               <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }} - {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedDelivery?.lotNumber }}</span>
               <!-- New: Direction chip (read-only) -->
-              <mat-chip color="primary" selected>
-              <mat-icon aria-hidden="true">
+              <mat-chip
+                color="primary"
+                selected
+                [attr.aria-label]="derivedDirection === TransactionDirection.INBOUND
+                  ? ('SUPPLIER_PAYMENT.INBOUND' | translate)
+                  : ('SUPPLIER_PAYMENT.OUTBOUND' | translate)"
+                [attr.title]="derivedDirection === TransactionDirection.INBOUND
+                  ? ('SUPPLIER_PAYMENT.INBOUND' | translate)
+                  : ('SUPPLIER_PAYMENT.OUTBOUND' | translate)">
+                <mat-icon aria-hidden="true">
                   {{ derivedDirection === TransactionDirection.INBOUND ? 'call_received' : 'call_made' }}
                 </mat-icon>
-                {{ 'SUPPLIER_PAYMENT.DIRECTION' | translate }}:
-                {{ derivedDirection === TransactionDirection.INBOUND
-                ? ('SUPPLIER_PAYMENT.INBOUND' | translate)
-                : ('SUPPLIER_PAYMENT.OUTBOUND' | translate) }}
               </mat-chip>
             </div>
 
@@ -50,9 +54,7 @@
                 </mat-radio-button>
                 <mat-radio-button
                   [disabled]="!hasOilReceptionData"
-
                   class="payment-option"
-
                   value="oil">
                   <div class="payment-option-content">
                     <mat-icon>local_gas_station</mat-icon>
@@ -64,8 +66,7 @@
                 <mat-radio-button
                   class="payment-option"
                   value="both"
-                  [disabled]="!hasOilReceptionData"
-                >
+                  [disabled]="!hasOilReceptionData">
                   <div class="payment-option-content">
                     <mat-icon>sync_alt</mat-icon>
                     <div>
@@ -74,6 +75,12 @@
                   </div>
                 </mat-radio-button>
               </mat-radio-group>
+              @if (hasOilReceptionData) {
+                <p class="oil-share-hint">
+                  <mat-icon>info</mat-icon>
+                  <span>{{ 'SUPPLIER_PAYMENT.OIL_SHARE_HINT' | translate }}</span>
+                </p>
+              }
             </div>
 
             <!-- Cash Payment Form (shown for cash or both) -->
