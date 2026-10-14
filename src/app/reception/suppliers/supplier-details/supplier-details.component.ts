@@ -182,27 +182,27 @@ export class SupplierDetailsComponent implements OnInit {
     BASE: {
       endpoint: 'production/deliveries',
       filterField: 'supplier.id',
-      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0) ?? 0)
+      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0))
     },
     OLIVE_PURCHASE: {
       endpoint: 'production/deliveries',
       filterField: 'supplier.id',
-      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0) ?? 0)
+      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0))
     },
     OIL_PURCHASE: {
       endpoint: 'production/deliveries',
       filterField: 'supplier.id',
-      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0) ?? 0)
+      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0))
     },
     EXCHANGE: {
       endpoint: 'production/deliveries',
       filterField: 'supplier.id',
-      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0) ?? 0)
+      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0))
     },
     SIMPLE_RECEPTION: {
       endpoint: 'production/deliveries',
       filterField: 'supplier.id',
-      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0) ?? 0)
+      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0))
     },
     WASTE: {
       endpoint: 'production/waste',
@@ -212,7 +212,7 @@ export class SupplierDetailsComponent implements OnInit {
     OIL_SALE: {
       endpoint: 'production/oil_sale',
       filterField: 'supplier.id',
-      reducer: (it) => Number(it?.totalAmount ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0) ?? it?.totalPrice ?? 0)
+      reducer: (it) => Number(it?.totalAmount ?? it?.totalPrice ?? Number(it?.paidAmount ?? 0) + Number(it?.unpaidAmount ?? 0))
     },
     OIL_CREDIT: {
       endpoint: 'finance/oil-credit',

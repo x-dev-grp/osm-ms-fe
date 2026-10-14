@@ -704,9 +704,9 @@ mat-expansion-panel:not(:last-child) {
     padding-block: .35rem !important;
   }
   ::ng-deep .mat-mdc-form-field {
-    --mdc-outlined-text-field-outline-color: color-mix(in oklab, currentColor 25%, transparent);
-    --mdc-outlined-text-field-hover-outline-color: color-mix(in oklab, currentColor 40%, transparent);
-    --mdc-outlined-text-field-focus-outline-color: var(--mat-sys-primary, #3b82f6);
+    --mat-form-field-outlined-outline-color: color-mix(in oklab, currentColor 25%, transparent);
+    --mat-form-field-outlined-hover-outline-color: color-mix(in oklab, currentColor 40%, transparent);
+    --mat-form-field-outlined-focus-outline-color: var(--mat-sys-primary, #3b82f6);
   }
 }
 
