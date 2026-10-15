@@ -91,7 +91,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
         description: [''],
 
         maxCapacity: [null, [Validators.required, Validators.min(1)]],
-        currentVolume: [0],
+        currentVolume: [{ value: 0, disabled: true }],
 
         oilVariety: [null], // BaseType full object
         qualityGrade: [null],
@@ -159,7 +159,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       location: v.location,
       description: v.description,
       maxCapacity: Number(v.maxCapacity),
-      currentVolume: Number(v.currentVolume),
+      ...(!this.isEditing ? { currentVolume: 0 } : {}),
       status: v.status,
       qualityGrade: v.qualityGrade, // string
       oilVariety: sanitizeBaseType(v.oilVariety), // full object (sanitized)

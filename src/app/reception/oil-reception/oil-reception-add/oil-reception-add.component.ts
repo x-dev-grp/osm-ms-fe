@@ -232,12 +232,12 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
             }
           } else {
             this.errorMessage = this.translate.instant('AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_LA_RECEPTION');
-            this.router.navigate(['/reception-huile']);
+            this.router.navigate(['/reception/reception-huile']);
           }
         },
         error: () => {
           this.errorMessage = this.translate.instant('AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_LA_RECEPTION');
-          this.router.navigate(['/reception-huile']);
+          this.router.navigate(['/reception/reception-huile']);
         },
         complete: () => this.markCallDone()
       });

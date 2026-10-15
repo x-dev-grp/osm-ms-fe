@@ -72,9 +72,10 @@
         <mat-form-field appearance="outline">
           <mat-label>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</mat-label>
           <mat-select formControlName="operatingStatus" required>
-            <mat-option value="ACTIVE">{{ 'ADMIN_DASHBOARD.STATUS.ACTIVE' | translate }}</mat-option>
+            <mat-option value="OPERATIONAL">{{ 'ADMIN_DASHBOARD.STATUS.ACTIVE' | translate }}</mat-option>
             <mat-option value="INACTIVE">{{ 'ADMIN_DASHBOARD.STATUS.INACTIVE' | translate }}</mat-option>
             <mat-option value="MAINTENANCE">{{ 'AUTO.EN_MAINTENANCE' | translate }}</mat-option>
+            <mat-option value="OUT_OF_SERVICE">{{ 'STORAGE.VIEW.STATUS.OUT_OF_SERVICE' | translate }}</mat-option>
           </mat-select>
           <mat-error *ngIf="form.get('operatingStatus')?.hasError('required')">
 

@@ -1,52 +1,79 @@
 <div class="header-button">
-  <div class="global-search-wrapper">
-    <mat-form-field appearance="fill" subscriptSizing="dynamic" class="global-search-field">
-      <input
-        matInput
-        [attr.aria-label]="'AUTO.RECHERCHE_GLOBALE' | translate"
-        [placeholder]="'AUTO.RECHERCHE_GLOBALE' | translate"
-        [(ngModel)]="searchCode"
-        (keyup.enter)="Search()"
-      />
-      <button
-        matSuffix
-        mat-icon-button
-        type="button"
-        [attr.aria-label]="'AUTO.LANCER_LA_RECHERCHE_GLOBALE' | translate"
-        (click)="Search()"
-        [disabled]="searching"
-      >
-        <mat-icon>{{ searching ? 'hourglass_top' : 'search' }}</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
+  @if (!isOosmAdmin) {
+    <div class="global-search-wrapper">
+      <mat-form-field appearance="fill" subscriptSizing="dynamic" class="global-search-field">
+        <input
+          matInput
+          [attr.aria-label]="'AUTO.RECHERCHE_GLOBALE' | translate"
+          [placeholder]="'AUTO.RECHERCHE_GLOBALE' | translate"
+          [(ngModel)]="searchCode"
+          (keyup.enter)="Search()"
+        />
+        <button
+          matSuffix
+          mat-icon-button
+          type="button"
+          [attr.aria-label]="'AUTO.LANCER_LA_RECHERCHE_GLOBALE' | translate"
+          (click)="Search()"
+          [disabled]="searching"
+        >
+          <mat-icon>{{ searching ? 'hourglass_top' : 'search' }}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  }
 
   <div class="toolbar-actions">
-    <app-system-health></app-system-health>
+    <button
+      mat-icon-button
+      type="button"
+      class="header-item pc-head-link"
+      data-tour="replay"
+      [attr.aria-label]="'TOUR.REPLAY' | translate"
+      [matTooltip]="'TOUR.REPLAY' | translate"
+      (click)="replayTour()"
+    >
+      <mat-icon>tour</mat-icon>
+    </button>
 
     <a
       mat-icon-button
       class="header-item pc-head-link"
       routerLink="/help"
+      data-tour="help"
       [attr.aria-label]="'USER_GUIDE.TITLE' | translate"
     >
       <mat-icon>help_outline</mat-icon>
     </a>
 
-    <button
-      mat-icon-button
-      type="button"
-      class="header-item pc-head-link"
-      [attr.aria-label]="'SUPPORT.OPEN_TICKET' | translate"
-      (click)="openSupportTicket()"
-    >
-      <mat-icon>support_agent</mat-icon>
-    </button>
+    @if (isOosmAdmin) {
+      <a
+        mat-icon-button
+        class="header-item pc-head-link"
+        routerLink="/administration/support"
+        [attr.aria-label]="'MENU.ADMINISTRATION.SUPPORT' | translate"
+        [matTooltip]="'MENU.ADMINISTRATION.SUPPORT' | translate"
+      >
+        <mat-icon>support_agent</mat-icon>
+      </a>
+    } @else {
+      <button
+        mat-icon-button
+        type="button"
+        class="header-item pc-head-link"
+        data-tour="support"
+        [attr.aria-label]="'SUPPORT.OPEN_TICKET' | translate"
+        (click)="openSupportTicket()"
+      >
+        <mat-icon>support_agent</mat-icon>
+      </button>
+    }
 
     <button
       [matMenuTriggerFor]="notificationsMenu"
       class="header-item"
       mat-button
+      data-tour="notifications"
       (click)="openNotificationsMenu()"
       [attr.aria-label]="'NOTIFICATIONS.TITLE' | translate"
     >
@@ -70,7 +97,7 @@
       </a>
     </button>
 
-    <button [matMenuTriggerFor]="user" [attr.aria-label]="'AUTO.MODE' | translate" class="header-item" mat-button>
+    <button [matMenuTriggerFor]="user" [attr.aria-label]="'AUTO.MODE' | translate" class="header-item" mat-button data-tour="profile">
       <a class="pc-head-link">
         <app-user-avatar size="sm"></app-user-avatar>
       </a>
@@ -156,14 +183,31 @@
             <span class="profile-menu__badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
           }
         </a>
-        <button type="button" class="profile-menu__item" (click)="openSupportTicket()">
-          <mat-icon>support_agent</mat-icon>
-          <span>{{ 'SUPPORT.OPEN_TICKET' | translate }}</span>
+        @if (isOosmAdmin) {
+          <a [routerLink]="['/administration/support']" class="profile-menu__item">
+            <mat-icon>support_agent</mat-icon>
+            <span>{{ 'MENU.ADMINISTRATION.SUPPORT' | translate }}</span>
+          </a>
+          <a [routerLink]="['/administration/settings']" class="profile-menu__item">
+            <mat-icon>tune</mat-icon>
+            <span>{{ 'MENU.ADMINISTRATION.SETTINGS' | translate }}</span>
+          </a>
+        } @else {
+          <button type="button" class="profile-menu__item" (click)="openSupportTicket()">
+            <mat-icon>support_agent</mat-icon>
+            <span>{{ 'SUPPORT.OPEN_TICKET' | translate }}</span>
+          </button>
+          @if (authenticationService.hasPermission('HABILITATION:COMPANYPROFILE:READ')) {
+            <a [routerLink]="['/settings/general-config']" class="profile-menu__item">
+              <mat-icon>settings</mat-icon>
+              <span>{{ 'MENU.SETTINGS.GENERAL_CONFIG' | translate }}</span>
+            </a>
+          }
+        }
+        <button type="button" class="profile-menu__item" (click)="resetTours()">
+          <mat-icon>tour</mat-icon>
+          <span>{{ 'TOUR.RESET_ALL' | translate }}</span>
         </button>
-        <a [routerLink]="['/settings/general-config']" class="profile-menu__item">
-          <mat-icon>settings</mat-icon>
-          <span>{{ 'MENU.SETTINGS.GENERAL_CONFIG' | translate }}</span>
-        </a>
       </div>
 
       <div class="profile-menu__section">

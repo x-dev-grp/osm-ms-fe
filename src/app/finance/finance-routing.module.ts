@@ -72,22 +72,22 @@ const routes: Routes = [
   {
     path: 'oil-credit',
     component: OilCreditComponent,
-    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.READ)])]
+    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.FINANCE, FinanceEntity.OILCREDIT, Action.READ)])]
   },
   {
     path: 'oil-credit/new',
     loadComponent: () => import('./oil-credit/oil-credit-add/oil-credit-add.component').then((m) => m.OilCreditAddComponent),
-    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.CREATE)])]
+    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.FINANCE, FinanceEntity.OILCREDIT, Action.CREATE)])]
   },
   {
     path: 'oil-credit/:id/edit',
     loadComponent: () => import('./oil-credit/oil-credit-add/oil-credit-add.component').then((m) => m.OilCreditAddComponent),
-    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.UPDATE)])]
+    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.FINANCE, FinanceEntity.OILCREDIT, Action.UPDATE)])]
   },
   {
     path: 'oil-credit/:id/view',
     component: ViewOilCreditComponent,
-    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.READ)])]
+    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OOSMModule.FINANCE, FinanceEntity.OILCREDIT, Action.READ)])]
   },
   // CHANGE: permissions - Financial Transactions
   {

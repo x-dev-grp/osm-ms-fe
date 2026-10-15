@@ -1,79 +1,94 @@
-<div class="dashboard-shell" [ngClass]="'dashboard-shell--' + theme()">
-  <header class="dashboard-header-card" [ngClass]="'dashboard-header-card--' + theme()">
-    <div class="dashboard-header-card__content">
-      <div class="dashboard-header-card__identity">
-        <div class="dashboard-header-card__icon" aria-hidden="true">
-          <mat-icon>{{ icon() }}</mat-icon>
+<div class="dashboard-shell" [ngClass]="'dashboard-shell--' + theme()" [class.dashboard-shell--embedded]="embedded">
+  @if (!embedded) {
+    <header class="dashboard-header-card" [ngClass]="'dashboard-header-card--' + theme()">
+      <div class="dashboard-header-card__content">
+        <div class="dashboard-header-card__identity">
+          <div class="dashboard-header-card__icon" aria-hidden="true">
+            <mat-icon>{{ icon() }}</mat-icon>
+          </div>
+
+          <div class="dashboard-header-card__meta">
+            <h2 class="dashboard-header-card__title">{{ titleKey() | translate }}</h2>
+
+            @if (subtitleText()) {
+              <p class="dashboard-header-card__subtitle">{{ subtitleText() }}</p>
+            } @else if (subtitleKey()) {
+              <p class="dashboard-header-card__subtitle">{{ subtitleKey()! | translate }}</p>
+            }
+
+            @if (lastUpdated()) {
+              <p class="dashboard-header-card__updated">
+                <mat-icon inline>schedule</mat-icon>
+                <span>{{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated() | date:'short' }}</span>
+              </p>
+            }
+          </div>
         </div>
 
-        <div class="dashboard-header-card__meta">
-          <h2 class="dashboard-header-card__title">{{ titleKey() | translate }}</h2>
-
-          @if (subtitleText()) {
-            <p class="dashboard-header-card__subtitle">{{ subtitleText() }}</p>
-          } @else if (subtitleKey()) {
-            <p class="dashboard-header-card__subtitle">{{ subtitleKey()! | translate }}</p>
-          }
-
-          @if (lastUpdated()) {
-            <p class="dashboard-header-card__updated">
-              <mat-icon inline>schedule</mat-icon>
-              <span>{{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated() | date:'short' }}</span>
-            </p>
-          }
-        </div>
+        <ng-container [ngTemplateOutlet]="headerToolbar"></ng-container>
       </div>
+    </header>
+  }
 
-      <div class="dashboard-header-card__toolbar">
-        <ng-content select="[dashboardHeaderActions]"></ng-content>
+  <ng-template #headerToolbar>
+    <div class="dashboard-header-card__toolbar" [class.dashboard-header-card__toolbar--embedded]="embedded">
+      @if (embedded && lastUpdated()) {
+        <span class="dashboard-header-card__updated dashboard-header-card__updated--inline">
+          <mat-icon inline>schedule</mat-icon>
+          <span>{{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated() | date:'short' }}</span>
+        </span>
+      }
 
-        @if (showExport()) {
-          <button
-            class="dashboard-header-card__btn dashboard-header-card__btn--export"
-            mat-stroked-button
-            type="button"
-            [matMenuTriggerFor]="exportMenu"
-            [disabled]="loading() || exporting() || !canExport()"
-            [matTooltip]="'DASHBOARD.EXPORT.TITLE' | translate"
-          >
-            <mat-icon [class.spinning]="exporting()">download</mat-icon>
-            <span class="dashboard-header-card__btn-label">{{ 'DASHBOARD.EXPORT.TITLE' | translate }}</span>
-            <mat-icon class="dashboard-header-card__btn-caret">arrow_drop_down</mat-icon>
-          </button>
-          <mat-menu #exportMenu="matMenu">
-            <button mat-menu-item type="button" (click)="exportAs('excel')" [disabled]="!canExport()">
-              <mat-icon>table_view</mat-icon>
-              <span>{{ 'DASHBOARD.EXPORT.EXCEL' | translate }}</span>
-            </button>
-            <button mat-menu-item type="button" (click)="exportAs('csv')" [disabled]="!canExport()">
-              <mat-icon>grid_on</mat-icon>
-              <span>{{ 'DASHBOARD.EXPORT.CSV' | translate }}</span>
-            </button>
-            <button mat-menu-item type="button" (click)="exportAs('pdf')" [disabled]="!canExport()">
-              <mat-icon>picture_as_pdf</mat-icon>
-              <span>{{ 'DASHBOARD.EXPORT.PDF' | translate }}</span>
-            </button>
-          </mat-menu>
-        }
+      <ng-content select="[dashboardHeaderActions]"></ng-content>
 
+      @if (showExport()) {
         <button
-          class="dashboard-header-card__btn dashboard-header-card__btn--refresh"
+          class="dashboard-header-card__btn dashboard-header-card__btn--export"
+          data-tour="dash-export"
           mat-stroked-button
-          color="primary"
           type="button"
-          (click)="refresh.emit()"
-          [disabled]="loading()"
-          [matTooltip]="'COMMON.REFRESH' | translate"
+          [matMenuTriggerFor]="exportMenu"
+          [disabled]="loading() || exporting() || !canExport()"
+          [matTooltip]="'DASHBOARD.EXPORT.TITLE' | translate"
         >
-          <mat-icon [class.spinning]="loading()">refresh</mat-icon>
-          <span class="dashboard-header-card__btn-label">{{ 'COMMON.REFRESH' | translate }}</span>
+          <mat-icon [class.spinning]="exporting()">download</mat-icon>
+          <span class="dashboard-header-card__btn-label">{{ 'DASHBOARD.EXPORT.TITLE' | translate }}</span>
+          <mat-icon class="dashboard-header-card__btn-caret">arrow_drop_down</mat-icon>
         </button>
-      </div>
+        <mat-menu #exportMenu="matMenu">
+          <button mat-menu-item type="button" (click)="exportAs('excel')" [disabled]="!canExport()">
+            <mat-icon>table_view</mat-icon>
+            <span>{{ 'DASHBOARD.EXPORT.EXCEL' | translate }}</span>
+          </button>
+          <button mat-menu-item type="button" (click)="exportAs('csv')" [disabled]="!canExport()">
+            <mat-icon>grid_on</mat-icon>
+            <span>{{ 'DASHBOARD.EXPORT.CSV' | translate }}</span>
+          </button>
+          <button mat-menu-item type="button" (click)="exportAs('pdf')" [disabled]="!canExport()">
+            <mat-icon>picture_as_pdf</mat-icon>
+            <span>{{ 'DASHBOARD.EXPORT.PDF' | translate }}</span>
+          </button>
+        </mat-menu>
+      }
+
+      <button
+        class="dashboard-header-card__btn dashboard-header-card__btn--refresh"
+        data-tour="dash-refresh"
+        mat-stroked-button
+        color="primary"
+        type="button"
+        (click)="refresh.emit()"
+        [disabled]="loading()"
+        [matTooltip]="'COMMON.REFRESH' | translate"
+      >
+        <mat-icon [class.spinning]="loading()">refresh</mat-icon>
+        <span class="dashboard-header-card__btn-label">{{ 'COMMON.REFRESH' | translate }}</span>
+      </button>
     </div>
-  </header>
+  </ng-template>
 
   @if (showDateFilter() || showFiltersPanel()) {
-    <section class="dashboard-filters-panel">
+    <section class="dashboard-filters-panel" data-tour="dash-filters">
       <button
         type="button"
         class="dashboard-filters-panel__toggle"

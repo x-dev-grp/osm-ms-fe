@@ -24,7 +24,7 @@
 
 :root 
   .errorPanelClass {
-      --mdc-snackbar-container-color: red;    
+      --mat-snackbar-container-color: red;
       .mdc-button__label   {
         color: aliceblue;
       }

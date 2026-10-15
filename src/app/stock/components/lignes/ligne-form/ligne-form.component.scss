@@ -257,7 +257,7 @@
 
 ::ng-deep .ligne-form-page {
   .mat-mdc-card {
-    --mdc-elevated-card-container-elevation: 0;
+    --mat-card-elevated-container-elevation: 0;
   }
 
   .mat-mdc-form-field {
@@ -330,7 +330,7 @@
   }
 
   .mat-mdc-progress-spinner {
-    --mdc-circular-progress-active-indicator-color: #6f8732;
+    --mat-progress-spinner-active-indicator-color: #6f8732;
   }
 }
 

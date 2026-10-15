@@ -561,11 +561,11 @@
 
 ::ng-deep .ligne-detail-page {
   .mat-mdc-card {
-    --mdc-elevated-card-container-elevation: 0;
+    --mat-card-elevated-container-elevation: 0;
   }
 
   .mat-mdc-progress-spinner {
-    --mdc-circular-progress-active-indicator-color: #6f8732;
+    --mat-progress-spinner-active-indicator-color: #6f8732;
   }
 }
 

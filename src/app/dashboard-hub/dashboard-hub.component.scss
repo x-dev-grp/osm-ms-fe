@@ -8,12 +8,80 @@
 
 .dashboard-hub__header {
   margin-bottom: 0;
+  flex-wrap: wrap;
+  row-gap: 0.6rem;
 }
 
-.dashboard-hub__subtitle {
-  font-size: 0.875rem;
-  margin-top: 0.2rem;
-  color: var(--text-muted, #667085);
+.dashboard-hub__identity {
+  flex: 1 1 auto;
+}
+
+.dashboard-hub__breadcrumb {
+  min-width: 0;
+}
+
+.dashboard-hub__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.3rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-primary, #101828);
+}
+
+.dashboard-hub__crumb {
+  min-width: 0;
+
+  &--link {
+    padding: 0.05rem 0.2rem;
+    margin: 0 -0.2rem;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    font: inherit;
+    color: var(--text-muted, #667085);
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+
+    &:hover {
+      color: var(--primary-500, #1565c0);
+      background: color-mix(in srgb, var(--primary-500, #1565c0) 8%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary-500, #1565c0);
+      outline-offset: 2px;
+    }
+  }
+
+  &--current {
+    color: var(--text-primary, #101828);
+  }
+}
+
+.dashboard-hub__crumb-separator {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+  color: var(--text-muted, #98a2b3);
+}
+
+:host-context([dir='rtl']) .dashboard-hub__crumb-separator {
+  transform: scaleX(-1);
+}
+
+.dashboard-hub__actions {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+  flex: 0 1 auto;
+
+  &:empty {
+    display: none;
+  }
 }
 
 .header-icon-wrap--hub {
@@ -81,13 +149,6 @@
   min-height: 200px;
 }
 
-.dashboard-hub__embedded {
-  ::ng-deep .dashboard-header-card {
-    position: static;
-    top: auto;
-  }
-}
-
 .dashboard-hub__empty {
   display: flex;
   flex-direction: column;
@@ -129,6 +190,18 @@
 }
 
 @media (max-width: 768px) {
+  .dashboard-hub__header .dashboard-hub__identity {
+    justify-content: flex-start;
+  }
+
+  .dashboard-hub__crumbs {
+    font-size: 1.15rem;
+  }
+
+  .dashboard-hub__actions {
+    justify-content: stretch;
+  }
+
   .dashboard-hub__tabs {
     gap: 0.25rem;
     padding: 0.3rem;

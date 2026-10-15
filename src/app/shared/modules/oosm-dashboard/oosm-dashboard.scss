@@ -126,6 +126,43 @@
     background: #ffebee;
     color: #c62828;
   }
+
+  &.status-paid {
+    background: rgba(46, 125, 50, 0.18);
+    color: var(--success-500, #66bb6a);
+  }
+
+  &.status-partial {
+    background: rgba(245, 124, 0, 0.18);
+    color: var(--warning-500, #ffa726);
+  }
+
+  &.status-unpaid {
+    background: rgba(198, 40, 40, 0.18);
+    color: var(--error-500, #ef5350);
+  }
+}
+
+.payment-status-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-width: 9.5rem;
+}
+
+.payment-amount {
+  font-size: 0.72rem;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  &--paid {
+    color: var(--success-500, #66bb6a);
+  }
+
+  &--unpaid {
+    color: var(--error-500, #ef5350);
+  }
 }
 
 .field-checkbox-container {

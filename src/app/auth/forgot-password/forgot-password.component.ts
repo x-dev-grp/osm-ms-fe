@@ -45,38 +45,43 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   submit(): void {
+    if (this.loading) return;
     this.errorMessage = '';
     this.successMessage = '';
 
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     this.loading = true;
-    const identifier = this.form.value.email!; // rename if your control differs
+    const identifier = String(this.form.value.email ?? '').trim();
 
-    this.authService.requestPasswordReset(identifier).pipe(
-      first(),
-      catchError(err => {
+    this.authService
+      .requestPasswordReset(identifier)
+      .pipe(
+        first(),
+        catchError((err) => {
+          this.loading = false;
+          this.errorMessage =
+            err?.status === 0 || err?.status >= 500
+              ? this.translateService.instant('FORGOT_PASSWORD.SERVICE_UNAVAILABLE')
+              : this.translateService.instant('FORGOT_PASSWORD.ERROR_MESSAGE');
+          return of(null);
+        })
+      )
+      .subscribe((res: OOSMUserOUTDTO | null) => {
+        if (!res) return;
+
         this.loading = false;
-        this.errorMessage = typeof err?.error === this.translateService.instant('AUTO.STRING')
-          ? err.error
-          : this.translateService.instant('FORGOT_PASSWORD.ERROR_MESSAGE');
-        return of(null);
-      })
-    ).subscribe((res: OOSMUserOUTDTO | null) => {
-      if (!res) return;
 
-      this.loading = false;
-
-      const userId = res.id;
-      if (userId) {
-        // ✅ Redirect to code input screen and keep identifier (for resend)
-        this.router.navigate(['/auth/reset', userId], { queryParams: { identifier } });
-
-      } else {
-        // Fallback (shouldn’t happen if backend returns OOSMUserOUTDTO)
-        this.successMessage = this.translateService.instant('FORGOT_PASSWORD.SUCCESS_MESSAGE');
-      }
-    });
+        const userId = res.id;
+        if (userId) {
+          this.router.navigate(['/auth/reset', userId], { queryParams: { identifier } });
+        } else {
+          this.successMessage = this.translateService.instant('FORGOT_PASSWORD.SUCCESS_MESSAGE');
+        }
+      });
   }
 
   navigateToLogin() {

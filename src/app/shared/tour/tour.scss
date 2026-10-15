@@ -1,0 +1,65 @@
+.driver-popover.oosm-tour {
+  max-width: 360px;
+  padding: 18px 20px 14px;
+  border-radius: 12px;
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #1d2630);
+  box-shadow: 0 12px 32px rgba(29, 38, 48, 0.18);
+  font-family: inherit;
+
+  .driver-popover-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .driver-popover-description {
+    margin-top: 6px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text-secondary, #5b6b79);
+  }
+
+  .driver-popover-progress-text {
+    font-size: 12px;
+    color: var(--text-muted, #8a949e);
+  }
+
+  .driver-popover-footer {
+    margin-top: 14px;
+    gap: 8px;
+
+    button {
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--primary-500, #4680ff);
+      background: transparent;
+      color: var(--primary-500, #4680ff);
+      font: inherit;
+      font-size: 13px;
+      text-shadow: none;
+    }
+
+    .driver-popover-next-btn {
+      background: var(--primary-500, #4680ff);
+      color: #ffffff;
+    }
+  }
+
+  .driver-popover-close-btn {
+    color: var(--text-muted, #8a949e);
+  }
+
+  &[dir='rtl'] {
+    text-align: right;
+
+    .driver-popover-close-btn {
+      right: auto;
+      left: 0;
+    }
+
+    .driver-popover-navigation-btns {
+      flex-direction: row-reverse;
+    }
+  }
+}

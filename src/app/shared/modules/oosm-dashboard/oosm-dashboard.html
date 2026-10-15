@@ -38,7 +38,7 @@
       </div>
 
     }
-    <div class="table-responsive mt-3 oosm-dashboard-data">
+    <div class="table-responsive mt-3 oosm-dashboard-data" data-tour="list-data">
       <div class="oosm-dashboard-table-view">
       <table
         (matSortChange)="sortChange($event)"
@@ -219,7 +219,7 @@
         @if (!config()?.clientSide) {
         <button [disabled]="!_store?.exportFields()?.length" [matMenuTriggerFor]="exportCsvMenu"
                 [matTooltip]="'OSM_DASHBOARD.EXPORT.CSV' | translate"
-                class="success-button m-2" mat-stroked-button
+                class="success-button m-2" mat-stroked-button data-tour="list-export"
                 matTooltipPosition="above">
           @if (_store.exportExcelLoading()) {
             <mat-spinner diameter="25" color="warn"></mat-spinner>
@@ -244,6 +244,7 @@
         </button>
         }
         <button [matMenuTriggerFor]="filterMenu"
+                data-tour="list-filter"
                 [matTooltip]="'OSM_DASHBOARD.FILTER.TITLE' | translate"
                 aria-label="{{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}"
                 class="m-2"
@@ -267,6 +268,7 @@
 
         @if (config()?.addNewItem) {
           <button (click)="redirectToFormPage()"
+                  data-tour="list-new"
                   mat-raised-button
                   color="primary"
                   class="m-2">
@@ -384,12 +386,28 @@
 
     <ng-template #dashboardFieldValue let-record="record" let-item="item">
       @if (item?.fieldType === "checkbox") {
-        <input
-          type="checkbox"
-          class="checkbox-cell"
-          [checked]="record[item.name]"
-          disabled
-        />
+        @if (item?.name === 'paid') {
+          <div class="payment-status-cell">
+            <span class="status-badge" [ngClass]="'status-' + paymentStatus(record)">
+              {{ 'OSM_DASHBOARD.PAYMENT_STATUS.' + (paymentStatus(record) | uppercase) | translate }}
+            </span>
+            <span class="payment-amount payment-amount--paid">
+              {{ 'OSM_DASHBOARD.PAYMENT_STATUS.PAID_AMOUNT' | translate }}:
+              {{ record['paidAmount'] || 0 | number:'1.2-3' }} TND
+            </span>
+            <span class="payment-amount payment-amount--unpaid">
+              {{ 'OSM_DASHBOARD.PAYMENT_STATUS.UNPAID_AMOUNT' | translate }}:
+              {{ record['unpaidAmount'] || 0 | number:'1.2-3' }} TND
+            </span>
+          </div>
+        } @else {
+          <input
+            type="checkbox"
+            class="checkbox-cell"
+            [checked]="record[item.name]"
+            disabled
+          />
+        }
       } @else if (item?.fieldType === "select") {
         @if (item?.name === 'status') {
           <span class="status-badge" [ngClass]="'status-' + (record[item?.name] | lowercase)">
@@ -426,6 +444,7 @@
           } @else {
             <button
               mat-icon-button
+              data-tour="list-row-actions"
               [matMenuTriggerFor]="specificMenu"
               [matTooltip]="'OSM_DASHBOARD.ACTIONS.MORE' | translate"
               matTooltipPosition="above"
@@ -437,10 +456,10 @@
           }
 
           <mat-menu #specificMenu="matMenu">
-            @for (item of config().specificActions; track item) {
+            @for (item of visibleSpecificActions(); track item) {
               <button
                 (click)="actionApply(item?.action, record)"
-                [disabled]="!!item?.disabled && record[item.disabled.field] === item.disabled.value"
+                [disabled]="isSpecificActionDisabled(item, record)"
                 mat-menu-item
               >
                 <span>{{ 'OSM_DASHBOARD.ACTIONS.' + item?.action | translate }}</span>
@@ -454,6 +473,7 @@
           } @else {
             <button
               mat-icon-button
+              data-tour="list-row-actions"
               [matMenuTriggerFor]="menu"
               [attr.aria-label]="'OSM_DASHBOARD.ACTIONS.MORE' | translate"
               (click)="$event.stopPropagation()"
@@ -467,7 +487,7 @@
               *ngFor="let action of ($any(record)?.actions || []) | sortByTranslated : 'OSM_DASHBOARD.ACTIONS.'; trackBy: trackByAction"
             >
               <button
-                *ngIf="!config()?.filteredActions?.includes(action)"
+                *ngIf="isMenuActionVisible(action) && !config()?.filteredActions?.includes(action)"
                 (click)="actionApply(action, record)"
                 mat-menu-item
               >

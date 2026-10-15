@@ -18,6 +18,7 @@
       [disabled]="isLoading"
       [matTooltip]="((canEditToday$ | async) ? 'DASHBOARD.DAILY_METRIC.BUTTON' : 'DASHBOARD.DAILY_METRIC.BUTTON_VIEW') | translate"
       color="accent"
+      data-tour="reception-daily-metric"
       mat-stroked-button
       type="button"
     >
@@ -41,7 +42,7 @@
   </div>
 
   <section class="dashboard-section">
-    <div class="dashboard-kpis row g-3">
+    <div class="dashboard-kpis row g-3" data-tour="reception-kpis">
       <div class="col-md-6 col-xxl-4">
         <app-earning-chart
           [color]="primaryColor"
@@ -138,7 +139,7 @@
     </div>
   </section>
 
-  <section class="dashboard-section">
+  <section class="dashboard-section" data-tour="reception-trend">
     <div class="section-heading">
       <mat-icon>show_chart</mat-icon>
       <h3>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate }}</h3>

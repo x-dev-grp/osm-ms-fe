@@ -1,20 +1,40 @@
 <app-card [cardTitle]="'GENERAL_CONFIG_UI.CONFIGURATIONS' | translate" [showHeader]="true">
 
-  <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="onTabChange($event)">
+  <mat-tab-group
+    class="browser-tabs"
+    mat-stretch-tabs="false"
+    mat-align-tabs="start"
+    animationDuration="150ms"
+    [disablePagination]="true"
+    [selectedIndex]="selectedTabIndex"
+    (selectedTabChange)="onTabChange($event)"
+  >
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.TAB_TITLE' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-building browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.TAB_TITLE' | translate }}</span>
+      </ng-template>
       <div class="company-config-tab">
         <app-company-profile></app-company-profile>
       </div>
     </mat-tab>
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.PRODUCTION_TAB' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-droplet browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.PRODUCTION_TAB' | translate }}</span>
+      </ng-template>
       <div class="production-config-tab">
         <app-production-config></app-production-config>
       </div>
     </mat-tab>
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.FINANCE_TAB' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-currency-dollar browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.FINANCE_TAB' | translate }}</span>
+      </ng-template>
       <div class="category-config-tab">
         <app-category-parameters-tab
           categoryFilter="FINANCE"
@@ -26,7 +46,11 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.HR_TAB' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-users browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.HR_TAB' | translate }}</span>
+      </ng-template>
       <div class="category-config-tab">
         <app-category-parameters-tab
           categoryFilter="HR"
@@ -37,7 +61,11 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.RECEPTION_TAB' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-truck-delivery browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.RECEPTION_TAB' | translate }}</span>
+      </ng-template>
       <div class="category-config-tab">
         <app-category-parameters-tab
           categoryFilter="RECEPTION"
@@ -48,7 +76,11 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.LOCALE_TAB' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-world browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.LOCALE_TAB' | translate }}</span>
+      </ng-template>
       <div class="category-config-tab">
         <app-category-parameters-tab
           categoryFilter="LOCALE"
@@ -59,7 +91,11 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.PRINT_TAB' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-printer browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.PRINT_TAB' | translate }}</span>
+      </ng-template>
       <div class="category-config-tab">
         <app-category-parameters-tab
           categoryFilter="PRINT"
@@ -70,7 +106,11 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.NOTIFICATIONS_TAB' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-bell browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.NOTIFICATIONS_TAB' | translate }}</span>
+      </ng-template>
       <div class="category-config-tab">
         <app-category-parameters-tab
           categoryFilter="NOTIFICATIONS"
@@ -81,13 +121,21 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.TYPES_PARAMS_TAB' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-list-details browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.TYPES_PARAMS_TAB' | translate }}</span>
+      </ng-template>
       <div class="types-params-tab">
         <app-generic-type></app-generic-type>
       </div>
     </mat-tab>
 
-    <mat-tab label="{{ 'GENERAL_CONFIG_UI.OTHER_TAB' | translate }}">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="ti ti-adjustments browser-tabs__icon" aria-hidden="true"></i>
+        <span>{{ 'GENERAL_CONFIG_UI.OTHER_TAB' | translate }}</span>
+      </ng-template>
       <div class="other-config-tab">
         <app-application-config></app-application-config>
       </div>

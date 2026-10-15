@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -8,28 +8,28 @@ import { environment } from 'src/environments/environment';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { APP_LOGO_FULL } from '../../shared/config/logo.config';
 import { AuthLangSwitcherComponent } from '../auth-lang-switcher.component';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-reset-confirm',
   standalone: true,
-  imports: [TranslateModule, CommonModule, SharedModule, AuthLangSwitcherComponent],
+  imports: [TranslateModule, CommonModule, SharedModule, AuthLangSwitcherComponent, RouterModule],
   templateUrl: './reset-confirm.component.html',
   styleUrls: ['../authentication.scss']
 })
 export class ResetConfirmComponent implements OnInit {
   readonly appLogoFull = APP_LOGO_FULL;
   private readonly i18n = inject(TranslateService);
-  phase: 'code' | 'password' | 'done' = 'code';
+  phase: 'code' | 'password' = 'code';
   loading = false;
 
-  successMessage: string | null = null;
-  errorMessage: string | null = null;
+  errorKey: string | null = null;
 
   userId!: string;
   identifier!: string;
 
   codeForm: FormGroup = this.fb.group({
-    code: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(8)]]
+    code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
   });
 
   pwForm: FormGroup = this.fb.group(
@@ -45,8 +45,8 @@ export class ResetConfirmComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -54,14 +54,17 @@ export class ResetConfirmComponent implements OnInit {
     this.userId = this.route.snapshot.paramMap.get('userId') || this.route.snapshot.queryParamMap.get('userId') || '';
     this.identifier = this.route.snapshot.queryParamMap.get('identifier') || ''; // optional (for “Resend code”)
     if (!this.userId) {
-      this.errorMessage = 'RESET_PASSWORD.MISSING_USER_ID';
+      this.errorKey = 'RESET_PASSWORD.MISSING_USER_ID';
     }
   }
 
   /** Phase 1: validate confirmation code */
   onValidateCode(): void {
-    this.errorMessage = null;
-    if (this.codeForm.invalid || !this.userId) return;
+    this.errorKey = null;
+    if (this.codeForm.invalid || !this.userId) {
+      this.codeForm.markAllAsTouched();
+      return;
+    }
 
     this.loading = true;
     const url = `${this.API}/user/auth/validateResetCode/${this.userId}`;
@@ -74,17 +77,23 @@ export class ResetConfirmComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        // Backend uses 400 for invalid/expired code with plain text body
-        this.errorMessage =
-          typeof err?.error === this.i18n.instant('AUTO.STRING') ? err.error : this.i18n.instant('AUTO.INVALID_OR_EXPIRED_CODE');
+        this.errorKey =
+          err?.status === 400
+            ? 'RESET_PASSWORD.CODE_INVALID'
+            : err?.status === 0 || err?.status >= 500
+              ? 'LOGIN.SERVICE_UNAVAILABLE'
+              : 'RESET_PASSWORD.ERROR_VALIDATE';
       }
     });
   }
 
   /** Phase 2: submit new password */
   onUpdatePassword(): void {
-    this.errorMessage = null;
-    if (this.pwForm.invalid || !this.userId) return;
+    this.errorKey = null;
+    if (this.pwForm.invalid || !this.userId) {
+      this.pwForm.markAllAsTouched();
+      return;
+    }
 
     this.loading = true;
     const url = `${this.API}/user/auth/updatePassword/${this.userId}`;
@@ -97,44 +106,38 @@ export class ResetConfirmComponent implements OnInit {
     this.http.post<void>(url, dto).subscribe({
       next: () => {
         this.loading = false;
-        this.successMessage = this.i18n.instant('AUTO.YOUR_PASSWORD_HAS_BEEN_UPDATED_SUCCESSFULLY');
-        this.phase = 'done';
+        this.pwForm.reset();
+        this.codeForm.reset();
+        this.authService.logout(undefined, 'password-changed');
       },
       error: (err) => {
         this.loading = false;
-        this.errorMessage =
-          typeof err?.error === this.i18n.instant('AUTO.STRING') ? err.error : this.i18n.instant('AUTO.COULD_NOT_UPDATE_PASSWORD');
+        this.errorKey = err?.status === 0 || err?.status >= 500 ? 'LOGIN.SERVICE_UNAVAILABLE' : 'RESET_PASSWORD.ERROR_UPDATE';
       }
     });
   }
 
   /** Helpers */
 
-  navigateToLogin(): void {
-    this.router.navigateByUrl('/auth/login');
-  }
-
   getCodeErrorMessage(): string {
     const ctrl = this.codeForm.controls['code'];
-    if (ctrl.hasError('required')) return 'Code is required';
-    if (ctrl.hasError('minlength')) return 'Code is too short';
-    if (ctrl.hasError('maxlength')) return 'Code is too long';
-    return 'Invalid code';
+    if (ctrl.hasError('required')) return this.i18n.instant('RESET_PASSWORD.CODE_REQUIRED');
+    return this.i18n.instant('RESET_PASSWORD.CODE_FORMAT');
   }
 
   getNewPasswordError(): string {
     const ctrl = this.pwForm.controls['newPassword'];
-    if (ctrl.hasError('required')) return 'Password is required';
-    if (ctrl.hasError('minlength')) return 'Minimum 8 characters';
-    return 'Invalid password';
+    if (ctrl.hasError('required')) return this.i18n.instant('RESET_PASSWORD.PASSWORD_REQUIRED');
+    if (ctrl.hasError('minlength')) return this.i18n.instant('LOGIN.PASSWORD_MIN_LENGTH_ERROR');
+    return this.i18n.instant('RESET_PASSWORD.PASSWORD_INVALID');
   }
 
   getConfirmPasswordError(): string {
     const ctrl = this.pwForm.controls['confirmPassword'];
-    if (this.pwForm.hasError('mismatch')) return 'Passwords do not match';
-    if (ctrl.hasError('required')) return 'Please confirm your password';
-    if (ctrl.hasError('minlength')) return 'Minimum 8 characters';
-    return 'Invalid confirmation';
+    if (this.pwForm.hasError('mismatch')) return this.i18n.instant('RESET_PASSWORD.MISMATCH');
+    if (ctrl.hasError('required')) return this.i18n.instant('RESET_PASSWORD.CONFIRM_REQUIRED');
+    if (ctrl.hasError('minlength')) return this.i18n.instant('LOGIN.PASSWORD_MIN_LENGTH_ERROR');
+    return this.i18n.instant('RESET_PASSWORD.CONFIRM_INVALID');
   }
 
   private matchPasswords(group: FormGroup) {

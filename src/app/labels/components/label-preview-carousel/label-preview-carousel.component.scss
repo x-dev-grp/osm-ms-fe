@@ -213,7 +213,7 @@ $olive-700: #4a572c;
 }
 
 ::ng-deep .label-preview-carousel .carousel-nav.mat-mdc-icon-button {
-  --mdc-icon-button-state-layer-size: 28px;
+  --mat-icon-button-state-layer-size: 28px;
   background: transparent;
   border: none;
   box-shadow: none;
@@ -229,5 +229,5 @@ $olive-700: #4a572c;
 }
 
 ::ng-deep .label-preview-carousel.is-full .carousel-nav.mat-mdc-icon-button {
-  --mdc-icon-button-state-layer-size: 36px;
+  --mat-icon-button-state-layer-size: 36px;
 }

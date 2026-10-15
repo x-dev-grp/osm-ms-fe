@@ -1,14 +1,14 @@
 <div class="roles-container">
 
   <div class="roles-actions">
-    <button mat-raised-button color="primary" (click)="onAddRole()">
+    <button mat-raised-button color="primary" data-tour="roles-new" (click)="onAddRole()">
       <mat-icon>add</mat-icon>
 
       {{ 'AUTO.CREER_NOUVEAU_ROLE' | translate }}
     </button>
 
   </div>
-  <div class="roles-grid">
+  <div class="roles-grid" data-tour="roles-grid">
     @for (role of roles; track $index) {
     <app-card headerClass="header-class" cardClass="role-card" [showHeader]="true" actionClass="role-actions" [showContent]="true" >
       <ng-template #headerOptionsTemplate >

@@ -7,7 +7,7 @@
   [exportPayload]="exportPayload"
   (refresh)="refreshStats()"
 >
-  <div class="hr-kpi-grid">
+  <div class="hr-kpi-grid" data-tour="hr-kpis">
     @for (kpi of kpiCards; track kpi.labelKey) {
       <article class="hr-kpi">
         <div class="hr-kpi__icon"><mat-icon>{{ kpi.icon }}</mat-icon></div>
@@ -19,7 +19,7 @@
     }
   </div>
 
-  <div class="hr-nav-grid">
+  <div class="hr-nav-grid" data-tour="hr-nav">
     @for (item of navItems; track item.route) {
       <a [routerLink]="item.route" class="hr-nav-card" [ngClass]="'hr-nav-card--' + item.themeKey">
         <div class="hr-nav-card__icon">

@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 // from third party packages
 @import 'node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css';
@@ -13,6 +14,9 @@
 // calender
 @import 'node_modules/flatpickr/dist/flatpickr.css';
 @import 'node_modules/angular-calendar/css/angular-calendar.css';
+@import 'node_modules/driver.js/dist/driver.css';
+@import './app/shared/tour/tour.scss';
+@import './scss/browser-tabs';
 
 // font
 @import 'scss/fonts/fontawesome.css';

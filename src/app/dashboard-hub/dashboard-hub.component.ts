@@ -1,3 +1,4 @@
+import { PortalModule } from '@angular/cdk/portal';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,6 +17,7 @@ import { StockDashboardComponent } from '../stock/components/dashboard/stock-das
 import { HrDashboardComponent } from '../hr/hr-dashboard/hr-dashboard.component';
 import { RapportGlobalOFComponent } from '../analytics/components/Rapport-Global-OF/Rapport-Global-OF.component';
 import { AdministrationDashboardComponent } from '../administration/administration-dashboard/administration-dashboard.component';
+import { DashboardHeaderHost } from '../shared/components/dashboard/dashboard-header-host.service';
 import { DashboardHubService } from './dashboard-hub.service';
 import { DashboardTabDefinition, DashboardTabId } from './dashboard-hub.models';
 
@@ -28,6 +30,7 @@ import { DashboardTabDefinition, DashboardTabId } from './dashboard-hub.models';
     MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
+    PortalModule,
     TranslateModule,
     HomeDashboardComponent,
     ReceptionDashboardComponent,
@@ -38,10 +41,12 @@ import { DashboardTabDefinition, DashboardTabId } from './dashboard-hub.models';
     RapportGlobalOFComponent,
     AdministrationDashboardComponent
   ],
+  providers: [DashboardHeaderHost],
   templateUrl: './dashboard-hub.component.html',
   styleUrl: './dashboard-hub.component.scss'
 })
 export class DashboardHubComponent implements OnInit, OnDestroy {
+  readonly headerHost = inject(DashboardHeaderHost);
   private readonly hubService = inject(DashboardHubService);
   private readonly auth = inject(AuthenticationService);
   private readonly route = inject(ActivatedRoute);
@@ -51,6 +56,18 @@ export class DashboardHubComponent implements OnInit, OnDestroy {
   visibleTabs: DashboardTabDefinition[] = [];
   activeTabId: DashboardTabId | null = null;
   loadedTabs = new Set<DashboardTabId>();
+
+  get activeTab(): DashboardTabDefinition | null {
+    return this.visibleTabs.find((tab) => tab.id === this.activeTabId) ?? null;
+  }
+
+  get rootTabId(): DashboardTabId | null {
+    return this.visibleTabs[0]?.id ?? null;
+  }
+
+  get showTabs(): boolean {
+    return !this.auth.isOosmAdmin();
+  }
 
   ngOnInit(): void {
     this.refreshTabs(this.readTabFromRoute());
@@ -100,7 +117,7 @@ export class DashboardHubComponent implements OnInit, OnDestroy {
     this.activeTabId = nextTab;
     this.loadedTabs.add(nextTab);
 
-    if (!this.readTabFromRoute()) {
+    if (this.readTabFromRoute() !== nextTab) {
       void this.router.navigate(['/dashboard', nextTab], { replaceUrl: true });
     }
   }

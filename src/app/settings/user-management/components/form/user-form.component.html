@@ -67,7 +67,7 @@
 
     </div>
 
-    <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="col-lg-4 col-md-6 col-sm-12" data-tour="user-confirmation">
       <label for="method" class="f-w-500">{{ 'ADMIN_USERS.FIELDS.CONFIRMATION_METHOD' | translate }}  <span class="text-warn-500">*</span></label>
       <mat-form-field appearance="outline" class="w-100">
         <mat-select formControlName="confirmationMethod" id="method">
@@ -82,7 +82,7 @@
     </div>
 
 
-    <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="col-lg-4 col-md-6 col-sm-12" data-tour="user-role">
       <label for="role" class="f-w-500">{{ 'ADMIN.ADD_OOSM_ADMIN_ROLE' | translate }}  <span class="text-warn-500">*</span></label>
       <mat-form-field appearance="outline">
                 <input
@@ -104,13 +104,13 @@
     </mat-form-field>
     </div>
 
-    <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
+    <div class="col-lg-4 col-md-6 col-sm-12 mt-3" data-tour="user-locked">
       <mat-slide-toggle id="locked" formControlName="locked" color="primary">  {{ 'AUTO.DESACTIVER' | translate }} </mat-slide-toggle>
     </div>
 
   </div>
 </form>
-<div class="text-end">
+<div class="text-end" data-tour="user-save">
   <button (click)="cancel()" mat-stroked-button class="m-r-10">{{ 'ADMIN.CANCEL' | translate }}</button>
   <button [disabled]="userForm.invalid" (click)="onSubmit()" mat-flat-button *ngIf="updateMode" class="m-r-10" color="primary">
     <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>

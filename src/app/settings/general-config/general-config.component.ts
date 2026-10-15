@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,7 +24,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   templateUrl: './general-config.component.html',
   styleUrl: './general-config.component.scss'
 })
-export class GeneralConfigComponent implements OnInit {
+export class GeneralConfigComponent implements OnInit, AfterViewInit {
   activeTab = 'company';
   selectedTabIndex = 0;
 
@@ -45,7 +45,12 @@ export class GeneralConfigComponent implements OnInit {
     other: 9
   };
 
-  constructor(private route: ActivatedRoute) {}
+  private readonly tabKeys = ['company', 'production', 'finance', 'hr', 'reception', 'locale', 'print', 'notifications', 'types', 'other'];
+
+  constructor(
+    private route: ActivatedRoute,
+    private host: ElementRef<HTMLElement>
+  ) {}
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
@@ -59,28 +64,19 @@ export class GeneralConfigComponent implements OnInit {
 
   onTabChange(event: MatTabChangeEvent) {
     this.selectedTabIndex = event.index;
-    const tabLabel = event.tab.textLabel.toLowerCase();
+    this.activeTab = this.tabKeys[event.index] ?? 'other';
+    this.revealActiveTab();
+  }
 
-    if (tabLabel.includes('production')) {
-      this.activeTab = 'production';
-    } else if (tabLabel.includes('general')) {
-      this.activeTab = 'company';
-    } else if (tabLabel.includes('finance')) {
-      this.activeTab = 'finance';
-    } else if (tabLabel.includes('rh') || tabLabel.includes('hr')) {
-      this.activeTab = 'hr';
-    } else if (tabLabel.includes('reception')) {
-      this.activeTab = 'reception';
-    } else if (tabLabel.includes('locale') || tabLabel.includes('langue')) {
-      this.activeTab = 'locale';
-    } else if (tabLabel.includes('print') || tabLabel.includes('impression')) {
-      this.activeTab = 'print';
-    } else if (tabLabel.includes('notif')) {
-      this.activeTab = 'notifications';
-    } else if (tabLabel.includes('type') || tabLabel.includes('param')) {
-      this.activeTab = 'types';
-    } else {
-      this.activeTab = 'other';
-    }
+  ngAfterViewInit(): void {
+    this.revealActiveTab();
+  }
+
+  /** The strip scrolls natively instead of paginating, so bring the selected tab into view. */
+  private revealActiveTab(): void {
+    setTimeout(() => {
+      const active = this.host.nativeElement.querySelector('.mat-mdc-tab.mdc-tab--active');
+      active?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    });
   }
 }

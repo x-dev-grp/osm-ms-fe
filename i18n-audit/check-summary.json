@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "issueCount": 0,
+  "categories": {
+    "dictionaryKeysMissing": 0,
+    "emptyTranslations": 0,
+    "referencedKeysMissing": 0,
+    "dynamicEntriesMissing": 0
+  },
+  "keyCounts": {
+    "en": 6987,
+    "fr": 6987,
+    "ar": 6987
+  },
+  "reports": [
+    "missing-in-en.txt",
+    "missing-in-fr.txt",
+    "missing-in-ar.txt",
+    "used-keys-missing-in-en.txt",
+    "used-keys-missing-in-fr.txt",
+    "used-keys-missing-in-ar.txt",
+    "missing-dynamic-enum-keys.txt"
+  ]
+}

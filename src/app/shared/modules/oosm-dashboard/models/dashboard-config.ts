@@ -14,6 +14,8 @@ export interface DashboardConfig {
     action: string;
     color: string;
     icon: string;
+    requiredAction?: string;
+    allowedStatuses?: string[];
     disabled?: {
       field?: string;
       value: any;

@@ -21,6 +21,30 @@ export interface AdminUserSummary {
   createdDate?: string;
 }
 
+export interface AdminCompanyOverview {
+  tenantId: string;
+  tenantName?: string;
+  city?: string | null;
+  active: boolean;
+  userCount: number;
+  activeUsersLast7Days: number;
+  enabledModules: string[];
+  createdDate?: string | null;
+  lastActivityAt?: string | null;
+}
+
+export interface AdminModuleAdoption {
+  module: string;
+  tenantCount: number;
+}
+
+export interface AdminSupportSummary {
+  open: number;
+  inProgress: number;
+  resolved: number;
+  closed: number;
+}
+
 export interface AdminDashboardStats {
   totalTenants: number;
   activeTenants: number;
@@ -34,4 +58,8 @@ export interface AdminDashboardStats {
   topTenantsByUsers: AdminTenantSummary[];
   recentTenants: AdminTenantSummary[];
   recentUsers: AdminUserSummary[];
+  activeUsersLast7Days?: number;
+  companies?: AdminCompanyOverview[];
+  moduleAdoption?: AdminModuleAdoption[];
+  supportTickets?: AdminSupportSummary;
 }

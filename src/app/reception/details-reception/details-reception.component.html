@@ -14,7 +14,7 @@
     <mat-card-title>{{ 'DELIVERIES.DETAILS.TITLE' | translate }}</mat-card-title>
 
     <div class="header-actions">
-      <div class="header-chips">
+      <div class="header-chips" data-tour="details-status">
       <mat-chip-listbox [attr.aria-label]="'AUTO.RECEPTION_META' | translate">
         <mat-chip>
           {{ 'DELIVERIES.FIELDS.DELIVERY_TYPE' | translate }}:
@@ -34,7 +34,7 @@
       </div>
 
       <div class="header-qr-actions">
-        <div class="qr-actions">
+        <div class="qr-actions" data-tour="details-qr">
   <button *ngIf="hasCompleteQrMetadata()" mat-stroked-button type="button"
           [matTooltip]="'QR.TITLE' | translate" (click)="openExistingQrDialog()">
     <mat-icon>qr_code_2</mat-icon>
@@ -51,7 +51,7 @@
   </div>
 
   <!-- Linked counterpart banner (OLIVE <-> OIL) -->
-  <div *ngIf="associatedCounterpart" class="assoc-banner" role="region" [attr.aria-label]="'AUTO.ASSOCIATED_RECEPTION' | translate">
+  <div *ngIf="associatedCounterpart" class="assoc-banner" data-tour="details-counterpart" role="region" [attr.aria-label]="'AUTO.ASSOCIATED_RECEPTION' | translate">
     <div class="assoc-banner__content">
       <mat-icon class="assoc-banner__icon" aria-hidden="true">link</mat-icon>
 
@@ -76,7 +76,7 @@
     </div>
   </div>
 
-  <div class="related-links" role="navigation" [attr.aria-label]="'DELIVERIES.DETAILS.RELATED_LINKS.TITLE' | translate">
+  <div class="related-links" data-tour="details-links" role="navigation" [attr.aria-label]="'DELIVERIES.DETAILS.RELATED_LINKS.TITLE' | translate">
     <div class="related-links__header">
       <mat-icon aria-hidden="true">hub</mat-icon>
       <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.TITLE' | translate }}</span>
@@ -340,7 +340,8 @@
         deliveryData.paidAmount != null || deliveryData.unpaidAmount != null ||
         deliveryData.paymentMode || deliveryData.paymentStatus
       "
-      class="section">
+      class="section"
+      data-tour="details-price">
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.INFO_PRIX' | translate }}</h3>
 
       <div *ngIf="deliveryData.unitPrice != null || deliveryData.price != null" class="grid-row">
@@ -374,7 +375,7 @@
     </div>
 
     <!-- Quality Control -->
-    <div *ngIf="deliveryData.qualityControlResults?.length" class="section">
+    <div *ngIf="deliveryData.qualityControlResults?.length" class="section" data-tour="details-quality">
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.INFO_CONTROL_QUALITE' | translate }}</h3>
 
       <div *ngFor="let qc of deliveryData.qualityControlResults" class="grid-row">

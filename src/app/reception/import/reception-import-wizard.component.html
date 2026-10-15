@@ -4,7 +4,7 @@
     <p class="day-import__hint">{{ 'ABIOOC.DAY_IMPORT.HINT' | translate }}</p>
   </header>
 
-  <mat-card class="day-import__card">
+  <mat-card class="day-import__card" data-tour="import-download">
     <mat-card-header>
       <mat-card-title>{{ 'ABIOOC.DAY_IMPORT.STEP_DOWNLOAD' | translate }}</mat-card-title>
     </mat-card-header>
@@ -23,22 +23,50 @@
     </mat-card-content>
   </mat-card>
 
+  <aside class="day-import__rules" data-tour="import-rules" role="note" aria-labelledby="day-import-rules-title">
+    <h2 id="day-import-rules-title">
+      <mat-icon>gavel</mat-icon>
+      {{ 'ABIOOC.DAY_IMPORT.RULES_TITLE' | translate }}
+    </h2>
+    <ol>
+      @for (rule of importRules; track rule) {
+        <li>{{ rule | translate }}</li>
+      }
+    </ol>
+    <p class="day-import__rules-responsibility">{{ 'ABIOOC.DAY_IMPORT.RULES_RESPONSIBILITY' | translate }}</p>
+    <mat-checkbox
+      class="day-import__rules-accept"
+      [checked]="rulesAccepted"
+      [disabled]="committing"
+      (change)="setRulesAccepted($event.checked)"
+    >
+      {{ 'ABIOOC.DAY_IMPORT.RULES_ACCEPT' | translate }}
+    </mat-checkbox>
+    @if (rulesAcceptedAt) {
+      <p class="day-import__rules-accepted">
+        {{ 'ABIOOC.DAY_IMPORT.RULES_ACCEPTED_ON' | translate: { date: (rulesAcceptedAt | date: 'medium') } }}
+      </p>
+    }
+  </aside>
+
   <mat-card class="day-import__card">
     <mat-card-header>
       <mat-card-title>{{ 'ABIOOC.DAY_IMPORT.STEP_UPLOAD' | translate }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div class="day-import__actions">
-        <label class="day-import__file">
-          <input type="file" accept=".xlsx,.xls" (change)="onFileSelected($event)" />
+        <label class="day-import__file" data-tour="import-upload">
+          <input type="file" accept=".xlsx" [disabled]="committing || state === 'unknown'" (change)="onFileSelected($event)" />
           <span>{{ selectedFile?.name || ('ABIOOC.DAY_IMPORT.CHOOSE_FILE' | translate) }}</span>
         </label>
         <button
           mat-flat-button
           color="primary"
           type="button"
-          [disabled]="!selectedFile || dryRunning"
-          (click)="runDryRun()">
+          data-tour="import-dry-run"
+          [disabled]="!rulesAccepted || !selectedFile || dryRunning || committing || state === 'unknown'"
+          (click)="runDryRun()"
+        >
           @if (dryRunning) {
             <mat-spinner diameter="18"></mat-spinner>
           } @else {
@@ -47,16 +75,30 @@
           {{ 'ABIOOC.DAY_IMPORT.DRY_RUN' | translate }}
         </button>
       </div>
+      @if (!rulesAccepted) {
+        <p class="day-import__rules-required" role="status">
+          <mat-icon>info</mat-icon>
+          {{ 'ABIOOC.DAY_IMPORT.RULES_REQUIRED' | translate }}
+        </p>
+      }
     </mat-card-content>
   </mat-card>
 
+  @if (state === 'unknown') {
+    <p role="status">{{ 'ABIOOC.DAY_IMPORT.OUTCOME_UNKNOWN' | translate }}</p>
+    <button mat-stroked-button type="button" (click)="checkOutcome()">{{ 'ABIOOC.DAY_IMPORT.CHECK_OUTCOME' | translate }}</button>
+    <button mat-stroked-button type="button" (click)="retryCommit()">{{ 'ABIOOC.DAY_IMPORT.RETRY_COMMIT' | translate }}</button>
+  }
+  @if (state === 'committed') {
+    <p role="status">{{ 'ABIOOC.DAY_IMPORT.COMMIT_OK' | translate }}</p>
+  }
   @if (report) {
     <mat-card class="day-import__card">
       <mat-card-header>
         <mat-card-title>{{ 'ABIOOC.DAY_IMPORT.STEP_REPORT' | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <div class="day-import__summary">
+        <div class="day-import__summary" data-tour="import-summary">
           @if (report.businessDate) {
             <div class="summary-chip">
               <span class="summary-label">{{ 'ABIOOC.DAY_IMPORT.BUSINESS_DATE' | translate }}</span>
@@ -123,10 +165,21 @@
             <tbody>
               @for (row of validRows; track row.sheet + '-' + row.rowNumber + '-' + row.status) {
                 <tr>
-                  <td>{{ row.sheet }}</td>
+                  <td>{{ sheetLabel(row.sheet) }}</td>
                   <td>{{ row.rowNumber }}</td>
-                  <td>{{ row.businessKey || '—' }}</td>
-                  <td><span class="status status--{{ row.status | lowercase }}">{{ row.status }}</span></td>
+                  <td>
+                    {{ row.businessKey || '—' }}
+                    @if (row.lotNumber) {
+                      <span class="lot-chip" [title]="(state === 'committed' ? 'ABIOOC.DAY_IMPORT.LOT_ASSIGNED' : 'ABIOOC.DAY_IMPORT.LOT_PLANNED') | translate">
+                        {{ 'ABIOOC.DAY_IMPORT.LOT' | translate }} {{ row.lotNumber }}
+                      </span>
+                    }
+                  </td>
+                  <td>
+                    <span class="status status--{{ row.status | lowercase }}">
+                      {{ 'ABIOOC.DAY_IMPORT.STATUS.' + row.status | translate }}
+                    </span>
+                  </td>
                   <td>{{ row.message || '—' }}</td>
                 </tr>
               } @empty {
@@ -139,7 +192,7 @@
         </div>
 
         <h3>{{ 'ABIOOC.DAY_IMPORT.INVALID_ROWS' | translate }} ({{ invalidRows.length }})</h3>
-        <div class="day-import__table-wrap">
+        <div class="day-import__table-wrap" data-tour="import-invalid">
           <table class="day-import__table">
             <thead>
               <tr>
@@ -153,10 +206,12 @@
             <tbody>
               @for (row of invalidRows; track row.sheet + '-' + row.rowNumber + '-err') {
                 <tr class="row--error">
-                  <td>{{ row.sheet }}</td>
+                  <td>{{ sheetLabel(row.sheet) }}</td>
                   <td>{{ row.rowNumber }}</td>
                   <td>{{ row.businessKey || '—' }}</td>
-                  <td><span class="status status--error">{{ row.status }}</span></td>
+                  <td>
+                    <span class="status status--error">{{ 'ABIOOC.DAY_IMPORT.STATUS.' + row.status | translate }}</span>
+                  </td>
                   <td>{{ row.message || '—' }}</td>
                 </tr>
               } @empty {
@@ -168,13 +223,14 @@
           </table>
         </div>
 
-        <div class="day-import__actions day-import__actions--commit">
+        <div class="day-import__actions day-import__actions--commit" data-tour="import-commit">
           <button
             mat-flat-button
             color="accent"
             type="button"
-            [disabled]="!report.canCommit || !selectedFile || committing"
-            (click)="commit()">
+            [disabled]="!rulesAccepted || state !== 'valid' || !report.canCommit || !selectedFile || committing || dryRunning"
+            (click)="commit()"
+          >
             @if (committing) {
               <mat-spinner diameter="18"></mat-spinner>
             } @else {
@@ -190,7 +246,8 @@
     </mat-card>
   }
 
-  <mat-card class="day-import__card">
+  @if (driveImportEnabled) {
+  <mat-card class="day-import__card" data-tour="import-drive">
     <mat-card-header>
       <mat-card-title>{{ 'ABIOOC.DAY_IMPORT.DRIVE_PANEL' | translate }}</mat-card-title>
     </mat-card-header>
@@ -202,8 +259,9 @@
             mat-flat-button
             color="primary"
             type="button"
-            [disabled]="connectingDrive || !driveStatus?.oauthConfigured"
-            (click)="connectDrive()">
+            [disabled]="!canManageDrive || connectingDrive || !driveStatus?.oauthConfigured"
+            (click)="connectDrive()"
+          >
             @if (connectingDrive) {
               <mat-spinner diameter="18"></mat-spinner>
             } @else {
@@ -216,8 +274,9 @@
             mat-stroked-button
             color="warn"
             type="button"
-            [disabled]="disconnectingDrive"
-            (click)="disconnectDrive()">
+            [disabled]="!canManageDrive || disconnectingDrive"
+            (click)="disconnectDrive()"
+          >
             @if (disconnectingDrive) {
               <mat-spinner diameter="18"></mat-spinner>
             } @else {
@@ -234,8 +293,9 @@
           mat-flat-button
           color="accent"
           type="button"
-          [disabled]="syncing || !driveStatus?.connected"
-          (click)="syncDrive()">
+          [disabled]="!canManageDrive || syncing || !driveStatus?.configured"
+          (click)="syncDrive()"
+        >
           @if (syncing) {
             <mat-spinner diameter="18"></mat-spinner>
           } @else {
@@ -278,7 +338,7 @@
           @if (driveStatus.lastStatus) {
             <div>
               <dt>{{ 'ABIOOC.DAY_IMPORT.DRIVE_LAST_STATUS' | translate }}</dt>
-              <dd>{{ driveStatus.lastStatus }}</dd>
+              <dd>{{ driveResultLabel(driveStatus.lastStatus) }}</dd>
             </div>
           }
           @if (driveStatus.lastMessage) {
@@ -305,4 +365,5 @@
       }
     </mat-card-content>
   </mat-card>
+  }
 </section>

@@ -6,7 +6,7 @@
       <mat-spinner diameter="32"></mat-spinner>
     </div>
   } @else if (summary) {
-    <div class="season-recap__grid">
+    <div class="season-recap__grid" data-tour="season-grid">
       <mat-card class="summary-card">
         <mat-card-content>
           <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.DELIVERIES' | translate }}</span>
@@ -37,7 +37,7 @@
           <span class="summary-value unpaid">{{ summary.deliveryUnpaid | currency: 'TND' }}</span>
         </mat-card-content>
       </mat-card>
-      <mat-card class="summary-card">
+      <mat-card class="summary-card" data-tour="season-sales">
         <mat-card-content>
           <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.OIL_SALES' | translate }}</span>
           <span class="summary-value">{{ summary.oilSalesTotal | currency: 'TND' }}</span>
@@ -63,7 +63,7 @@
           <span class="summary-meta">{{ summary.expensesCount }} {{ 'ABIOOC.SEASON_RECAP.ITEMS' | translate }}</span>
         </mat-card-content>
       </mat-card>
-      <mat-card class="summary-card">
+      <mat-card class="summary-card" data-tour="season-cash">
         <mat-card-content>
           <span class="summary-label">{{ 'ABIOOC.SEASON_RECAP.CASH_NET' | translate }}</span>
           <span class="summary-value">{{ summary.cashInbound - summary.cashOutbound | currency: 'TND' }}</span>

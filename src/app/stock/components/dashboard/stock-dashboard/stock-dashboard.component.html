@@ -15,6 +15,7 @@
       mat-stroked-button
       color="warn"
       type="button"
+      data-tour="stock-thresholds"
       (click)="verifierSeuils()"
       [disabled]="loading || refreshingThresholds"
     >
@@ -23,7 +24,7 @@
     </button>
   </ng-container>
 
-  <section class="hero-summary" *ngIf="stats">
+  <section class="hero-summary" data-tour="stock-summary" *ngIf="stats">
     <div class="hero-card hero-card--success">
       <div class="hero-card__icon"><mat-icon>inventory</mat-icon></div>
       <div class="hero-card__content">
@@ -77,7 +78,7 @@
       </div>
     </div>
 
-    <div class="dashboard-panel critical-card">
+    <div class="dashboard-panel critical-card" data-tour="stock-critical">
       <div class="dashboard-panel__header">
         <h5>{{ 'AUTO.ARTICLES_SOUS_SEUIL_CRITIQUE' | translate }}</h5>
         <a routerLink="/stock/articles" class="view-all">{{ 'AUTO.VOIR_TOUT' | translate }}</a>
@@ -111,7 +112,7 @@
       </div>
     </div>
 
-    <div class="dashboard-panel movements-card">
+    <div class="dashboard-panel movements-card" data-tour="stock-movements">
       <div class="dashboard-panel__header">
         <h5>{{ 'AUTO.DERNIERS_MOUVEMENTS' | translate }}</h5>
         <a routerLink="/stock/mouvements" class="view-all">{{ 'AUTO.VOIR_TOUT' | translate }}</a>

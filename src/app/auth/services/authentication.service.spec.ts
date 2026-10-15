@@ -8,12 +8,16 @@ import { PermissionService } from '../../settings/user-management/services/permi
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { NotificationService } from '../../shared/services/notification.service';
 import { AppConfig } from 'src/environments/environment';
+import { of } from 'rxjs';
+import { Role } from '../../theme/types/role';
 
 describe('AuthenticationService login', () => {
   let service: AuthenticationService;
   let httpMock: HttpTestingController;
+  let companyProfileService: jasmine.SpyObj<CompanyProfileService>;
 
   beforeEach(() => {
+    companyProfileService = jasmine.createSpyObj<CompanyProfileService>('CompanyProfileService', ['clearCache', 'getProfile']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -22,7 +26,7 @@ describe('AuthenticationService login', () => {
         { provide: TokenService, useValue: { getToken: () => null, setToken: () => {}, clearTokens: () => {} } },
         { provide: UserService, useValue: {} },
         { provide: PermissionService, useValue: { clearCache: () => {} } },
-        { provide: CompanyProfileService, useValue: { clearCache: () => {} } },
+        { provide: CompanyProfileService, useValue: companyProfileService },
         { provide: NotificationService, useValue: { stopPolling: () => {} } }
       ]
     });
@@ -46,5 +50,36 @@ describe('AuthenticationService login', () => {
     expect(req.request.body).toContain('password=secret');
 
     req.flush({ access_token: 'tok', refresh_token: 'ref' });
+  });
+
+  it('loads tenant modules from the profile when refresh does not provide them', async () => {
+    service.setCurrentUserValue = {
+      id: 'user-1', email: '', password: '', phoneNumber: '', confirmationMethod: '',
+      isLocked: false, role: Role.Admin, permissions: [], tenantId: 'tenant-1'
+    };
+    companyProfileService.getProfile.and.returnValue(of({ enabledModules: ['finance', 'storage'] } as any));
+
+    const result = service.ensureSessionContext();
+    httpMock.expectOne((request) => request.url.endsWith('/api/security/user/me/refresh-session')).flush({});
+    await result;
+
+    expect(companyProfileService.getProfile).toHaveBeenCalledWith({ forceRefresh: true });
+    expect(service.getTenantEnabledModules()).toEqual(['FINANCE', 'STORAGE']);
+  });
+
+  it('deduplicates concurrent session-context requests', async () => {
+    service.setCurrentUserValue = {
+      id: 'user-1', email: '', password: '', phoneNumber: '', confirmationMethod: '',
+      isLocked: false, role: Role.Admin, permissions: [], tenantId: 'tenant-1'
+    };
+    companyProfileService.getProfile.and.returnValue(of({ enabledModules: ['reception'] } as any));
+
+    const first = service.ensureSessionContext();
+    const second = service.ensureSessionContext();
+    expect(second).toBe(first);
+    httpMock.expectOne((request) => request.url.endsWith('/api/security/user/me/refresh-session')).flush({});
+    await Promise.all([first, second]);
+
+    expect(companyProfileService.getProfile).toHaveBeenCalledTimes(1);
   });
 });

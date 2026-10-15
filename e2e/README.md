@@ -5,7 +5,7 @@ End-to-end tests for ZitFlow frontend flows, including mobile bottom navigation 
 ## Prerequisites
 
 1. **Smoke only (no backend):** Playwright starts the app automatically (`ng serve` locally, or serves `dist/ui` in CI).
-2. **Authenticated tests:** Backend on `http://localhost:8084` and a valid user (default `oosmAdmin` / `osmAdmin123`).
+2. **Authenticated tests:** Backend on `http://localhost:8084` and a valid user passed through `E2E_USERNAME` / `E2E_PASSWORD` (no default; tests skip when unset). Prefer a non-admin account: admin roles bypass every permission check.
 
 Install browsers once:
 
@@ -85,7 +85,8 @@ Playwright auto-starts the frontend when it is not already running on port 4200.
 
 | File | Purpose |
 |------|---------|
-| `helpers/auth.ts` | Login and authenticated shell checks |
+| `helpers/auth.ts` | Login (credentials from env only) and authenticated shell checks |
+| `helpers/fixtures.ts` | `test` that fails on any 403/5xx backend call; opt out per test with `test.use({ allowedApiErrors: [/pattern/] })` |
 | `helpers/password-reset.ts` | Route mocks for reset / validate / update / admin temp password |
 | `helpers/theme-config.ts` | Seed/persist theme config for mobile UI tests |
 
@@ -94,8 +95,8 @@ Playwright auto-starts the frontend when it is not already running on port 4200.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `E2E_BASE_URL` | http://localhost:4200 | Frontend URL |
-| `E2E_USERNAME` | oosmAdmin | Login user |
-| `E2E_PASSWORD` | osmAdmin123 | Login password |
+| `E2E_USERNAME` | unset | Login user (required for authenticated tests) |
+| `E2E_PASSWORD` | unset | Login password (required for authenticated tests) |
 | `E2E_RUN_LOGIN` | unset | Set to `1` to run authenticated tests |
 | `CI` | unset | Serves built `dist/ui` instead of `ng serve` |
 

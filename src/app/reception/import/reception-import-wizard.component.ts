@@ -5,6 +5,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
 import { SharedModule } from '../../shared/shared.module';
+import { AuthenticationService } from '../../auth/services/authentication.service';
 import {
   DayImportDriveStatus,
   DayImportReport,
@@ -12,7 +13,6 @@ import {
   DayImportRow,
   ReceptionImportService
 } from './reception-import.service';
-import { SupportTicketService } from '../../shared/services/support-ticket.service';
 
 @Component({
   selector: 'app-reception-import-wizard',
@@ -23,15 +23,19 @@ import { SupportTicketService } from '../../shared/services/support-ticket.servi
 })
 export class ReceptionImportWizardComponent implements OnInit {
   private readonly importService = inject(ReceptionImportService);
+  private readonly authentication = inject(AuthenticationService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly supportTickets = inject(SupportTicketService);
 
   selectedFile: File | null = null;
   report: DayImportReport | null = null;
   driveStatus: DayImportDriveStatus | null = null;
+
+  state: 'selected' | 'validating' | 'valid' | 'invalid' | 'committing' | 'committed' | 'failed' | 'unknown' = 'selected';
+  private selectionVersion = 0;
+  private reviewedFile: File | null = null;
 
   downloading = false;
   dryRunning = false;
@@ -42,7 +46,58 @@ export class ReceptionImportWizardComponent implements OnInit {
   connectingDrive = false;
   disconnectingDrive = false;
 
+  /** Google Drive import is hidden until the OAuth setup is ready for production. */
+  readonly driveImportEnabled = false;
+  readonly importRules = [
+    'ABIOOC.DAY_IMPORT.RULES.TEMPLATE',
+    'ABIOOC.DAY_IMPORT.RULES.ONE_DAY',
+    'ABIOOC.DAY_IMPORT.RULES.STRUCTURE',
+    'ABIOOC.DAY_IMPORT.RULES.REFERENCES',
+    'ABIOOC.DAY_IMPORT.RULES.DROPDOWNS',
+    'ABIOOC.DAY_IMPORT.RULES.FORMATS',
+    'ABIOOC.DAY_IMPORT.RULES.TANKS',
+    'ABIOOC.DAY_IMPORT.RULES.LOT',
+    'ABIOOC.DAY_IMPORT.RULES.REVIEW'
+  ];
+  /** Bump when the rules change so every user has to accept them again. */
+  private static readonly RULES_VERSION = 3;
+  rulesAcceptedAt: string | null = this.readRulesAcceptance();
+
+  get rulesAccepted(): boolean {
+    return this.rulesAcceptedAt !== null;
+  }
+
+  setRulesAccepted(accepted: boolean): void {
+    this.rulesAcceptedAt = accepted ? new Date().toISOString() : null;
+    try {
+      if (this.rulesAcceptedAt) localStorage.setItem(this.rulesStorageKey(), this.rulesAcceptedAt);
+      else localStorage.removeItem(this.rulesStorageKey());
+    } catch {
+      // storage unavailable: acceptance lasts for this page only
+    }
+  }
+
+  private readRulesAcceptance(): string | null {
+    try {
+      return localStorage.getItem(this.rulesStorageKey());
+    } catch {
+      return null;
+    }
+  }
+
+  private rulesStorageKey(): string {
+    const user = this.authentication.currentUserValue?.id ?? 'anonymous';
+    return `oosm.dayImport.rulesAccepted.v${ReceptionImportWizardComponent.RULES_VERSION}.${user}`;
+  }
+
+  get canManageDrive(): boolean {
+    return ['ADMIN', 'OOSMADMIN'].includes(String(this.authentication.currentUserValue?.role).toUpperCase());
+  }
+
   ngOnInit(): void {
+    if (!this.driveImportEnabled) {
+      return;
+    }
     this.handleOAuthReturn();
     this.refreshDriveStatus();
   }
@@ -56,10 +111,16 @@ export class ReceptionImportWizardComponent implements OnInit {
   }
 
   onFileSelected(event: Event): void {
+    if (this.committing || this.state === 'unknown') return;
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;
-    this.selectedFile = file;
+    this.selectionVersion++;
+    this.selectedFile = file?.name.toLowerCase().endsWith('.xlsx') ? file : null;
     this.report = null;
+    this.reviewedFile = null;
+    this.dryRunning = false;
+    this.state = 'selected';
+    if (file && !this.selectedFile) this.fail('ABIOOC.DAY_IMPORT.XLSX_REQUIRED', () => {});
   }
 
   downloadTemplate(): void {
@@ -85,25 +146,35 @@ export class ReceptionImportWizardComponent implements OnInit {
   }
 
   runDryRun(): void {
-    if (!this.selectedFile) {
-      return;
-    }
+    if (!this.rulesAccepted || !this.selectedFile || this.dryRunning || this.committing || this.state === 'unknown') return;
+    const file = this.selectedFile;
+    const version = this.selectionVersion;
+    this.report = null;
+    this.reviewedFile = null;
     this.dryRunning = true;
-    this.importService.dryRun(this.selectedFile).subscribe({
+    this.state = 'validating';
+    this.importService.dryRun(file).subscribe({
       next: (report) => {
+        if (version !== this.selectionVersion || file !== this.selectedFile) return;
         this.report = report;
+        this.reviewedFile = file;
         this.dryRunning = false;
+        this.state = report.canCommit && !!report.runId ? 'valid' : 'invalid';
       },
-      error: () => this.fail('ABIOOC.DAY_IMPORT.ERROR_DRY_RUN', () => (this.dryRunning = false))
+      error: (err) => {
+        if (version !== this.selectionVersion) return;
+        this.state = 'failed';
+        this.fail('ABIOOC.DAY_IMPORT.ERROR_DRY_RUN', () => (this.dryRunning = false), err?.error?.message);
+      }
     });
   }
 
   downloadReport(format: DayImportReportFormat): void {
-    if (!this.selectedFile) {
+    if (!this.report?.runId) {
       return;
     }
     this.downloadingReport = true;
-    this.importService.dryRunReport(this.selectedFile, format).subscribe({
+    this.importService.savedReport(this.report.runId, format).subscribe({
       next: (blob) => {
         saveAs(blob, `oosm-day-import-report.${format}`);
         this.downloadingReport = false;
@@ -113,41 +184,70 @@ export class ReceptionImportWizardComponent implements OnInit {
   }
 
   commit(): void {
-    if (!this.selectedFile || !this.report?.canCommit) {
+    if (
+      !this.rulesAccepted ||
+      this.state !== 'valid' ||
+      this.committing ||
+      this.dryRunning ||
+      !this.selectedFile ||
+      this.reviewedFile !== this.selectedFile ||
+      !this.report?.canCommit ||
+      !this.report.runId
+    )
       return;
-    }
+    const runId = this.report.runId;
     this.committing = true;
-    this.importService.commit(this.selectedFile).subscribe({
-      next: (report) => {
-        this.report = report;
-        this.committing = false;
-        this.snackBar.open(this.translate.instant('ABIOOC.DAY_IMPORT.COMMIT_OK'), undefined, { duration: 2500 });
-      },
+    this.state = 'committing';
+    this.importService.commit(this.selectedFile, runId).subscribe({
+      next: (report) => this.applyCommitResult(report),
       error: (err) => {
-        const message = err?.message || this.translate.instant('ABIOOC.DAY_IMPORT.ERROR_COMMIT');
         this.committing = false;
-        this.snackBar.open(message, undefined, { duration: 6000 });
-        // Backend also auto-opens a ticket; ensure one exists if API returned a plain HTTP error.
-        if (!String(message).includes('Support ticket')) {
-          this.supportTickets
-            .create({
-              subject: 'Day Excel import commit failed',
-              description: `Automatic ticket from Reception → Day Excel import.\n\nFile: ${this.selectedFile?.name || '?'}\nError: ${message}`,
-              priority: 'HIGH',
-              pageUrl: '/reception/import'
-            })
-            .subscribe((ticket) => {
-              if (ticket?.id) {
-                this.snackBar.open(
-                  this.translate.instant('ABIOOC.DAY_IMPORT.COMMIT_TICKET_CREATED', { id: ticket.id }),
-                  undefined,
-                  { duration: 4000 }
-                );
-              }
-            });
+        if (err?.status === 0 || err?.status >= 500) {
+          this.state = 'unknown';
+          this.fail('ABIOOC.DAY_IMPORT.OUTCOME_UNKNOWN', () => {});
+          this.checkOutcome();
+          return;
         }
+        if (err?.error?.data) this.report = err.error.data;
+        this.state = 'failed';
+        this.fail('ABIOOC.DAY_IMPORT.ERROR_COMMIT', () => {}, err?.error?.message || err?.message);
       }
     });
+  }
+
+  retryCommit(): void {
+    if (this.state !== 'unknown' || !this.report?.runId || !this.selectedFile) return;
+    this.state = 'valid';
+    this.commit();
+  }
+
+  checkOutcome(): void {
+    if (!this.report?.runId) return;
+    this.importService.run(this.report.runId).subscribe({
+      next: (report) => {
+        if (report.outcome === 'COMMITTED' || report.outcome === 'REPLAYED') this.applyCommitResult(report);
+        else if (report.outcome === 'REJECTED') {
+          this.report = report;
+          this.state = 'failed';
+        }
+        // PREVIEW may mean the server is still executing; do not assume failure.
+      },
+      error: () => {
+        this.state = 'unknown';
+      }
+    });
+  }
+
+  private applyCommitResult(report: DayImportReport): void {
+    this.report = report;
+    this.committing = false;
+    if (report.invalidCount === 0 && (report.outcome === 'COMMITTED' || report.outcome === 'REPLAYED')) {
+      this.state = 'committed';
+      this.snackBar.open(this.translate.instant('ABIOOC.DAY_IMPORT.COMMIT_OK'), undefined, { duration: 2500 });
+    } else {
+      this.state = 'failed';
+      this.fail('ABIOOC.DAY_IMPORT.ERROR_COMMIT', () => {});
+    }
   }
 
   refreshDriveStatus(): void {
@@ -165,18 +265,19 @@ export class ReceptionImportWizardComponent implements OnInit {
   }
 
   connectDrive(): void {
+    if (!this.canManageDrive) return;
     this.connectingDrive = true;
     this.importService.driveAuthorizeUrl().subscribe({
       next: (url) => {
         this.connectingDrive = false;
         window.location.href = url;
       },
-      error: (err) =>
-        this.fail('ABIOOC.DAY_IMPORT.ERROR_DRIVE_CONNECT', () => (this.connectingDrive = false), err?.message)
+      error: (err) => this.fail('ABIOOC.DAY_IMPORT.ERROR_DRIVE_CONNECT', () => (this.connectingDrive = false), err?.message)
     });
   }
 
   disconnectDrive(): void {
+    if (!this.canManageDrive) return;
     this.disconnectingDrive = true;
     this.importService.driveDisconnect().subscribe({
       next: (status) => {
@@ -191,6 +292,7 @@ export class ReceptionImportWizardComponent implements OnInit {
   }
 
   syncDrive(): void {
+    if (!this.canManageDrive || !this.driveStatus?.configured) return;
     this.syncing = true;
     this.importService.driveSync().subscribe({
       next: (status) => {
@@ -201,6 +303,19 @@ export class ReceptionImportWizardComponent implements OnInit {
     });
   }
 
+  driveResultLabel(status: string): string {
+    const code = status.split(' ')[0];
+    const key = `ABIOOC.DAY_IMPORT.DRIVE_RESULTS.${code}`;
+    const translated = this.translate.instant(key);
+    return translated === key ? status : translated;
+  }
+
+  sheetLabel(sheet: string): string {
+    const key = `ABIOOC.DAY_IMPORT.SHEETS.${sheet}`;
+    const translated = this.translate.instant(key);
+    return translated === key ? sheet : translated;
+  }
+
   private handleOAuthReturn(): void {
     const params = this.route.snapshot.queryParamMap;
     const gdrive = params.get('gdrive');
@@ -209,11 +324,9 @@ export class ReceptionImportWizardComponent implements OnInit {
     }
     if (gdrive === 'connected') {
       const email = params.get('email');
-      this.snackBar.open(
-        this.translate.instant('ABIOOC.DAY_IMPORT.DRIVE_CONNECTED_OK', { email: email || '' }),
-        undefined,
-        { duration: 3500 }
-      );
+      this.snackBar.open(this.translate.instant('ABIOOC.DAY_IMPORT.DRIVE_CONNECTED_OK', { email: email || '' }), undefined, {
+        duration: 3500
+      });
     } else {
       const message = params.get('message') || this.translate.instant('ABIOOC.DAY_IMPORT.ERROR_DRIVE_CONNECT');
       this.snackBar.open(message, undefined, { duration: 4500 });

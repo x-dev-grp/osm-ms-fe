@@ -40,7 +40,7 @@
     </div>
   } @else {
     <form [formGroup]="receptionForm" class="reception-form" (ngSubmit)="saveReception()">
-      <section class="reception-form-section">
+      <section class="reception-form-section" data-tour="reception-delivery">
         <header class="reception-form-section__header">
           <mat-icon>local_shipping</mat-icon>
           <h3>{{ 'OLIVE_RECEPTION.FORM.SECTIONS.DELIVERY_INFO' | translate }}</h3>
@@ -85,7 +85,7 @@
         </div>
       </section>
 
-      <section class="reception-form-section">
+      <section class="reception-form-section" data-tour="reception-party">
         <header class="reception-form-section__header">
           <mat-icon>person_pin_circle</mat-icon>
           <h3>{{ partyRegionSectionKey | translate }}</h3>
@@ -144,7 +144,7 @@
         </div>
       </section>
 
-      <section class="reception-form-section">
+      <section class="reception-form-section" data-tour="reception-goods">
         <header class="reception-form-section__header">
           <mat-icon>spa</mat-icon>
           <h3>{{ 'OLIVE_RECEPTION.FORM.SECTIONS.OLIVE_INFO' | translate }}</h3>
@@ -196,7 +196,7 @@
         </div>
       </section>
 
-      <div class="reception-form-actions">
+      <div class="reception-form-actions" data-tour="reception-save">
         <button mat-stroked-button type="button" (click)="resetForm()" [disabled]="loading">
           {{ 'OLIVE_RECEPTION.FORM.BUTTONS.CANCEL' | translate }}
         </button>

@@ -1,7 +1,6 @@
 <!-- access-denied.component.html -->
 <div class="pc-container">
   <div class="pc-content">
-
     <!-- Hero -->
     <div class="card mb-4 text-center">
       <div class="card-body py-5">
@@ -17,17 +16,21 @@
           {{ 'ACCESS_DENIED.MESSAGE' | translate }}
         </p>
 
+        <button mat-flat-button type="button" (click)="goHome()" class="btn btn-primary">
+          {{ 'ACCESS_DENIED.GO_HOME' | translate }}
+        </button>
 
         <button
           mat-flat-button
-          routerLink="/auth/login"
+          type="button"
+          (click)="logout()"
           class="btn btn-link text-danger"
-          [attr.title]="'ACCESS_DENIED.LOGOUT_TITLE' | translate">
+          [attr.title]="'ACCESS_DENIED.LOGOUT_TITLE' | translate"
+        >
           <i class="feather icon-log-out"></i>
           <span class="ms-1">{{ 'ACCESS_DENIED.LOGOUT' | translate }}</span>
         </button>
       </div>
     </div>
-
   </div>
 </div>

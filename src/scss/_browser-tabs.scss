@@ -1,0 +1,153 @@
+// Browser-style tabs for mat-tab-group: add class="browser-tabs" together with
+// [disablePagination]="true" so the strip scrolls natively (swipe on touch screens).
+
+.mat-mdc-tab-group.browser-tabs {
+  --browser-tab-strip: var(--surface-muted, #eef1f4);
+  --browser-tab-active: var(--surface-card, #ffffff);
+  --browser-tab-separator: var(--border-subtle, #d5dbe1);
+  --browser-tab-height: 44px;
+  --browser-tab-radius: 10px;
+
+  .mat-mdc-tab-header {
+    border-bottom: none;
+    padding: 6px 6px 0;
+    background: var(--browser-tab-strip);
+    border-radius: 12px 12px 0 0;
+  }
+
+  .mat-mdc-tab-label-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 12px;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .mat-mdc-tab-list {
+    transform: none !important;
+  }
+
+  .mat-mdc-tab-labels {
+    gap: 2px;
+    padding-inline: calc(var(--browser-tab-radius) + 2px);
+  }
+
+  .mat-mdc-tab {
+    flex: 0 0 auto;
+    min-width: 0;
+    height: var(--browser-tab-height);
+    padding: 0 16px;
+    border-radius: var(--browser-tab-radius) var(--browser-tab-radius) 0 0;
+    scroll-snap-align: start;
+    overflow: visible;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 120ms ease;
+
+    .mdc-tab__text-label {
+      gap: 8px;
+      font-size: 13.5px;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .browser-tabs__icon {
+      font-size: 18px;
+      line-height: 1;
+      opacity: 0.75;
+    }
+
+    &:hover:not(.mdc-tab--active) {
+      background: color-mix(in srgb, var(--browser-tab-active) 55%, transparent);
+    }
+
+    &:not(.mdc-tab--active) + .mat-mdc-tab:not(.mdc-tab--active) {
+      background-image: linear-gradient(var(--browser-tab-separator), var(--browser-tab-separator));
+      background-repeat: no-repeat;
+      background-position: left center;
+      background-size: 1px 45%;
+    }
+
+    // State layer is drawn by the tab background instead.
+    .mdc-tab__ripple::before,
+    .mat-mdc-tab-ripple {
+      border-radius: inherit;
+    }
+  }
+
+  .mat-mdc-tab.mdc-tab--active {
+    background: var(--browser-tab-active);
+    box-shadow: 0 -2px 6px rgba(29, 38, 48, 0.06);
+    z-index: 1;
+
+    .mdc-tab__text-label {
+      font-weight: 600;
+    }
+
+    .browser-tabs__icon {
+      opacity: 1;
+    }
+
+    // Curved flares joining the active tab to the content, like a browser tab.
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      width: var(--browser-tab-radius);
+      height: var(--browser-tab-radius);
+      pointer-events: none;
+    }
+
+    &::before {
+      left: calc(var(--browser-tab-radius) * -1);
+      background: radial-gradient(circle at 0 0, transparent var(--browser-tab-radius), var(--browser-tab-active) calc(var(--browser-tab-radius) + 0.5px));
+    }
+
+    &::after {
+      right: calc(var(--browser-tab-radius) * -1);
+      background: radial-gradient(circle at 100% 0, transparent var(--browser-tab-radius), var(--browser-tab-active) calc(var(--browser-tab-radius) + 0.5px));
+    }
+  }
+
+  // Keep Material's sliding indicator, moved to the top edge.
+  .mdc-tab-indicator {
+    padding: 0 8px;
+  }
+
+  .mdc-tab-indicator__content--underline {
+    align-self: flex-start;
+    border-top-width: 3px;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .mat-mdc-tab-body-wrapper {
+    background: var(--browser-tab-active);
+  }
+
+  @media (pointer: coarse), (max-width: 768px) {
+    --browser-tab-height: 48px;
+
+    .mat-mdc-tab {
+      padding: 0 14px;
+
+      .mdc-tab__text-label {
+        font-size: 14px;
+      }
+    }
+
+    .mat-mdc-tab-header {
+      padding: 4px 4px 0;
+    }
+  }
+}
+
+[dir='rtl'] .mat-mdc-tab-group.browser-tabs .mat-mdc-tab:not(.mdc-tab--active) + .mat-mdc-tab:not(.mdc-tab--active) {
+  background-position: right center;
+}

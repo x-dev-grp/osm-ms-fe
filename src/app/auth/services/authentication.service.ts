@@ -1,7 +1,7 @@
 import { inject, Injectable, Injector, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { EMPTY, Observable, Subject, switchMap } from 'rxjs';
+import { concat, defer, EMPTY, Observable, Subject, switchMap } from 'rxjs';
 import { catchError, finalize, shareReplay, tap } from 'rxjs/operators';
 
 // project import
@@ -45,6 +45,8 @@ export class AuthenticationService {
   private sessionRefreshRequest: Observable<SessionRefreshResponse> | null = null;
   private lastDocumentHiddenAt = 0;
   private loggingOut = false;
+  private sessionContextLoaded = false;
+  private sessionContextRequest: Promise<void> | null = null;
   private static readonly SESSION_REFRESH_MIN_INTERVAL_MS = 2 * 60 * 1000;
   private static readonly SESSION_REFRESH_FAILURE_BACKOFF_MS = 5 * 60 * 1000;
   private static readonly SESSION_VISIBILITY_MIN_HIDDEN_MS = 30 * 1000;
@@ -201,6 +203,9 @@ export class AuthenticationService {
     user.enabledModules =
       explicitEnabledModules ??
       (this.currentUserValue?.id === user.id ? this.currentUserValue?.enabledModules : undefined);
+    if (explicitEnabledModules) {
+      this.sessionContextLoaded = true;
+    }
     this.setCurrentUserValue = user;
 
     if (reloadPhoto) {
@@ -404,11 +409,49 @@ export class AuthenticationService {
     }
     const previousEnabledModules = this.getTenantEnabledModules().join('|');
     user.enabledModules = modules?.map((module) => module.toUpperCase()) ?? [];
+    if (modules) {
+      this.sessionContextLoaded = true;
+    }
     this.setCurrentUserValue = user;
     const currentEnabledModules = this.getTenantEnabledModules().join('|');
     if (previousEnabledModules !== currentEnabledModules) {
       this.permissionsChangedSubject.next();
     }
+  }
+
+  /**
+   * Enabled modules are not in the access token; guards must not decide before they are known,
+   * otherwise a slow or failed session call reads as "no modules" and denies every page.
+   */
+  ensureSessionContext(): Promise<void> {
+    const user = this.currentUserValue;
+    if (!user || user.role === Role.OosmAdmin || this.sessionContextLoaded) {
+      return Promise.resolve();
+    }
+    if (!this.sessionContextRequest) {
+      const profileFallback$ = defer(() =>
+        this.sessionContextLoaded
+          ? EMPTY
+          : this.injector
+              .get(CompanyProfileService)
+              .getProfile({ forceRefresh: true })
+              .pipe(
+                tap((profile) => this.setTenantEnabledModules(profile.enabledModules)),
+                catchError(() => EMPTY)
+              )
+      );
+      this.sessionContextRequest = new Promise<void>((resolve) => {
+        concat(this.postRefreshSession(), profileFallback$)
+          .pipe(
+            finalize(() => {
+              this.sessionContextRequest = null;
+              resolve();
+            })
+          )
+          .subscribe();
+      });
+    }
+    return this.sessionContextRequest;
   }
 
   isOosmAdmin(): boolean {
@@ -487,7 +530,7 @@ export class AuthenticationService {
     return this.loggingOut;
   }
 
-  logout(queryParams?: string) {
+  logout(queryParams?: string, success?: 'password-changed') {
     if (this.loggingOut) {
       return;
     }
@@ -502,10 +545,15 @@ export class AuthenticationService {
     this.photoRequestUserId = null;
     this.lastSessionRefreshAt = 0;
     this.sessionRefreshRequest = null;
+    this.sessionContextLoaded = false;
+    this.sessionContextRequest = null;
 
     const navigate = () => {
       if (!queryParams) {
-        void this.router.navigate(['/auth/login']).finally(() => {
+        void this.router.navigate(['/auth/login'], {
+          queryParams: success ? { success } : undefined,
+          replaceUrl: !!success
+        }).finally(() => {
           this.loggingOut = false;
         });
         return;
